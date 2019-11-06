@@ -6,10 +6,12 @@
 //
 
 import Foundation
-import SwiftUI
 
-SwiftUI.View
-
+/// A piece of user interface.
+///
+/// You create custom views by declaring types that conform to the `View`
+/// protocol. Implement the required `body` property to provide the content
+/// and behavior for your custom view.
 public protocol View {
 
     /// The type of view representing the body of this view.
