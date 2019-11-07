@@ -18,23 +18,23 @@ import Foundation
 @available(OSX 10.15.0, *)
 extension ViewBuilder {
     public struct _ConditionalContent<TrueContent, FalseContent>: View where TrueContent: View, FalseContent: View {
-        private(set) var truthy: TrueContent!
-        private(set) var falsy: FalseContent!
-        var isTruthy: Bool { truthy != nil }
-        
-        init(truthy: TrueContent) {
-            self.truthy = truthy
-        }
-        init(falsy: FalseContent) {
-            self.falsy = falsy
-        }
-        public var body: some View {
-            switch isTruthy {
-            case true:
-                return AnyView(truthy)
-            case false:
-                return AnyView(falsy)
+        enum Container {
+            case truthy(TrueContent)
+            case falsy(FalseContent)
+            
+            public var body: some View {
+                switch self {
+                case .truthy(let view):
+                    return AnyView(view)
+                case .falsy(let view):
+                    return AnyView(view)
+                }
             }
+        }
+        
+        let storage: Container
+        init(storage: Container) {
+            self.storage = storage
         }
     }
 
@@ -44,11 +44,11 @@ extension ViewBuilder {
 
     /// Provides support for "if" statements in multi-statement closures, producing
     /// ConditionalContent for the "then" branch.
-    public static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent : View, FalseContent : View { _ConditionalContent(truthy: first) }
+    public static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent : View, FalseContent : View { _ConditionalContent<TrueContent, FalseContent>(storage: .truthy(first)) }
 
     /// Provides support for "if-else" statements in multi-statement closures, producing
     /// ConditionalContent for the "else" branch.
-    public static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent : View, FalseContent : View { _ConditionalContent(falsy: second) }
+    public static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent : View, FalseContent : View { _ConditionalContent<TrueContent, FalseContent>(storage: .falsy(second)) }
 }
 
 extension ViewBuilder {
