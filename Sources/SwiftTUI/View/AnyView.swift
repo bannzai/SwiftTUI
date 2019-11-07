@@ -13,14 +13,24 @@ import Foundation
 /// hierarchy. Whenever the type of view used with an `AnyView`
 /// changes, the old hierarchy is destroyed and a new hierarchy is
 /// created for the new type.
-public struct AnyView : View {
-    // FIXME: Not use any
-    let any: Any
+public struct AnyView: View {
     
-    /// Create an instance that type-erases `view`.
-    public init<V: View>(_ view: V) {
-        self.any = view
+    let storage: AnyViewStorageBase
+    
+    /// Create an instance that typeerases `view`.
+    public init<V>(_ view: V) where V: View {
+        self.storage = AnyViewStorage(view)
     }
 
     public typealias Body = Never
+}
+
+internal class AnyViewStorageBase: View {
+    
+}
+fileprivate class AnyViewStorage<T: View>: AnyViewStorageBase {
+    let view: T
+    init(_ view: T) {
+        self.view = view
+    }
 }
