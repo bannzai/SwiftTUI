@@ -12,7 +12,7 @@ import Foundation
 /// You create custom views by declaring types that conform to the `View`
 /// protocol. Implement the required `body` property to provide the content
 /// and behavior for your custom view.
-public protocol View: AnyViewWrappable {
+public protocol View: Contentable {
 
     /// The type of view representing the body of this view.
     ///
@@ -25,7 +25,7 @@ public protocol View: AnyViewWrappable {
 }
 
 extension View {
-    public func wrappedAnyView() -> AnyView {
-        AnyView(self)
+    public func content() -> SwiftTUIContentType {
+        return body.content()
     }
 }
