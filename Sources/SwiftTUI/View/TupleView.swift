@@ -20,13 +20,10 @@ extension TupleView: View {
     public typealias Body = Never
 }
 
-public extension TupleView {
-    func accept<VisitorType: Visitor>(visitor: VisitorType) {
-        fatalError("Unexpected visitor type \(visitor) when T of \(type(of: T.self))")
-    }
-    
-    func accept<VisitorType: Visitor, C0: View, C1: View>(visitor: VisitorType) where T == (C0, C1) {
-        visitor.visit(value.0)
-        visitor.visit(value.1)
+extension TupleView: Acceptable {
+    public func accept(visitor: Visitor) {
+        Mirror(reflecting: value).children.forEach { label, value in
+            visitor.visit(value)
+        }
     }
 }
