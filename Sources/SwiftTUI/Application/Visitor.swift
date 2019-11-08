@@ -1,12 +1,16 @@
 //
 //  Visitor.swift
-//  Demo
+//  SwiftTUI
 //
 //  Created by Yudai.Hirose on 2019/11/08.
 //
 
 import Foundation
 
-protocol Visitor {
-    func visit<T>(_ element: T)
+// TODO: to internal type
+open class Visitor {
+    public init() { }
+    open func visit<T>(_ element: T) {
+        fatalError("Should override this method")
+    }
 }
