@@ -14,7 +14,13 @@ import Foundation
 /// changes, the old hierarchy is destroyed and a new hierarchy is
 /// created for the new type.
 public struct AnyView: View {
-    
+    private class AnyViewStorage<T: View>: AnyViewStorageBase {
+        let view: T
+        init(_ view: T) {
+            self.view = view
+        }
+    }
+
     let storage: AnyViewStorageBase
     
     /// Create an instance that typeerases `view`.
@@ -25,13 +31,8 @@ public struct AnyView: View {
     public typealias Body = Never
 }
 
-internal class AnyViewStorageBase: View {
-    
-}
-fileprivate class AnyViewStorage<T: View>: AnyViewStorageBase {
-    let view: T
-    init(_ view: T) {
-        self.view = view
+extension AnyView: Acceptable {
+    public func accept(visitor: Visitor) {
+        // TODO:
     }
 }
-

@@ -14,3 +14,9 @@ public struct EmptyView {
 extension EmptyView : View {
     public typealias Body = Never
 }
+
+extension EmptyView: Acceptable {
+    public func accept(visitor: Visitor) {
+        // TODO: 
+    }
+}
