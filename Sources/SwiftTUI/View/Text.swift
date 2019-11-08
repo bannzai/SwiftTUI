@@ -38,6 +38,12 @@ extension Text: View {
     public typealias Body = Never
 }
 
+extension Text: Acceptable {
+    public func accept(visitor: Visitor) {
+        visitor.visit(self)
+    }
+}
+
 
 // TODO: Implement
 // Mark: - Text interfaces
