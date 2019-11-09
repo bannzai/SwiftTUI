@@ -20,6 +20,12 @@ extension TupleView: View {
     public typealias Body = Never
 }
 
+extension TupleView: Contentable {
+    public func buildContent() -> SwiftTUIContentType {
+        return ""
+    }
+}
+
 extension TupleView: Acceptable {
     public func accept(visitor: Visitor) {
         Mirror(reflecting: value).children.forEach { label, value in
