@@ -17,10 +17,3 @@ public struct Group<Content: View>: View {
         self.content = content()
     }
 }
-
-extension Group: Acceptable {
-    public func accept(visitor: Visitor) {
-        visitor.visit(content)
-    }
-}
-

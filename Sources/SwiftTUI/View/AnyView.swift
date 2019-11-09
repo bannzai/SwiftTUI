@@ -30,9 +30,3 @@ public struct AnyView: View {
 
     public typealias Body = Never
 }
-
-extension AnyView: Acceptable {
-    public func accept(visitor: Visitor) {
-        // TODO:
-    }
-}

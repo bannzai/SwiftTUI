@@ -10,5 +10,6 @@ import Foundation
 // TODO: to internal type
 public protocol Visitor {
     associatedtype VisitorResult
+    
     func visit<T>(_ content: T) -> VisitorResult
 }
