@@ -10,5 +10,5 @@ import Foundation
 public typealias SwiftTUIContentType = String
 
 public protocol Contentable {
-    func buildContent() -> SwiftTUIContentType
+    func content() -> SwiftTUIContentType
 }

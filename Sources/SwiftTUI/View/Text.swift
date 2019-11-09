@@ -44,12 +44,6 @@ extension Text: Acceptable {
     }
 }
 
-extension Text: Contentable {
-    public func buildContent() -> SwiftTUIContentType {
-        return content
-    }
-}
-
 
 // TODO: Implement
 // Mark: - Text interfaces

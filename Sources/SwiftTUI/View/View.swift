@@ -24,8 +24,8 @@ public protocol View: Contentable {
     var body: Self.Body { get }
 }
 
-//extension View {
-//    public func buildContent() -> SwiftTUIContentType {
-//        return body.buildContent()
-//    }
-//}
+extension View {
+    public func content() -> SwiftTUIContentType {
+        return body.content()
+    }
+}
