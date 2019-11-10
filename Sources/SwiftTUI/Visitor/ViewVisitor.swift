@@ -17,8 +17,8 @@ open class TypeErasureVisitor: Visitor {
 }
 
 public class ViewVisitor: TypeErasureVisitor {
-    public override func visit<T: View & Contentable>(_ content: T) -> VisitoResult {
-        return content.content()
+    public override func visit<T: View>(_ content: T) -> VisitoResult {
+        return content.accept(visitor: self)
     }
 }
 
