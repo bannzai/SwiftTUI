@@ -31,6 +31,7 @@ class VisitorTests: XCTestCase {
         let views: [Acceptable] = [
             TupleView((Text(""), Text(""))),
             Group { Text("") },
+            Group { Group { Text("") } },
             TupleView(Text("")),
             Text(""),
             EmptyView(),
@@ -42,7 +43,7 @@ class VisitorTests: XCTestCase {
             print("test execute for \(type(of: view))")
             XCTContext.runActivity(named: "when \(type(of: view))") { _ in
                 let visitor = TestVisitor()
-                _ = visitor.visit(view)
+                visitor.visit(view)
                 XCTAssertTrue(visitor.called)
             }
         }
