@@ -25,7 +25,7 @@ public protocol View: Acceptable {
 }
 
 extension View {
-    public func accept<V>(visitor: V) -> V.VisitoResult where V: Visitor {
+    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         visitor.visit(body)
     }
 }

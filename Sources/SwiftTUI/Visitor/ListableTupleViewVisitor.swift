@@ -8,8 +8,8 @@
 import Foundation
 
 open class ListableTupleViewVisitor: Visitor {
-    public typealias VisitResult = [SwiftTUIContentType]
-    public func visit<T>(_ content: T) -> [SwiftTUIContentType] {
+    public typealias VisitResult = SwiftTUIContentType
+    public func visit<T>(_ content: T) -> SwiftTUIContentType {
         fatalError("Should override this method to subclass")
     }
 }

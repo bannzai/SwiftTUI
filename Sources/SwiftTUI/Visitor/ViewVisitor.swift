@@ -9,15 +9,15 @@ import Foundation
 
 // TOOD: Internal
 open class AnyViewVisitor: Visitor {
-    public typealias VisitoResult = SwiftTUIContentType
+    public typealias VisitResult = SwiftTUIContentType
     
-    open func visit<T>(_ content: T) -> VisitoResult {
+    open func visit<T>(_ content: T) -> VisitResult {
         fatalError("Should override this method to subclass")
     }
 }
 
 public class ViewVisitor: AnyViewVisitor {
-    public override func visit<T: View>(_ content: T) -> VisitoResult {
-        return content.accept(visitor: self)
+    public override func visit<T: View>(_ content: T) -> VisitResult {
+        content.accept(visitor: self)
     }
 }

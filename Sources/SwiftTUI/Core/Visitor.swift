@@ -9,7 +9,7 @@ import Foundation
 
 // TODO: to internal type
 public protocol Visitor {
-    associatedtype VisitoResult: Collector
+    associatedtype VisitResult: Collector
     
-    func visit<T>(_ content: T) -> VisitoResult
+    func visit<T>(_ content: T) -> VisitResult
 }
