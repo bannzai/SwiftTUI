@@ -14,3 +14,9 @@ public struct EmptyView {
 extension EmptyView : View {
     public typealias Body = Never
 }
+
+extension EmptyView: Acceptable {
+    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+        V.VisitResult.empty()
+    }
+}

@@ -8,6 +8,7 @@
 import Foundation
 
 internal class AnyViewStorageBase: View {
-    
+    func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+        fatalError("Should override this method to subclass")
+    }
 }
-

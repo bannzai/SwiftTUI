@@ -24,8 +24,14 @@ public protocol View: Acceptable {
     var body: Self.Body { get }
 }
 
+extension View where Self.Body == Never {
+    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+        fatalError("\(#function) can not call. because Body is never")
+    }
+}
+
 extension View {
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
-        visitor.visit(body)
+        return body.accept(visitor: visitor)
     }
 }

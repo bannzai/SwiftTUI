@@ -17,3 +17,9 @@ public struct Group<Content: View>: View {
         self.content = content()
     }
 }
+
+extension Group: Acceptable {
+    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+        content.accept(visitor: visitor)
+    }
+}

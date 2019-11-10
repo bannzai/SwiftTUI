@@ -6,25 +6,26 @@
 //
 
 import XCTest
+import Foundation
 @testable import SwiftTUI
 
 class VisitorTests: XCTestCase {
     class TestVisitor: Visitor {
         var called = false
-        override func visit<T>(_ element: T) {
-            if let _ = element as? AnyViewWrappable {
+        func visit<T>(_ content: T) -> String {
+            if let _ = content as? Acceptable {
                 called = true
-                return
             }
+            return ""
         }
     }
     
     // NOTE: `View` should confirm to Acceptable and AnyViewWrappable
     func testProtoocls() {
         let views: [Acceptable] = [
+            TupleView((Text(""), Text(""))),
             Group { Text("") },
             TupleView(Text("")),
-            TupleView((Text(""), Text(""))),
             Text(""),
             EmptyView(),
             AnyView(EmptyView()),
@@ -32,9 +33,10 @@ class VisitorTests: XCTestCase {
         
 
         views.enumerated().forEach { (offset, view) in
+            print("test execute for \(type(of: view))")
             XCTContext.runActivity(named: "when \(type(of: view))") { _ in
                 let visitor = TestVisitor()
-                view.accept(visitor: visitor)
+                _ = visitor.visit(view)
                 XCTAssertTrue(visitor.called)
             }
         }

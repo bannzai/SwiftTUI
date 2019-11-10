@@ -22,7 +22,7 @@ extension TupleView: View {
 
 extension TupleView: Acceptable {
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
-        return Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in
+        Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in
             if let value = element.value as? Acceptable {
                 result.collect(with: value.accept(visitor: visitor))
             }

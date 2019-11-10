@@ -14,10 +14,13 @@ import Foundation
 /// changes, the old hierarchy is destroyed and a new hierarchy is
 /// created for the new type.
 public struct AnyView: View {
-    private class AnyViewStorage<T: View>: AnyViewStorageBase {
+    fileprivate class AnyViewStorage<T: View>: AnyViewStorageBase {
         let view: T
         init(_ view: T) {
             self.view = view
+        }
+        public override func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+            view.accept(visitor: visitor)
         }
     }
 
@@ -29,4 +32,10 @@ public struct AnyView: View {
     }
 
     public typealias Body = Never
+}
+
+extension AnyView: Acceptable {
+    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+        storage.accept(visitor: visitor)
+    }
 }

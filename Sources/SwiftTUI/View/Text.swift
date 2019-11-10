@@ -38,6 +38,16 @@ extension Text: View {
     public typealias Body = Never
 }
 
+extension Text: Acceptable {
+    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+        // FIXME: more general logic
+        guard V.VisitResult.self == String.self else {
+            fatalError("Unexpected view visitor type of \(type(of: self))")
+        }
+        return content as! V.VisitResult
+    }
+}
+
 // TODO: Implement
 // Mark: - Text interfaces
 extension Text {
