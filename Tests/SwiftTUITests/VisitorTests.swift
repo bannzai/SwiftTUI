@@ -9,6 +9,7 @@ import XCTest
 import Foundation
 @testable import SwiftTUI
 
+@available(OSX 10.15.0, *)
 class VisitorTests: XCTestCase {
     class TestVisitor: Visitor {
         var called = false
@@ -17,6 +18,12 @@ class VisitorTests: XCTestCase {
                 called = true
             }
             return ""
+        }
+    }
+    
+    struct CustomView: View {
+        var body: some View {
+            Text("")
         }
     }
     
@@ -29,8 +36,8 @@ class VisitorTests: XCTestCase {
             Text(""),
             EmptyView(),
             AnyView(EmptyView()),
+            CustomView(),
         ]
-        
 
         views.enumerated().forEach { (offset, view) in
             print("test execute for \(type(of: view))")
