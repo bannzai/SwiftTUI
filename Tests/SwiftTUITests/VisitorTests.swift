@@ -30,9 +30,9 @@ class VisitorTests: XCTestCase {
     func testProtoocls() {
         let views: [Acceptable] = [
             TupleView((Text(""), Text(""))),
+            TupleView(Text("")),
             Group { Text("") },
             Group { Group { Text("") } },
-            TupleView(Text("")),
             Text(""),
             EmptyView(),
             AnyView(EmptyView()),
