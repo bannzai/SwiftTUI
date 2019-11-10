@@ -16,8 +16,7 @@ extension EmptyView : View {
 }
 
 extension EmptyView: Acceptable {
-    // FIXME: Remove warnings
-    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor, V.VisitResult: Collector {
+    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         V.VisitResult.empty()
     }
 }

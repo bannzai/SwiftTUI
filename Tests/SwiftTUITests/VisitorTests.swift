@@ -13,10 +13,11 @@ import Foundation
 class VisitorTests: XCTestCase {
     class TestVisitor: Visitor {
         var called = false
-        func visit<T>(_ content: T) -> Void {
+        func visit<T>(_ content: T) -> String {
             if let _ = content as? Acceptable {
                 called = true
             }
+            return ""
         }
     }
     
@@ -43,7 +44,7 @@ class VisitorTests: XCTestCase {
             print("test execute for \(type(of: view))")
             XCTContext.runActivity(named: "when \(type(of: view))") { _ in
                 let visitor = TestVisitor()
-                visitor.visit(view)
+                _ = visitor.visit(view)
                 XCTAssertTrue(visitor.called)
             }
         }

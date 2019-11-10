@@ -11,6 +11,9 @@ import Foundation
 open class AnyViewVisitor: Visitor {
     public typealias VisitResult = SwiftTUIContentType
     
+    public init() {
+        
+    }
     open func visit<T>(_ content: T) -> VisitResult {
         fatalError("Should override this method to subclass")
     }
