@@ -9,9 +9,9 @@ import Foundation
 
 //internal struct TupleViewVisitor<InnerVisitor: Visitor>: Visitor {
 //    typealias AcceptorType = TupleView
-//    typealias VisitorResult = InnerVisitor.VisitorResult
+//    typealias VisitoResult = InnerVisitor.VisitoResult
 //
-//    func visit(_ content: AcceptorType) -> InnerVisitor.VisitorResult {
+//    func visit(_ content: AcceptorType) -> InnerVisitor.VisitoResult {
 //        return content.content()
 //    }
 //}
