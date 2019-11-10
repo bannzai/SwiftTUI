@@ -13,11 +13,10 @@ import Foundation
 class VisitorTests: XCTestCase {
     class TestVisitor: Visitor {
         var called = false
-        func visit<T>(_ content: T) -> String {
+        func visit<T>(_ content: T) -> Void {
             if let _ = content as? Acceptable {
                 called = true
             }
-            return ""
         }
     }
     

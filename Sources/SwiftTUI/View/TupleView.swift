@@ -21,6 +21,7 @@ extension TupleView: View {
 }
 
 extension TupleView: Acceptable {
+    // FIXME: Remove warnings
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor, V.VisitResult: Collector {
         Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in
             if let value = element.value as? Acceptable {
