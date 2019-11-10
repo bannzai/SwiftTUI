@@ -20,7 +20,7 @@ class VisitorTests: XCTestCase {
         }
     }
     
-    // NOTE: `View` should confirm to Acceptable and AnyViewWrappable
+    // NOTE: `View` should confirm to Acceptable and called accept(visitor:) via Visitor.visit
     func testProtoocls() {
         let views: [Acceptable] = [
             TupleView((Text(""), Text(""))),
