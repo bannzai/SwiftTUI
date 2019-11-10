@@ -8,7 +8,7 @@
 import Foundation
 
 // TOOD: Internal
-open class TypeErasureVisitor: Visitor {
+open class AnyViewVisitor: Visitor {
     public typealias VisitoResult = SwiftTUIContentType
     
     open func visit<T>(_ content: T) -> VisitoResult {
@@ -16,21 +16,8 @@ open class TypeErasureVisitor: Visitor {
     }
 }
 
-public class ViewVisitor: TypeErasureVisitor {
+public class ViewVisitor: AnyViewVisitor {
     public override func visit<T: View>(_ content: T) -> VisitoResult {
         return content.accept(visitor: self)
-    }
-}
-
-public protocol TupleViewVisitor {
-    associatedtype VisitResult
-
-    func visit<T>(_ view: TupleView<T>) -> VisitResult
-}
-
-open class TypeErasureTupleViewVisitor: TupleViewVisitor {
-    public typealias VisitResult = SwiftTUIContentType
-    public func visit<T>(_ view: TupleView<T>) -> VisitResult {
-        fatalError("Should override this method to subclass")
     }
 }
