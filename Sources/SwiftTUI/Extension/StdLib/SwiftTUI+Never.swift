@@ -18,9 +18,3 @@ extension Never: View {
     /// Declares the content and behavior of this view.
 //    public var body: Never { fatalError("Body is never") }
 }
-
-extension View where Self.Body == Never {
-    public var body: Self.Body {
-        fatalError("Body is never")
-    }
-}

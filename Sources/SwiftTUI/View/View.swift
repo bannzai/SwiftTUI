@@ -25,6 +25,9 @@ public protocol View: Acceptable {
 }
 
 extension View where Self.Body == Never {
+    public var body: Self.Body {
+        fatalError("Body is never")
+    }
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         fatalError("\(#function) can not call. because Body is never")
     }
