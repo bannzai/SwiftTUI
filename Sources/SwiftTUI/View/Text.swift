@@ -41,10 +41,13 @@ extension Text: View {
 extension Text: Acceptable {
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         // FIXME: more general logic
-        guard V.VisitResult.self == String.self else {
-            fatalError("Unexpected view visitor type of \(type(of: self))")
+        if let content = content as? V.VisitResult {
+            return content
         }
-        return content as! V.VisitResult
+        if let content = [content] as? V.VisitResult {
+            return content
+        }
+        fatalError("Unexpected view visitor type of \(type(of: self))")
     }
 }
 
