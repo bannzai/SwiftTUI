@@ -20,15 +20,23 @@ struct HStackVisitor<InnerVisitor: Visitor>: Visitor {
 }
 
 @frozen public struct HStack<Content> : View where Content : View {
-    @usableFromInline
-    internal var layout: _HStackLayout
-    @usableFromInline
-    internal var content: Content
+    @usableFromInline internal var layout: _HStackLayout
+    @usableFromInline internal var content: Content
     @inlinable public init(alignment: VerticalAlignment = .center, spacing: PhysicalDistance? = nil, @ViewBuilder content: () -> Content) {
         self.layout = _HStackLayout(alignment: alignment, spacing: spacing)
         self.content = content()
     }
     public typealias Body = Swift.Never
+}
+
+extension HStack: Acceptable {
+    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+        content
+            .accept(visitor: HStackVisitor(innerVisitor: visitor))
+            .reduce(into: V.VisitResult.empty()) { result, element in
+                result.collect(with: element)
+        }
+    }
 }
 
 @frozen public struct _HStackLayout {

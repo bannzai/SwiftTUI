@@ -38,6 +38,7 @@ class VisitorTests: XCTestCase {
             EmptyView(),
             AnyView(EmptyView()),
             CustomView(),
+            HStack { Text("") },
         ]
 
         views.enumerated().forEach { (offset, view) in
