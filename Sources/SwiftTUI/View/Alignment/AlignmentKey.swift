@@ -21,12 +21,7 @@ import Foundation
         lhs.bits == rhs.bits
     }
     @usableFromInline
-    internal var hashValue: Swift.Int {
-        // FIXME: Implement
-        return Int(bits - UInt(Int.max))
-    }
-    @usableFromInline
     internal func hash(into hasher: inout Swift.Hasher) {
-        // TODO: Implement
+        hasher.combine(bits)
     }
 }

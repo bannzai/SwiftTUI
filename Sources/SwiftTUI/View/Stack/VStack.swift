@@ -41,9 +41,9 @@ extension VStack: Acceptable {
 }
 
 @frozen public struct _VStackLayout {
-    public var alignment: HorizontalAlignment
-    public var spacing: PhysicalDistance?
-    @inlinable public init(alignment: HorizontalAlignment = .center, spacing: PhysicalDistance? = nil) {
+    @usableFromInline internal var alignment: HorizontalAlignment
+    @usableFromInline internal var spacing: PhysicalDistance?
+    @inlinable internal init(alignment: HorizontalAlignment = .center, spacing: PhysicalDistance? = nil) {
         self.alignment = alignment
         self.spacing = spacing
     }

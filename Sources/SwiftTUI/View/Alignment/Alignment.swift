@@ -8,7 +8,7 @@
 import Foundation
 
 public struct VerticalAlignment {
-    private let id: AlignmentID.Type
+    internal let id: AlignmentID.Type
     public init(_ id: AlignmentID.Type) {
         self.id = id
     }

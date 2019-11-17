@@ -26,3 +26,8 @@ extension Array: Collector where Element: Collector {
         append(contentsOf: next)
     }
 }
+
+extension PhysicalDistance: Collector {
+    public static func empty() -> Int { 0 }
+    public mutating func collect(with next: Int) { self += next }
+}

@@ -9,11 +9,13 @@ import Foundation
 
 public struct HorizontalAlignment {
     internal let id: AlignmentID.Type
+    @usableFromInline
+    internal let key: AlignmentKey
+    
     public init(_ id: AlignmentID.Type) {
         self.id = id
+        self.key = AlignmentKey(bits: unsafeBitCast(id, to: UnsafePointer<StructTypeMetadata>.self).pointee.kind)
     }
-    @usableFromInline
-    internal let key: AlignmentKey = AlignmentKey(bits: #line)
     public static func == (lhs: HorizontalAlignment, rhs: HorizontalAlignment) -> Swift.Bool {
         lhs.id == rhs.id
     }
@@ -41,4 +43,10 @@ extension HorizontalAlignment {
     public static let leading: HorizontalAlignment = HorizontalAlignment(LeadingAlignment.self)
     public static let center: HorizontalAlignment = HorizontalAlignment(CenterAlignment.self)
     public static let trailing: HorizontalAlignment = HorizontalAlignment(TrailingAlignment.self)
+}
+
+extension HorizontalAlignment: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(key)
+    }
 }
