@@ -10,6 +10,7 @@ import Foundation
 public struct ViewDimensions {
     public private(set) var width: PhysicalDistance = 0
     public private(set) var height: PhysicalDistance = 0
+    
     public subscript(guide: HorizontalAlignment) -> PhysicalDistance {
         fatalError("TODO: Implement getter")
     }

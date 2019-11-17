@@ -21,7 +21,7 @@ struct VStackVisitor<InnerVisitor: Visitor>: Visitor {
 
 @frozen public struct VStack<Content> : View where Content : View {
     @usableFromInline internal var tree: VariadicView.Tree<_VStackLayout, Content>
-    @inlinable public init(alignment: VerticalAlignment = .center, spacing: PhysicalDistance? = nil, @ViewBuilder content: () -> Content) {
+    @inlinable public init(alignment: HorizontalAlignment = .center, spacing: PhysicalDistance? = nil, @ViewBuilder content: () -> Content) {
         self.tree = VariadicView.Tree(
             root: _VStackLayout(alignment: alignment, spacing: spacing),
             content: content()
@@ -41,9 +41,9 @@ extension VStack: Acceptable {
 }
 
 @frozen public struct _VStackLayout {
-    public var alignment: VerticalAlignment
+    public var alignment: HorizontalAlignment
     public var spacing: PhysicalDistance?
-    @inlinable public init(alignment: VerticalAlignment = .center, spacing: PhysicalDistance? = nil) {
+    @inlinable public init(alignment: HorizontalAlignment = .center, spacing: PhysicalDistance? = nil) {
         self.alignment = alignment
         self.spacing = spacing
     }

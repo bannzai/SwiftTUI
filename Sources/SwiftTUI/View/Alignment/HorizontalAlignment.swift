@@ -8,14 +8,14 @@
 import Foundation
 
 public struct HorizontalAlignment {
-    private let id: AlignmentID.Type
+    internal let id: AlignmentID.Type
     public init(_ id: AlignmentID.Type) {
         self.id = id
     }
     @usableFromInline
     internal let key: AlignmentKey = AlignmentKey(bits: #line)
     public static func == (lhs: HorizontalAlignment, rhs: HorizontalAlignment) -> Swift.Bool {
-        lhs.key == rhs.key
+        lhs.id == rhs.id
     }
 }
 
