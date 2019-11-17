@@ -6,24 +6,12 @@
 //
 
 import Foundation
+
+
+
 internal struct Terminal {
+    // See: https://misc.flogisoft.com/bash/tip_colors_and_formatting
     static internal func colorize(color: Color, content: SwiftTUIContentType) -> SwiftTUIContentType {
 
-    }
-}
-
-internal struct TPut {
-    internal let color: Color
-    internal let content: String
-
-    static let foregroundEscapeScequence = ""
-    
-    
-    func decompose() -> String {
-
-    }
-    
-    func debug() {
-        
     }
 }
