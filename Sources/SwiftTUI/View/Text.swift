@@ -58,8 +58,8 @@ extension Text {
     ///
     /// - Parameter color: The color to use when displaying this text.
     /// - Returns: Text that uses the color value you supply.
-    public func foregroundColor(_ color: Color?) -> Text {
-        return self
+    public func foregroundColor(_ color: Color) -> Text {
+        Text(Terminal.colorize(color: color.foregroundColor, content: content))
     }
 
     /// Sets the font to use when displaying this text.

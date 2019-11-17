@@ -31,7 +31,9 @@ public enum Color: Hashable {
     case lightCyan
     case white
     
-    var foregroundColor: Int {
+    typealias Value = Int
+    
+    var foregroundColor: Value {
         switch self {
         case .default: return 39
         case .black: return 30
@@ -53,7 +55,7 @@ public enum Color: Hashable {
         }
     }
     
-    var backgroundColor: Int {
+    var backgroundColor: Value {
         switch self {
         case .default: return 49
         case .black: return 40
