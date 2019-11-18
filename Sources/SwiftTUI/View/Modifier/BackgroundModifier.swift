@@ -20,7 +20,7 @@ import Foundation
 
 @available(OSX 10.15.0, *)
 extension View {
-    @inlinable public func background<Background>(_ background: Background) -> some View where Background: View {
+    @inlinable public func background(_ background: Color) -> some View {
         return modifier(
             _BackgroundModifier(background: background)
         )
