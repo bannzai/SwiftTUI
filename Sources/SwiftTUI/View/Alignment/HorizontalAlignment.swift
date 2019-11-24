@@ -16,7 +16,6 @@ public struct HorizontalAlignment {
         self.id = id
         let type: Any.Type = id
         let pointer = unsafeBitCast(type, to: UnsafePointer<StructTypeMetadata>.self).pointee.typeDescriptor.pointee.name.advanced()
-        print(pointer.pointee)
         self.key = AlignmentKey(bits: UInt(pointer.pointee))
     }
     public static func == (lhs: HorizontalAlignment, rhs: HorizontalAlignment) -> Swift.Bool {

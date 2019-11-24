@@ -37,7 +37,4 @@ extension View {
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         return body.accept(visitor: visitor)
     }
-    public func accept<V>(visitor: V) -> [V.VisitResult] where V : ListVisitor {
-        fatalError("TODO: Implement")
-    }
 }

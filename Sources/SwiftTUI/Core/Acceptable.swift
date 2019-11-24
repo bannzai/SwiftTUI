@@ -10,5 +10,4 @@ import Foundation
 // TODO: to internal type
 public protocol Acceptable {
     func accept<V: Visitor>(visitor: V) -> V.VisitResult
-    func accept<V: ListVisitor>(visitor: V) -> [V.VisitResult]
 }

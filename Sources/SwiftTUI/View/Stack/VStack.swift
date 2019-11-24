@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct VStackVisitor<InnerVisitor: Visitor>: ListVisitor {
+struct VStackVisitor<InnerVisitor: Visitor>: Visitor {
     let innerVisitor: InnerVisitor
-    typealias VisitResult = InnerVisitor.VisitResult
+    typealias VisitResult = [InnerVisitor.VisitResult]
     
-    func visit<T>(_ content: T) -> [VisitResult] {
+    func visit<T>(_ content: T) -> VisitResult {
         guard let acceptable = content as? Acceptable else {
             fatalError("Unexpected visited value of \(content)")
         }
@@ -31,10 +31,6 @@ struct VStackVisitor<InnerVisitor: Visitor>: ListVisitor {
 }
 
 extension VStack: Acceptable {
-    public func accept<V>(visitor: V) -> [V.VisitResult] where V : ListVisitor {
-        fatalError("TODO: Implement")
-    }
-
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         tree
             .accept(visitor: VStackVisitor(innerVisitor: visitor))
