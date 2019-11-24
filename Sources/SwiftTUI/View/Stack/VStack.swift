@@ -32,10 +32,13 @@ struct VStackVisitor<InnerVisitor: Visitor>: Visitor {
 
 extension VStack: Acceptable {
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
-        tree
+        print(tree .accept(visitor: VStackVisitor(innerVisitor: visitor)))
+        return tree
             .accept(visitor: VStackVisitor(innerVisitor: visitor))
             .reduce(into: V.VisitResult.empty()) { result, element in
-                result.collect(with: element)
+                if let content = element as? SwiftTUIContentType {
+                    result.collect(with: content._vstackLayout())
+                }
         }
     }
 }
@@ -52,3 +55,12 @@ extension VStack: Acceptable {
 }
 
 extension _VStackLayout: VariadicView.Root { }
+fileprivate protocol _VStackLayoutable {
+    func _vstackLayout() -> Self
+}
+extension Collector where Self: _VStackLayoutable {
+    func vstackLayout() -> Self { _vstackLayout() }
+}
+extension SwiftTUIContentType: _VStackLayoutable {
+    func _vstackLayout() -> SwiftTUIContentType { self + "\n" }
+}
