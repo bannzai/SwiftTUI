@@ -11,10 +11,11 @@ import Foundation
 
 @available(OSX 10.15.0, *)
 extension _AcceptableType {
+    static let dummy: _AcceptableType = .never
     struct DummyView: View {
         typealias Body = Never
         func _typeOf() -> _AcceptableType {
-            fatalError()
+            .dummy
         }
     }
     struct DummyModifier: ViewModifier {
