@@ -10,19 +10,26 @@ import Foundation
 // TODO: Internal
 public protocol Collector {
     static func empty() -> Self
-    mutating func collect(with next: Self)
+    mutating func collect<T>(with content: T)
 }
 
 extension SwiftTUIContentType: Collector {
-    public static func empty() -> String { SwiftTUIContentType() }
-    public mutating func collect(with next: String) {
-        append(contentsOf: next)
+    public static func empty() -> SwiftTUIContentType { SwiftTUIContentType() }
+    public mutating func collect<T>(with content: T) {
+        if let content = content as? SwiftTUIContentType {
+            append(contentsOf: content)
+        }
     }
 }
 
 extension Array: Collector where Element: Collector {
     public static func empty() -> Array<Element> { [] }
-    public mutating func collect(with next: Array<Element>) {
-        append(contentsOf: next)
+    public mutating func collect<T>(with content: T) {
+        if let content = content as? [Element] {
+            append(contentsOf: content)
+        }
+        if let content = content as? Element {
+            append(content)
+        }
     }
 }
