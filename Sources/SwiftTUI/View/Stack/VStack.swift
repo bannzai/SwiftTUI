@@ -36,6 +36,7 @@ extension VStack: Acceptable {
             .accept(visitor: VStackVisitor(innerVisitor: visitor))
             .reduce(into: V.VisitResult.empty()) { result, element in
                 result.collect(with: element)
+                result.collect(with: "\n")
         }
     }
 }
