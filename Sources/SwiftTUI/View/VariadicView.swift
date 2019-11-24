@@ -9,7 +9,7 @@ import Foundation
 
 public enum VariadicView {
     public typealias Root = _VariadicView_Root
-    @frozen public struct Tree<Root, Content> where Root : _VariadicView_Root, Content: Acceptable {
+    @frozen public struct Tree<Root, Content> where Root : _VariadicView_Root, Content: View {
         public var root: Root
         public var content: Content
         @inlinable internal init(root: Root, content: Content) {

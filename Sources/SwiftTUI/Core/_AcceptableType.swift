@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum _AcceptableType {
+public enum _AcceptableType: CaseIterable {
     case never
     case any
     case anyStorageBase
