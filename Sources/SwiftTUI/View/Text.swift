@@ -150,3 +150,9 @@ extension Text {
         return self
     }
 }
+
+extension Text: BackgroundColorModifier {
+    public func background(_ color: Color) -> Text {
+        Text(Terminal.colorize(color: color.backgroundColor, content: content))
+    }
+}
