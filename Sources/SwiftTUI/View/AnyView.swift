@@ -19,7 +19,7 @@ public struct AnyView: View {
         init(_ view: T) {
             self.view = view
         }
-        public override func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+        public override func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
             view.accept(visitor: visitor)
         }
     }
@@ -35,8 +35,11 @@ public struct AnyView: View {
 }
 
 extension AnyView: Acceptable {
-    public func _typeOf() -> _ExpectedAcceptableType { .any }
-    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+    public func _typeOf() -> _AcceptableType { .any }
+    public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
+        storage.accept(visitor: visitor)
+    }
+    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
         storage.accept(visitor: visitor)
     }
 }

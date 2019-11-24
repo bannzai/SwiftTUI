@@ -24,10 +24,13 @@ public enum VariadicView {
 }
 
 extension VariadicView.Tree: Acceptable {
-    public func _typeOf() -> _ExpectedAcceptableType {
+    public func _typeOf() -> _AcceptableType {
         .variadicViewTree
     }
-    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+    public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
+        content.accept(visitor: visitor)
+    }
+    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
         content.accept(visitor: visitor)
     }
 }

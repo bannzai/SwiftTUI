@@ -14,7 +14,7 @@ open class AnyViewVisitor: Visitor {
     public init() {
         
     }
-    open func visit<T>(_ content: T) -> VisitResult {
+    open func visit<T: View>(_ content: T) -> VisitResult {
         fatalError("Should override this method to subclass")
     }
 }
@@ -22,5 +22,17 @@ open class AnyViewVisitor: Visitor {
 public class ViewVisitor: AnyViewVisitor {
     public override func visit<T: View>(_ content: T) -> VisitResult {
         content.accept(visitor: self)
+    }
+}
+
+// TODO: Internal
+open class AnyListViewVisitor: Visitor {
+    public typealias VisitResult = [SwiftTUIContentType]
+    
+    public init() {
+        
+    }
+    open func visit<T: View>(_ content: T) -> VisitResult {
+        fatalError("Should override this method to subclass")
     }
 }

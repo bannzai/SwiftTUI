@@ -37,7 +37,7 @@ extension ViewBuilder {
             self.storage = storage
         }
         
-        public func _typeOf() -> _ExpectedAcceptableType {
+        public func _typeOf() -> _AcceptableType {
             .conditionalContent
         }
     }

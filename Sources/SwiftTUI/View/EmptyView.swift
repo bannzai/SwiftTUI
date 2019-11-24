@@ -16,10 +16,10 @@ extension EmptyView : View {
 }
 
 extension EmptyView: Acceptable {
-    public func _typeOf() -> _ExpectedAcceptableType {
+    public func _typeOf() -> _AcceptableType {
         .empty
     }
-    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
-        V.VisitResult.empty()
+    public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
+        ""
     }
 }

@@ -28,13 +28,13 @@ extension View where Self.Body == Never {
     public var body: Self.Body {
         fatalError("Body is never")
     }
-    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
-        fatalError("\(#function) can not call. because Body is never")
-    }
 }
 
 extension View {
-    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
-        return body.accept(visitor: visitor)
+    public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
+        body.accept(visitor: visitor)
+    }
+    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
+        body.accept(visitor: visitor)
     }
 }

@@ -9,6 +9,7 @@ import Foundation
 
 // TODO: to internal type
 public protocol Acceptable {
-    func _typeOf() -> _ExpectedAcceptableType
-    func accept<V: Visitor>(visitor: V) -> V.VisitResult
+    func _typeOf() -> _AcceptableType
+    func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult
+    func accept<V: AnyListViewVisitor>(visitor: V) -> V.VisitResult
 }

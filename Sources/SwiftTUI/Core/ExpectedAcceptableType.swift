@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum _ExpectedAcceptableType {
+public enum _AcceptableType {
     case never
     case any
     case anyStorageBase

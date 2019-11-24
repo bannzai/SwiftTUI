@@ -18,7 +18,7 @@ public struct Font: Hashable {
 
 extension Font: View {
     public typealias Body = Never
-    public func _typeOf() -> _ExpectedAcceptableType {
+    public func _typeOf() -> _AcceptableType {
         .font
     }
 }

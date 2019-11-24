@@ -7,15 +7,9 @@
 
 import Foundation
 
-struct VStackVisitor<InnerVisitor: Visitor>: Visitor {
-    let innerVisitor: InnerVisitor
-    typealias VisitResult = [InnerVisitor.VisitResult]
-    
-    func visit<T>(_ content: T) -> VisitResult {
-        guard let acceptable = content as? Acceptable else {
-            fatalError("Unexpected visited value of \(content)")
-        }
-        return acceptable.accept(visitor: self)
+class VStackVisitor: AnyListViewVisitor {
+    override internal func visit<T: View>(_ content: T) -> VisitResult {
+        content.accept(visitor: self)
     }
 }
 
@@ -31,12 +25,12 @@ struct VStackVisitor<InnerVisitor: Visitor>: Visitor {
 }
 
 extension VStack: Acceptable {
-    public func _typeOf() -> _ExpectedAcceptableType {
+    public func _typeOf() -> _AcceptableType {
         .vStack
     }
-    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
+    public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         tree
-            .accept(visitor: VStackVisitor(innerVisitor: visitor))
+            .accept(visitor: VStackVisitor())
             .reduce(into: V.VisitResult.empty()) { result, element in
                 result.collect(with: element)
                 result.collect(with: "\n")
@@ -47,7 +41,7 @@ extension VStack: Acceptable {
 @frozen public struct _VStackLayout {
     @usableFromInline internal var alignment: HorizontalAlignment
     @usableFromInline internal var spacing: PhysicalDistance?
-    @inlinable internal init(alignment: HorizontalAlignment = .center, spacing: PhysicalDistance? = nil) {
+    @inlinable internal init(alignment: HorizontalAlignment = .default, spacing: PhysicalDistance? = nil) {
         self.alignment = alignment
         self.spacing = spacing
     }

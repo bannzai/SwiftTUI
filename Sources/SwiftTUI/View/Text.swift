@@ -39,18 +39,12 @@ extension Text: View {
 }
 
 extension Text: Acceptable {
-    public func _typeOf() -> _ExpectedAcceptableType {
+    public func _typeOf() -> _AcceptableType {
         .text
     }
-    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
-        // FIXME: more general logic
-        if let content = content as? V.VisitResult {
-            return content
-        }
-        if let content = [content] as? V.VisitResult {
-            return content
-        }
-        fatalError("Unexpected view visitor type of \(type(of: self))")
+    public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult { content }
+    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
+        [content]
     }
 }
 
