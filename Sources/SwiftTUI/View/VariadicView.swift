@@ -27,6 +27,9 @@ extension VariadicView.Tree: Acceptable {
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         content.accept(visitor: visitor)
     }
+    public func accept<V>(visitor: V) -> [V.VisitResult] where V : ListVisitor {
+        content.accept(visitor: visitor)
+    }
 }
 
 public protocol _VariadicView_Root {

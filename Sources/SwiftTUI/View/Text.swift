@@ -44,10 +44,13 @@ extension Text: Acceptable {
         if let content = content as? V.VisitResult {
             return content
         }
-        if let content = [content] as? V.VisitResult {
+        if let content = [content].flatMap({ $0 }) as? V.VisitResult {
             return content
         }
-        fatalError("Unexpected view visitor type of \(type(of: self))")
+        fatalError("Unexpected view visitor type of \(type(of:  V.VisitResult.self))")
+    }
+    public func accept<V>(visitor: V) -> [V.VisitResult] where V : ListVisitor {
+        fatalError("TODO: Implement")
     }
 }
 
