@@ -17,6 +17,6 @@ extension EmptyView : View {
 
 extension EmptyView: Acceptable {
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
-        SwiftTUIContentType()
+        V.VisitResult.empty()
     }
 }
