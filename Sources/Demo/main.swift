@@ -4,7 +4,7 @@ import Foundation
 
 print(
     ViewVisitor().visit(
-        Group {
+        VStack {
             Text("Hello")
                 .foregroundColor(.red)
             Text(", ")
