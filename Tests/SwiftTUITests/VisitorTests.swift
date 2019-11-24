@@ -13,15 +13,16 @@ import Foundation
 class VisitorTests: XCTestCase {
     class TestVisitor: Visitor {
         var called = false
-        func visit<T: AnyViewVisitor>(_ content: T) -> String {
-            if let _ = content as? Acceptable {
-                called = true
-            }
-            return ""
+        func visit<T>(_ content: T) -> Void {
+            called = true
         }
     }
     
     struct CustomView: View {
+        func _typeOf() -> _AcceptableType {
+            fatalError()
+        }
+        
         var body: some View {
             Text("")
         }
@@ -46,7 +47,7 @@ class VisitorTests: XCTestCase {
             print("test execute for \(type(of: view))")
             XCTContext.runActivity(named: "when \(type(of: view))") { _ in
                 let visitor = TestVisitor()
-                _ = visitor.visit(view)
+                visitor.visit(view)
                 XCTAssertTrue(visitor.called)
             }
         }
