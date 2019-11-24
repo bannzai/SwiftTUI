@@ -18,6 +18,9 @@ public struct TupleView<T> {
 
 extension TupleView: View {
     public typealias Body = Never
+    public var _baseProperty: _ViewBaseProperties? {
+        _ViewBaseProperties()
+    }
 }
 
 extension TupleView: Acceptable {

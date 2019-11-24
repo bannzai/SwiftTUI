@@ -22,6 +22,9 @@ class HStackVisitor: AnyListViewVisitor {
         )
     }
     public typealias Body = Swift.Never
+    public var _baseProperty: _ViewBaseProperties? {
+        _ViewBaseProperties()
+    }
 }
 
 extension HStack: Acceptable {

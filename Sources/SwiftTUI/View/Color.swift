@@ -79,6 +79,9 @@ public enum Color: Hashable {
 }
 
 extension Color: View {
+    public var _baseProperty: _ViewBaseProperties? {
+        return nil
+    }
     public typealias Body = Never
     public func _typeOf() -> _AcceptableType {
         .single(.color)
@@ -91,5 +94,21 @@ extension Color: Acceptable {
     }
     public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
         []
+    }
+}
+
+public enum Style {
+    public enum Color {
+        case background
+        case text
+        
+        var color: SwiftTUI.Color {
+            switch self {
+            case .background:
+                return .default
+            case .text:
+                return .white
+            }
+        }
     }
 }

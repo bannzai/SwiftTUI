@@ -15,6 +15,7 @@ extension _ViewModifier_Content: View {
     public func _typeOf() -> _AcceptableType {
         .single(._viewModifier_content)
     }
+    public var _baseProperty: _ViewBaseProperties? { nil }
 }
 
 public protocol ViewModifier {

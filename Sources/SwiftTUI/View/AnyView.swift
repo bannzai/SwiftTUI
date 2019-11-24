@@ -32,6 +32,10 @@ public struct AnyView: View {
     }
 
     public typealias Body = Never
+    
+    public var _baseProperty: _ViewBaseProperties? {
+        _ViewBaseProperties()
+    }
 }
 
 extension AnyView: Acceptable {

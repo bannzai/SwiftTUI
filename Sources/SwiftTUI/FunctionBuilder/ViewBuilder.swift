@@ -40,6 +40,10 @@ extension ViewBuilder {
         public func _typeOf() -> _AcceptableType {
             .single(.conditionalContent)
         }
+        
+        public var _baseProperty: _ViewBaseProperties? {
+            storage.body._baseProperty
+        }
     }
 
     /// Provides support for "if" statements in multi-statement closures, producing an `Optional` view

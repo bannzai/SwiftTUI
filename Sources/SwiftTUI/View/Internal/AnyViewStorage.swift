@@ -8,6 +8,8 @@
 import Foundation
 
 internal class AnyViewStorageBase: View {
+    var _baseProperty: _ViewBaseProperties? { nil }
+    
     func _typeOf() -> _AcceptableType {
         .single(.anyStorageBase)
     }

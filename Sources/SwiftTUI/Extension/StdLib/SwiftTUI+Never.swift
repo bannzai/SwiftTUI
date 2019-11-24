@@ -12,4 +12,7 @@ extension Never: View {
     public func _typeOf() -> _AcceptableType {
         .single(.never)
     }
+    public var _baseProperty: _ViewBaseProperties? {
+        fatalError()
+    }
 }
