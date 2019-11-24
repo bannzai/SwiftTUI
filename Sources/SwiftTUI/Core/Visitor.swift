@@ -13,3 +13,9 @@ public protocol Visitor {
     
     func visit<T: View>(_ content: T) -> VisitResult
 }
+
+public protocol ListVisitor {
+    associatedtype VisitResult
+    
+    func visit<T: View>(_ content: T) -> VisitResult
+}

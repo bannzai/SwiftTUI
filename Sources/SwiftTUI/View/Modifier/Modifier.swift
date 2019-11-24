@@ -24,7 +24,7 @@ extension ModifiedContent : Swift.Equatable where Content : Swift.Equatable, Mod
 
 extension ModifiedContent: Acceptable where Content: View, Modifier: ViewModifier {
     public func _typeOf() -> _AcceptableType {
-        .modifier
+        .single(.modifier)
     }
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         fatalError("TODO: Implement \(#function). But now, it can not call. because Body is never")

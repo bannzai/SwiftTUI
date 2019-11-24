@@ -35,7 +35,7 @@ public struct AnyView: View {
 }
 
 extension AnyView: Acceptable {
-    public func _typeOf() -> _AcceptableType { .any }
+    public func _typeOf() -> _AcceptableType { .single(.any) }
     public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
         storage.accept(visitor: visitor)
     }

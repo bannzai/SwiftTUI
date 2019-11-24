@@ -22,7 +22,7 @@ extension TupleView: View {
 
 extension TupleView: Acceptable {
     public func _typeOf() -> _AcceptableType {
-        .tuple
+        .single(.tuple)
     }
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in

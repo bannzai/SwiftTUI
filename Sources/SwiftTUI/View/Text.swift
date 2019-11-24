@@ -40,7 +40,7 @@ extension Text: View {
 
 extension Text: Acceptable {
     public func _typeOf() -> _AcceptableType {
-        .text
+        .single(.text)
     }
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult { content }
     public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {

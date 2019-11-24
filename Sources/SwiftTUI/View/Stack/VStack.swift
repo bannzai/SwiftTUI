@@ -26,7 +26,7 @@ class VStackVisitor: AnyListViewVisitor {
 
 extension VStack: Acceptable {
     public func _typeOf() -> _AcceptableType {
-        .vStack
+        .list(.vStack)
     }
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         tree

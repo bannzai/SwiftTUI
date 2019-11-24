@@ -81,6 +81,15 @@ public enum Color: Hashable {
 extension Color: View {
     public typealias Body = Never
     public func _typeOf() -> _AcceptableType {
-        .color
+        .single(.color)
+    }
+}
+
+extension Color: Acceptable {
+    public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
+        SwiftTUIContentType()
+    }
+    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
+        []
     }
 }

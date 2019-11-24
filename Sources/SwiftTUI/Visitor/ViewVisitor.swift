@@ -26,8 +26,9 @@ public class ViewVisitor: AnyViewVisitor {
 }
 
 // TODO: Internal
-open class AnyListViewVisitor: Visitor {
-    public typealias VisitResult = [SwiftTUIContentType]
+open class AnyListViewVisitor: ListVisitor {
+    public typealias VisitResultElement = SwiftTUIContentType
+    public typealias VisitResult = [VisitResultElement]
     
     public init() {
         

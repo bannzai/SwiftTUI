@@ -19,7 +19,16 @@ public struct Font: Hashable {
 extension Font: View {
     public typealias Body = Never
     public func _typeOf() -> _AcceptableType {
-        .font
+        .single(.font)
+    }
+}
+
+extension Font: Acceptable {
+    public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
+        SwiftTUIContentType()
+    }
+    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
+        []
     }
 }
 

@@ -38,7 +38,7 @@ extension ViewBuilder {
         }
         
         public func _typeOf() -> _AcceptableType {
-            .conditionalContent
+            .single(.conditionalContent)
         }
     }
 

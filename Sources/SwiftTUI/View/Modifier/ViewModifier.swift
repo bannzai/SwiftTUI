@@ -13,7 +13,7 @@ public struct _ViewModifier_Content<Modifier> where Modifier: ViewModifier {
 
 extension _ViewModifier_Content: View {
     public func _typeOf() -> _AcceptableType {
-        ._viewModifier_content
+        .single(._viewModifier_content)
     }
 }
 
