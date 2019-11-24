@@ -11,7 +11,11 @@ public struct _ViewModifier_Content<Modifier> where Modifier: ViewModifier {
     public typealias Body = Swift.Never
 }
 
-extension _ViewModifier_Content: View { }
+extension _ViewModifier_Content: View {
+    public func _typeOf() -> _ExpectedAcceptableType {
+        ._viewModifier_content
+    }
+}
 
 public protocol ViewModifier {
     associatedtype Body : View

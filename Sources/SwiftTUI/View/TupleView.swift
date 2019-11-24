@@ -21,6 +21,9 @@ extension TupleView: View {
 }
 
 extension TupleView: Acceptable {
+    public func _typeOf() -> _ExpectedAcceptableType {
+        .tuple
+    }
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in
             if let value = element.value as? Acceptable {

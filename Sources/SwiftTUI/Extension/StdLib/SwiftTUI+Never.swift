@@ -9,4 +9,7 @@ import Foundation
 
 extension Never: View {
     public typealias Body = Never
+    public func _typeOf() -> _ExpectedAcceptableType {
+        .never
+    }
 }

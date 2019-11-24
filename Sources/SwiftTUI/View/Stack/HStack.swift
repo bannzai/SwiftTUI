@@ -31,6 +31,9 @@ struct HStackVisitor<InnerVisitor: Visitor>: Visitor {
 }
 
 extension HStack: Acceptable {
+    public func _typeOf() -> _ExpectedAcceptableType {
+        .hStack
+    }
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         tree
             .accept(visitor: HStackVisitor(innerVisitor: visitor))

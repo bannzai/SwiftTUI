@@ -24,6 +24,9 @@ public enum VariadicView {
 }
 
 extension VariadicView.Tree: Acceptable {
+    public func _typeOf() -> _ExpectedAcceptableType {
+        .variadicViewTree
+    }
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         content.accept(visitor: visitor)
     }

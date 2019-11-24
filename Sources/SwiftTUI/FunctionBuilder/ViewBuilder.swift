@@ -36,6 +36,10 @@ extension ViewBuilder {
         init(storage: Container) {
             self.storage = storage
         }
+        
+        public func _typeOf() -> _ExpectedAcceptableType {
+            .conditionalContent
+        }
     }
 
     /// Provides support for "if" statements in multi-statement closures, producing an `Optional` view

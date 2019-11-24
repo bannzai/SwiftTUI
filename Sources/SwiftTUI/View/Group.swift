@@ -19,6 +19,9 @@ public struct Group<Content: View>: View {
 }
 
 extension Group: Acceptable {
+    public func _typeOf() -> _ExpectedAcceptableType {
+        .group
+    }
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         content.accept(visitor: visitor)
     }

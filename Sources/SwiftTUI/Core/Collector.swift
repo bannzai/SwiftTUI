@@ -13,6 +13,10 @@ public protocol Collector {
     mutating func collect<T>(with content: T)
 }
 
+public protocol FlattenCollector: Collector, Sequence {
+    
+}
+
 extension SwiftTUIContentType: Collector {
     public static func empty() -> SwiftTUIContentType { SwiftTUIContentType() }
     public mutating func collect<T>(with content: T) {
@@ -33,3 +37,5 @@ extension Array: Collector where Element: Collector {
         }
     }
 }
+
+extension Array: FlattenCollector where Element: Collector { }

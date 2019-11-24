@@ -39,6 +39,9 @@ extension Text: View {
 }
 
 extension Text: Acceptable {
+    public func _typeOf() -> _ExpectedAcceptableType {
+        .text
+    }
     public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
         // FIXME: more general logic
         if let content = content as? V.VisitResult {
