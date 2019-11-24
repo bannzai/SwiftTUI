@@ -45,6 +45,7 @@ extension HorizontalAlignment {
     public static let leading: HorizontalAlignment = HorizontalAlignment(LeadingAlignment.self)
     public static let center: HorizontalAlignment = HorizontalAlignment(CenterAlignment.self)
     public static let trailing: HorizontalAlignment = HorizontalAlignment(TrailingAlignment.self)
+    public static let `default`: HorizontalAlignment = .center
 }
 
 extension HorizontalAlignment: Hashable {

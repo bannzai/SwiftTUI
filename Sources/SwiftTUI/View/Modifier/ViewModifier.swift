@@ -18,3 +18,9 @@ public protocol ViewModifier {
     func body(content: Self.Content) -> Self.Body
     typealias Content = _ViewModifier_Content<Self>
 }
+
+extension ViewModifier where Body == Never {
+    public func body(content: Self.Content) -> Self.Body {
+        fatalError("body is never. received argument \(content)")
+    }
+}
