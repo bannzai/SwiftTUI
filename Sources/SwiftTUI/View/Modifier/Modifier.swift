@@ -28,7 +28,7 @@ extension ModifiedContent: Acceptable where Content : View, Modifier : ViewModif
     }
 }
 
-extension ModifiedContent : View where Content : View, Modifier : ViewModifier {
+extension ModifiedContent: View where Content : View, Modifier : ViewModifier {
     public typealias Body = Swift.Never
 }
 

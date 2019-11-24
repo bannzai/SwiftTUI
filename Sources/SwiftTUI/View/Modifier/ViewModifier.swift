@@ -8,13 +8,13 @@
 import Foundation
 
 public struct _ViewModifier_Content<Modifier> where Modifier: ViewModifier {
-  public typealias Body = Swift.Never
+    public typealias Body = Swift.Never
 }
 
 extension _ViewModifier_Content: View { }
 
 public protocol ViewModifier {
-  associatedtype Body : View
-  func body(content: Self.Content) -> Self.Body
-  typealias Content = _ViewModifier_Content<Self>
+    associatedtype Body : View
+    func body(content: Self.Content) -> Self.Body
+    typealias Content = _ViewModifier_Content<Self>
 }

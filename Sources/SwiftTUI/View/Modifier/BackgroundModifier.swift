@@ -14,7 +14,7 @@ import Foundation
     }
     public typealias Body = Swift.Never
     public func body(content: _ViewModifier_Content<_BackgroundModifier<Background>>) -> Never {
-        fatalError("\(type(of: Self.self)) not have body")
+        fatalError("\(type(of: Self.self)) not has ViewModifier_Content body")
     }
 }
 
