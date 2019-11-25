@@ -41,9 +41,6 @@ extension _AcceptableType.Single {
             return "\(DummyView.self)"
         }
     }
-    struct DummyModifier: ViewModifier {
-        typealias Body = Never
-    }
     struct Dummy_VariadicView_Root: _VariadicView_Root {
         
     }
@@ -83,10 +80,6 @@ extension _AcceptableType.Single {
         case .tuple:
             return TupleView(DummyView()).accept(visitor: visitor)
             
-        case .modifier:
-            return ModifiedContent(content: DummyView(), modifier: DummyModifier()).accept(visitor: visitor)
-        case ._viewModifier_content:
-            return _ViewModifier_Content<DummyModifier>().accept(visitor: visitor)
         case .conditionalContent:
             return ViewBuilder._ConditionalContent<DummyView, DummyView>(storage: .truthy(DummyView())).accept(visitor: visitor)
         case .variadicViewTree:
