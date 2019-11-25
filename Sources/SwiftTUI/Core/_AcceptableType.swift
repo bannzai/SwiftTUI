@@ -19,8 +19,6 @@ public enum _AcceptableType {
         case text
         case tuple
         
-        case modifier
-        case _viewModifier_content
         case conditionalContent
         case variadicViewTree
     }
