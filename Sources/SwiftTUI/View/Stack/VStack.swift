@@ -38,4 +38,6 @@ extension VStack: ViewAcceptable {
     public typealias Body = Swift.Never
 }
 
-extension _VStackLayout: VariadicView.Root { }
+extension _VStackLayout: VariadicView.Root {
+    public static var _viewListOptions: ViewVisitorListOption { .vertical }
+}

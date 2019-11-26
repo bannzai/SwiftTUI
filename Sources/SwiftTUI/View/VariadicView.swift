@@ -26,16 +26,14 @@ public enum VariadicView {
 
 public protocol _VariadicView_Root {
     // TODO:
-//    static var _viewListOptions: Swift.Int { get }
-}
-extension _VariadicView_Root {
-    // TODO:
-//    public static var _viewListOptions: Swift.Int { 0 }
+    static var _viewListOptions: ViewVisitorListOption { get }
 }
 
 extension VariadicView.Tree: ViewAcceptable {
     public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
-        let content = visitor.visit(self.content)
+        let option = Root._viewListOptions
+        print("option: \(option)")
+        let content = visitor.visit(self.content, with: option)
         // TODO: Using _VariadicView_Root
         return content
     }

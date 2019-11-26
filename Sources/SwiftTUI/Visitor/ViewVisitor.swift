@@ -17,6 +17,9 @@ open class AnyViewVisitor: Visitor {
     open func visit<T: View>(_ content: T) -> VisitResult {
         fatalError("Should override this method to subclass")
     }
+    open func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
+        fatalError("Should override this method to subclass")
+    }
 }
 
 public enum ViewVisitorListOption {
@@ -26,10 +29,17 @@ public enum ViewVisitorListOption {
 }
 
 public class ViewVisitor: AnyViewVisitor {
-    public override func visit<T: View>(_ content: T) -> VisitResult {
-        guard let acceptable = content as? ViewAcceptable else {
-            return visit(content.body)
+    public override func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
+        switch content {
+        case let viewAcceptableWithListOption as ViewAcceptableWithListOption:
+            return viewAcceptableWithListOption.accept(visitor: self, with: listOptions)
+        case let viewAcceptable as ViewAcceptable:
+            return viewAcceptable.accept(visitor: self)
+        case _:
+            return visit(content.body, with: listOptions)
         }
-        return acceptable.accept(visitor: self)
+    }
+    public override func visit<T: View>(_ content: T) -> VisitResult {
+        visit(content, with: .default)
     }
 }

@@ -38,4 +38,6 @@ extension HStack: ViewAcceptable {
   public typealias Body = Swift.Never
 }
 
-extension _HStackLayout: VariadicView.Root { }
+extension _HStackLayout: VariadicView.Root {
+    public static var _viewListOptions: ViewVisitorListOption { .horizontal }
+}
