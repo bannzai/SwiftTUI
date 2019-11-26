@@ -41,5 +41,15 @@ class VisitorTests: XCTestCase {
             let result = visitor.visit(view)
             XCTAssertEqual("1\n2\n3\n", result)
         }
+        XCTContext.runActivity(named: "when HStack contains TupleView<Text, Text, Text>") { (_) in
+            let view = HStack {
+                Text("1")
+                Text("2")
+                Text("3")
+            }
+            let visitor = ViewVisitor()
+            let result = visitor.visit(view)
+            XCTAssertEqual("123", result)
+        }
     }
 }
