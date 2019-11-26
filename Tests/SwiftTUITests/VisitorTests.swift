@@ -11,34 +11,38 @@ import Foundation
 
 @available(OSX 10.15.0, *)
 class VisitorTests: XCTestCase {
-    class TestVisitor: Visitor {
+    class TestVisitor: AnyViewVisitor {
         var called = false
-        func visit<T>(_ content: T) -> Void {
-            called = true
-        }
+        override func visit<T: View>(_ content: T) -> SwiftTUIContentType { content.accept(visitor: self) }
+        func visit(_ content: Text) -> SwiftTUIContentType { content.accept(visitor: self) }
     }
     
-    // NOTE: `View` should confirm to Acceptable and called accept(visitor:) via Visitor.visit
-    func testProtoocls() {
-        let views: [Acceptable] = [
-            TupleView((Text(""), Text(""))),
-            TupleView(Text("")),
-            Group { Text("") },
-            Group { Group { Text("") } },
-            Text(""),
-            EmptyView(),
-            AnyView(EmptyView()),
-            HStack { Text("") },
-            VStack { Text("") },
-        ]
+    struct CustomView: View, Acceptable {
+        var body: some View {
+            EmptyView()
+        }
+        
+        public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
+            (visitor as? TestVisitor)?.called = true
+            return ""
+        }
+        public func accept<V: AnyListViewVisitor>(visitor: V) -> V.VisitResult {
+            fatalError()
+        }
+    }
 
-        views.enumerated().forEach { (offset, view) in
-            print("test execute for \(type(of: view))")
-            XCTContext.runActivity(named: "when \(type(of: view))") { _ in
-                let visitor = TestVisitor()
-                visitor.visit(view)
-                XCTAssertTrue(visitor.called)
-            }
+    func testViewVisitor() {
+//        XCTContext.runActivity(named: "when custom view") { (_) in
+//            let view = CustomView()
+//            let visitor = TestVisitor()
+//            _ = visitor.visit(view)
+//            XCTAssertTrue(visitor.called)
+//        }
+        XCTContext.runActivity(named: "when text") { (_) in
+            let view = Text("hoge")
+            let visitor = TestVisitor()
+            let result = visitor.visit(view)
+            XCTAssertEqual("hoge", result)
         }
     }
 }
