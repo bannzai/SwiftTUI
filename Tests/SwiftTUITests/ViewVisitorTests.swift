@@ -17,15 +17,17 @@ class ViewVisitorTests: XCTestCase {
             return ""
         }
     }
-    func testExample() {
+    func testAcceptablesAllowViewVisitor() {
         _AcceptableType.Single.allCases.forEach { type in
-            switch type {
-            case .never, .anyStorageBase:
-                print("Skip \(#function), for \(type)")
-            case _:
-                let visitor = TestVisitor()
-                _ = type.testVisit(visitor: visitor)
-                XCTAssertTrue(visitor.called)
+            XCTContext.runActivity(named: "when \(type)") { (activity) in
+                switch type {
+                case .never, .anyStorageBase:
+                    print("Skip \(#function), for \(type)")
+                case _:
+                    let visitor = TestVisitor()
+                    _ = type.testVisit(visitor: visitor)
+                    XCTAssertTrue(visitor.called)
+                }
             }
         }
     }

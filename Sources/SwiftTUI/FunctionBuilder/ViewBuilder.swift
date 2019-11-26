@@ -44,6 +44,10 @@ extension ViewBuilder {
         public var _baseProperty: _ViewBaseProperties? {
             storage.body._baseProperty
         }
+        
+        public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
+            storage.body.accept(visitor: visitor)
+        }
     }
 
     /// Provides support for "if" statements in multi-statement closures, producing an `Optional` view
