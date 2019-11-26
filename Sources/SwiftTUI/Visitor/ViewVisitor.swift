@@ -20,7 +20,7 @@ open class AnyViewVisitor: Visitor {
 }
 
 public enum ViewVisitorListOption {
-    static let `default`: ViewVisitorListOption = .vertical
+    static let `default`: ViewVisitorListOption = .horizontal
     case vertical
     case horizontal
 }
