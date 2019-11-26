@@ -13,7 +13,9 @@ let package = Package(
           name: "SwiftTUI",
           targets: ["SwiftTUI"]),
     ],
-    dependencies: [],
+    dependencies: [
+			.package(url: "https://github.com/wickwirew/Runtime.git", from: Version(2, 1, 1)),
+		],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
