@@ -7,15 +7,6 @@
 
 import Foundation
 
-class VStackVisitor: AnyListViewVisitor {
-    override internal func visit<T: View>(_ content: T) -> VisitResult {
-        guard let acceptable = content as? Acceptable else {
-            return visit(content)
-        }
-        return acceptable.accept(visitor: self)
-    }
-}
-
 @frozen public struct VStack<Content> : View where Content : View {
     @usableFromInline internal var tree: VariadicView.Tree<_VStackLayout, Content>
     @inlinable public init(alignment: HorizontalAlignment = .center, spacing: PhysicalDistance? = nil, @ViewBuilder content: () -> Content) {
@@ -32,9 +23,6 @@ class VStackVisitor: AnyListViewVisitor {
 
 extension VStack: Acceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
-        visitor.visit(tree)
-    }
-    public func accept<V: AnyListViewVisitor>(visitor: V) -> AnyListViewVisitor.VisitResult {
         visitor.visit(tree)
     }
 }

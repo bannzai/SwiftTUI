@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol Acceptable {
+public protocol ViewAcceptable {
     func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult
-    func accept<V: AnyListViewVisitor>(visitor: V) -> V.VisitResult
 }
+
+public typealias Acceptable = ViewAcceptable

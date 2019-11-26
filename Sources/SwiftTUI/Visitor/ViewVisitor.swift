@@ -27,16 +27,3 @@ public class ViewVisitor: AnyViewVisitor {
         return acceptable.accept(visitor: self)
     }
 }
-
-// TODO: Internal
-open class AnyListViewVisitor: ListVisitor {
-    public typealias VisitResultElement = SwiftTUIContentType
-    public typealias VisitResult = [VisitResultElement]
-    
-    public init() {
-        
-    }
-    open func visit<T: View>(_ content: T) -> VisitResult {
-        fatalError("Should override this method to subclass")
-    }
-}

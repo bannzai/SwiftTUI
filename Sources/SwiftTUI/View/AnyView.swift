@@ -42,7 +42,4 @@ extension AnyView: Acceptable {
     public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
         storage.accept(visitor: visitor)
     }
-    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
-        storage.accept(visitor: visitor)
-    }
 }

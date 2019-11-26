@@ -31,11 +31,4 @@ extension TupleView: Acceptable {
             }
         }
     }
-    public func accept<V: AnyListViewVisitor>(visitor: V) -> V.VisitResult {
-        Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in
-            if let value = element.value as? Acceptable {
-                result.collect(with: value.accept(visitor: visitor))
-            }
-        }
-    }
 }

@@ -44,9 +44,6 @@ extension ViewBuilder {
         public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
             visitor.visit(storage.body)
         }
-        public func accept<V: AnyListViewVisitor>(visitor: V) -> AnyListViewVisitor.VisitResult {
-            visitor.visit(storage.body)
-        }
     }
 
     /// Provides support for "if" statements in multi-statement closures, producing an `Optional` view

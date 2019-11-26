@@ -26,7 +26,4 @@ extension Group: Acceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         visitor.visit(content)
     }
-    public func accept<V: AnyListViewVisitor>(visitor: V) -> V.VisitResult {
-        visitor.visit(content)
-    }
 }
