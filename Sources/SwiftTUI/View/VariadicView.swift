@@ -32,3 +32,12 @@ extension _VariadicView_Root {
     // TODO:
 //    public static var _viewListOptions: Swift.Int { 0 }
 }
+
+extension VariadicView.Tree: Acceptable {
+    public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
+        let content = visitor.visit(self.content)
+        // TODO: Using _VariadicView_Root
+        return content
+    }
+}
+
