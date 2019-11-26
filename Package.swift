@@ -27,6 +27,6 @@ let package = Package(
             dependencies: ["Runtime"]),
         .testTarget(
             name: "SwiftTUITests",
-            dependencies: ["SwiftTUI"]),
+            dependencies: ["SwiftTUI", "Runtime"]),
     ]
 )
