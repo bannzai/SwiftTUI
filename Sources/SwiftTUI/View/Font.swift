@@ -21,15 +21,6 @@ extension Font: View {
     public var _baseProperty: _ViewBaseProperties? { nil }
 }
 
-extension Font {
-    public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
-        SwiftTUIContentType()
-    }
-    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
-        []
-    }
-}
-
 // MARK: - Font.Weight
 extension Font {
     public enum Weight: Int, Hashable {

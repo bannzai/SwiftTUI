@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal class AnyViewStorageBase: View {
+internal class AnyViewStorageBase: View, Acceptable {
     var _baseProperty: _ViewBaseProperties? { nil }
     
     func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {

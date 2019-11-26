@@ -85,15 +85,6 @@ extension Color: View {
     public typealias Body = Never
 }
 
-extension Color {
-    public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
-        SwiftTUIContentType()
-    }
-    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
-        []
-    }
-}
-
 public enum Style {
     public enum Color {
         case background

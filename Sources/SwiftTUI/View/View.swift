@@ -41,10 +41,4 @@ extension View where Self.Body == Never {
 
 extension View {
     public var _baseProperty: _ViewBaseProperties? { _ViewBaseProperties() }
-    public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
-        body.accept(visitor: visitor)
-    }
-    public func accept<V>(visitor: V) -> AnyListViewVisitor.VisitResult where V : AnyListViewVisitor {
-        body.accept(visitor: visitor)
-    }
 }

@@ -27,7 +27,7 @@ class HStackVisitor: AnyListViewVisitor {
     }
 }
 
-extension HStack {
+extension HStack: Acceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         tree
             .accept(visitor: HStackVisitor())

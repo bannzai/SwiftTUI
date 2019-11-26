@@ -17,7 +17,7 @@ import Foundation
 
 @available(OSX 10.15.0, *)
 extension ViewBuilder {
-    public struct _ConditionalContent<TrueContent, FalseContent>: View where TrueContent: View, FalseContent: View {
+    public struct _ConditionalContent<TrueContent, FalseContent>: View, Acceptable where TrueContent: View, FalseContent: View {
         enum Container {
             case truthy(TrueContent)
             case falsy(FalseContent)
