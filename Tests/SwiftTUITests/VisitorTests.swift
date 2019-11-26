@@ -18,16 +18,6 @@ class VisitorTests: XCTestCase {
         }
     }
     
-    struct CustomView: View {
-        func _typeOf() -> _AcceptableType {
-            fatalError()
-        }
-        
-        var body: some View {
-            Text("")
-        }
-    }
-    
     // NOTE: `View` should confirm to Acceptable and called accept(visitor:) via Visitor.visit
     func testProtoocls() {
         let views: [Acceptable] = [
@@ -38,7 +28,6 @@ class VisitorTests: XCTestCase {
             Text(""),
             EmptyView(),
             AnyView(EmptyView()),
-            CustomView(),
             HStack { Text("") },
             VStack { Text("") },
         ]
