@@ -27,7 +27,7 @@ public enum ViewVisitorListOption {
 
 public class ViewVisitor: AnyViewVisitor {
     public override func visit<T: View>(_ content: T) -> VisitResult {
-        guard let acceptable = content as? Acceptable else {
+        guard let acceptable = content as? ViewAcceptable else {
             return visit(content.body)
         }
         return acceptable.accept(visitor: self)

@@ -41,7 +41,7 @@ extension Text: View {
     }
 }
 
-extension Text: Acceptable {
+extension Text: ViewAcceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult { content }
 }
 

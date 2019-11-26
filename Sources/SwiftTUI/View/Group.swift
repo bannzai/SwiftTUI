@@ -22,7 +22,7 @@ public struct Group<Content: View>: View {
     }
 }
 
-extension Group: Acceptable {
+extension Group: ViewAcceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         visitor.visit(content)
     }

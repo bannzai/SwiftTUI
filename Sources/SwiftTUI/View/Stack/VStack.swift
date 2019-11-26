@@ -21,7 +21,7 @@ import Foundation
     }
 }
 
-extension VStack: Acceptable {
+extension VStack: ViewAcceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         visitor.visit(tree)
     }

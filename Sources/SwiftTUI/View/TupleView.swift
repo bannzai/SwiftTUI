@@ -29,7 +29,7 @@ extension TupleView: ViewAcceptableWithListOption {
     }
     public func accept<V: AnyViewVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult {
         Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in
-            if let value = element.value as? Acceptable {
+            if let value = element.value as? ViewAcceptable {
                 result.collect(with: value.accept(visitor: visitor))
             }
             switch listOption {

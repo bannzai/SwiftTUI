@@ -18,7 +18,7 @@ extension EmptyView : View {
     }
 }
 
-extension EmptyView: Acceptable {
+extension EmptyView: ViewAcceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         ""
     }
