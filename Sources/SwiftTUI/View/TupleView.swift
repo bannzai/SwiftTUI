@@ -23,10 +23,7 @@ extension TupleView: View {
     }
 }
 
-extension TupleView: Acceptable {
-    public func _typeOf() -> _AcceptableType {
-        .single(.tuple)
-    }
+extension TupleView {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in
             if let value = element.value as? Acceptable {

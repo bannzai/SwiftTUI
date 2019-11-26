@@ -83,12 +83,9 @@ extension Color: View {
         return nil
     }
     public typealias Body = Never
-    public func _typeOf() -> _AcceptableType {
-        .single(.color)
-    }
 }
 
-extension Color: Acceptable {
+extension Color {
     public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
         SwiftTUIContentType()
     }

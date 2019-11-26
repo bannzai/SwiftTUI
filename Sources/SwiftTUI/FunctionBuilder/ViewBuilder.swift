@@ -37,10 +37,6 @@ extension ViewBuilder {
             self.storage = storage
         }
         
-        public func _typeOf() -> _AcceptableType {
-            .single(.conditionalContent)
-        }
-        
         public var _baseProperty: _ViewBaseProperties? {
             storage.body._baseProperty
         }

@@ -22,10 +22,7 @@ public struct Group<Content: View>: View {
     }
 }
 
-extension Group: Acceptable {
-    public func _typeOf() -> _AcceptableType {
-        .single(.group)
-    }
+extension Group {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         content.accept(visitor: visitor)
     }

@@ -19,7 +19,7 @@ public class _ViewBaseProperties {
 /// You create custom views by declaring types that conform to the `View`
 /// protocol. Implement the required `body` property to provide the content
 /// and behavior for your custom view.
-public protocol View: Acceptable {
+public protocol View {
     
     var _baseProperty: _ViewBaseProperties? { get }
 

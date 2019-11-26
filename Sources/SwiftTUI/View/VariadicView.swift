@@ -23,10 +23,7 @@ public enum VariadicView {
     }
 }
 
-extension VariadicView.Tree: Acceptable {
-    public func _typeOf() -> _AcceptableType {
-        .single(.variadicViewTree)
-    }
+extension VariadicView.Tree {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         content.accept(visitor: visitor)
     }

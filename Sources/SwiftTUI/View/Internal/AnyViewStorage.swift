@@ -10,9 +10,6 @@ import Foundation
 internal class AnyViewStorageBase: View {
     var _baseProperty: _ViewBaseProperties? { nil }
     
-    func _typeOf() -> _AcceptableType {
-        .single(.anyStorageBase)
-    }
     func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         fatalError("Should override this method to subclass")
     }
