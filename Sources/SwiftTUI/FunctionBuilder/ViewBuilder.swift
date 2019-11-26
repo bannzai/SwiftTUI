@@ -42,10 +42,10 @@ extension ViewBuilder {
         }
         
         public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
-            storage.body.accept(visitor: visitor)
+            visitor.visit(storage.body)
         }
         public func accept<V: AnyListViewVisitor>(visitor: V) -> AnyListViewVisitor.VisitResult {
-            storage.body.accept(visitor: visitor)
+            visitor.visit(storage.body)
         }
     }
 

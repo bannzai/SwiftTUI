@@ -24,6 +24,7 @@ class VisitorTests: XCTestCase {
         }
         func visit(_ content: Text) -> SwiftTUIContentType { content.accept(visitor: self) }
         func visit(_ content: EmptyView) -> SwiftTUIContentType { content.accept(visitor: self) }
+        func visit<T: View>(_ content: Group<T>) -> SwiftTUIContentType { content.accept(visitor: self) }
     }
     
     struct CustomView: View {

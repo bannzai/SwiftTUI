@@ -13,4 +13,7 @@ internal class AnyViewStorageBase: View, Acceptable {
     func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         fatalError("Should override this method to subclass")
     }
+    func accept<V: AnyListViewVisitor>(visitor: V) -> AnyListViewVisitor.VisitResult  {
+        fatalError("Should override this method to subclass")
+    }
 }

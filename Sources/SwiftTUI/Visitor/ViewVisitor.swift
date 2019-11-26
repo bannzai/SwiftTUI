@@ -21,7 +21,10 @@ open class AnyViewVisitor: Visitor {
 
 public class ViewVisitor: AnyViewVisitor {
     public override func visit<T: View>(_ content: T) -> VisitResult {
-        content.accept(visitor: self)
+        guard let acceptable = content as? Acceptable else {
+            return visit(content.body)
+        }
+        return acceptable.accept(visitor: self)
     }
 }
 

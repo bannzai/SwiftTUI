@@ -20,7 +20,7 @@ public struct AnyView: View {
             self.view = view
         }
         public override func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
-            view.accept(visitor: visitor)
+            visitor.visit(view)
         }
     }
 

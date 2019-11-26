@@ -9,7 +9,10 @@ import Foundation
 
 class HStackVisitor: AnyListViewVisitor {
     override internal func visit<T: View>(_ content: T) -> VisitResult {
-        content.accept(visitor: self)
+        guard let acceptable = content as? Acceptable else {
+            return visit(content)
+        }
+        return acceptable.accept(visitor: self)
     }
 }
 
@@ -29,20 +32,10 @@ class HStackVisitor: AnyListViewVisitor {
 
 extension HStack: Acceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
-        tree
-            .content
-            .accept(visitor: HStackVisitor())
-            .reduce(into: V.VisitResult.empty()) { result, element in
-                result.collect(with: element)
-        }
+        visitor.visit(tree)
     }
     public func accept<V: AnyListViewVisitor>(visitor: V) -> AnyListViewVisitor.VisitResult {
-        tree
-            .content
-            .accept(visitor: HStackVisitor())
-            .reduce(into: V.VisitResult.empty()) { result, element in
-                result.collect(with: element)
-        }
+        visitor.visit(tree)
     }
 }
 

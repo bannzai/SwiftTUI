@@ -24,9 +24,9 @@ public struct Group<Content: View>: View {
 
 extension Group: Acceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
-        content.accept(visitor: visitor)
+        visitor.visit(content)
     }
     public func accept<V: AnyListViewVisitor>(visitor: V) -> V.VisitResult {
-        content.accept(visitor: visitor)
+        visitor.visit(content)
     }
 }
