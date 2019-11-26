@@ -22,4 +22,7 @@ extension EmptyView: Acceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         ""
     }
+    public func accept<V: AnyListViewVisitor>(visitor: V) -> V.VisitResult {
+        []
+    }
 }

@@ -30,10 +30,19 @@ class VStackVisitor: AnyListViewVisitor {
 extension VStack: Acceptable {
     public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
         tree
+            .content
             .accept(visitor: VStackVisitor())
             .reduce(into: V.VisitResult.empty()) { result, element in
                 result.collect(with: element)
                 result.collect(with: "\n")
+        }
+    }
+    public func accept<V: AnyListViewVisitor>(visitor: V) -> AnyListViewVisitor.VisitResult {
+        tree
+            .content
+            .accept(visitor: VStackVisitor())
+            .reduce(into: V.VisitResult.empty()) { result, element in
+                result.collect(with: element)
         }
     }
 }
