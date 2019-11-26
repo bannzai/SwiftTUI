@@ -7,38 +7,39 @@
 
 import XCTest
 import Foundation
+import Runtime
 @testable import SwiftTUI
 
 @available(OSX 10.15.0, *)
 class VisitorTests: XCTestCase {
     class TestVisitor: AnyViewVisitor {
-        var called = false
-        override func visit<T: View>(_ content: T) -> SwiftTUIContentType { content.accept(visitor: self) }
+        override func visit<T: View>(_ content: T) -> SwiftTUIContentType {
+            if let content = content as? Text {
+                return visit(content)
+            }
+            if let content = content as? EmptyView {
+                return visit(content)
+            }
+            return visit(content.body)
+        }
         func visit(_ content: Text) -> SwiftTUIContentType { content.accept(visitor: self) }
+        func visit(_ content: EmptyView) -> SwiftTUIContentType { content.accept(visitor: self) }
     }
     
-    struct CustomView: View, Acceptable {
+    struct CustomView: View {
         var body: some View {
             EmptyView()
-        }
-        
-        public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
-            (visitor as? TestVisitor)?.called = true
-            return ""
-        }
-        public func accept<V: AnyListViewVisitor>(visitor: V) -> V.VisitResult {
-            fatalError()
         }
     }
 
     func testViewVisitor() {
-//        XCTContext.runActivity(named: "when custom view") { (_) in
-//            let view = CustomView()
-//            let visitor = TestVisitor()
-//            _ = visitor.visit(view)
-//            XCTAssertTrue(visitor.called)
-//        }
-        XCTContext.runActivity(named: "when text") { (_) in
+        XCTContext.runActivity(named: "when CustomView") { (_) in
+            let view = CustomView()
+            let visitor = TestVisitor()
+            let result = visitor.visit(view)
+            XCTAssertEqual(result, "")
+        }
+        XCTContext.runActivity(named: "when Text with content") { (_) in
             let view = Text("hoge")
             let visitor = TestVisitor()
             let result = visitor.visit(view)
