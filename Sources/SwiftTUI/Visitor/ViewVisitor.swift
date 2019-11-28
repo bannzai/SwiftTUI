@@ -28,7 +28,7 @@ public enum ViewVisitorListOption {
     case horizontal
 }
 
-public class ViewVisitor: AnyViewVisitor {
+public final class ViewVisitor: AnyViewVisitor {
     public override func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
         switch content {
         case let viewAcceptableWithListOption as ViewAcceptableWithListOption:
