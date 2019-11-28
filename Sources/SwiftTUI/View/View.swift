@@ -9,8 +9,8 @@ import Foundation
 
 public class _ViewBaseProperties {
     init() { }
-    internal var width: PhysicalDistance? = nil
-    internal var height: PhysicalDistance? = nil
+    internal var size: Size? = nil
+    internal var origin: Origin? = nil
     internal var backgroundColor: Color = Style.Color.background.color
 }
 
