@@ -9,7 +9,8 @@ print(
                 .foregroundColor(.red)
             Text(", ")
             Text("World")
-                .background(.blue)
+                .background(Color.blue)
+            
         }
     )
 )
