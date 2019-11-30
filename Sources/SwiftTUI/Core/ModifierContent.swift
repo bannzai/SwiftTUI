@@ -23,8 +23,12 @@ extension ModifiedContent : Swift.Equatable where Content : Swift.Equatable, Mod
 }
 
 extension ModifiedContent: ViewAcceptable {
-    public func accept<V>(visitor: V) -> V.VisitResult where V: Visitor {
-        fatalError("TODO: Implement \(#function). But now, it can not call. because Body is never")
+    public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
+        if let _modifier = modifier as? _ViewModifier {
+            return visitor.visit(_modifier.modify(view: content))
+        }
+        let modifiedContent = modifier.body(content: _ViewModifier_Content<Modifier>(_baseProperty: content._baseProperty))
+        return visitor.visit(modifiedContent)
     }
 }
 

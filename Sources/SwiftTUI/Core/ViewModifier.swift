@@ -7,13 +7,14 @@
 
 import Foundation
 
-public struct _ViewModifier_Content<Modifier> where Modifier: ViewModifier {
+public struct _ViewModifier_Content<Modifier>: View where Modifier: ViewModifier {
     public typealias Body = Swift.Never
+    public var _baseProperty: _ViewBaseProperties?
+    init(_baseProperty: _ViewBaseProperties?) {
+        self._baseProperty = _baseProperty
+    }
 }
 
-extension _ViewModifier_Content: View {
-    public var _baseProperty: _ViewBaseProperties? { nil }
-}
 
 public protocol ViewModifier {
     associatedtype Body : View
@@ -30,4 +31,10 @@ extension ViewModifier where Body == Never {
 internal protocol _ViewModifier {
     static var _keyPaths: [PartialKeyPath<_ViewBaseProperties>] { get }
     func modify<V: View>(view: V) -> V
+}
+
+extension _ViewModifier {
+    func writableKeyPath<Value>(from keyPath: PartialKeyPath<_ViewBaseProperties>) -> ReferenceWritableKeyPath<_ViewBaseProperties, Value> {
+        keyPath as! ReferenceWritableKeyPath<_ViewBaseProperties, Value>
+    }
 }

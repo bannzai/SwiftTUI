@@ -31,10 +31,6 @@ extension _BackgroundModifier: _ViewModifier {
         [\_ViewBaseProperties.backgroundColor]
     }
     
-    func writableKeyPath<Value>(from keyPath: PartialKeyPath<_ViewBaseProperties>) -> ReferenceWritableKeyPath<_ViewBaseProperties, Value> {
-        keyPath as! ReferenceWritableKeyPath<_ViewBaseProperties, Value>
-    }
-    
     func modify<V: View>(view: V) -> V {
         _BackgroundModifier._keyPaths.forEach { keyPath in
             switch background {
