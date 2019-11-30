@@ -10,7 +10,6 @@ import Foundation
 import Runtime
 @testable import SwiftTUI
 
-@available(OSX 10.15.0, *)
 class VisitorTests: XCTestCase {
     struct CustomView: View {
         var body: some View {

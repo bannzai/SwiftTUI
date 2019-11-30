@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(OSX 10.15.0, *)
 @frozen public struct ModifiedContent<Content, Modifier> where Content: View, Modifier: ViewModifier {
   public var content: Content
   public var modifier: Modifier

@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "SwiftTUI",
+    platforms: [
+        .macOS(.v10_15),
+    ],
     products: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),

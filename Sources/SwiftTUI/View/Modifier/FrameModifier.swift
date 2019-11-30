@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(OSX 10.15.0, *)
 extension View {
     public func frame(width: PhysicalDistance? = nil, height: PhysicalDistance? = nil) -> some View {
         self._baseProperty?.size?.width = width
