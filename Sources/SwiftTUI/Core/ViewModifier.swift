@@ -9,10 +9,6 @@ import Foundation
 
 public struct _ViewModifier_Content<Modifier>: View where Modifier: ViewModifier {
     public typealias Body = Swift.Never
-    public var _baseProperty: _ViewBaseProperties?
-    init(_baseProperty: _ViewBaseProperties?) {
-        self._baseProperty = _baseProperty
-    }
 }
 
 
