@@ -30,6 +30,7 @@ public enum ViewVisitorListOption {
 
 public final class ViewVisitor: AnyViewVisitor {
     public override func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
+        debugLogger.debug()
         switch content {
         case let viewAcceptableWithListOption as ViewAcceptableWithListOption:
             return viewAcceptableWithListOption.accept(visitor: self, with: listOptions)
