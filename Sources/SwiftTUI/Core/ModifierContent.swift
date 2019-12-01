@@ -35,7 +35,6 @@ extension ModifiedContent: ViewAcceptable {
         if let modifiedContent = modifier as? ModifiedContent {
             result += visitor.visit(modifiedContent)
         }
-        result += visitor.visit(content)
         return result
     }
 }

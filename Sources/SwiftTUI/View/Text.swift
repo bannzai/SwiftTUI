@@ -10,6 +10,7 @@ import Foundation
 /// A view that displays one or more lines of read-only text.
 public struct Text {
     let content: String
+    public var _baseProperty: _ViewBaseProperties? = _ViewBaseProperties()
     /// Creates an instance that displays `content` verbatim.
     @inlinable public init(verbatim content: String) {
         self.init(content)
@@ -36,9 +37,6 @@ extension Text {
 
 extension Text: View {
     public typealias Body = Never
-    public var _baseProperty: _ViewBaseProperties? {
-        _ViewBaseProperties()
-    }
 }
 
 extension Text: ViewAcceptable {

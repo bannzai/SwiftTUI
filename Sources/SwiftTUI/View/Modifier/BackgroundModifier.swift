@@ -32,7 +32,7 @@ extension _BackgroundModifier: _ViewModifier {
     }
     
     func modify<V: View>(view: V) -> V {
-        _BackgroundModifier._keyPaths.forEach { keyPath in
+        for keyPath in _BackgroundModifier._keyPaths {
             switch background {
             case let color as Color:
                 let keyPath: ReferenceWritableKeyPath<_ViewBaseProperties, Color> = writableKeyPath(from: keyPath)
