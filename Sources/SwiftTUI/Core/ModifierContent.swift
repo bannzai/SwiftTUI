@@ -39,12 +39,6 @@ extension ModifiedContent: ViewAcceptable {
     }
 }
 
-internal extension ModifiedContent {
-    mutating func modifed<Value>(keyPath: WritableKeyPath<Content, Value>, value: Value) {
-        content[keyPath: keyPath] = value
-    }
-}
-
 extension ModifiedContent: View {
     public typealias Body = Swift.Never
     public var _baseProperty: _ViewBaseProperties? { nil }
