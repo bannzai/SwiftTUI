@@ -7,15 +7,21 @@
 
 import Foundation
 
+@frozen public struct _FrameLayout: ViewModifier {
+    internal let width: PhysicalDistance?
+    internal let height: PhysicalDistance?
+    public typealias Body = Swift.Never
+}
+
 extension View {
     public func frame(width: PhysicalDistance? = nil, height: PhysicalDistance? = nil) -> some View {
-        self._baseProperty?.size?.width = width
-        self._baseProperty?.size?.height = height
-        return self
+        modifier(
+            _FrameLayout(width: width, height: height)
+        )
     }
     
     public func frame() -> some View {
-        return frame(width: nil, height: nil)
+        frame(width: nil, height: nil)
     }
 }
 
@@ -25,6 +31,16 @@ extension _FrameLayout: _ViewModifier {
     }
     
     func modify<V: View>(view: V) -> V {
+        _FrameLayout._keyPaths.forEach { keyPath in
+            switch keyPath {
+            case \_ViewBaseProperties.size?.width:
+                view._baseProperty?[keyPath: writableKeyPath(from: keyPath)] = width
+            case \_ViewBaseProperties.size?.height:
+                view._baseProperty?[keyPath: writableKeyPath(from: keyPath)] = height
+            case _:
+                fatalError("Unexpected pattern keyPath \(keyPath), in _FrameLayout")
+            }
+        }
         return view
     }
 }
