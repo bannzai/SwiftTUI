@@ -56,5 +56,22 @@ class VisitorTests: XCTestCase {
             let result = visitor.visit(view)
             XCTAssertEqual("123", result)
         }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, _BackgroundModifier<Text>>") { (_) in
+            Terminal.isDisableColorize = false
+            let view = VStack {
+                Text("1")
+                    .foregroundColor(.blue)
+                Text("2")
+                Text("3")
+                    .background(Color.red)
+            }
+            let visitor = ViewVisitor()
+            let result = visitor.visit(view)
+            
+            print(result)
+            XCTAssertEqual(result.filter { $0 == "\n" }.count, 3)
+            XCTAssertTrue(result.contains("\(Color.blue.foregroundColor)"))
+            XCTAssertTrue(result.contains("\(Color.red.backgroundColor)"))
+        }
     }
 }

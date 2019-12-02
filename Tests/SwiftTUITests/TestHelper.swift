@@ -12,12 +12,25 @@ import Foundation
 extension Terminal {
     static var isDisableColorize = false
     @_dynamicReplacement(for: colorize(color:content:))
-    static internal func uncolorize(color: Color.Value, content: SwiftTUIContentType) -> SwiftTUIContentType {
+    static internal func testColorize(color: Color.Value, content: SwiftTUIContentType) -> SwiftTUIContentType {
         switch isDisableColorize {
         case true:
             return content
         case false:
             return Terminal._colorize(color: color, content: content)
         }
+    }
+}
+
+struct DebuggerView: View, ViewAcceptable {
+    let closure: () -> Void
+    
+    var body: some View {
+        EmptyView()
+    }
+    
+    func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
+        closure()
+        return visitor.visit(body)
     }
 }
