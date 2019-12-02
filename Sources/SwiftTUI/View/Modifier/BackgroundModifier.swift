@@ -28,7 +28,7 @@ extension View {
 }
 
 extension _BackgroundModifier: _ViewModifier {
-    static var _keyPaths: [PartialKeyPath<_ViewBaseProperties>] {
+    static var _keyPaths: Set<PartialKeyPath<_ViewBaseProperties>> {
         [\_ViewBaseProperties.backgroundColor]
     }
     

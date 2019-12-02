@@ -25,7 +25,7 @@ extension ViewModifier where Body == Never {
 }
 
 internal protocol _ViewModifier {
-    static var _keyPaths: [PartialKeyPath<_ViewBaseProperties>] { get }
+    static var _keyPaths: Set<PartialKeyPath<_ViewBaseProperties>> { get }
     func modify<V: View>(view: V) -> V
 }
 

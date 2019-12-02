@@ -19,3 +19,12 @@ extension View {
     }
 }
 
+extension _FrameLayout: _ViewModifier {
+    static var _keyPaths: Set<PartialKeyPath<_ViewBaseProperties>> {
+        [\_ViewBaseProperties.size?.width, \_ViewBaseProperties.size?.height]
+    }
+    
+    func modify<V: View>(view: V) -> V {
+        return view
+    }
+}
