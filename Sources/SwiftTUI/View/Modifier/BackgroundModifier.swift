@@ -20,6 +20,7 @@ extension _BackgroundModifier : Swift.Equatable where Background : Swift.Equatab
         a.background == b.background
     }
 }
+
 extension View {
     @inlinable public func background<Background>(_ background: Background) -> some View where Background : View {
         return modifier(_BackgroundModifier(background: background))
