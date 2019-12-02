@@ -11,6 +11,7 @@ public class _ViewBaseProperties {
     init() { }
     internal var size: Size? = nil
     internal var origin: Origin? = nil
+    
     internal var backgroundColor: Color = Style.Color.background.color
 }
 

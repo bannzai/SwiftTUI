@@ -16,6 +16,12 @@ class VisitorTests: XCTestCase {
             EmptyView()
         }
     }
+    
+    override func setUp() {
+        super.setUp()
+        
+        Terminal.isDisableColorize = true
+    }
 
     func testViewVisitor() {
         XCTContext.runActivity(named: "when CustomView") { (_) in
