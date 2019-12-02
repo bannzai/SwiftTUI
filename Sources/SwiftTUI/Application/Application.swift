@@ -8,15 +8,16 @@
 import Foundation
 
 // Application is management SwiftTUI process with root view
-public class Application<RootView: View> {
-    let view: RootView
-    
-    public init(view: RootView) {
-        self.view = view
+public class Application<Root: View> {
+
+    let viewController: HostViewController<Root>
+    public init(viewController: HostViewController<Root>) {
+        self.viewController = viewController
     }
     
     public func run() {
-        
+        viewController.draw()
+        RunLoop.main.run()
     }
 }
 
