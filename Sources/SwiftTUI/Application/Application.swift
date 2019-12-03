@@ -31,27 +31,19 @@ public final class Application<Root: View> {
         }
         isAlreadyRun = true
         debugLogger.debug()
+        
+        
+//        viewController.draw()
+        freopen("/dev/null".cString(using: .utf8), "w", stdin)
+        freopen("/dev/null".cString(using: .utf8), "w", stdout)
+        Terminal.File.output.fileHandler.write("abc".data(using: .utf8)!)
+        RunLoop.main.run()
 
-        switch ProcessInfo.processInfo.environment["SWIFTTUI_SUB_PROCESS"] == nil {
-        case true:
-            let process = Process()
-            process.launchPath = ProcessInfo.processInfo.arguments[0]
-            var env = process.environment ?? [:]
-            env["SWIFTTUI_SUB_PROCESS"] = "SWIFTTUI_SUB_PROCESS"
-            process.environment = env
-            
-//            Terminal.File.input.readabilityHandler = { fileHandle in
-//                Terminal.File.output.write(fileHandle.availableData)
-//                sharedQueue.message(with: .empty)
-//            }
-
-            process.standardInput = FileHandle.nullDevice
-            process.standardOutput = FileHandle.nullDevice
-            process.launch()
-            process.waitUntilExit()
-        case false:
-            viewController.draw()
-            RunLoop.main.run()
-        }
+    }
+    func inputLoop() {
+        let data = readLine()
+//        print(data)
+        viewController.draw()
+        inputLoop()
     }
 }

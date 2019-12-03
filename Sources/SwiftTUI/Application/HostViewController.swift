@@ -34,7 +34,7 @@ extension HostViewController: Drawable {
             }
             content += "\n"
         }
-        Terminal.File.output.write(content.data(using: .utf8)!)
+        Terminal.File.output.fileHandler.write(content.data(using: .utf8)!)
     }
     
     func windowSize() -> Size {

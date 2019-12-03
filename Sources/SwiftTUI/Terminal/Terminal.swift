@@ -31,24 +31,24 @@ extension Terminal {
 extension Terminal {
     struct File {
         // FIXME: Run on Xcode
-        static let input: FileHandle = {
+        typealias FileDescriptor = Int32
+        typealias FileType = (fileHandler: FileHandle, descriptor: FileDescriptor)
+        static let input: FileType = {
             switch Debug.EnvironmentVariables.isRunOnXcode {
             case false:
-                let fileDescriptor = Darwin.open("/dev/tty", Darwin.O_RDONLY)
-                let handler = FileHandle(fileDescriptor: fileDescriptor)
-                return handler
+                return output
             case true:
-                return FileHandle.standardInput
+                return (FileHandle.standardInput, STDIN_FILENO)
             }
         }()
-        static let output: FileHandle = {
+        static let output: FileType = {
             switch Debug.EnvironmentVariables.isRunOnXcode {
             case false:
                 let fileDescriptor = Darwin.open("/dev/tty", Darwin.O_WRONLY)
                 let handler = FileHandle(fileDescriptor: fileDescriptor)
-                return handler
+                return (handler, fileDescriptor)
             case true:
-                return FileHandle.standardOutput
+                return (FileHandle.standardOutput, STDOUT_FILENO)
             }
         }()
     }
