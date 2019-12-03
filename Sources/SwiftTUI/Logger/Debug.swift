@@ -19,16 +19,16 @@ struct DebugLogger {
         line: Int = #line,
         userInfo: CustomDebugStringConvertible? = nil
         ) {
-        calledCount += 1
-        if limit < calledCount {
-            fatalError("Limited logger count")
-        }
-        switch userInfo {
-        case nil:
-            print("\(DebugLogger.prefix) function: \(function), file: \(file), line: \(line)")
-        case let userInfo?:
-            print("\(DebugLogger.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)")
-        }
+//        calledCount += 1
+//        if limit < calledCount {
+//            fatalError("Limited logger count")
+//        }
+//        switch userInfo {
+//        case nil:
+//            print("\(DebugLogger.prefix) function: \(function), file: \(file), line: \(line)")
+//        case let userInfo?:
+//            print("\(DebugLogger.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)")
+//        }
     }
 }
 
