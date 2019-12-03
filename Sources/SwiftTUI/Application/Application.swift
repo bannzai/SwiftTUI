@@ -7,12 +7,19 @@
 
 import Foundation
 
-// Application is management SwiftTUI process with root view
-public class Application<Root: View> {
+fileprivate let sharedQueue = MainQueue()
+internal func message(with event: MainQueue.Event) {
+    sharedQueue.message(with: event)
+}
 
-    let viewController: HostViewController<Root>
+// Application is management SwiftTUI process with root view
+public final class Application<Root: View> {
+
+    internal let viewController: HostViewController<Root>
+
     public init(viewController: HostViewController<Root>) {
         self.viewController = viewController
+        sharedQueue.inject(drawable: self.viewController)
     }
     
     public func run() {

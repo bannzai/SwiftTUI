@@ -12,7 +12,10 @@ internal class MainQueue {
         internal let closure: () -> Void
     }
     
-    internal weak var drawable: Drawable?
+    private weak var drawable: Drawable?
+    internal func inject(drawable: Drawable) {
+        self.drawable = drawable
+    }
     
     func message(with event: Event) {
         DispatchQueue.main.async { [weak self] in
