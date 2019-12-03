@@ -7,14 +7,18 @@
 
 import Foundation
 
-public class HostViewController<Root: View> {
+internal protocol Drawable: class {
+    func draw()
+}
+
+public final class HostViewController<Root: View> {
     internal let root: Root
     public init(root: Root) {
         self.root = root
     }
 }
 
-internal extension HostViewController {
+extension HostViewController: Drawable {
     func draw() {
         let visitor = ViewVisitor()
         let result = visitor.visit(root)
