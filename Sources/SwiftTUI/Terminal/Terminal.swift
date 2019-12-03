@@ -32,19 +32,21 @@ extension Terminal {
     struct File {
         // FIXME: Run on Xcode
         static let input: FileHandle = {
-            switch ProcessInfo.processInfo.environment["DEBUG_ON_XCODE"] == "true" {
+            switch Debug.EnvironmentVariables.isRunOnXcode {
             case false:
                 let fileDescriptor = Darwin.open("/dev/tty", Darwin.O_RDONLY)
-                return FileHandle(fileDescriptor: fileDescriptor)
+                let handler = FileHandle(fileDescriptor: fileDescriptor)
+                return handler
             case true:
                 return FileHandle.standardInput
             }
         }()
         static let output: FileHandle = {
-            switch ProcessInfo.processInfo.environment["DEBUG_ON_XCODE"] == "true" {
+            switch Debug.EnvironmentVariables.isRunOnXcode {
             case false:
                 let fileDescriptor = Darwin.open("/dev/tty", Darwin.O_WRONLY)
-                return FileHandle(fileDescriptor: fileDescriptor)
+                let handler = FileHandle(fileDescriptor: fileDescriptor)
+                return handler
             case true:
                 return FileHandle.standardOutput
             }

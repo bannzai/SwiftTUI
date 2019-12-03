@@ -10,6 +10,7 @@ import Foundation
 internal class MainQueue {
     internal struct Event {
         internal let closure: () -> Void
+        static let empty: Event = Event(closure: {})
     }
     
     private weak var drawable: Drawable?

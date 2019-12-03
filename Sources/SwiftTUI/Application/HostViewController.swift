@@ -14,11 +14,9 @@ internal protocol Drawable: class {
 public final class HostViewController<Root: View> {
     internal let root: Root
     var flag: Bool = false
+    var count: Int = 0
     public init(root: Root) {
         self.root = root
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] (_) in
-            self?.draw()
-        }
     }
 }
 
@@ -30,8 +28,8 @@ extension HostViewController: Drawable {
         result = flag ? Terminal.colorize(color: Color.cyan.backgroundColor, content: result) : result
         let size = windowSize()
         var content = ""
-        for h in stride(from: 0, to: size.height!, by: 1) {
-            for w in stride(from: 0, to: size.width!, by: 1) {
+        for h in (0..<size.height!) {
+            for w in (0..<size.width!) {
                 content += "\((w + 1) + (h * size.width!))"
             }
             content += "\n"
