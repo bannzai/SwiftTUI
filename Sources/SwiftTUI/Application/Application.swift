@@ -27,7 +27,3 @@ public final class Application<Root: View> {
         RunLoop.main.run()
     }
 }
-
-extension View {
-    
-}
