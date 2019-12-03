@@ -22,8 +22,18 @@ public final class Application<Root: View> {
         sharedQueue.inject(drawable: self.viewController)
     }
     
+    var isAlreadyRun = false
+    
     public func run() {
+        if isAlreadyRun {
+            fatalError("Unexpected call this function of #Application.run")
+        }
+        isAlreadyRun = true
+        
         viewController.draw()
-        RunLoop.main.run()
+        Terminal.File.input.readabilityHandler = { fileHandle in
+            Terminal.File.output.write(fileHandle.availableData)
+        }
+        runLoop: while true { }
     }
 }

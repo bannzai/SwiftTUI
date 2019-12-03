@@ -31,13 +31,24 @@ extension Terminal {
 extension Terminal {
     struct File {
         // FIXME: Run on Xcode
+        static let base = Darwin.open("/dev/tty", Darwin.O_RDWR)
         static let input: FileHandle = {
-            let fileDescriptor = Darwin.open("/dev/tty", Darwin.O_RDONLY)
-            return FileHandle(fileDescriptor: fileDescriptor)
+            switch ProcessInfo.processInfo.environment["DEBUG_ON_XCODE"] == "true" {
+            case false:
+//                let fileDescriptor = Darwin.open("/dev/tty", Darwin.O_RDONLY)
+                return FileHandle(fileDescriptor: base)
+            case true:
+                return FileHandle.standardInput
+            }
         }()
         static let output: FileHandle = {
-            let fileDescriptor = Darwin.open("/dev/tty", Darwin.O_WRONLY)
-            return FileHandle(fileDescriptor: fileDescriptor)
+            switch ProcessInfo.processInfo.environment["DEBUG_ON_XCODE"] == "true" {
+            case false:
+//                let fileDescriptor = Darwin.open("/dev/tty", Darwin.O_WRONLY)
+                return FileHandle(fileDescriptor: base)
+            case true:
+                return FileHandle.standardOutput
+            }
         }()
     }
 }
