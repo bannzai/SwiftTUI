@@ -2,7 +2,9 @@ PROJECT?=SwiftTUI
 PACKAGE?=SwiftTUI-Package
 
 build:
-	swift build
+	# https://stackoverflow.com/questions/56251835/swift-package-manager-unable-to-compile-ncurses-installed-through-homebrew
+	export PKG_CONFIG_PATH="/usr/local/opt/ncurses/lib/pkgconfig"
+	swift build -Xcc -D__NCURSES_H 
 xcodeproj: 
 	swift package generate-xcodeproj
 clean:
