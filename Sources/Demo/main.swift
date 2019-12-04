@@ -1,6 +1,7 @@
 import SwiftTUI
 import Darwin.ncurses
 import Foundation
+import Darwin.ncurses
 
 let hostViewController = HostViewController(root:
     VStack {
