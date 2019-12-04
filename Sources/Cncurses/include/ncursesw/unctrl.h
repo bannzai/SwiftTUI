@@ -51,7 +51,9 @@
 extern "C" {
 #endif
 
+#ifndef __NCURSES_H
 #include "ncursesw/curses.h"
+#endif
 
 #undef unctrl
 NCURSES_EXPORT(NCURSES_CONST char *) unctrl (chtype);
