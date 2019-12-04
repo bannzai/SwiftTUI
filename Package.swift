@@ -9,8 +9,6 @@ let package = Package(
         .macOS(.v10_15),
     ],
     products: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
         .executable(name: "Demo", targets: ["Demo"]),
         .library(
           name: "SwiftTUI",
@@ -18,18 +16,17 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/wickwirew/Runtime.git", from: Version(2, 1, 1)),
-//        .package(url: "https://github.com/TangoGolfDigital/Curses.git", from: "0.0.51"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
+        .systemLibrary(name: "cncurses", pkgConfig: "ncurses"),
         .target(
             name: "Demo",
-            dependencies: ["SwiftTUI"]),
+            dependencies: ["SwiftTUI"]
+        ),
         .target(
             name: "SwiftTUI",
-//            dependencies: ["Runtime", "Curses"]),
-            dependencies: ["Runtime"]),
+            dependencies: ["Runtime", "cncurses"]
+        ),
         .testTarget(
             name: "SwiftTUITests",
             dependencies: ["SwiftTUI", "Runtime"]),
