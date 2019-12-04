@@ -17,15 +17,15 @@ internal func message(with event: MainQueue.Event) {
 // Application is management SwiftTUI process with root view
 public final class Application<Root: View> {
 
+    internal typealias Window = OpaquePointer
+    internal var window: UnsafeMutablePointer<cncurses.WINDOW>!
     internal let viewController: HostViewController<Root>
-
     public init(viewController: HostViewController<Root>) {
         self.viewController = viewController
         sharedQueue.inject(drawable: self.viewController)
     }
     
-    var isAlreadyRun = false
-    
+    internal var isAlreadyRun = false
     public func run() {
         if isAlreadyRun {
             fatalError("Unexpected call this function of #Application.run")
@@ -33,7 +33,12 @@ public final class Application<Root: View> {
         isAlreadyRun = true
         debugLogger.debug()
         
+        window = initscr()
+        cncurses.raw ()
+        cncurses.noecho ()
+
         cncurses.noecho()
+        
         inputLoop()
         RunLoop.main.run()
     }
