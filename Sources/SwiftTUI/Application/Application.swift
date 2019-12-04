@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Darwin
+import Darwin.ncurses
 
 fileprivate let sharedQueue = MainQueue()
 internal func message(with event: MainQueue.Event) {
@@ -32,38 +32,27 @@ public final class Application<Root: View> {
         isAlreadyRun = true
         debugLogger.debug()
         
-        
-        switch ProcessInfo.processInfo.environment["SWIFTTUI_SUB_PROCESS"] == nil {
-        case true:
-            let process = Process()
-            process.launchPath = ProcessInfo.processInfo.arguments[0]
-            var env = process.environment ?? [:]
-            env["SWIFTTUI_SUB_PROCESS"] = "SWIFTTUI_SUB_PROCESS"
-            process.environment = env
-            
-            //            Terminal.File.input.readabilityHandler = { fileHandle in
-            //                Terminal.File.output.write(fileHandle.availableData)
-            //                sharedQueue.message(with: .empty)
-            //            }
-            
-            freopen("/dev/null".cString(using: .utf8), "w", stdin)
-            freopen("/dev/null".cString(using: .utf8), "w", stdout)
-            process.standardInput = FileHandle.standardInput
-            process.standardOutput = FileHandle.standardOutput
-            process.launch()
-            process.waitUntilExit()
-        case false:
-            break
-        }
+
+
+        var count: Int32 = 0
+        Terminal.File.output.fileHandler.write(
+            "ioctl: \(ioctl(Terminal.File.input.descriptor, UInt(TIOCGETA), &count))\n".data(using: .utf8)!
+        )
+        Terminal.File.output.fileHandler.write("TIOCGETA: \(TIOCGETA)\n".data(using: .utf8)!)
+        Terminal.File.output.fileHandler.write("count: \(count)\n".data(using: .utf8)!)
 
         freopen("/dev/null".cString(using: .utf8), "w", stdin)
         freopen("/dev/null".cString(using: .utf8), "w", stdout)
+        FileHandle.standardInput.readabilityHandler = { _ in
+            return
+        }
+        Darwin.noecho()
         inputLoop()
         RunLoop.main.run()
     }
     func inputLoop() {
         let data = readLine()
         print(data)
-        print(data)
     }
 }
+

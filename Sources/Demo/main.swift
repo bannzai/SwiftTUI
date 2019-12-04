@@ -1,4 +1,5 @@
 import SwiftTUI
+import Darwin.ncurses
 import Foundation
 
 let hostViewController = HostViewController(root:
