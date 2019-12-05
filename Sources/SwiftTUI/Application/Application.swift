@@ -14,6 +14,12 @@ internal func message(with event: MainQueue.Event) {
     sharedQueue.message(with: event)
 }
 
+fileprivate typealias GetWideCharaterFunction = @convention(c) (UnsafeMutablePointer<Int32>) -> Int
+fileprivate let rtld_default = UnsafeMutableRawPointer(bitPattern: -2)
+fileprivate var get_wch: GetWideCharaterFunction = {
+    let get_wch_ptr = dlsym(rtld_default, "get_wch")
+    return unsafeBitCast(get_wch_ptr, to: GetWideCharaterFunction.self)
+}()
 // Application is management SwiftTUI process with root view
 public final class Application<Root: View> {
 
@@ -33,9 +39,7 @@ public final class Application<Root: View> {
     
     
     // reference: https://github.com/migueldeicaza/TermKit/blob/14bc403567e8bd4d13f01ad293797725d306b811/TermKit/Drivers/CursesDriver.swift#L67
-    typealias get_wch_def = @convention(c) (UnsafeMutablePointer<Int32>) -> Int
     typealias add_wch_def = @convention(c) (UnsafeMutablePointer<m_cchar_t>) -> CInt
-    var get_wch_fn : get_wch_def? = nil
     var add_wch_fn : add_wch_def? = nil
     
     internal var isAlreadyRun = false
@@ -57,11 +61,7 @@ public final class Application<Root: View> {
         clear();
         setupInputHandler()
         
-        let rtld_default = UnsafeMutableRawPointer(bitPattern: -2)
-        
-        let get_wch_ptr = dlsym(rtld_default, "get_wch")
-        get_wch_fn = unsafeBitCast(get_wch_ptr, to: get_wch_def.self)
-        
+
         let add_wch_ptr = dlsym(rtld_default, "add_wch")
         add_wch_fn = unsafeBitCast(add_wch_ptr, to: add_wch_def.self)
 
@@ -71,14 +71,16 @@ public final class Application<Root: View> {
     
     func setupInputHandler() {
         FileHandle.standardInput.readabilityHandler = { _ in
-            let value = cncurses.getchar()
-            if value == 27 {
-                debugLogger.debug(userInfo: "value: \(value)")
-                timeout(100)
-                debugLogger.debug(userInfo: "value: \(cncurses.getchar())")
-            } else {
-                debugLogger.debug(userInfo: "value: \(value)")
-            }
+            var value: Int32 = 0
+            let status = get_wch(&value)
+            debugLogger.debug(userInfo: "status is \(status), value is \(value)")
+//            if value == 27 {
+//                debugLogger.debug(userInfo: "value: \(value)")
+//                timeout(300)
+//                debugLogger.debug(userInfo: "value: \(cncurses.getchar())")
+//            } else {
+//                debugLogger.debug(userInfo: "value: \(value)")
+//            }
             fatalError("value: \(value)")
         }
     }
