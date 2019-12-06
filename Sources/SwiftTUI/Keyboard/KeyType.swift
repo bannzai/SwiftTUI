@@ -188,5 +188,13 @@ extension KeyType {
         case X
         case Y
         case Z
+        
+        public var isSmall: Bool {
+            rawValue > Alphameric.a.rawValue
+        }
+        
+        public var isLarge: Bool {
+            !isSmall
+        }
     }
 }
