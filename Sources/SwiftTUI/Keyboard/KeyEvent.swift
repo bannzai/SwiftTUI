@@ -1,0 +1,35 @@
+//
+//  KeyEvent.swift
+//  SwiftTUI
+//
+//  Created by Yudai.Hirose on 2019/12/07.
+//
+
+import Foundation
+
+public struct KeyEvent {
+    internal let keyType: KeyType
+    
+    public init(keyType: KeyType) {
+        self.keyType = keyType
+    }
+}
+
+public extension KeyEvent {
+    var isControl: Bool {
+        switch keyType {
+        case .ctrl:
+            return true
+        case .space, .alt, .alphameric, .numeric, .function:
+            return false
+        }
+    }
+    var isAlt: Bool {
+        switch keyType {
+        case .alt:
+            return true
+        case .space, .ctrl, .alphameric, .numeric, .function:
+            return false
+        }
+    }
+}
