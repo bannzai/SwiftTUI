@@ -35,8 +35,10 @@ public enum KeyType {
             switch (Alphameric(rawValue: keyname.pointee), Numeric(rawValue: keyname.pointee)) {
             case (let alphameric?, nil):
                 self = .alt(alphameric)
+                return
             case (nil, let numeric?):
                 self = .alt(numeric)
+                return
             case (nil, nil), (_?, _?):
                 assertionFailure("unexpected pattern for special key \(specialKey) and value of \(keyname.pointee)")
                 break
@@ -48,8 +50,10 @@ public enum KeyType {
             switch (Alphameric(rawValue: keyname.pointee), Numeric(rawValue: keyname.pointee)) {
             case (let alphameric?, nil):
                 self = .ctrl(alphameric)
+                return
             case (nil, let numeric?):
                 self = .ctrl(numeric)
+                return
             case (nil, nil), (_?, _?):
                 assertionFailure("unexpected pattern for special key \(specialKey) and value of \(keyname.pointee)")
                 break
