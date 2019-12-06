@@ -20,7 +20,7 @@ public extension KeyEvent {
         switch keyType {
         case .ctrl:
             return true
-        case .space, .alt, .alphameric, .numeric, .function:
+        case _:
             return false
         }
     }
@@ -28,7 +28,7 @@ public extension KeyEvent {
         switch keyType {
         case .alt:
             return true
-        case .space, .ctrl, .alphameric, .numeric, .function:
+        case _:
             return false
         }
     }
