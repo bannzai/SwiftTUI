@@ -18,6 +18,7 @@ public enum KeyType {
     case alt(AltKeyPairType)
     case ctrl(CtrlKeyPairType)
     case function(Function)
+    case direction(Direction)
 
     public init(keyname: UnsafePointer<CChar>) {
         switch keyname.pointee {
@@ -60,12 +61,34 @@ public enum KeyType {
             }
         }
         
-        if let functionKey = Function.init(rawValue: keyname.pointee) {
+        if let functionKey = Function(rawValue: keyname.pointee) {
             self = .function(functionKey)
+            return
+        }
+        
+        if let direction = Direction(rawValue: keyname.pointee) {
+            self = .direction(direction)
             return
         }
 
         fatalError("unexpected KeyType of \(keyname.pointee), special key value for \(specialKey)")
+    }
+}
+
+// MARK: - Direction
+extension KeyType {
+    public enum Direction: Int8, CaseIterable {
+        case down
+        case up
+        case left
+        case right
+        
+        public init?(rawValue: Int8) {
+            guard let direction = Direction.allCases.enumerated().first(where: { KEY_LEFT + Int32($0.offset) == rawValue })?.element else {
+                return nil
+            }
+            self = direction
+        }
     }
 }
 
