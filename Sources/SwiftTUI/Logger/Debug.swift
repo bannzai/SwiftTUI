@@ -7,6 +7,13 @@
 
 import Foundation
 
+internal func createFileIfNotExists(path: String) {
+    if FileManager.default.fileExists(atPath: path) {
+        return
+    }
+    FileManager.default.createFile(atPath: path, contents: nil, attributes: nil)
+}
+
 // NOTE: prevent infite loop
 fileprivate var limit = 100
 fileprivate var calledCount = 0
@@ -20,24 +27,35 @@ internal struct Debug {
         private var loggerPath: URL {
             loggerBasePath.appendingPathComponent("swifttui.logger.d").appendingPathComponent("swifttui.debug.log")
         }
-        func debug(
+        
+        internal var loggerFile: FileHandle {
+            try! FileHandle(forWritingTo: loggerPath)
+        }
+        
+        internal func debug(
             function: String = #function,
             file: String = #file,
             line: Int = #line,
             userInfo: CustomDebugStringConvertible? = nil
         ) {
-                    calledCount += 1
-                    if limit < calledCount {
-                        fatalError("Limited logger count")
-                    }
-                    switch userInfo {
-                    case nil:
-                        try! "\(Debug.Logger.prefix) function: \(function), file: \(file), line: \(line)"
-                            .write(to: loggerPath, atomically: true, encoding: .utf8)
-                    case let userInfo?:
-                        try! "\(Debug.Logger.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)"
-                            .write(to: loggerPath, atomically: true, encoding: .utf8)
-                    }
+            calledCount += 1
+            if limit < calledCount {
+                fatalError("Limited logger count")
+            }
+            
+            func buildContent() -> String {
+                switch userInfo {
+                case nil:
+                    return "\(Debug.Logger.prefix) function: \(function), file: \(file), line: \(line)"
+                case let userInfo?:
+                    return "\(Debug.Logger.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)"
+                }
+            }
+            
+            createFileIfNotExists(path: loggerPath.absoluteString)
+            loggerFile.seekToEndOfFile()
+            loggerFile.write(buildContent().data(using: .utf8)!)
+            try! loggerFile.close()
         }
     }
     
