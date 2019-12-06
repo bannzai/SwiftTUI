@@ -13,7 +13,13 @@ fileprivate var calledCount = 0
 internal struct Debug {
     internal struct Logger {
         static let prefix = "DEBUG: "
-        
+
+        private var loggerBasePath: URL {
+            ProcessInfo.processInfo.environment["DEBUG_LOGGER_PATH"].flatMap { URL(string: $0) } ?? FileManager.default.homeDirectoryForCurrentUser
+        }
+        private var loggerPath: URL {
+            loggerBasePath.appendingPathComponent("swifttui.logger.d").appendingPathComponent("swifttui.debug.log")
+        }
         func debug(
             function: String = #function,
             file: String = #file,
@@ -24,12 +30,14 @@ internal struct Debug {
                     if limit < calledCount {
                         fatalError("Limited logger count")
                     }
-            //        switch userInfo {
-            //        case nil:
-            //            print("\(DebugLogger.prefix) function: \(function), file: \(file), line: \(line)")
-            //        case let userInfo?:
-            //            print("\(DebugLogger.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)")
-            //        }
+                    switch userInfo {
+                    case nil:
+                        try! "\(Debug.Logger.prefix) function: \(function), file: \(file), line: \(line)"
+                            .write(to: loggerPath, atomically: true, encoding: .utf8)
+                    case let userInfo?:
+                        try! "\(Debug.Logger.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)"
+                            .write(to: loggerPath, atomically: true, encoding: .utf8)
+                    }
         }
     }
     

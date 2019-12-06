@@ -71,9 +71,26 @@ public final class Application<Root: View> {
     
     func setupInputHandler() {
         FileHandle.standardInput.readabilityHandler = { _ in
-            var value: Int32 = 0
-            let status = get_wch(&value)
-            debugLogger.debug(userInfo: "status is \(status), value is \(value)")
+            var value: Int32 = cncurses.wgetch(self.standardScreen)
+            debugLogger.debug(userInfo: "BEGIN: value is \(value)")
+            defer { fatalError("value: \(value)") }
+            if value == KEY_LEFT {
+                return debugLogger.debug(userInfo: "left input")
+            }
+            if value == 27 {
+                return debugLogger.debug(userInfo: "27 is ESC")
+            }
+            // NOTE: Can not call this condition. Maybe F1 key is EOP. this is bug. check infocmp -L
+            if value == KEY_F0 + 1 {
+                return debugLogger.debug(userInfo: "F1 input")
+            }
+            if value == KEY_F0 + 2 {
+                return debugLogger.debug(userInfo: "F2 input")
+            }
+            if value == KEY_F0 + 12 {
+                return debugLogger.debug(userInfo: "F12 input")
+            }
+            
 //            if value == 27 {
 //                debugLogger.debug(userInfo: "value: \(value)")
 //                timeout(300)
@@ -81,7 +98,6 @@ public final class Application<Root: View> {
 //            } else {
 //                debugLogger.debug(userInfo: "value: \(value)")
 //            }
-            fatalError("value: \(value)")
         }
     }
 }
