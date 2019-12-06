@@ -84,7 +84,7 @@ extension KeyType {
         case right
         
         public init?(rawValue: Int8) {
-            guard let direction = Direction.allCases.enumerated().first(where: { KEY_LEFT + Int32($0.offset) == rawValue })?.element else {
+            guard let direction = Direction.allCases.enumerated().first(where: { rawValue == KEY_LEFT + Int32($0.offset) })?.element else {
                 return nil
             }
             self = direction
