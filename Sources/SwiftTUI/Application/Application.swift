@@ -37,7 +37,6 @@ public final class Application<Root: View> {
         sharedQueue.inject(drawable: self.viewController)
     }
     
-    
     // reference: https://github.com/migueldeicaza/TermKit/blob/14bc403567e8bd4d13f01ad293797725d306b811/TermKit/Drivers/CursesDriver.swift#L67
     typealias add_wch_def = @convention(c) (UnsafeMutablePointer<m_cchar_t>) -> CInt
     var add_wch_fn : add_wch_def? = nil
@@ -64,15 +63,15 @@ public final class Application<Root: View> {
 
         let add_wch_ptr = dlsym(rtld_default, "add_wch")
         add_wch_fn = unsafeBitCast(add_wch_ptr, to: add_wch_def.self)
-
-        RunLoop.main.run()
         
+        RunLoop.main.run()
     }
     
     func setupInputHandler() {
         FileHandle.standardInput.readabilityHandler = { _ in
-            var value: Int32 = cncurses.wgetch(self.standardScreen)
-            debugLogger.debug(userInfo: "BEGIN: value is \(value)")
+            let value: Int32 = cncurses.getch()
+            let bytes = String.init(cString: keyname(value))
+            debugLogger.debug(userInfo: "BEGIN: value is \(value) and keyname is \(bytes)")
             defer { fatalError("value: \(value)") }
             if value == KEY_LEFT {
                 return debugLogger.debug(userInfo: "left input")
@@ -80,7 +79,6 @@ public final class Application<Root: View> {
             if value == 27 {
                 return debugLogger.debug(userInfo: "27 is ESC")
             }
-            // NOTE: Can not call this condition. Maybe F1 key is EOP. this is bug. check infocmp -L
             if value == KEY_F0 + 1 {
                 return debugLogger.debug(userInfo: "F1 input")
             }
