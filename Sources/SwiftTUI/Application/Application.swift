@@ -68,14 +68,6 @@ public final class Application<Root: View> {
             case _:
                 break
             }
-
-//            if value == 27 {
-//                debugLogger.debug(userInfo: "value: \(value)")
-//                timeout(300)
-//                debugLogger.debug(userInfo: "value: \(cncurses.getchar())")
-//            } else {
-//                debugLogger.debug(userInfo: "value: \(value)")
-//            }
         }
     }
 }
