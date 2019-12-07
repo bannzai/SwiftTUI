@@ -15,6 +15,8 @@ public class Window {
     // NOTE: Keep screen
     internal var window: _Widnow!
     
+    weak var screen: Screen?
+    
     internal init() {
         window = initscr()
     }
@@ -65,5 +67,16 @@ internal extension Window {
             endwin()
         }
         delscreen(OpaquePointer(window))
+    }
+    
+    func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
+        screen?.cursor.x = x
+        screen?.cursor.y = y
+        cncurses.move(Int32(x), Int32(y))
+    }
+    func move(x: PhysicalDistance, y: PhysicalDistance) {
+        let _x = (screen?.cursor.x ?? 0) + x
+        let _y = (screen?.cursor.y ?? 0) + y
+        moveTo(x: _x, y: _y)
     }
 }

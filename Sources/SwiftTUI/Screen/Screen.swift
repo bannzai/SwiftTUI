@@ -15,6 +15,9 @@ public class Screen {
 
     // NOTE: access stdscr. Maybe this is root screen.
     internal var keyWindow: Window { windows.first(where: { $0.window == stdscr })! }
+    
+    // NOTE: Cursor is shared on screen. Not `Window`.
+    internal var cursor: Cursor = Cursor()
 }
 
 private extension Screen {
@@ -30,6 +33,7 @@ internal extension Screen {
         }
         let window = Window()
         window.setup()
+        window.screen = self
         append(window: window)
     }
     func dispose() {
