@@ -17,7 +17,7 @@ public class Screen {
     internal var keyWindow: Window { windows.first(where: { $0.window == stdscr })! }
     
     // NOTE: Cursor is shared on screen. Not `Window`.
-    internal var cursor: Cursor = Cursor()
+    internal lazy var cursor: Cursor = Cursor(screen: self)
 }
 
 private extension Screen {

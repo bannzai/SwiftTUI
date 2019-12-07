@@ -61,7 +61,7 @@ public final class Application<Root: View> {
             case .alphameric(let alphameric):
                 switch alphameric {
                 case .a:
-                    cncurses.move(10, 10)
+                    self.screen.cursor.move(x: 10, y: 10)
                 case _:
                     break
                 }
