@@ -21,11 +21,11 @@ internal struct Debug {
     internal struct Logger {
         static let prefix = "DEBUG: "
 
-        private var loggerBasePath: URL {
-            ProcessInfo.processInfo.environment["DEBUG_LOGGER_PATH"].flatMap { URL(string: $0) } ?? FileManager.default.homeDirectoryForCurrentUser
-        }
         private var loggerPath: URL {
-            loggerBasePath.appendingPathComponent("swifttui.logger.d").appendingPathComponent("swifttui.debug.log")
+            if let path = ProcessInfo.processInfo.environment["DEBUG_LOGGER_PATH"].flatMap({ URL(string: $0) }) {
+                return path
+            }
+            return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("swifttui.logger.d").appendingPathComponent("swifttui.debug.log")
         }
 
         // NOTE: This project sometimes happen infinite loop.
