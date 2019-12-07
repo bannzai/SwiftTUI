@@ -48,6 +48,9 @@ public final class Application<Root: View> {
         }
         isAlreadyRun = true
         debugLogger.debug()
+        debugLogger.debug()
+        debugLogger.debug()
+        debugLogger.debug()
         
         initScreen()
         defer { disposeScreen() }
