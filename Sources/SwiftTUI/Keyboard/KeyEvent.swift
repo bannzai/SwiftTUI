@@ -24,12 +24,4 @@ public extension KeyEvent {
             return false
         }
     }
-    var isAlt: Bool {
-        switch keyType {
-        case .alt:
-            return true
-        case _:
-            return false
-        }
-    }
 }

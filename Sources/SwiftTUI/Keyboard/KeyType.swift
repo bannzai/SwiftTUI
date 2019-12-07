@@ -116,7 +116,7 @@ extension KeyType {
 
 // MARK: - Numeric
 extension KeyType {
-    public enum Numeric: Int8, AltKeyPairType, CtrlKeyPairType {
+    public enum Numeric: Int8, CtrlKeyPairType {
         case zero = 48
         case one
         case two
@@ -132,7 +132,7 @@ extension KeyType {
 
 // MARK: - Alphameric
 extension KeyType {
-    public enum Alphameric: Int8, AltKeyPairType, CtrlKeyPairType {
+    public enum Alphameric: Int8, CtrlKeyPairType {
         case a = 97
         case b
         case c
