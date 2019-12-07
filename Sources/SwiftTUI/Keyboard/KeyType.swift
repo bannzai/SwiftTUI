@@ -8,7 +8,6 @@
 import Foundation
 import cncurses
 
-public protocol AltKeyPairType {}
 public protocol CtrlKeyPairType {}
 
 public enum KeyType {
@@ -16,10 +15,14 @@ public enum KeyType {
     case esc
     case alphameric(Alphameric)
     case numeric(Numeric)
-    case alt(AltKeyPairType)
     case ctrl(CtrlKeyPairType)
     case function(Function)
     case direction(Direction)
+    
+    // NOTE: e.g) M-E, M-A ...
+    // FIXME: Alter key unsupported. Because it is very complex key pair...
+    // I will adapt alter key pattern later.
+    // case alt(AlterKeyPairType)
 
     public init(keyname: UnsafePointer<CChar>) {
         switch keyname.pointee {
@@ -35,21 +38,6 @@ public enum KeyType {
         
         let specialKey = String.init(cString: keyname)
         
-        // NOTE: e.g) M-E, M-A ...
-        if specialKey.hasPrefix("M-") {
-            switch (Alphameric(rawValue: keyname.pointee), Numeric(rawValue: keyname.pointee)) {
-            case (let alphameric?, nil):
-                self = .alt(alphameric)
-                return
-            case (nil, let numeric?):
-                self = .alt(numeric)
-                return
-            case (nil, nil), (_?, _?):
-                assertionFailure("unexpected pattern for special key \(specialKey) and value of \(keyname.pointee)")
-                break
-            }
-        }
-        
         // NOTE: e.g) ^I,^A ...
         if specialKey.hasPrefix("^") {
             switch (Alphameric(rawValue: keyname.pointee), Numeric(rawValue: keyname.pointee)) {
@@ -60,7 +48,7 @@ public enum KeyType {
                 self = .ctrl(numeric)
                 return
             case (nil, nil), (_?, _?):
-                assertionFailure("unexpected pattern for special key \(specialKey) and value of \(keyname.pointee)")
+                assertionFailure("unexpected pattern for control key \(specialKey) and value of \(keyname.pointee)")
                 break
             }
         }
