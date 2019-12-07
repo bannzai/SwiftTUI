@@ -74,6 +74,11 @@ public enum KeyType {
             self = .direction(direction)
             return
         }
+        
+        if let alphameric = Alphameric(rawValue: keyname.pointee) {
+            self = .alphameric(alphameric)
+            return
+        }
 
         fatalError("unexpected KeyType of \(keyname.pointee), special key value for \(specialKey)")
     }
@@ -199,6 +204,10 @@ extension KeyType {
         
         public var isLarge: Bool {
             !isSmall
+        }
+        
+        public var alphabet: String {
+            return "\(self)"
         }
     }
 }

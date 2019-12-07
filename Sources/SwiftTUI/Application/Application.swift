@@ -73,25 +73,20 @@ public final class Application<Root: View> {
     func setupInputHandler() {
         FileHandle.standardInput.readabilityHandler = { _ in
             let value: Int32 = cncurses.getch()
-            let bytes = String.init(cString: keyname(value))
-            debugLogger.debug(userInfo: "BEGIN: value is \(value) and keyname is \(bytes)")
-            defer { fatalError("value: \(value)") }
-            if value == KEY_LEFT {
-                return debugLogger.debug(userInfo: "left input")
+            debugLogger.debug(userInfo: "key typed value is \(value)")
+            let keyType = KeyType(keyname: keyname(value))
+            switch keyType {
+            case .alphameric(let alphameric):
+                switch alphameric {
+                case .a:
+                    cncurses.move(10, 10)
+                case _:
+                    break
+                }
+            case _:
+                break
             }
-            if value == 27 {
-                return debugLogger.debug(userInfo: "27 is ESC")
-            }
-            if value == KEY_F0 + 1 {
-                return debugLogger.debug(userInfo: "F1 input")
-            }
-            if value == KEY_F0 + 2 {
-                return debugLogger.debug(userInfo: "F2 input")
-            }
-            if value == KEY_F0 + 12 {
-                return debugLogger.debug(userInfo: "F12 input")
-            }
-            
+
 //            if value == 27 {
 //                debugLogger.debug(userInfo: "value: \(value)")
 //                timeout(300)
