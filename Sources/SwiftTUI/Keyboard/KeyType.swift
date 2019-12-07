@@ -13,6 +13,7 @@ public protocol CtrlKeyPairType {}
 
 public enum KeyType {
     case space
+    case esc
     case alphameric(Alphameric)
     case numeric(Numeric)
     case alt(AltKeyPairType)
@@ -24,6 +25,9 @@ public enum KeyType {
         switch keyname.pointee {
         case 0:
             self = .space
+            return
+        case 27:
+            self = .esc
             return
         case _:
             break
