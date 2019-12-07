@@ -9,8 +9,7 @@ import Foundation
 import cncurses
 
 public class Screen {
-    public static let shared = Screen()
-    private init() { }
+    internal init() { }
     
     internal var windows: [Window] = []
 

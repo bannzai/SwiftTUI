@@ -21,9 +21,11 @@ fileprivate var get_wch: GetWideCharaterFunction = {
 }()
 // Application is management SwiftTUI process with root view
 public final class Application<Root: View> {
+    internal let screen: Screen
     internal let viewController: HostViewController<Root>
     public init(viewController: HostViewController<Root>) {
         self.viewController = viewController
+        self.screen = Screen()
         sharedQueue.inject(drawable: self.viewController)
     }
     
@@ -39,9 +41,9 @@ public final class Application<Root: View> {
         isAlreadyRun = true
 
         defer {
-            Screen.shared.dispose()
+            screen.dispose()
         }
-        Screen.shared.setup()
+        screen.setup()
         setupInputHandler()
 
         let add_wch_ptr = dlsym(rtld_default, "add_wch")
