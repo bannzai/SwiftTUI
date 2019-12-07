@@ -7,7 +7,11 @@ build:
 	swift build -Xcc -D__NCURSES_H 
 xcodeproj: 
 	swift package generate-xcodeproj
-clean:
+
+remove-log:
+	rm -f $(DEBUG_LOGGER_PATH)
+	
+clean: remove-log
 	rm -rf $(PROJECT).xcodeproj
 dry-run: build
 	.build/x86_64-apple-macosx/debug/Demo
