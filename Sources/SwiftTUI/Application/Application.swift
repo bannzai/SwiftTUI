@@ -55,6 +55,8 @@ public final class Application<Root: View> {
             debugLogger.debug(userInfo: "key typed value is \(value)")
             let keyType = KeyType(keyname: keyname(value))
             switch keyType {
+            case .ctrl(let ctrlKey):
+                debugLogger.debug(userInfo: "combination key of ctrl is \(ctrlKey.combinationKey)")
             case .alphameric(let alphameric):
                 switch alphameric {
                 case .a:
