@@ -19,6 +19,7 @@ fileprivate var get_wch: GetWideCharaterFunction = {
     let get_wch_ptr = dlsym(rtld_default, "get_wch")
     return unsafeBitCast(get_wch_ptr, to: GetWideCharaterFunction.self)
 }()
+
 // Application is management SwiftTUI process with root view
 public final class Application<Root: View> {
     internal let screen: Screen
