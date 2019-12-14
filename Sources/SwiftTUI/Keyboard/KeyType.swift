@@ -9,7 +9,7 @@ import Foundation
 import cncurses
 
 public typealias KeyTypeOffset = Int32
-public struct CtrlKeyPairType {
+public struct CtrlKey {
     let originalKey: String
     public var combinationKey: String {
         var originalKey = self.originalKey
@@ -23,7 +23,7 @@ public enum KeyType {
     case esc
     case alphameric(Alphameric)
     case numeric(Numeric)
-    case ctrl(CtrlKeyPairType)
+    case ctrl(CtrlKey)
     case function(Function)
     case direction(Direction)
     
