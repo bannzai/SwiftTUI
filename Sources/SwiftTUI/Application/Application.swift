@@ -30,10 +30,6 @@ public final class Application<Root: View> {
         sharedQueue.inject(drawable: self.viewController)
     }
     
-    // reference: https://github.com/migueldeicaza/TermKit/blob/14bc403567e8bd4d13f01ad293797725d306b811/TermKit/Drivers/CursesDriver.swift#L67
-    typealias add_wch_def = @convention(c) (UnsafeMutablePointer<m_cchar_t>) -> CInt
-    var add_wch_fn : add_wch_def? = nil
-    
     internal var isAlreadyRun = false
     public func run() {
         if isAlreadyRun {
