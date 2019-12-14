@@ -13,13 +13,6 @@ internal func message(with event: MainQueue.Event) {
     sharedQueue.message(with: event)
 }
 
-fileprivate typealias GetWideCharaterFunction = @convention(c) (UnsafeMutablePointer<Int32>) -> Int
-fileprivate let rtld_default = UnsafeMutableRawPointer(bitPattern: -2)
-fileprivate var get_wch: GetWideCharaterFunction = {
-    let get_wch_ptr = dlsym(rtld_default, "get_wch")
-    return unsafeBitCast(get_wch_ptr, to: GetWideCharaterFunction.self)
-}()
-
 // Application is management SwiftTUI process with root view
 public final class Application<Root: View> {
     internal let screen: Screen
@@ -43,9 +36,6 @@ public final class Application<Root: View> {
         screen.setup()
         setupInputHandler()
 
-        let add_wch_ptr = dlsym(rtld_default, "add_wch")
-        add_wch_fn = unsafeBitCast(add_wch_ptr, to: add_wch_def.self)
-        
         RunLoop.main.run()
     }
     
