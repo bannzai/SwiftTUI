@@ -9,8 +9,13 @@ import Foundation
 import cncurses
 
 public typealias KeyTypeOffset = Int32
-public protocol CtrlKeyPairType {
-    static func ctrl(value: KeyTypeOffset) -> Self?
+public struct CtrlKeyPairType {
+    let originalKey: String
+    public var combinationKey: String {
+        var originalKey = self.originalKey
+        originalKey.remove(at: originalKey.firstIndex(of: "^")!)
+        return originalKey
+    }
 }
 
 public enum KeyType {
@@ -43,17 +48,8 @@ public enum KeyType {
         
         // NOTE: e.g) ^I,^A ...
         if specialKey.hasPrefix("^") {
-            switch (Alphameric.ctrl(value: KeyTypeOffset(keyname.pointee)), Numeric.ctrl(value: KeyTypeOffset(keyname.pointee))) {
-            case (let alphameric?, nil):
-                self = .ctrl(alphameric)
-                return
-            case (nil, let numeric?):
-                self = .ctrl(numeric)
-                return
-            case (nil, nil), (_?, _?):
-                assertionFailure("unexpected pattern for control key \(specialKey) and value of \(keyname.pointee)")
-                break
-            }
+            self = .ctrl(.init(originalKey: specialKey))
+            return
         }
         
         if let functionKey = Function(rawValue: keyname.pointee) {
@@ -119,7 +115,7 @@ extension KeyType {
 
 // MARK: - Numeric
 extension KeyType {
-    public enum Numeric: Int8, CtrlKeyPairType, CaseIterable {
+    public enum Numeric: Int8, CaseIterable {
         case zero = 48
         case one
         case two
@@ -130,17 +126,12 @@ extension KeyType {
         case seven
         case eight
         case nine
-        
-        private static let ctrlNumericStart: KeyTypeOffset = 0
-        public static func ctrl(value: KeyTypeOffset) -> KeyType.Numeric? {
-            Numeric.allCases.enumerated().first { KeyTypeOffset($0.offset) + ctrlNumericStart == value }?.element
-        }
     }
 }
 
 // MARK: - Alphameric
 extension KeyType {
-    public enum Alphameric: Int8, CtrlKeyPairType, CaseIterable {
+    public enum Alphameric: Int8, CaseIterable {
         case a = 97
         case b
         case c
@@ -196,10 +187,6 @@ extension KeyType {
         
         internal static var smallAlphabets: [Alphameric] {
             Alphameric.allCases.filter { $0.isSmall }
-        }
-        private static let ctrlSmallAlphabetStart: KeyTypeOffset = 0
-        public static func ctrl(value: KeyTypeOffset) -> Alphameric? {
-            smallAlphabets.enumerated().first { KeyTypeOffset($0.offset) + ctrlSmallAlphabetStart == value }?.element
         }
         
         public var isSmall: Bool {
