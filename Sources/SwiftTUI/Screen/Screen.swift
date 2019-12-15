@@ -41,6 +41,7 @@ internal extension Screen {
         let window = Window(window: cncurses.initscr(), frame: bounds)
         window.setup()
         window.screen = self
+        cncurses.refresh()
         append(window: window)
     }
     func dispose() {
