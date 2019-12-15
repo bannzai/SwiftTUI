@@ -34,7 +34,11 @@ public struct Origin {
 public struct Rect {
     public let origin: Origin
     public let size: Size
-    public init(origin: Origin = .zero, size: Size = .zero) {
+    public init() {
+        self.origin = .zero
+        self.size = .zero
+    }
+    public init(origin: Origin, size: Size) {
         self.origin = origin
         self.size = size
     }
