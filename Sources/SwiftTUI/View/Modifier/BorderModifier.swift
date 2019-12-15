@@ -9,10 +9,10 @@ import Foundation
 
 @frozen public struct _BorderModifier<Target>: ViewModifier where Target: View {
     public let target: Target
-    public let color: Color
-    @inlinable public init(target: Target, color: Color) {
+    public let border: Border
+    @inlinable public init(target: Target, border: Border) {
         self.target = target
-        self.color = color
+        self.border = border
     }
     public typealias Body = Swift.Never
 }
@@ -23,22 +23,22 @@ extension _BorderModifier: Swift.Equatable where Target: Swift.Equatable {
     }
 }
 extension View {
-    @inlinable public func border<S>(color: Color) -> some View {
-        modifier(_BorderModifier(target: self, color: color))
+    @inlinable public func border<S>(color: Color, direction: Border.DirectionType = .default) -> some View {
+        modifier(_BorderModifier(target: self, border: Border(color: color, directionType: direction)))
     }
 }
 
 extension _BorderModifier: _ViewModifier {
     static var _keyPaths: Set<PartialKeyPath<_ViewBaseProperties>> {
-        [\_ViewBaseProperties.border.color]
+        [\_ViewBaseProperties.border]
     }
     
     func modify<V: View>(view: V) -> V {
         for keyPath in _BorderModifier._keyPaths {
             switch keyPath {
-            case \_ViewBaseProperties.border.color:
-                let keyPath: ReferenceWritableKeyPath<_ViewBaseProperties, Color> = writableKeyPath(from: keyPath)
-                view._baseProperty?[keyPath: keyPath] = color
+            case \_ViewBaseProperties.border:
+                let keyPath: ReferenceWritableKeyPath<_ViewBaseProperties, Border> = writableKeyPath(from: keyPath)
+                view._baseProperty?[keyPath: keyPath] = border
             case _:
                 fatalError("Unexpected pattern keypath of \(keyPath)")
             }

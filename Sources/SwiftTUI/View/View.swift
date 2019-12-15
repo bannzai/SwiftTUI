@@ -7,6 +7,23 @@
 
 import Foundation
 
+
+public struct Border {
+    public let color: Color
+    public let directionType: DirectionType
+    
+    @inlinable public init(color: Color, directionType: DirectionType) {
+        self.color = color
+        self.directionType = directionType
+    }
+    
+    public enum DirectionType: Int8 {
+        case top, left, right, bottom
+        case all
+        
+        public static let `default`: DirectionType = .all
+    }
+}
 public class _ViewBaseProperties {
     init() { }
     internal var size: Size? = nil
@@ -14,10 +31,7 @@ public class _ViewBaseProperties {
     
     internal var backgroundColor: Color = Style.Color.background.color
     
-    internal struct Border {
-        internal let color: Color?
-    }
-    internal var border: Border = Border(color: nil)
+    internal var border: Border? = nil
 }
 
 /// A piece of user interface.

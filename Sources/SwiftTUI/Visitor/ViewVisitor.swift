@@ -25,6 +25,9 @@ open class AnyViewVisitor: Visitor {
         if let backgroundColor = view._baseProperty?.backgroundColor {
             content = Terminal.colorize(color: backgroundColor.backgroundColor, content: content)
         }
+        if let border = view._baseProperty?.border {
+            
+        }
         return content
     }
 }
