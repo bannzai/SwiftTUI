@@ -13,6 +13,11 @@ public class _ViewBaseProperties {
     internal var origin: Origin? = nil
     
     internal var backgroundColor: Color = Style.Color.background.color
+    
+    internal struct Border {
+        internal let color: Color?
+    }
+    internal var border: Border = Border(color: nil)
 }
 
 /// A piece of user interface.
