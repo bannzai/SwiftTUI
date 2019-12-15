@@ -26,7 +26,7 @@ open class AnyViewVisitor: Visitor {
             content = Terminal.colorize(color: backgroundColor.backgroundColor, content: content)
         }
         if let border = view._baseProperty?.border {
-            
+            // TODO: width, height + 1 and add content border character
         }
         return content
     }
