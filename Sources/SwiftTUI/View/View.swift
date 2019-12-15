@@ -26,9 +26,8 @@ public struct Border {
 }
 public class _ViewBaseProperties {
     init() { }
-    internal var size: Size? = nil
-    internal var origin: Origin? = nil
-    
+    internal var rect: Rect? = nil
+
     internal var backgroundColor: Color = Style.Color.background.color
     
     internal var border: Border? = nil

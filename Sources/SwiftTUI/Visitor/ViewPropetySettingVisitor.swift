@@ -17,6 +17,6 @@ open class ViewPropetySettingVisitor: Visitor {
 
 public final class SizePropertySettingVisitor: ViewPropetySettingVisitor {
     public override func visit<T: View>(_ content: T) {
-        content._baseProperty?.size?.width
+//        content._baseProperty?.size?.width
     }
 }
