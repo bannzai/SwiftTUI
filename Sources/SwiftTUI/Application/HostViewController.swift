@@ -28,9 +28,9 @@ extension HostViewController: Drawable {
         result = flag ? Terminal.colorize(color: Color.cyan.backgroundColor, content: result) : result
         let size = windowSize()
         var content = ""
-        for h in (0..<size.height!) {
-            for w in (0..<size.width!) {
-                content += "\((w + 1) + (h * size.width!))"
+        for h in (0..<size.height) {
+            for w in (0..<size.width) {
+                content += "\((w + 1) + (h * size.width))"
             }
             content += "\n"
         }
