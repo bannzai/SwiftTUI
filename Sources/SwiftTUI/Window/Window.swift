@@ -17,8 +17,17 @@ public class Window {
     
     weak var screen: Screen?
     
+    private var columns: PhysicalDistance
+    private var rows: PhysicalDistance
+    
+    internal var maxX: PhysicalDistance { columns }
+    internal var maxY: PhysicalDistance { rows }
+    
     internal init() {
         window = initscr()
+        
+        columns = Int(getmaxx(stdscr))
+        rows = Int(getmaxy(stdscr))
     }
 }
 
