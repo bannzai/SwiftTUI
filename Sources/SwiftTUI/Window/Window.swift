@@ -14,21 +14,14 @@ public class Window {
     internal typealias _Widnow = UnsafeMutablePointer<cncurses.WINDOW>
     // NOTE: Keep screen
     internal var window: _Widnow!
+    internal var frame: Rect
+
+    internal init(window: _Widnow, frame: Rect) {
+        self.window = window
+        self.frame = frame
+    }
     
     weak var screen: Screen?
-    
-    private var columns: PhysicalDistance
-    private var rows: PhysicalDistance
-    
-    internal var maxX: PhysicalDistance { columns }
-    internal var maxY: PhysicalDistance { rows }
-    
-    internal init() {
-        window = initscr()
-        
-        columns = Int(getmaxx(stdscr))
-        rows = Int(getmaxy(stdscr))
-    }
 }
 
 // MARK - Named ncurses functions

@@ -18,6 +18,13 @@ public class Screen {
     
     // NOTE: Cursor is shared on screen. Not `Window`.
     internal lazy var cursor: Cursor = Cursor(screen: self)
+    
+    internal var columns: PhysicalDistance { Int(cncurses.getmaxx(cncurses.stdscr)) }
+    internal var rows: PhysicalDistance { Int(cncurses.getmaxy(cncurses.stdscr)) }
+    internal var bounds: Rect {
+        // NOTE: It can call after cncurses.initscr()
+        Rect(origin: .zero, size: .init(width: columns, height: rows))
+    }
 }
 
 private extension Screen {
@@ -31,7 +38,7 @@ internal extension Screen {
         if !windows.isEmpty {
             assertionFailure("duplicated call setup functions")
         }
-        let window = Window()
+        let window = Window(window: cncurses.initscr(), frame: bounds)
         window.setup()
         window.screen = self
         append(window: window)
