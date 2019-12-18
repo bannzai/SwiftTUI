@@ -10,11 +10,9 @@ import cncurses
 
 // Application is management SwiftTUI process with root view
 public final class Application<Root: View> {
-    internal let screen: Screen
     internal let viewController: HostViewController<Root>
     public init(viewController: HostViewController<Root>) {
         self.viewController = viewController
-        self.screen = Screen()
     }
     
     internal var isAlreadyRun = false

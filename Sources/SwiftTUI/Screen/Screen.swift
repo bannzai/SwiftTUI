@@ -8,8 +8,11 @@
 import Foundation
 import cncurses
 
+// Screen is defines the properties associated with a `console` based display
 public class Screen {
-    internal init() { }
+    private init() { }
+    private static let shared: Screen = Screen()
+    internal static var main: Screen { shared }
     
     internal var windows: [Window] = []
 
