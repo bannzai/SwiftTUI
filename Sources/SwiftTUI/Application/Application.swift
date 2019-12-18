@@ -8,11 +8,6 @@
 import Foundation
 import cncurses
 
-fileprivate let sharedQueue = MainQueue()
-internal func message(with event: MainQueue.Event) {
-    sharedQueue.message(with: event)
-}
-
 // Application is management SwiftTUI process with root view
 public final class Application<Root: View> {
     internal let screen: Screen
@@ -20,7 +15,6 @@ public final class Application<Root: View> {
     public init(viewController: HostViewController<Root>) {
         self.viewController = viewController
         self.screen = Screen()
-        sharedQueue.inject(drawable: self.viewController)
     }
     
     internal var isAlreadyRun = false
