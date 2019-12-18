@@ -8,6 +8,7 @@
 import Foundation
 import cncurses
 
+// Window is control `ConsoleUI` with `cncurses`. And dispatches user events to your views
 public class Window {
     // NOTE: ncurses root object name is `SCREEN`.
     // But defined type name is `cncurses.WINDOW`.
