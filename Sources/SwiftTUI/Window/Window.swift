@@ -21,7 +21,7 @@ public class Window {
         self.frame = frame
     }
     
-    weak var screen: Screen?
+    internal weak var screen: Screen?
 }
 
 // MARK - Named ncurses functions
