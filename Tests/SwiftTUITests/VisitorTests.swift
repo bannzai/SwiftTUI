@@ -70,8 +70,9 @@ class VisitorTests: XCTestCase {
             
             print(result)
             XCTAssertEqual(result.filter { $0 == "\n" }.count, 3)
-            XCTAssertTrue(result.contains("\(Color.blue.foregroundColor)"))
-            XCTAssertTrue(result.contains("\(Color.red.backgroundColor)"))
+            XCTAssertTrue(result.contains("1"))
+            XCTAssertTrue(result.contains("2"))
+            XCTAssertTrue(result.contains("3"))
         }
     }
 }
