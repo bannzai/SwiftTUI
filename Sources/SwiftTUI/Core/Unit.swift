@@ -20,8 +20,8 @@ public struct Size {
     }
 }
 
-public struct Origin {
-    public static let zero = Origin(x: 0, y: 0)
+public struct Point {
+    public static let zero = Point(x: 0, y: 0)
     
     public let x: PhysicalDistance
     public let y: PhysicalDistance
@@ -32,18 +32,18 @@ public struct Origin {
 }
 
 public struct Rect {
-    public let origin: Origin
+    public let origin: Point
     public let size: Size
     public init() {
         self.origin = .zero
         self.size = .zero
     }
-    public init(origin: Origin, size: Size) {
+    public init(origin: Point, size: Size) {
         self.origin = origin
         self.size = size
     }
     public init(x: PhysicalDistance, y: PhysicalDistance, width: PhysicalDistance, height: PhysicalDistance) {
-        self.origin = Origin(x: x, y: y)
+        self.origin = Point(x: x, y: y)
         self.size = Size(width: width, height: height)
     }
 }

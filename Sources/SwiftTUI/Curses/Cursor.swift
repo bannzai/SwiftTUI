@@ -12,11 +12,7 @@ public struct Cursor {
     internal var x: PhysicalDistance = 0
     internal var y: PhysicalDistance = 0
     
-    internal weak var screen: Screen?
-    
-    internal init(screen: Screen) {
-        self.screen = screen
-    }
+    internal init() { }
 }
 
 internal extension Cursor {
@@ -31,3 +27,4 @@ internal extension Cursor {
         moveTo(x: _x, y: _y)
     }
 }
+

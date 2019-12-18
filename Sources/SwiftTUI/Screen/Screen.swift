@@ -13,14 +13,13 @@ public final class Screen {
     private init() { }
     fileprivate static let shared: Screen = Screen()
 
-    // NOTE: Cursor is shared on screen. Not `Window`.
-    internal lazy var cursor: Cursor = Cursor(screen: self)
-    
     internal var columns: PhysicalDistance { PhysicalDistance(cncurses.getmaxx(cncurses.stdscr)) }
     internal var rows: PhysicalDistance { PhysicalDistance(cncurses.getmaxy(cncurses.stdscr)) }
+    internal var width: PhysicalDistance { columns }
+    internal var height: PhysicalDistance { rows }
     internal var bounds: Rect {
         // NOTE: It can call after cncurses.initscr()
-        Rect(origin: .zero, size: .init(width: columns, height: rows))
+        Rect(origin: .zero, size: .init(width: width, height: height))
     }
 }
 

@@ -11,6 +11,7 @@ import cncurses
 // Application is management SwiftTUI process with root view
 public final class Application<Root: View> {
     internal let viewController: HostViewController<Root>
+    internal private(set)var cursor: Cursor = .init()
     public init(viewController: HostViewController<Root>) {
         self.viewController = viewController
     }
@@ -39,7 +40,6 @@ public final class Application<Root: View> {
     internal var keyWindow: Window { windows.first(where: { $0.window == stdscr })! }
 }
 
-
 private extension Application {
     func setup() {
         if !windows.isEmpty {
@@ -67,7 +67,7 @@ private extension Application {
             case .alphameric(let alphameric):
                 switch alphameric {
                 case .a:
-                    mainScreen.cursor.move(x: 10, y: 10)
+                    self.cursor.move(x: 10, y: 10)
                 case _:
                     break
                 }
