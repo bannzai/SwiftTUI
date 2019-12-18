@@ -36,11 +36,12 @@ public final class Application<Root: View> {
     internal var windows: [Window] = []
     
     // NOTE: access stdscr. Maybe this is root screen.
-    internal var keyWindow: Window { windows.first(where: { $0.window == stdscr })! }
+    internal var keyWindow: Window? { windows.first(where: { $0.window == stdscr }) }
 }
 
 private extension Application {
     func setup() {
+        return
         if !windows.isEmpty {
             assertionFailure("duplicated call setup functions")
         }
@@ -52,7 +53,7 @@ private extension Application {
     func disposeKeyWindow() {
         let keyWindow = self.keyWindow
         windows.remove(at: windows.firstIndex (where: { $0 === keyWindow })!)
-        keyWindow.dispose()
+        keyWindow?.dispose()
     }
     
     func setupInputHandler() {

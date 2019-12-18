@@ -58,6 +58,18 @@ extension HostViewController: Drawable {
     func draw() {
         let visitor = ViewVisitor()
         let result = visitor.visit(root)
-        debugLogger.debug(userInfo: result)
+        print("\(escapeSequence)[2J")
+        print("\(escapeSequence)[1;1H")
+        sleep(3)
+        print(result)
+        sleep(1)
+
+        while true {
+            sleep(1)
+            print("\(escapeSequence)[3T")
+        }
+//        add(string: result)
+//        cncurses.refresh()
+//        debugLogger.debug(userInfo: result)
     }
 }

@@ -9,11 +9,11 @@ import Foundation
 import Darwin
 
 internal struct Terminal { }
-    
+internal let escapeSequence = "\u{001B}" // NOTE: \e
+
 // MARK: - Decorate Color
 extension Terminal {
     struct ColorDecorate {
-        static internal let escapeSequence = "\u{001B}" // NOTE: \e
         static internal let start = "\(escapeSequence)["
         static internal let end = "\(escapeSequence)[0m"
     }
