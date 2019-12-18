@@ -45,7 +45,8 @@ internal extension Screen {
         append(window: window)
     }
     func dispose() {
-        keyWindow.dispose()
+        let keyWindow = self.keyWindow
         windows.remove(at: windows.firstIndex (where: { $0 === keyWindow })!)
+        keyWindow.dispose()
     }
 }
