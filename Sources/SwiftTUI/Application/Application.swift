@@ -35,6 +35,8 @@ public final class Application<Root: View> {
             screen.dispose()
         }
         setupInputHandler()
+        viewController.window = screen.keyWindow
+        viewController.draw()
 
         RunLoop.main.run()
     }
