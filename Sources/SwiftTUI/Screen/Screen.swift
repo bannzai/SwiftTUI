@@ -19,8 +19,8 @@ public class Screen {
     // NOTE: Cursor is shared on screen. Not `Window`.
     internal lazy var cursor: Cursor = Cursor(screen: self)
     
-    internal var columns: PhysicalDistance { Int(cncurses.getmaxx(cncurses.stdscr)) }
-    internal var rows: PhysicalDistance { Int(cncurses.getmaxy(cncurses.stdscr)) }
+    internal var columns: PhysicalDistance { PhysicalDistance(cncurses.getmaxx(cncurses.stdscr)) }
+    internal var rows: PhysicalDistance { PhysicalDistance(cncurses.getmaxy(cncurses.stdscr)) }
     internal var bounds: Rect {
         // NOTE: It can call after cncurses.initscr()
         Rect(origin: .zero, size: .init(width: columns, height: rows))
