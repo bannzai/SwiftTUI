@@ -29,7 +29,7 @@ struct DebuggerView: View, ViewAcceptable {
         EmptyView()
     }
     
-    func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
+    func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
         closure()
         return visitor.visit(body)
     }

@@ -24,10 +24,10 @@ extension TupleView: View {
 }
 
 extension TupleView: ViewAcceptableWithListOption {
-    public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult {
+    public func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
         return accept(visitor: visitor, with: .default)
     }
-    public func accept<V: AnyViewVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult {
+    public func accept<V: ViewContentVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult {
         Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in
             if let value = element.value as? ViewAcceptable {
                 result.collect(with: value.accept(visitor: visitor))

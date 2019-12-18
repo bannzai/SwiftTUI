@@ -56,7 +56,7 @@ extension HostViewController: Drawable {
     }
     
     func draw() {
-        let visitor = ViewVisitor()
+        let visitor = ViewContentVisitor()
         let result = visitor.visit(root)
         debugLogger.debug(userInfo: result)
     }

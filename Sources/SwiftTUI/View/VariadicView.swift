@@ -30,7 +30,7 @@ public protocol _VariadicView_Root {
 }
 
 extension VariadicView.Tree: ViewAcceptable {
-    public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
+    public func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
         let option = Root._viewListOptions
         print("option: \(option)")
         let content = visitor.visit(self.content, with: option)

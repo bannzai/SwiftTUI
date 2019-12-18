@@ -8,9 +8,9 @@
 import Foundation
 
 public protocol ViewAcceptable {
-    func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult
+    func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult
 }
 
 public protocol ViewAcceptableWithListOption: ViewAcceptable {
-    func accept<V: AnyViewVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult
+    func accept<V: ViewContentVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult
 }

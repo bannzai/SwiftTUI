@@ -44,7 +44,7 @@ extension Text: View {
 }
 
 extension Text: ViewAcceptable {
-    public func accept<V: AnyViewVisitor>(visitor: V) -> V.VisitResult { content }
+    public func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult { content }
 }
 
 // TODO: Implement

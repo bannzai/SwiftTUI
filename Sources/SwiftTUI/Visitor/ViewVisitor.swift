@@ -8,38 +8,15 @@
 import Foundation
 
 // TODO: Internal
-open class AnyViewVisitor: Visitor {
-    public typealias VisitResult = SwiftTUIContentType
-
-    public init() {
-        
-    }
-    open func visit<T: View>(_ content: T) -> VisitResult {
-        fatalError("Should override this method to subclass")
-    }
-    internal func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
-        fatalError("Should override this method to subclass")
-    }
-    internal func appliedAttribute<V: View>(view: V, content: SwiftTUIContentType) -> VisitResult {
-        var content = content
-        if let backgroundColor = view._baseProperty?.backgroundColor {
-            content = Terminal.colorize(color: backgroundColor.backgroundColor, content: content)
-        }
-        if let border = view._baseProperty?.border {
-            // TODO: width, height + 1 and add content border character
-        }
-        return content
-    }
-}
-
 public enum ViewVisitorListOption {
     static let `default`: ViewVisitorListOption = .horizontal
     case vertical
     case horizontal
 }
 
-public final class ViewVisitor: AnyViewVisitor {
-    internal override func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
+public final class ViewContentVisitor: Visitor {
+    public typealias VisitResult = SwiftTUIContentType
+    internal func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
         debugLogger.debug()
         switch content {
         case let viewAcceptableWithListOption as ViewAcceptableWithListOption:
@@ -51,7 +28,17 @@ public final class ViewVisitor: AnyViewVisitor {
             return visit(content.body, with: listOptions)
         }
     }
-    public override func visit<T: View>(_ content: T) -> VisitResult {
+    public func visit<T: View>(_ content: T) -> VisitResult {
         visit(content, with: .default)
+    }
+    internal func appliedAttribute<V: View>(view: V, content: SwiftTUIContentType) -> VisitResult {
+        var content = content
+        if let backgroundColor = view._baseProperty?.backgroundColor {
+            content = Terminal.colorize(color: backgroundColor.backgroundColor, content: content)
+        }
+        if let border = view._baseProperty?.border {
+            // TODO: width, height + 1 and add content border character
+        }
+        return content
     }
 }

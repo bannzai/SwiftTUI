@@ -40,7 +40,7 @@ extension ViewBuilder {
             storage.body._baseProperty
         }
         
-        public func accept<V>(visitor: V) -> AnyViewVisitor.VisitResult where V : AnyViewVisitor {
+        public func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
             visitor.visit(storage.body)
         }
     }
