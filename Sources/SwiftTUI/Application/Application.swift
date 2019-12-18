@@ -11,7 +11,6 @@ import cncurses
 // Application is management SwiftTUI process
 public final class Application<Root: View> {
     internal let viewController: HostViewController<Root>
-    internal private(set)var cursor: Cursor = .init()
     public init(viewController: HostViewController<Root>) {
         self.viewController = viewController
     }
@@ -67,7 +66,7 @@ private extension Application {
             case .alphameric(let alphameric):
                 switch alphameric {
                 case .a:
-                    self.cursor.move(x: 10, y: 10)
+                    sharedCursor.move(x: 10, y: 10)
                 case _:
                     break
                 }

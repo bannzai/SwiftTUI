@@ -12,7 +12,7 @@ public struct Cursor {
     internal var x: PhysicalDistance = 0
     internal var y: PhysicalDistance = 0
     
-    internal init() { }
+    fileprivate init() { }
 }
 
 internal extension Cursor {
@@ -28,3 +28,4 @@ internal extension Cursor {
     }
 }
 
+internal var sharedCursor = Cursor()
