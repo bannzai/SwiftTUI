@@ -8,7 +8,7 @@
 import Foundation
 import cncurses
 
-// Application is management SwiftTUI process with root view
+// Application is management SwiftTUI process
 public final class Application<Root: View> {
     internal let viewController: HostViewController<Root>
     internal private(set)var cursor: Cursor = .init()
