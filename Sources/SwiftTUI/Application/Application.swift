@@ -30,10 +30,10 @@ public final class Application<Root: View> {
         }
         isAlreadyRun = true
 
+        screen.setup()
         defer {
             screen.dispose()
         }
-        screen.setup()
         setupInputHandler()
 
         RunLoop.main.run()
