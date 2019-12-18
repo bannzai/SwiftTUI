@@ -7,10 +7,14 @@
 
 import Foundation
 
+public final class _TextBaseProperty: _ViewBaseProperties {
+    internal var foregroundColor: Color? = nil
+}
+
 /// A view that displays one or more lines of read-only text.
 public struct Text {
     let content: String
-    public var _baseProperty: _ViewBaseProperties? = _ViewBaseProperties()
+    public var _baseProperty: _TextBaseProperty? = _TextBaseProperty()
     /// Creates an instance that displays `content` verbatim.
     @inlinable public init(verbatim content: String) {
         self.init(content)
@@ -51,8 +55,8 @@ extension Text {
     /// - Parameter color: The color to use when displaying this text.
     /// - Returns: Text that uses the color value you supply.
     public func foregroundColor(_ color: Color) -> Text {
-        // TODO: stored property. not return colorize text.
-        Text(Terminal.colorize(color: color.foregroundColor, content: content))
+        _baseProperty?.foregroundColor = color
+        return self
     }
 
     /// Sets the font to use when displaying this text.
