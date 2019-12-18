@@ -13,8 +13,9 @@ internal protocol Drawable: class {
 
 public final class HostViewController<Root: View> {
     internal let root: Root
-    var flag: Bool = false
-    var count: Int = 0
+    
+    internal weak var window: Window?
+
     public init(root: Root) {
         self.root = root
     }
@@ -22,19 +23,9 @@ public final class HostViewController<Root: View> {
 
 extension HostViewController: Drawable {
     func draw() {
-        flag = !flag
         let visitor = ViewVisitor()
-        var result = visitor.visit(root)
-        result = flag ? Terminal.colorize(color: Color.cyan.backgroundColor, content: result) : result
-        let size = windowSize()
-        var content = ""
-        for h in (0..<size.height) {
-            for w in (0..<size.width) {
-                content += "\((w + 1) + (h * size.width))"
-            }
-            content += "\n"
-        }
-        Terminal.File.output.fileHandler.write(content.data(using: .utf8)!)
+        let result = visitor.visit(root)
+        debugLogger.debug(userInfo: result)
     }
     
     func windowSize() -> Size {
