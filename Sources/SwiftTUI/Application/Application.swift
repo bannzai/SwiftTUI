@@ -22,15 +22,44 @@ public final class Application<Root: View> {
         }
         isAlreadyRun = true
 
-        screen.setup()
+        setup()
         defer {
-            screen.dispose()
+            disposeKeyWindow()
         }
         setupInputHandler()
-        viewController.window = screen.keyWindow
+        viewController.window = keyWindow
         viewController.draw()
 
         RunLoop.main.run()
+    }
+    
+    internal var windows: [Window] = []
+    
+    // NOTE: access stdscr. Maybe this is root screen.
+    internal var keyWindow: Window { windows.first(where: { $0.window == stdscr })! }
+}
+
+
+private extension Application {
+    func append(window: Window) {
+        windows.append(window)
+    }
+}
+
+private extension Application {
+    func setup() {
+        if !windows.isEmpty {
+            assertionFailure("duplicated call setup functions")
+        }
+        let window = Window(window: cncurses.initscr(), frame: Screen.main.bounds)
+        window.setup()
+        cncurses.refresh()
+        append(window: window)
+    }
+    func disposeKeyWindow() {
+        let keyWindow = self.keyWindow
+        windows.remove(at: windows.firstIndex (where: { $0 === keyWindow })!)
+        keyWindow.dispose()
     }
     
     func setupInputHandler() {
@@ -44,7 +73,7 @@ public final class Application<Root: View> {
             case .alphameric(let alphameric):
                 switch alphameric {
                 case .a:
-                    self.screen.cursor.move(x: 10, y: 10)
+                    Screen.main.cursor.move(x: 10, y: 10)
                 case _:
                     break
                 }
