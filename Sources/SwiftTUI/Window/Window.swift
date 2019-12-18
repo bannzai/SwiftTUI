@@ -59,7 +59,7 @@ internal extension Window {
         enableCursor()
         configureColorPairs()
         setupKeypad()
-        clear();
+        clear()
     }
     func dispose() {
         if !isendwin() {
