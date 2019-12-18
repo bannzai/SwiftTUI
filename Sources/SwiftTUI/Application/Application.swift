@@ -41,12 +41,6 @@ public final class Application<Root: View> {
 
 
 private extension Application {
-    func append(window: Window) {
-        windows.append(window)
-    }
-}
-
-private extension Application {
     func setup() {
         if !windows.isEmpty {
             assertionFailure("duplicated call setup functions")
@@ -81,5 +75,8 @@ private extension Application {
                 break
             }
         }
+    }
+    func append(window: Window) {
+        windows.append(window)
     }
 }
