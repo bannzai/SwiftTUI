@@ -10,7 +10,7 @@ import cncurses
 
 public class Window {
     // NOTE: ncurses root object name is `SCREEN`.
-    // But defined type name is `WINDOW`.
+    // But defined type name is `cncurses.WINDOW`.
     internal typealias _Widnow = UnsafeMutablePointer<cncurses.WINDOW>
     // NOTE: Keep screen
     internal var window: _Widnow!
