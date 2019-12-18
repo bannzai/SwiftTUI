@@ -15,7 +15,6 @@ public class Window {
     // NOTE: Keep screen
     internal var window: _Widnow!
     internal var frame: Rect
-
     internal init(window: _Widnow, frame: Rect) {
         self.window = window
         self.frame = frame
