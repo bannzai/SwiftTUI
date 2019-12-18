@@ -29,6 +29,6 @@ let package = Package(
         ),
         .testTarget(
             name: "SwiftTUITests",
-            dependencies: ["SwiftTUI", "Runtime"]),
+            dependencies: ["SwiftTUI", "Runtime", "cncurses"]),
     ]
 )
