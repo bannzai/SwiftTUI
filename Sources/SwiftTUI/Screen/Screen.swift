@@ -9,11 +9,10 @@ import Foundation
 import cncurses
 
 // Screen is defines the properties associated with a `console` based display
-public class Screen {
+public final class Screen {
     private init() { }
-    private static let shared: Screen = Screen()
-    internal static var main: Screen { shared }
-    
+    fileprivate static let shared: Screen = Screen()
+
     // NOTE: Cursor is shared on screen. Not `Window`.
     internal lazy var cursor: Cursor = Cursor(screen: self)
     
@@ -25,3 +24,5 @@ public class Screen {
     }
 }
 
+
+internal var mainScreen = Screen.shared

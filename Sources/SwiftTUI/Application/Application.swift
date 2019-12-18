@@ -45,7 +45,7 @@ private extension Application {
         if !windows.isEmpty {
             assertionFailure("duplicated call setup functions")
         }
-        let window = Window(window: cncurses.initscr(), frame: Screen.main.bounds)
+        let window = Window(window: cncurses.initscr(), frame: mainScreen.bounds)
         window.setup()
         cncurses.refresh()
         append(window: window)
@@ -67,7 +67,7 @@ private extension Application {
             case .alphameric(let alphameric):
                 switch alphameric {
                 case .a:
-                    Screen.main.cursor.move(x: 10, y: 10)
+                    mainScreen.cursor.move(x: 10, y: 10)
                 case _:
                     break
                 }
