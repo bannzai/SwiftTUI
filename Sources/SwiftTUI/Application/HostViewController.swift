@@ -20,14 +20,38 @@ public final class HostViewController<Root: View> {
     }
 
     internal weak var window: Window!
+    
+    internal var drawnContent: [Rune] = []
+}
+
+internal protocol DrawableSetter {
+    func add(rune: Rune)
+}
+internal protocol DrawableDriver: class, DrawableSetter {
+    
+}
+
+extension DrawableDriver {
+    func add(unicodeScalar: Unicode.Scalar) {
+        add(rune: Rune(unicodeScalar))
+    }
+    
+    func add(character: Character) {
+        character.unicodeScalars.forEach(add(unicodeScalar:))
+    }
+    
+    func add(string: String) {
+        string.forEach(add(character:))
+    }
 }
 
 // MARK: - Draw on console
-extension HostViewController: Drawable {
+extension HostViewController: Drawable, DrawableDriver {
     func add(rune: Rune) {
         let point = drawPoint()
         
         cncurses.addch(rune)
+        drawnContent.append(rune)
 
         switch point.x >= window.frame.size.width {
         case false:
@@ -43,21 +67,14 @@ extension HostViewController: Drawable {
         }
     }
     
-    func add(unicodeScalar: Unicode.Scalar) {
-        add(rune: Rune(unicodeScalar))
-    }
-    
-    func add(character: Character) {
-        character.unicodeScalars.forEach(add(unicodeScalar:))
-    }
-    
-    func add(string: String) {
-        string.forEach(add(character:))
+    private func resetContent() {
+        drawnContent = []
     }
     
     func draw() {
-        let visitor = ViewContentVisitor()
-        let result = visitor.visit(root)
-        debugLogger.debug(userInfo: result)
+        resetContent()
+        let visitor = ViewContentVisitor(driver: self)
+        visitor.visit(root)
+        debugLogger.debug(userInfo: drawnContent)
     }
 }

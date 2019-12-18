@@ -15,15 +15,18 @@ public enum ViewVisitorListOption {
 }
 
 public final class ViewContentVisitor: Visitor {
-    public typealias VisitResult = SwiftTUIContentType
+    public typealias VisitResult = Void
+    internal let driver: DrawableDriver
+    internal init(driver: DrawableDriver) {
+        self.driver = driver
+    }
     internal func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
         debugLogger.debug()
         switch content {
         case let viewAcceptableWithListOption as ViewAcceptableWithListOption:
             return viewAcceptableWithListOption.accept(visitor: self, with: listOptions)
         case let viewAcceptable as ViewAcceptable:
-            let result = viewAcceptable.accept(visitor: self)
-            return appliedAttribute(view: content, content: result)
+            return viewAcceptable.accept(visitor: self)
         case _:
             return visit(content.body, with: listOptions)
         }
@@ -31,14 +34,20 @@ public final class ViewContentVisitor: Visitor {
     public func visit<T: View>(_ content: T) -> VisitResult {
         visit(content, with: .default)
     }
-    internal func appliedAttribute<V: View>(view: V, content: SwiftTUIContentType) -> VisitResult {
-        var content = content
-        if let backgroundColor = view._baseProperty?.backgroundColor {
-            content = Terminal.colorize(color: backgroundColor.backgroundColor, content: content)
-        }
-        if let border = view._baseProperty?.border {
-            // TODO: width, height + 1 and add content border character
-        }
-        return content
+//    internal func appliedAttribute<V: View>(view: V, content: SwiftTUIContentType) -> VisitResult {
+//        var content = content
+//        if let backgroundColor = view._baseProperty?.backgroundColor {
+//            content = Terminal.colorize(color: backgroundColor.backgroundColor, content: content)
+//        }
+//        if let border = view._baseProperty?.border {
+//            // TODO: width, height + 1 and add content border character
+//        }
+//        return content
+//    }
+}
+
+extension ViewContentVisitor: DrawableDriver {
+    func add(rune: Rune) {
+        driver.add(rune: rune)
     }
 }

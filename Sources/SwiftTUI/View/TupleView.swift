@@ -28,13 +28,13 @@ extension TupleView: ViewAcceptableWithListOption {
         return accept(visitor: visitor, with: .default)
     }
     public func accept<V: ViewContentVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult {
-        Mirror(reflecting: value).children.reduce(into: V.VisitResult.empty()) { (result, element) in
+        Mirror(reflecting: value).children.forEach { (element) in
             if let value = element.value as? ViewAcceptable {
-                result.collect(with: value.accept(visitor: visitor))
+                value.accept(visitor: visitor)
             }
             switch listOption {
             case .vertical:
-                result.collect(with: "\n")
+                visitor.add(string: "\n")
             case .horizontal:
                 break
             }
