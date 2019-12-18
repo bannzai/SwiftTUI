@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import cncurses
 
 public typealias Rune = UInt32
 internal protocol Drawable: class {
@@ -18,17 +19,28 @@ public final class HostViewController<Root: View> {
         self.root = root
     }
 
-    internal weak var window: Window?
+    internal weak var window: Window!
 }
 
 // MARK: - Draw on console
 extension HostViewController: Drawable {
-    func set(rune: Rune, column: PhysicalDistance, row: PhysicalDistance) {
-        
-    }
-    
     func add(rune: Rune) {
+        let point = drawPoint()
         
+        cncurses.addch(rune)
+
+        switch point.x >= window.frame.size.width {
+        case false:
+            sharedCursor.moveTo(x: point.x + 1, y: point.y)
+        case true:
+            break
+        }
+        switch point.y >= window.frame.size.height {
+        case false:
+            sharedCursor.moveTo(x: 0, y: point.y + 1)
+        case true:
+            sharedCursor.moveTo(x: 0, y: 0)
+        }
     }
     
     func add(unicodeScalar: Unicode.Scalar) {

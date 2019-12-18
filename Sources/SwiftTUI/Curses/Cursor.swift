@@ -29,3 +29,6 @@ internal extension Cursor {
 }
 
 internal var sharedCursor = Cursor()
+internal func drawPoint() -> Point {
+    Point(x: sharedCursor.x, y: sharedCursor.y)
+}
