@@ -29,7 +29,7 @@ extension View {
 }
 
 extension _BorderModifier: _ViewModifier {
-    func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) {
+    func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
         // TODO:
     }
 }
