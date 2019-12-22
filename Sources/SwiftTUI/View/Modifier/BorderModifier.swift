@@ -29,10 +29,6 @@ extension View {
 }
 
 extension _BorderModifier: _ViewModifier {
-    static var _keyPaths: Set<PartialKeyPath<_ViewBaseProperties>> {
-        [\_ViewBaseProperties.border]
-    }
-    
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) {
         // TODO:
     }

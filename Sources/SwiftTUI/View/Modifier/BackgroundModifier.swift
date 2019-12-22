@@ -28,10 +28,6 @@ extension View {
 }
 
 extension _BackgroundModifier: _ViewModifier {
-    static var _keyPaths: Set<PartialKeyPath<_ViewBaseProperties>> {
-        [\_ViewBaseProperties.backgroundColor]
-    }
-    
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) {
         switch background {
         case let color as Color:

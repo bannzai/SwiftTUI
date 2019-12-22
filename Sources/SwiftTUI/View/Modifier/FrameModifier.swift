@@ -26,10 +26,6 @@ extension View {
 }
 
 extension _FrameLayout: _ViewModifier {
-    static var _keyPaths: Set<PartialKeyPath<_ViewBaseProperties>> {
-        [\_ViewBaseProperties.rect?.size.width, \_ViewBaseProperties.rect?.size.height]
-    }
-    
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) {
         // TODO:
     }
