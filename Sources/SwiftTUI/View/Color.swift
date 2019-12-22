@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import cncurses
 
 /// An environment-dependent color.
 ///
@@ -13,7 +14,6 @@ import Foundation
 /// when it is about to be used in a given environment. At that time it is
 /// resolved to a concrete value.
 public enum Color: Hashable {
-    case `default`
     case black
     case red
     case green
@@ -21,60 +21,25 @@ public enum Color: Hashable {
     case blue
     case magenta
     case cyan
-    case lightGray
-    case darkGray
-    case lightRed
-    case lightGreen
-    case lightYellow
-    case lightBlue
-    case lightMagenta
-    case lightCyan
     case white
     
     typealias Value = Int16
     
-    var foregroundColor: Value {
-        switch self {
-        case .default: return 39
-        case .black: return 30
-        case .red: return 31
-        case .green: return 32
-        case .yellow: return 33
-        case .blue: return 34
-        case .magenta: return 35
-        case .cyan: return 36
-        case .lightGray: return 37
-        case .darkGray: return 90
-        case .lightRed: return 91
-        case .lightGreen: return 92
-        case .lightYellow: return 93
-        case .lightBlue: return 94
-        case .lightMagenta: return 95
-        case .lightCyan: return 96
-        case .white: return 97
-        }
-    }
-    
-    var backgroundColor: Value {
-        switch self {
-        case .default: return 49
-        case .black: return 40
-        case .red: return 41
-        case .green: return 42
-        case .yellow: return 43
-        case .blue: return 44
-        case .magenta: return 45
-        case .cyan: return 46
-        case .lightGray: return 47
-        case .darkGray: return 100
-        case .lightRed: return 101
-        case .lightGreen: return 102
-        case .lightYellow: return 103
-        case .lightBlue: return 104
-        case .lightMagenta: return 105
-        case .lightCyan: return 106
-        case .white: return 107
-        }
+    internal var value: Value {
+        let cursesColorValue: Int32 = {
+            switch self {
+            case .black: return COLOR_BLACK
+            case .red: return COLOR_RED
+            case .green: return COLOR_GREEN
+            case .yellow: return COLOR_YELLOW
+            case .blue: return COLOR_BLUE
+            case .magenta: return COLOR_MAGENTA
+            case .cyan: return COLOR_CYAN
+            case .white: return COLOR_WHITE
+            }
+        }()
+        
+        return Value(cursesColorValue)
     }
 }
 
@@ -94,7 +59,7 @@ public enum Style {
         var color: SwiftTUI.Color {
             switch self {
             case .background:
-                return .default
+                return .black
             case .foreground, .text:
                 return .white
             }
