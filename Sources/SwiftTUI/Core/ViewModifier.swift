@@ -26,7 +26,7 @@ extension ViewModifier where Body == Never {
 
 internal protocol _ViewModifier {
     static var _keyPaths: Set<PartialKeyPath<_ViewBaseProperties>> { get }
-    func modify<V: View>(view: V) -> V
+    func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor)
 }
 
 extension _ViewModifier {

@@ -33,17 +33,8 @@ extension _BorderModifier: _ViewModifier {
         [\_ViewBaseProperties.border]
     }
     
-    func modify<V: View>(view: V) -> V {
-        for keyPath in _BorderModifier._keyPaths {
-            switch keyPath {
-            case \_ViewBaseProperties.border:
-                let keyPath: ReferenceWritableKeyPath<_ViewBaseProperties, Border> = writableKeyPath(from: keyPath)
-                view._baseProperty?[keyPath: keyPath] = border
-            case _:
-                fatalError("Unexpected pattern keypath of \(keyPath)")
-            }
-        }
-        return view
+    func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) {
+        // TODO:
     }
 }
 

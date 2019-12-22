@@ -72,7 +72,7 @@ internal protocol DrawableDriver: class, ContentSetter, AttributeSetter, Attribu
     
 }
 
-fileprivate let pairNumber: Int16 = 1
+fileprivate var pairNumber: Int16 = 1
 
 // MARK: - Draw on console
 extension HostViewController: Drawable, DrawableDriver {
@@ -100,12 +100,15 @@ extension HostViewController: Drawable, DrawableDriver {
         keepForegroundColor = color
         let backgroundColor = keepBackgroundColor ?? Style.Color.background.color
         init_pair(pairNumber, color.foregroundColor, backgroundColor.backgroundColor)
+        pairNumber += 1
     }
     
     func setBackgroundColor(_ color: Color) {
         keepBackgroundColor = color
         let foregroundColor = keepForegroundColor ?? Style.Color.foreground.color
         init_pair(pairNumber, foregroundColor.foregroundColor, color.backgroundColor)
+        debugLogger.debug()
+        pairNumber += 1
     }
     
     private func resetContent() {

@@ -32,16 +32,12 @@ extension _BackgroundModifier: _ViewModifier {
         [\_ViewBaseProperties.backgroundColor]
     }
     
-    func modify<V: View>(view: V) -> V {
-        for keyPath in _BackgroundModifier._keyPaths {
-            switch background {
-            case let color as Color:
-                let keyPath: ReferenceWritableKeyPath<_ViewBaseProperties, Color> = writableKeyPath(from: keyPath)
-                view._baseProperty?[keyPath: keyPath] = color
-            case _:
-                break
-            }
+    func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) {
+        switch background {
+        case let color as Color:
+            visitor.driver.setBackgroundColor(color)
+        case _:
+            return
         }
-        return view
     }
 }
