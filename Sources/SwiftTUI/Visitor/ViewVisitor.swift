@@ -45,9 +45,3 @@ public final class ViewContentVisitor: Visitor {
 //        return content
 //    }
 }
-
-extension ViewContentVisitor: DrawableDriver {
-    func add(rune: Rune) {
-        driver.add(rune: rune)
-    }
-}

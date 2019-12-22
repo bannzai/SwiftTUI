@@ -22,16 +22,15 @@ public final class HostViewController<Root: View> {
     internal weak var window: Window!
     
     internal var drawnContent: [Rune] = []
+    
+    internal var keepForegroundColor: Color? = nil
+    internal var keepBackgroundColor: Color? = nil
 }
 
-internal protocol DrawableSetter {
+internal protocol ContentSetter {
     func add(rune: Rune)
 }
-internal protocol DrawableDriver: class, DrawableSetter {
-    
-}
-
-extension DrawableDriver {
+extension ContentSetter {
     func add(unicodeScalar: Unicode.Scalar) {
         add(rune: Rune(unicodeScalar))
     }
@@ -44,6 +43,36 @@ extension DrawableDriver {
         string.forEach(add(character:))
     }
 }
+
+internal protocol AttributeSetter {
+    func setForegroundColor(_ color: Color)
+    func setBackgroundColor(_ color: Color)
+}
+
+internal protocol AttributeRestorer {
+    var keepForegroundColor: Color? { get nonmutating set }
+    var keepBackgroundColor: Color? { get nonmutating set }
+    
+    func restoreForegroundColor()
+    func restoreBackgroundColor()
+}
+
+extension AttributeRestorer where Self: AttributeSetter {
+    func restoreForegroundColor() {
+        setForegroundColor(Style.Color.foreground.color)
+        keepForegroundColor = nil
+    }
+    func restoreBackgroundColor() {
+        setBackgroundColor(Style.Color.background.color)
+        keepBackgroundColor = nil
+    }
+}
+
+internal protocol DrawableDriver: class, ContentSetter, AttributeSetter, AttributeRestorer {
+    
+}
+
+fileprivate let pairNumber: Int16 = 1
 
 // MARK: - Draw on console
 extension HostViewController: Drawable, DrawableDriver {
@@ -65,6 +94,18 @@ extension HostViewController: Drawable, DrawableDriver {
         case true:
             sharedCursor.moveTo(x: 0, y: 0)
         }
+    }
+    
+    func setForegroundColor(_ color: Color) {
+        keepForegroundColor = color
+        let backgroundColor = keepBackgroundColor ?? Style.Color.background.color
+        init_pair(pairNumber, color.foregroundColor, backgroundColor.backgroundColor)
+    }
+    
+    func setBackgroundColor(_ color: Color) {
+        keepBackgroundColor = color
+        let foregroundColor = keepForegroundColor ?? Style.Color.foreground.color
+        init_pair(pairNumber, foregroundColor.foregroundColor, color.backgroundColor)
     }
     
     private func resetContent() {

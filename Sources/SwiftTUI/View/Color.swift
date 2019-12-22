@@ -31,7 +31,7 @@ public enum Color: Hashable {
     case lightCyan
     case white
     
-    typealias Value = Int
+    typealias Value = Int16
     
     var foregroundColor: Value {
         switch self {
@@ -88,13 +88,14 @@ extension Color: View {
 public enum Style {
     public enum Color {
         case background
+        case foreground
         case text
         
         var color: SwiftTUI.Color {
             switch self {
             case .background:
                 return .default
-            case .text:
+            case .foreground, .text:
                 return .white
             }
         }

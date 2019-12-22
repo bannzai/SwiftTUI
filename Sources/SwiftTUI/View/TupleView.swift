@@ -34,7 +34,7 @@ extension TupleView: ViewAcceptableWithListOption {
             }
             switch listOption {
             case .vertical:
-                visitor.add(string: "\n")
+                visitor.driver.add(string: "\n")
             case .horizontal:
                 break
             }
