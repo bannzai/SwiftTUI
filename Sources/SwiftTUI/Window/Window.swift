@@ -42,7 +42,7 @@ private extension Window {
         // NOTE: Range of 1 ~ (COLOR_PAIRS-1). If set 0, Setting foreground color is white and background color is black.
         // And It can not changed color pair.
         let pairNumber: Int16 = 1
-        init_pair(pairNumber, Int16(COLOR_BLACK), Int16(COLOR_WHITE))
+        init_pair(pairNumber, Int16(COLOR_BLACK), Int16(COLOR_GREEN))
     }
     func setupKeypad() {
         // NOTE: If you set false, return character with escape sequence when input with function key
