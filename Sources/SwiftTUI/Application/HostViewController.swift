@@ -117,5 +117,6 @@ extension HostViewController: Drawable, DrawableDriver {
         let visitor = ViewContentVisitor(driver: self)
         visitor.visit(root)
         debugLogger.debug(userInfo: drawnContent)
+        cncurses.refresh()
     }
 }

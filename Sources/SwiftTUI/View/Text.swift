@@ -44,7 +44,9 @@ extension Text: View {
 }
 
 extension Text: ViewAcceptable {
-    public func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult { content }
+    public func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
+        visitor.driver.add(string: content)
+    }
 }
 
 // TODO: Implement

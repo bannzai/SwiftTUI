@@ -20,6 +20,6 @@ extension EmptyView : View {
 
 extension EmptyView: ViewAcceptable {
     public func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
-        ""
+        
     }
 }
