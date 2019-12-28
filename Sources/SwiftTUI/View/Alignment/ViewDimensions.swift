@@ -9,37 +9,17 @@ import Foundation
 
 
 public struct ViewDimensions {
-    class ExplicitContainer {
-        fileprivate var horizontal: [HorizontalAlignment: PhysicalDistance] = [:]
-        //    private var verticalExplicit: [VerticalAlignment: PhysicalDistance] = [:]
-    }
-
-    internal var _width: PhysicalDistance? = nil
-    internal var _height: PhysicalDistance? = nil
+    public var width: PhysicalDistance
+    public var height: PhysicalDistance
     
-    public var width: PhysicalDistance { _width ?? 0 }
-    public var height: PhysicalDistance { _height ?? 0 }
-    
-    private var childValue: PhysicalDistance {
-        fatalError("TODO:")
-    }
-    private var level: Int {
-        fatalError("TODO:")
-    }
-    
-    private var explicitContainer = ExplicitContainer()
-
     public subscript(guide: HorizontalAlignment) -> PhysicalDistance {
-        guide.id.defaultValue(in: self)
+        fatalError("TODO: Implement")
     }
     public subscript(guide: VerticalAlignment) -> PhysicalDistance {
-        guide.id.defaultValue(in: self)
+        fatalError("TODO: Implement")
     }
     public subscript(explicit guide: HorizontalAlignment) -> PhysicalDistance? {
-        var horizontal: PhysicalDistance? = explicitContainer.horizontal[guide] 
-        guide.id._combineExplicit(childValue: childValue, level, into: &horizontal)
-        explicitContainer.horizontal[guide] = horizontal
-        return horizontal
+        fatalError("TODO: Implement")
     }
     public subscript(explicit guide: VerticalAlignment) -> PhysicalDistance? {
         fatalError("TODO:")
