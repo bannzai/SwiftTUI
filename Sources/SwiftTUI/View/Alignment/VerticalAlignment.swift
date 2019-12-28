@@ -9,14 +9,17 @@ import Foundation
 
 public struct VerticalAlignment {
     internal let id: AlignmentID.Type
+    @usableFromInline
+    internal let key: AlignmentKey
+    
     public init(_ id: AlignmentID.Type) {
         self.id = id
+        let type: Any.Type = id
+        let pointer = unsafeBitCast(type, to: UnsafePointer<StructTypeMetadata>.self).pointee.typeDescriptor.pointee.name.advanced()
+        self.key = AlignmentKey(bits: UInt(pointer.pointee))
     }
-    
-    @usableFromInline
-    internal let key: AlignmentKey = AlignmentKey(bits: #line) // TODO: Implement
     public static func == (lhs: VerticalAlignment, rhs: VerticalAlignment) -> Swift.Bool {
-        lhs.key == rhs.key
+        lhs.id == rhs.id
     }
 }
 
