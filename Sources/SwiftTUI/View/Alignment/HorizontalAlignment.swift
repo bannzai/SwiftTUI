@@ -26,19 +26,16 @@ public struct HorizontalAlignment {
 extension HorizontalAlignment {
     private enum LeadingAlignment: AlignmentID {
         static func defaultValue(in context: ViewDimensions) -> PhysicalDistance {
-            // TODO: Implement
             return 0
         }
     }
     private enum CenterAlignment: AlignmentID {
         static func defaultValue(in context: ViewDimensions) -> PhysicalDistance {
-            // TODO: Implement
             return context.width / 2
         }
     }
     private enum TrailingAlignment: AlignmentID {
         static func defaultValue(in context: ViewDimensions) -> PhysicalDistance {
-            // TODO: Implement
             return context.width
         }
     }
