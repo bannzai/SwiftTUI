@@ -58,3 +58,9 @@ extension VerticalAlignment {
     public static let lastTextBaseline: VerticalAlignment = VerticalAlignment(LastTextBaselineAlignment.self)
     public static let `default`: VerticalAlignment = .center
 }
+
+extension VerticalAlignment: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(key)
+    }
+}
