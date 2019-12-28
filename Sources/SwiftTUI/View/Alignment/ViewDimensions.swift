@@ -13,10 +13,10 @@ public struct ViewDimensions {
     public var height: PhysicalDistance
     
     public subscript(guide: HorizontalAlignment) -> PhysicalDistance {
-        fatalError("TODO: Implement")
+        guide.id.defaultValue(in: self)
     }
     public subscript(guide: VerticalAlignment) -> PhysicalDistance {
-        fatalError("TODO: Implement")
+        guide.id.defaultValue(in: self)
     }
     public subscript(explicit guide: HorizontalAlignment) -> PhysicalDistance? {
         fatalError("TODO: Implement")
