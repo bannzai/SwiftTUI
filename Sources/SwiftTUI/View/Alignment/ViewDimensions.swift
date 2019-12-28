@@ -9,8 +9,8 @@ import Foundation
 
 
 public struct ViewDimensions {
-    public var width: PhysicalDistance
-    public var height: PhysicalDistance
+    public internal(set) var width: PhysicalDistance
+    public internal(set) var height: PhysicalDistance
     
     public subscript(guide: HorizontalAlignment) -> PhysicalDistance {
         guide.id.defaultValue(in: self)
