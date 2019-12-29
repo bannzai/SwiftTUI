@@ -37,6 +37,21 @@ extension ModifiedContent: ViewContentAcceptable {
     }
 }
 
+extension ModifiedContent: ViewSizeAcceptable {
+    internal func accept<V: ViewSizeVisitor>(visitor: V) -> V.VisitResult {
+        debugLogger.debug()
+        if let _modifier = modifier as? _ViewModifier {
+            _modifier.visit(view: content, visitor: visitor)
+        }
+        if let acceptable = modifier as? ViewSizeAcceptable {
+            acceptable.accept(visitor: visitor)
+        }
+        if let acceptable = content as? ViewSizeAcceptable {
+            acceptable.accept(visitor: visitor)
+        }
+    }
+}
+
 extension ModifiedContent: View {
     public typealias Body = Swift.Never
     public var _baseProperty: _ViewBaseProperties? { nil }

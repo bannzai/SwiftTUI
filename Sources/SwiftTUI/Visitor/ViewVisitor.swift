@@ -15,11 +15,11 @@ public enum ViewVisitorListOption {
 }
 
 internal protocol ViewContentAcceptable {
-    func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult
+    func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult
 }
 
 internal protocol ContainerViewContentAcceptable: ViewContentAcceptable {
-    func accept<V: ViewContentVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult
+    func accept(visitor: ViewContentVisitor, with listOption: ViewVisitorListOption) -> ViewContentVisitor.VisitResult
 }
 
 public final class ViewContentVisitor: Visitor {

@@ -23,7 +23,12 @@ public struct Group<Content: View>: View {
 }
 
 extension Group: ViewContentAcceptable {
-    internal func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
+    internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
+        visitor.visit(content)
+    }
+}
+extension Group: ViewSizeAcceptable {
+    internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
         visitor.visit(content)
     }
 }

@@ -24,10 +24,10 @@ extension TupleView: View {
 }
 
 extension TupleView: ContainerViewContentAcceptable {
-    internal func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
+    internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
         return accept(visitor: visitor, with: .default)
     }
-    internal func accept<V: ViewContentVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult {
+    internal func accept(visitor: ViewContentVisitor, with listOption: ViewVisitorListOption) -> ViewContentVisitor.VisitResult {
         Mirror(reflecting: value).children.forEach { (element) in
             if let value = element.value as? ViewContentAcceptable {
                 value.accept(visitor: visitor)
@@ -38,6 +38,17 @@ extension TupleView: ContainerViewContentAcceptable {
             case .horizontal:
                 break
             }
+        }
+    }
+}
+
+extension TupleView: ContainerViewSizeAcceptable {
+    internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
+        return accept(visitor: visitor, with: .default)
+    }
+    internal func accept(visitor: ViewSizeVisitor, with listOption: ViewVisitorListOption) -> ViewSizeVisitor.VisitResult {
+        Mirror(reflecting: value).children.forEach { (element) in
+            // TODO: Implement
         }
     }
 }

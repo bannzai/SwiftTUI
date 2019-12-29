@@ -16,7 +16,7 @@ import Foundation
 }
 
 extension ViewBuilder {
-    public struct _ConditionalContent<TrueContent, FalseContent>: View, ViewContentAcceptable where TrueContent: View, FalseContent: View {
+    public struct _ConditionalContent<TrueContent, FalseContent>: View where TrueContent: View, FalseContent: View {
         enum Container {
             case truthy(TrueContent)
             case falsy(FalseContent)
@@ -40,9 +40,6 @@ extension ViewBuilder {
             storage.body._baseProperty
         }
         
-        internal func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
-            visitor.visit(storage.body)
-        }
     }
 
     /// Provides support for "if" statements in multi-statement closures, producing an `Optional` view
@@ -56,6 +53,17 @@ extension ViewBuilder {
     /// Provides support for "if-else" statements in multi-statement closures, producing
     /// ConditionalContent for the "else" branch.
     public static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent : View, FalseContent : View { _ConditionalContent<TrueContent, FalseContent>(storage: .falsy(second)) }
+}
+
+extension ViewBuilder._ConditionalContent: ViewContentAcceptable {
+    internal func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
+        visitor.visit(storage.body)
+    }
+}
+extension ViewBuilder._ConditionalContent: ViewSizeAcceptable {
+    internal func accept<V>(visitor: V) -> ViewSizeVisitor.VisitResult where V : ViewSizeVisitor {
+        visitor.visit(storage.body)
+    }
 }
 
 extension ViewBuilder {

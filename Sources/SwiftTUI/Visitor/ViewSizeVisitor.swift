@@ -7,18 +7,18 @@
 
 import Foundation
 
-public protocol ViewSizeAcceptable {
-    func accept<V: ViewSizeVisitor>(visitor: V) -> V.VisitResult
+internal protocol ViewSizeAcceptable {
+    func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult
 }
 
-public protocol ContainerViewSizeAcceptable: ViewSizeAcceptable {
-    func accept<V: ViewSizeVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult
+internal protocol ContainerViewSizeAcceptable: ViewSizeAcceptable {
+    func accept(visitor: ViewSizeVisitor, with listOption: ViewVisitorListOption) -> ViewSizeVisitor.VisitResult
 }
 
-public final class ViewSizeVisitor: Visitor {
-    public typealias VisitResult = Void
+internal final class ViewSizeVisitor: Visitor {
+    internal typealias VisitResult = Void
 
-    public func visit<T>(_ content: T) -> Void where T : View {
+    internal func visit<T>(_ content: T) -> Void where T : View {
         
     }
 }

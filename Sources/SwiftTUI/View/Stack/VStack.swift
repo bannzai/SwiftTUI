@@ -27,6 +27,12 @@ extension VStack: ViewContentAcceptable {
     }
 }
 
+extension VStack: ViewSizeAcceptable {
+    internal func accept<V: ViewSizeVisitor>(visitor: V) -> V.VisitResult {
+        visitor.visit(tree)
+    }
+}
+
 @frozen public struct _VStackLayout {
     @usableFromInline internal var alignment: HorizontalAlignment
     @usableFromInline internal var spacing: PhysicalDistance?

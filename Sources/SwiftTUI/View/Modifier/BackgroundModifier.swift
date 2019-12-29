@@ -36,4 +36,8 @@ extension _BackgroundModifier: _ViewModifier {
             return
         }
     }
+    
+    func visit<View: SwiftTUI.View, Visitor: ViewSizeVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
+        // TODO: 
+    }
 }

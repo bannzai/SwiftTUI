@@ -32,6 +32,10 @@ extension _BorderModifier: _ViewModifier {
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
         // TODO:
     }
+    
+    func visit<View: SwiftTUI.View, Visitor: ViewSizeVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
+        // TODO:
+    }
 }
 
 

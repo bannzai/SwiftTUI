@@ -19,7 +19,12 @@ extension EmptyView : View {
 }
 
 extension EmptyView: ViewContentAcceptable {
-    internal func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
+    internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
+        
+    }
+}
+extension EmptyView: ViewSizeAcceptable {
+    internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
         
     }
 }

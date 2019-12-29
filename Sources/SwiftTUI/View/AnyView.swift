@@ -15,11 +15,15 @@ import Foundation
 /// created for the new type.
 public struct AnyView: View {
     fileprivate class AnyViewStorage<T: View>: AnyViewStorageBase {
-        let view: T
-        init(_ view: T) {
+        internal let view: T
+        internal init(_ view: T) {
             self.view = view
         }
-        public override func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
+        
+        internal override func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
+            visitor.visit(view)
+        }
+        internal override func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
             visitor.visit(view)
         }
     }
@@ -40,6 +44,11 @@ public struct AnyView: View {
 
 extension AnyView: ViewContentAcceptable {
     internal func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
+        storage.accept(visitor: visitor)
+    }
+}
+extension AnyView: ViewSizeAcceptable {
+    internal func accept<V: ViewSizeVisitor>(visitor: V) -> V.VisitResult {
         storage.accept(visitor: visitor)
     }
 }
