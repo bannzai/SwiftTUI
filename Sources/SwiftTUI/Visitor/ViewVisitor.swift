@@ -20,6 +20,9 @@ public final class ViewContentVisitor: Visitor {
     internal init(driver: DrawableDriver) {
         self.driver = driver
     }
+    
+    internal var containerAlignment: Alignment = .default
+
     internal func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
         debugLogger.debug()
         switch content {

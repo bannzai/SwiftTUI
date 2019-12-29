@@ -20,6 +20,7 @@ import Foundation
 }
 
 extension Alignment {
+    public static let `default`: Alignment = .center
     public static let center: Alignment = .init(horizontal: .center, vertical: .center)
     public static let leading: Alignment = .init(horizontal: .leading, vertical: .default)
     public static let trailing: Alignment = .init(horizontal: .trailing, vertical: .default)

@@ -32,7 +32,23 @@ public protocol _VariadicView_Root {
 extension VariadicView.Tree: ViewAcceptable {
     public func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
         let option = Root._viewListOptions
-        visitor.visit(content, with: option)
+        
+        if let vertical = root as? _VStackLayout {
+            let keepAlignment = visitor.containerAlignment
+            visitor.containerAlignment.horizontal = vertical.alignment
+            visitor.visit(content, with: option)
+            visitor.containerAlignment = keepAlignment
+            return
+        }
+        
+        if let horizontal = root as? _HStackLayout {
+            let keepAlignment = visitor.containerAlignment
+            visitor.containerAlignment.vertical = horizontal.alignment
+            visitor.visit(content, with: option)
+            visitor.containerAlignment = keepAlignment
+            return
+        }
+        
     }
 }
 
