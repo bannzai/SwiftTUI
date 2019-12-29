@@ -23,8 +23,8 @@ public struct Size {
 public struct Point {
     public static let zero = Point(x: 0, y: 0)
     
-    public let x: PhysicalDistance
-    public let y: PhysicalDistance
+    public var x: PhysicalDistance
+    public var y: PhysicalDistance
     public init(x: PhysicalDistance, y: PhysicalDistance) {
         self.x = x
         self.y = y
@@ -32,8 +32,8 @@ public struct Point {
 }
 
 public struct Rect {
-    public let origin: Point
-    public let size: Size
+    public var origin: Point
+    public var size: Size
     public init() {
         self.origin = .zero
         self.size = .zero
