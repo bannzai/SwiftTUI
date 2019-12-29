@@ -39,7 +39,7 @@ public struct AnyView: View {
 }
 
 extension AnyView: ViewContentAcceptable {
-    public func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
+    internal func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
         storage.accept(visitor: visitor)
     }
 }

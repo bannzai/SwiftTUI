@@ -30,7 +30,7 @@ public protocol _VariadicView_Root {
 }
 
 extension VariadicView.Tree: ViewContentAcceptable {
-    public func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
+    internal func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
         let option = Root._viewListOptions
         
         if let vertical = root as? _VStackLayout {

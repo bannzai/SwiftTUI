@@ -7,8 +7,7 @@
 
 import Foundation
 
-// TODO: to internal type
-public protocol Visitor {
+internal protocol Visitor {
     associatedtype VisitResult
     
     func visit<T: View>(_ content: T) -> VisitResult

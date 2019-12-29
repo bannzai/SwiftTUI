@@ -22,7 +22,7 @@ import Foundation
 }
 
 extension HStack: ViewContentAcceptable {
-    public func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
+    internal func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
         visitor.visit(tree)
     }
 }

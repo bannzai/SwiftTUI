@@ -14,16 +14,16 @@ public enum ViewVisitorListOption {
     case horizontal
 }
 
-public protocol ViewContentAcceptable {
+internal protocol ViewContentAcceptable {
     func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult
 }
 
-public protocol ContainerViewContentAcceptable: ViewContentAcceptable {
+internal protocol ContainerViewContentAcceptable: ViewContentAcceptable {
     func accept<V: ViewContentVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult
 }
 
 public final class ViewContentVisitor: Visitor {
-    public typealias VisitResult = Void
+    internal typealias VisitResult = Void
     internal let driver: DrawableDriver
     internal init(driver: DrawableDriver) {
         self.driver = driver
@@ -42,7 +42,7 @@ public final class ViewContentVisitor: Visitor {
             return visit(content.body, with: listOptions)
         }
     }
-    public func visit<T: View>(_ content: T) -> VisitResult {
+    internal func visit<T: View>(_ content: T) -> VisitResult {
         visit(content, with: .default)
     }
 //    internal func appliedAttribute<V: View>(view: V, content: SwiftTUIContentType) -> VisitResult {

@@ -23,7 +23,7 @@ extension ModifiedContent : Swift.Equatable where Content : Swift.Equatable, Mod
 }
 
 extension ModifiedContent: ViewContentAcceptable {
-    public func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
+    internal func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
         debugLogger.debug()
         if let _modifier = modifier as? _ViewModifier {
             _modifier.visit(view: content, visitor: visitor)
