@@ -23,7 +23,7 @@ extension TupleView: View {
     }
 }
 
-extension TupleView: ViewAcceptableWithListOption {
+extension TupleView: ContainerViewAcceptable {
     public func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
         return accept(visitor: visitor, with: .default)
     }

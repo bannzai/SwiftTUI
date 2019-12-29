@@ -26,8 +26,8 @@ public final class ViewContentVisitor: Visitor {
     internal func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
         debugLogger.debug()
         switch content {
-        case let viewAcceptableWithListOption as ViewAcceptableWithListOption:
-            return viewAcceptableWithListOption.accept(visitor: self, with: listOptions)
+        case let ContainerViewAcceptable as ContainerViewAcceptable:
+            return ContainerViewAcceptable.accept(visitor: self, with: listOptions)
         case let viewAcceptable as ViewAcceptable:
             return viewAcceptable.accept(visitor: self)
         case _:

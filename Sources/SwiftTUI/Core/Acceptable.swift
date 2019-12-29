@@ -11,6 +11,6 @@ public protocol ViewAcceptable {
     func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult
 }
 
-public protocol ViewAcceptableWithListOption: ViewAcceptable {
+public protocol ContainerViewAcceptable: ViewAcceptable {
     func accept<V: ViewContentVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult
 }
