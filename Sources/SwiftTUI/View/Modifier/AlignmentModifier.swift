@@ -7,11 +7,9 @@
 
 import Foundation
 
-@frozen public struct _AlignmentWritingModifier : ViewModifier {
-    @usableFromInline
-    internal let key: AlignmentKey
-    @usableFromInline
-    internal let computeValue: (ViewDimensions) -> PhysicalDistance
+@frozen public struct _AlignmentWritingModifier: ViewModifier {
+    @usableFromInline internal let key: AlignmentKey
+    @usableFromInline internal let computeValue: (ViewDimensions) -> PhysicalDistance
     @inlinable internal init(key: AlignmentKey, computeValue: @escaping (ViewDimensions) -> PhysicalDistance) {
         self.key = key
         self.computeValue = computeValue
