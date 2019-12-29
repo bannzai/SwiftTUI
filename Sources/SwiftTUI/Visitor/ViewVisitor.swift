@@ -14,6 +14,14 @@ public enum ViewVisitorListOption {
     case horizontal
 }
 
+public protocol ViewContentAcceptable {
+    func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult
+}
+
+public protocol ContainerViewContentAcceptable: ViewContentAcceptable {
+    func accept<V: ViewContentVisitor>(visitor: V, with listOption: ViewVisitorListOption) -> V.VisitResult
+}
+
 public final class ViewContentVisitor: Visitor {
     public typealias VisitResult = Void
     internal let driver: DrawableDriver
@@ -26,9 +34,9 @@ public final class ViewContentVisitor: Visitor {
     internal func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
         debugLogger.debug()
         switch content {
-        case let ContainerViewAcceptable as ContainerViewAcceptable:
-            return ContainerViewAcceptable.accept(visitor: self, with: listOptions)
-        case let viewAcceptable as ViewAcceptable:
+        case let ContainerViewContentAcceptable as ContainerViewContentAcceptable:
+            return ContainerViewContentAcceptable.accept(visitor: self, with: listOptions)
+        case let viewAcceptable as ViewContentAcceptable:
             return viewAcceptable.accept(visitor: self)
         case _:
             return visit(content.body, with: listOptions)

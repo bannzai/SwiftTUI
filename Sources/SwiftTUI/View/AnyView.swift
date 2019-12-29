@@ -38,7 +38,7 @@ public struct AnyView: View {
     }
 }
 
-extension AnyView: ViewAcceptable {
+extension AnyView: ViewContentAcceptable {
     public func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
         storage.accept(visitor: visitor)
     }

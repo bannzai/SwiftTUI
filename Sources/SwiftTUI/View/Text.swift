@@ -43,7 +43,7 @@ extension Text: View {
     public typealias Body = Never
 }
 
-extension Text: ViewAcceptable {
+extension Text: ViewContentAcceptable {
     public func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
         visitor.driver.add(string: content)
     }

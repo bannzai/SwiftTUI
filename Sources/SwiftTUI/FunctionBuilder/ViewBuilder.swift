@@ -16,7 +16,7 @@ import Foundation
 }
 
 extension ViewBuilder {
-    public struct _ConditionalContent<TrueContent, FalseContent>: View, ViewAcceptable where TrueContent: View, FalseContent: View {
+    public struct _ConditionalContent<TrueContent, FalseContent>: View, ViewContentAcceptable where TrueContent: View, FalseContent: View {
         enum Container {
             case truthy(TrueContent)
             case falsy(FalseContent)

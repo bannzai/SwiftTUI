@@ -22,7 +22,7 @@ extension Terminal {
     }
 }
 
-struct DebuggerView: View, ViewAcceptable {
+struct DebuggerView: View, ViewContentAcceptable {
     let closure: () -> Void
     
     var body: some View {
