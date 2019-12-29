@@ -29,12 +29,8 @@ fileprivate extension Character {
             return cached
         }
         if let ascii = asciiValue {
-            switch ascii < 32 {
-            case true:
-                return doCache(width: 0)
-            case false:
-                return doCache(width: 1)
-            }
+            let width = ascii < 32 ? 0 : 1
+            return doCache(width: width)
         }
         let width = unicodeScalars
             .map { cncurses.wcwidth(Int32($0.value)) }
