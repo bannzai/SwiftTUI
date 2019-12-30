@@ -49,6 +49,7 @@ extension VariadicView.Tree: ViewContentAcceptable {
             return
         }
         
+        fatalError("Unexpected variadic tree type of \(type(of:root))")
     }
 }
 
