@@ -62,8 +62,6 @@ extension TupleView: ContainerViewSizeAcceptable {
                 width += argument.space
             }
         }
-        width = min(width, argument.parentProposedSize.width)
-        height = min(height, argument.parentProposedSize.height)
         let size = Size(width: width, height: height)
         _baseProperty?.rect.size = size
         return size
