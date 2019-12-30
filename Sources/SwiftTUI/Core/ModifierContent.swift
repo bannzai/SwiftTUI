@@ -26,13 +26,9 @@ extension ModifiedContent: ViewContentAcceptable {
     internal func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
         debugLogger.debug()
         if let _modifier = modifier as? _ViewModifier {
-            defer {
-                (_modifier as? _RestoreableViewModifier)?.restore(view: content, visitor: visitor)
-            }
+            defer { (_modifier as? _RestoreableViewModifier)?.restore(view: content, visitor: visitor) }
             _modifier.visit(view: content, visitor: visitor)
-        }
-        if let acceptable = content as? ViewContentAcceptable {
-            acceptable.accept(visitor: visitor)
+            (content as? ViewContentAcceptable)?.accept(visitor: visitor)
         }
     }
 }
