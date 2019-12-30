@@ -1,5 +1,5 @@
 //
-//  VisitorTests.swift
+//  ViewContentVisitorTests.swift
 //  SwiftTUITests
 //
 //  Created by Yudai.Hirose on 2019/11/08.
@@ -10,7 +10,7 @@ import Foundation
 import Runtime
 @testable import SwiftTUI
 
-class VisitorTests: XCTestCase {
+class ViewContentVisitorTests: XCTestCase {
     struct CustomView: View {
         var body: some View {
             EmptyView()
@@ -114,6 +114,26 @@ class VisitorTests: XCTestCase {
             XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
             XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
+        }
+        XCTContext.runActivity(named: "when Original Modifier") { (_) in
+            Terminal.isDisableColorize = false
+            
+            struct Modifier: ViewModifier {
+                func body(content: Content) -> some View {
+                    content.background(Color.red)
+                }
+            }
+            
+            let view = Text("1").modifier(Modifier())
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            visitor.visit(view)
+            let result = driver.content()
+            
+            XCTAssertEqual("1", result)
+
+            XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
+            XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
         }
     }
 }

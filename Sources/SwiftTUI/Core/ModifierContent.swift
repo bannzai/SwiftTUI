@@ -31,11 +31,14 @@ extension ModifiedContent: ViewContentAcceptable {
             (content as? ViewContentAcceptable)?.accept(visitor: visitor)
             return
         }
+        
         let body = modifier.body(content: _ViewModifier_Content())
         if let acceptable = body as? ViewContentAcceptable {
             acceptable.accept(visitor: visitor)
+            (content as? ViewContentAcceptable)?.accept(visitor: visitor)
+            return
         }
-        
+
         fatalError("Unexpected modifier type \(type(of: modifier))")
     }
 }
