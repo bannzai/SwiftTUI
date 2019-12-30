@@ -13,7 +13,7 @@ public struct Border {
     public let width: PhysicalDistance
     public let directionType: DirectionType
     
-    @inlinable public init(color: Color, width: PhysicalDistance = defaultBorderWidth, directionType: DirectionType) {
+    @inlinable public init(color: Color, width: PhysicalDistance, directionType: DirectionType) {
         self.color = color
         self.width = width
         self.directionType = directionType
