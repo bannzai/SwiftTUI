@@ -38,6 +38,6 @@ extension _BackgroundModifier: _ViewModifier {
     }
     
     func visit<View: SwiftTUI.View, Visitor: ViewSizeVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
-        // TODO: 
+        fatalError("// TODO:")
     }
 }

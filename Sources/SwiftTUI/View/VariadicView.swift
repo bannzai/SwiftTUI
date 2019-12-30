@@ -54,7 +54,11 @@ extension VariadicView.Tree: ViewContentAcceptable {
 
 extension VariadicView.Tree: ViewSizeAcceptable {
     internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
-        // TODO: Implement
+        fatalError("// TODO:")
+
+//        if let vertical = root as? _VStackLayout {
+//            vertical.spacing
+//        }
     }
 }
 

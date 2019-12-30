@@ -25,6 +25,6 @@ extension EmptyView: ViewContentAcceptable {
 }
 extension EmptyView: ViewSizeAcceptable {
     internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
-        
+        fatalError("// TODO:")
     }
 }

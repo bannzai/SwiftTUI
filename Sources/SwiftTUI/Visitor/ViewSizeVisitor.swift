@@ -16,9 +16,13 @@ internal protocol ContainerViewSizeAcceptable: ViewSizeAcceptable {
 }
 
 internal final class ViewSizeVisitor: Visitor {
-    internal typealias VisitResult = Void
+    internal typealias VisitResult = Rect
+    internal var currentRect: Rect
+    internal init(rect: Rect) {
+        currentRect = rect
+    }
 
-    internal func visit<T>(_ content: T) -> Void where T : View {
-        
+    internal func visit<T: View>(_ content: T) -> VisitResult {
+        fatalError("// TODO:")
     }
 }

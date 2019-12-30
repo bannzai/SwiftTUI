@@ -50,8 +50,9 @@ extension Text: ViewContentAcceptable {
 }
 extension Text: ViewSizeAcceptable {
     internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
-        _baseProperty?.rect.size.width = content.width
-        _baseProperty?.rect.size.height = content.filter { $0 == "\n" }.count + 1
+        let size = Size(width: content.width, height: content.filter { $0 == "\n" }.count + 1)
+        _baseProperty!.rect.size = size
+        return _baseProperty!.rect
     }
 }
 

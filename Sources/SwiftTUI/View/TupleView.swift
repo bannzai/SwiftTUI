@@ -47,8 +47,13 @@ extension TupleView: ContainerViewSizeAcceptable {
         return accept(visitor: visitor, with: .default)
     }
     internal func accept(visitor: ViewSizeVisitor, with listOption: ViewVisitorListOption) -> ViewSizeVisitor.VisitResult {
-        Mirror(reflecting: value).children.forEach { (element) in
-            // TODO: Implement
-        }
+        fatalError("// TODO:")
+//        Mirror(reflecting: value).children.forEach { (element) in
+//            if let value = element.value as? ViewSizeAcceptable {
+//                value.accept(visitor: visitor)
+//            }
+//
+//            // TODO: Implement
+//        }
     }
 }
