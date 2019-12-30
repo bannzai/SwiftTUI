@@ -27,7 +27,7 @@ internal protocol ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult
 }
 
-internal protocol ContainerViewContentAcceptable: ViewContentAcceptable {
+internal protocol ContainerViewContentAcceptable {
     func accept(visitor: ViewContentVisitor, with listOption: ViewVisitorListOption) -> ViewContentVisitor.VisitResult
 }
 

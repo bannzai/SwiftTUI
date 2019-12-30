@@ -23,9 +23,6 @@ extension TupleView: View {
 }
 
 extension TupleView: ContainerViewContentAcceptable {
-    internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
-        return accept(visitor: visitor, with: .default)
-    }
     internal func accept(visitor: ViewContentVisitor, with listOption: ViewVisitorListOption) -> ViewContentVisitor.VisitResult {
         Mirror(reflecting: value).children.forEach { (element) in
             if let value = element.value as? ViewContentAcceptable {
