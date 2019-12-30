@@ -16,7 +16,7 @@ internal protocol ContainerViewSizeAcceptable {
 }
 
 internal final class ViewSizeVisitor: Visitor {
-    internal typealias VisitResult = Rect
+    internal typealias VisitResult = Size
     internal init() { }
     
     internal var containerAlignment: Alignment = .default

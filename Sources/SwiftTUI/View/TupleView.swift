@@ -50,15 +50,15 @@ extension TupleView: ContainerViewSizeAcceptable {
                 return
             }
             
-            let bounds = value.accept(visitor: visitor)
+            let size = value.accept(visitor: visitor)
             switch argument.listOption {
             case .vertical:
-                width = max(width, bounds.size.width)
-                height += bounds.size.height
+                width = max(width, size.width)
+                height += size.height
                 height += argument.space
             case .horizontal:
-                height = max(height, bounds.size.height)
-                width += bounds.size.width
+                height = max(height, size.height)
+                width += size.width
                 width += argument.space
             }
         }
@@ -66,6 +66,6 @@ extension TupleView: ContainerViewSizeAcceptable {
         height = min(height, argument.parentViewProposedRect.size.height)
         let size = Size(width: width, height: height)
         _baseProperty?.rect.size = size
-        return _baseProperty?.rect ?? .zero
+        return size
     }
 }
