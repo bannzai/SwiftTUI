@@ -39,24 +39,22 @@ extension ModifiedContent: ViewContentAcceptable {
             return
         }
 
-        fatalError("Unexpected modifier type \(type(of: modifier))")
+        fatalError("Unexpected ModifiedContent of \(type(of: self)), and modifier type \(type(of: modifier)), and content type \(type(of: content))")
     }
 }
 
 extension ModifiedContent: ViewSizeAcceptable {
     internal func accept<V: ViewSizeVisitor>(visitor: V) -> V.VisitResult {
         debugLogger.debug()
-        fatalError("// TODO:")
-
-//        if let _modifier = modifier as? _ViewModifier {
-//            _modifier.visit(view: content, visitor: visitor)
-//        }
-//        if let acceptable = modifier as? ViewSizeAcceptable {
-//            acceptable.accept(visitor: visitor)
-//        }
-//        if let acceptable = content as? ViewSizeAcceptable {
-//            acceptable.accept(visitor: visitor)
-//        }
+        if let _modifier = modifier as? _ViewModifier {
+            return _modifier.visit(view: content, visitor: visitor)
+        }
+        let body = modifier.body(content: _ViewModifier_Content())
+        if let acceptable = body as? ViewSizeAcceptable {
+            return acceptable.accept(visitor: visitor)
+        }
+        
+        fatalError("Unexpected ModifiedContent of \(type(of: self)), and modifier type \(type(of: modifier)), and content type \(type(of: content))")
     }
 }
 
