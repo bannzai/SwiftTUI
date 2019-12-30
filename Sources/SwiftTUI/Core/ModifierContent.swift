@@ -31,9 +31,6 @@ extension ModifiedContent: ViewContentAcceptable {
             }
             _modifier.visit(view: content, visitor: visitor)
         }
-        if let acceptable = modifier as? ViewContentAcceptable {
-            acceptable.accept(visitor: visitor)
-        }
         if let acceptable = content as? ViewContentAcceptable {
             acceptable.accept(visitor: visitor)
         }
