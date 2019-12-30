@@ -29,6 +29,6 @@ extension ViewSizeVisitor {
     internal struct Argument {
         internal var listOption: ViewVisitorListOption
         internal var space: PhysicalDistance
-        internal var parentViewProposedRect: Rect
+        internal var parentProposedSize: Size
     }
 }
