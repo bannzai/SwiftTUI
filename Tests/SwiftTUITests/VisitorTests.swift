@@ -103,7 +103,6 @@ class VisitorTests: XCTestCase {
             visitor.visit(view)
             let result = driver.content()
 
-            print(result)
             XCTAssertEqual(result.filter { $0 == "\n" }.count, 3)
             XCTAssertTrue(result.contains("1"))
             XCTAssertTrue(result.contains("2"))
