@@ -34,7 +34,10 @@ extension _BorderModifier: _ViewModifier {
     }
     
     func visit<View: SwiftTUI.View, Visitor: ViewSizeVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
-        fatalError("// TODO:")
+        var contentSize = visitor.visit(view)
+        contentSize.width += defaultBorderWidth * 2
+        contentSize.height += defaultBorderWidth * 2
+        return contentSize
     }
 }
 
