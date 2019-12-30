@@ -115,6 +115,20 @@ class ViewContentVisitorTests: XCTestCase {
             XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
         }
+        XCTContext.runActivity(named: "when Double _BackgroundModifier. _BackgroundModifier<_BackgroundModifier<Text>>") { (_) in
+            Terminal.isDisableColorize = false
+            let view = Text("1").background(Color.red).background(Color.blue)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            visitor.visit(view)
+            let result = driver.content()
+            
+            XCTAssertEqual("1", result)
+
+            
+            XCTAssertEqual(driver.storedBackgroundColors[0..<2], [.blue, .red])
+            XCTAssertEqual(driver.storedBackgroundColors[2], Style.Color.background.color)
+        }
         XCTContext.runActivity(named: "when Original Modifier") { (_) in
             Terminal.isDisableColorize = false
             
