@@ -13,6 +13,8 @@ import Foundation
         self.background = background
     }
     public typealias Body = Swift.Never
+    
+    public var _baseProperty: _ViewBaseProperties? = _ViewBaseProperties()
 }
 
 extension _BackgroundModifier : Swift.Equatable where Background : Swift.Equatable {
@@ -38,7 +40,9 @@ extension _BackgroundModifier: _ViewModifier {
     }
     
     func visit<View: SwiftTUI.View, Visitor: ViewSizeVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
-        visitor.visit(view)
+        let size = visitor.visit(view)
+        _baseProperty?.rect.size = size
+        return size
     }
 }
 

@@ -27,7 +27,7 @@ public struct Border {
     }
 }
 public class _ViewBaseProperties {
-    init() { }
+    public init() { }
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
 
     internal var backgroundColor: Color = Style.Color.background.color

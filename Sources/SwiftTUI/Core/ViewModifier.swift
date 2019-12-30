@@ -16,6 +16,8 @@ public protocol ViewModifier {
     associatedtype Body : View
     func body(content: Self.Content) -> Self.Body
     typealias Content = _ViewModifier_Content<Self>
+    
+    var _baseProperty: _ViewBaseProperties? { get }
 }
 
 extension ViewModifier where Body == Never {
@@ -30,5 +32,5 @@ internal protocol _ViewModifier {
 }
 
 internal protocol _RestoreableViewModifier {
-    func restore<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult 
+    func restore<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult
 }

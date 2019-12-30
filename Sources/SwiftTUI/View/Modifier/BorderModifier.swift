@@ -15,6 +15,8 @@ import Foundation
         self.border = border
     }
     public typealias Body = Swift.Never
+    
+    public var _baseProperty: _ViewBaseProperties? = _ViewBaseProperties()
 }
 
 extension _BorderModifier: Swift.Equatable where Target: Swift.Equatable {
@@ -34,10 +36,12 @@ extension _BorderModifier: _ViewModifier {
     }
     
     func visit<View: SwiftTUI.View, Visitor: ViewSizeVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
-        var contentSize = visitor.visit(view)
-        contentSize.width += border.width * 2
-        contentSize.height += border.width * 2
-        return contentSize
+        let contentSize = visitor.visit(view)
+        var size = contentSize
+        size.width += border.width * 2
+        size.height += border.width * 2
+        _baseProperty?.rect.size = size
+        return size
     }
 }
 
