@@ -32,6 +32,7 @@ public struct Point {
 }
 
 public struct Rect {
+    internal static let zero = Rect(origin: .zero, size: .zero)
     public var origin: Point
     public var size: Size
     public init() {

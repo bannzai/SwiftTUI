@@ -9,6 +9,8 @@ import Foundation
 
 /// A View created from a swift tuple of View values.
 public struct TupleView<T> {
+    public var _baseProperty: _ViewBaseProperties? = _ViewBaseProperties()
+    
     public var value: T
 
     @inlinable public init(_ value: T) {
@@ -18,9 +20,6 @@ public struct TupleView<T> {
 
 extension TupleView: View {
     public typealias Body = Never
-    public var _baseProperty: _ViewBaseProperties? {
-        _ViewBaseProperties()
-    }
 }
 
 extension TupleView: ContainerViewContentAcceptable {
@@ -43,17 +42,30 @@ extension TupleView: ContainerViewContentAcceptable {
 }
 
 extension TupleView: ContainerViewSizeAcceptable {
-    internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
-        return accept(visitor: visitor, with: .default)
-    }
-    internal func accept(visitor: ViewSizeVisitor, with listOption: ViewVisitorListOption) -> ViewSizeVisitor.VisitResult {
-        fatalError("// TODO:")
-//        Mirror(reflecting: value).children.forEach { (element) in
-//            if let value = element.value as? ViewSizeAcceptable {
-//                value.accept(visitor: visitor)
-//            }
-//
-//            // TODO: Implement
-//        }
+    internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
+        var width: PhysicalDistance = 0
+        var height: PhysicalDistance = 0
+        Mirror(reflecting: value).children.forEach { (element) in
+            guard let value = element.value as? ViewSizeAcceptable else {
+                return
+            }
+            
+            let bounds = value.accept(visitor: visitor)
+            switch argument.listOption {
+            case .vertical:
+                width = max(width, bounds.size.width)
+                height += bounds.size.height
+                height += argument.space
+            case .horizontal:
+                height = max(height, bounds.size.height)
+                width += bounds.size.width
+                width += argument.space
+            }
+        }
+        width = min(width, argument.parentViewProposedRect.size.width)
+        height = min(height, argument.parentViewProposedRect.size.height)
+        let size = Size(width: width, height: height)
+        _baseProperty?.rect.size = size
+        return _baseProperty?.rect ?? .zero
     }
 }

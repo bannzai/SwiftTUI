@@ -12,6 +12,15 @@ public enum ViewVisitorListOption {
     static let `default`: ViewVisitorListOption = .horizontal
     case vertical
     case horizontal
+    
+    var defaultSpace: PhysicalDistance {
+        switch self {
+        case .vertical:
+            return 2
+        case .horizontal:
+            return 2
+        }
+    }
 }
 
 internal protocol ViewContentAcceptable {
@@ -34,8 +43,8 @@ public final class ViewContentVisitor: Visitor {
     internal func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
         debugLogger.debug()
         switch content {
-        case let ContainerViewContentAcceptable as ContainerViewContentAcceptable:
-            return ContainerViewContentAcceptable.accept(visitor: self, with: listOptions)
+        case let containerViewContentAcceptable as ContainerViewContentAcceptable:
+            return containerViewContentAcceptable.accept(visitor: self, with: listOptions)
         case let viewAcceptable as ViewContentAcceptable:
             return viewAcceptable.accept(visitor: self)
         case _:
