@@ -29,7 +29,14 @@ extension ModifiedContent: ViewContentAcceptable {
             defer { (_modifier as? _RestoreableViewModifier)?.restore(view: content, visitor: visitor) }
             _modifier.visit(view: content, visitor: visitor)
             (content as? ViewContentAcceptable)?.accept(visitor: visitor)
+            return
         }
+        let body = modifier.body(content: _ViewModifier_Content())
+        if let acceptable = body as? ViewContentAcceptable {
+            acceptable.accept(visitor: visitor)
+        }
+        
+        fatalError("Unexpected modifier type \(type(of: modifier))")
     }
 }
 
