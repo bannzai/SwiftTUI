@@ -23,12 +23,14 @@ class VisitorTests: XCTestCase {
             storedRunes.append(rune)
         }
         
+        var storedForegroundColors: [Color] = []
         func setForegroundColor(_ color: Color) {
-            
+            storedForegroundColors.append(color)
         }
         
+        var storedBackgroundColors: [Color] = []
         func setBackgroundColor(_ color: Color) {
-            
+            storedBackgroundColors.append(color)
         }
         
         var keepForegroundColor: Color?
@@ -102,11 +104,16 @@ class VisitorTests: XCTestCase {
             let visitor = ViewContentVisitor(driver: driver)
             visitor.visit(view)
             let result = driver.content()
-
+            
             XCTAssertEqual(result.filter { $0 == "\n" }.count, 3)
             XCTAssertTrue(result.contains("1"))
             XCTAssertTrue(result.contains("2"))
             XCTAssertTrue(result.contains("3"))
+            
+            XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
+            XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
+            XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
+            XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
         }
     }
 }

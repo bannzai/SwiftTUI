@@ -97,16 +97,16 @@ extension HostViewController: Drawable, DrawableDriver {
         debugLogger.debug(userInfo: "rune: \(rune)")
     }
     
-    func setForegroundColor(_ color: Color) {
-        keepForegroundColor = color
+    func setBackgroundColor(_ color: Color) {
+        keepBackgroundColor = color
         let backgroundColor = keepBackgroundColor ?? Style.Color.background.color
         init_pair(Int16(pairNumber), color.value, backgroundColor.value)
         attrset(COLOR_PAIR(pairNumber))
         pairNumber += 1
     }
     
-    func setBackgroundColor(_ color: Color) {
-        keepBackgroundColor = color
+    func setForegroundColor(_ color: Color) {
+        keepForegroundColor = color
         let foregroundColor = keepForegroundColor ?? Style.Color.foreground.color
         let result = init_pair(Int16(pairNumber), foregroundColor.value, color.value)
         debugLogger.debug(userInfo: "color: \(color), result: \(result)")

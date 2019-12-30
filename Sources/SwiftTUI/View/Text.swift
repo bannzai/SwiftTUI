@@ -45,6 +45,8 @@ extension Text: View {
 
 extension Text: ViewContentAcceptable {
     internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
+        _baseProperty?.foregroundColor.map(visitor.driver.setForegroundColor)
+        defer { visitor.driver.restoreForegroundColor() }
         visitor.driver.add(string: content)
     }
 }

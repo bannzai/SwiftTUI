@@ -28,3 +28,7 @@ internal protocol _ViewModifier {
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult
     func visit<View: SwiftTUI.View, Visitor: ViewSizeVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult
 }
+
+internal protocol _RestoreableViewModifier {
+    func restore<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult 
+}

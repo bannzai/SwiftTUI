@@ -41,3 +41,14 @@ extension _BackgroundModifier: _ViewModifier {
         fatalError("// TODO:")
     }
 }
+
+extension _BackgroundModifier: _RestoreableViewModifier {
+    func restore<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
+        switch background {
+        case is Color:
+            visitor.driver.restoreBackgroundColor()
+        case _:
+            break
+        }
+    }
+}
