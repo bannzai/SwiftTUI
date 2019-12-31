@@ -29,7 +29,15 @@ extension VStack: ViewContentAcceptable {
 
 extension VStack: ViewSizeAcceptable {
     internal func accept<V: ViewSizeVisitor>(visitor: V, with argument: ViewSizeVisitor.Argument) -> V.VisitResult {
-        visitor.visit(tree, with: argument)
+        let keepAlignment = visitor.containerAlignment
+        defer {
+            visitor.containerAlignment = keepAlignment
+        }
+        var argument = argument
+        argument.listOption = ViewVisitorListOption.vertical
+        argument.space = tree.root.spacing ?? ViewVisitorListOption.vertical.defaultSpace
+        visitor.containerAlignment.horizontal = tree.root.alignment
+        return visitor.visit(tree.content, with: argument)
     }
 }
 

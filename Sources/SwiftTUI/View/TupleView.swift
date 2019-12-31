@@ -42,7 +42,12 @@ extension TupleView: ViewSizeAcceptable {
     internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
         var width: PhysicalDistance = 0
         var height: PhysicalDistance = 0
-        Mirror(reflecting: value).children.forEach { (element) in
+        let children = Mirror(reflecting: value).children
+        
+        _baseProperty?.rect.size.width = argument.proposedSize.width
+        _baseProperty?.rect.size.height = argument.proposedSize.height
+        
+        children.forEach { (element) in
             guard let value = element.value as? ViewSizeAcceptable else {
                 return
             }

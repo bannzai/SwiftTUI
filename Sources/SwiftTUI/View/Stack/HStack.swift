@@ -27,8 +27,16 @@ extension HStack: ViewContentAcceptable {
     }
 }
 extension HStack: ViewSizeAcceptable {
-    internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
-        visitor.visit(tree, with: argument)
+    internal func accept<V: ViewSizeVisitor>(visitor: V, with argument: ViewSizeVisitor.Argument) -> V.VisitResult {
+        let keepAlignment = visitor.containerAlignment
+        defer {
+            visitor.containerAlignment = keepAlignment
+        }
+        var argument = argument
+        argument.listOption = ViewVisitorListOption.horizontal
+        argument.space = tree.root.spacing ?? ViewVisitorListOption.horizontal.defaultSpace
+        visitor.containerAlignment.vertical = tree.root.alignment
+        return visitor.visit(tree.content, with: argument)
     }
 }
 

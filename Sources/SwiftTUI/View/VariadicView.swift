@@ -52,30 +52,3 @@ extension VariadicView.Tree: ViewContentAcceptable {
         fatalError("Unexpected variadic tree type of \(type(of:root))")
     }
 }
-
-extension VariadicView.Tree: ViewSizeAcceptable {
-    internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
-        let option = Root._viewListOptions
-        
-        if let vertical = root as? _VStackLayout {
-            let keepAlignment = visitor.containerAlignment
-            visitor.containerAlignment.horizontal = vertical.alignment
-            let argument = ViewSizeVisitor.Argument(listOption: option, space: vertical.spacing ?? ViewVisitorListOption.vertical.defaultSpace, proposedSize: argument.proposedSize)
-            let size = visitor.visit(content, with: argument)
-            visitor.containerAlignment = keepAlignment
-            return size
-        }
-        
-        if let horizontal = root as? _HStackLayout {
-            let keepAlignment = visitor.containerAlignment
-            visitor.containerAlignment.vertical = horizontal.alignment
-            let argument = ViewSizeVisitor.Argument(listOption: option, space: horizontal.spacing ?? ViewVisitorListOption.horizontal.defaultSpace, proposedSize: argument.proposedSize)
-            let size = visitor.visit(content, with: argument)
-            visitor.containerAlignment = keepAlignment
-            return size
-        }
-        
-        fatalError("Unexpected variadic tree type of \(type(of:root))")
-    }
-}
-
