@@ -32,5 +32,11 @@ extension ViewSizeVisitor {
         internal var listOption: ViewVisitorListOption
         internal var space: PhysicalDistance
         internal var proposedSize: Size
+        
+        func change(proposedSize: Size) -> Self {
+            var argument = self
+            argument.proposedSize = proposedSize
+            return argument
+        }
     }
 }
