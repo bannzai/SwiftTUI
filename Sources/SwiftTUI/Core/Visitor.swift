@@ -9,6 +9,4 @@ import Foundation
 
 internal protocol Visitor {
     associatedtype VisitResult
-    
-    func visit<T: View>(_ content: T) -> VisitResult
 }

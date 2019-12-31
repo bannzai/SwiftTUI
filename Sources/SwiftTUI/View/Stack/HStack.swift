@@ -27,8 +27,8 @@ extension HStack: ViewContentAcceptable {
     }
 }
 extension HStack: ViewSizeAcceptable {
-    internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
-        visitor.visit(tree)
+    internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
+        visitor.visit(tree, with: argument)
     }
 }
 

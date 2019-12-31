@@ -44,14 +44,14 @@ extension ModifiedContent: ViewContentAcceptable {
 }
 
 extension ModifiedContent: ViewSizeAcceptable {
-    internal func accept<V: ViewSizeVisitor>(visitor: V) -> V.VisitResult {
+    internal func accept<V: ViewSizeVisitor>(visitor: V, with argument: ViewSizeVisitor.Argument) -> V.VisitResult {
         debugLogger.debug()
         if let _modifier = modifier as? _ViewModifier {
-            return _modifier.visit(view: content, visitor: visitor)
+            return _modifier.visit(view: content, visitor: visitor, with: argument)
         }
         let body = modifier.body(content: _ViewModifier_Content())
         if let acceptable = body as? ViewSizeAcceptable {
-            return acceptable.accept(visitor: visitor)
+            return acceptable.accept(visitor: visitor, with: argument)
         }
         
         fatalError("Unexpected ModifiedContent of \(type(of: self)), and modifier type \(type(of: modifier)), and content type \(type(of: content))")

@@ -54,13 +54,14 @@ extension VariadicView.Tree: ViewContentAcceptable {
 }
 
 extension VariadicView.Tree: ViewSizeAcceptable {
-    internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
+    internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
         let option = Root._viewListOptions
         
         if let vertical = root as? _VStackLayout {
             let keepAlignment = visitor.containerAlignment
             visitor.containerAlignment.horizontal = vertical.alignment
-            let size = visitor.visit(content, with: ViewSizeVisitor.Argument(listOption: option, space: vertical.spacing ?? ViewVisitorListOption.vertical.defaultSpace))
+            let argument = ViewSizeVisitor.Argument(listOption: option, space: vertical.spacing ?? ViewVisitorListOption.vertical.defaultSpace, proposedSize: argument.proposedSize)
+            let size = visitor.visit(content, with: argument)
             visitor.containerAlignment = keepAlignment
             return size
         }
@@ -68,7 +69,8 @@ extension VariadicView.Tree: ViewSizeAcceptable {
         if let horizontal = root as? _HStackLayout {
             let keepAlignment = visitor.containerAlignment
             visitor.containerAlignment.vertical = horizontal.alignment
-            let size = visitor.visit(content, with: ViewSizeVisitor.Argument(listOption: option, space: horizontal.spacing ?? ViewVisitorListOption.horizontal.defaultSpace))
+            let argument = ViewSizeVisitor.Argument(listOption: option, space: horizontal.spacing ?? ViewVisitorListOption.horizontal.defaultSpace, proposedSize: argument.proposedSize)
+            let size = visitor.visit(content, with: argument)
             visitor.containerAlignment = keepAlignment
             return size
         }

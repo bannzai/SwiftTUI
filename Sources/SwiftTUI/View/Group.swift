@@ -28,7 +28,7 @@ extension Group: ViewContentAcceptable {
     }
 }
 extension Group: ViewSizeAcceptable {
-    internal func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
-        visitor.visit(content)
+    internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
+        visitor.visit(content, with: argument)
     }
 }

@@ -28,8 +28,8 @@ extension VStack: ViewContentAcceptable {
 }
 
 extension VStack: ViewSizeAcceptable {
-    internal func accept<V: ViewSizeVisitor>(visitor: V) -> V.VisitResult {
-        visitor.visit(tree)
+    internal func accept<V: ViewSizeVisitor>(visitor: V, with argument: ViewSizeVisitor.Argument) -> V.VisitResult {
+        visitor.visit(tree, with: argument)
     }
 }
 
