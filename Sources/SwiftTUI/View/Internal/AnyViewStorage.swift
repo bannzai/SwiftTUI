@@ -8,8 +8,6 @@
 import Foundation
 
 internal class AnyViewStorageBase: View, ViewContentAcceptable, ViewSizeAcceptable {
-    var _baseProperty: _ViewBaseProperties? { nil }
-    
     internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
         fatalError("Should override this method to subclass")
     }

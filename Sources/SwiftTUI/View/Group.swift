@@ -16,10 +16,6 @@ public struct Group<Content: View>: View {
     @inlinable public init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-    
-    public var _baseProperty: _ViewBaseProperties? {
-        _ViewBaseProperties()
-    }
 }
 
 extension Group: ViewContentAcceptable {

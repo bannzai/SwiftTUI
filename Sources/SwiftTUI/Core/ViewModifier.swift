@@ -16,8 +16,6 @@ public protocol ViewModifier {
     associatedtype Body : View
     func body(content: Self.Content) -> Self.Body
     typealias Content = _ViewModifier_Content<Self>
-    
-    var _baseProperty: _ViewBaseProperties? { get }
 }
 
 extension ViewModifier where Body == Never {

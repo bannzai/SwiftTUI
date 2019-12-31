@@ -12,7 +12,7 @@ import Foundation
     internal let height: PhysicalDistance?
     public typealias Body = Swift.Never
     
-    public var _baseProperty: _ViewBaseProperties? = _ViewBaseProperties()
+    internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
 extension View {
@@ -27,6 +27,7 @@ extension View {
     }
 }
 
+extension _FrameLayout: Primitive { }
 extension _FrameLayout: _ViewModifier {
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
         // TODO:
@@ -40,7 +41,7 @@ extension _FrameLayout: _ViewModifier {
         var size = visitor.visit(view, with: argument.change(proposedSize: proposedSize))
         width.map { width in size.width = min(width, size.width) }
         height.map { height in size.height = min(height, size.height) }
-        _baseProperty?.rect.size = size
+        _baseProperty.rect.size = size
         return size
     }
 }

@@ -35,11 +35,6 @@ extension ViewBuilder {
         init(storage: Container) {
             self.storage = storage
         }
-        
-        public var _baseProperty: _ViewBaseProperties? {
-            storage.body._baseProperty
-        }
-        
     }
 
     /// Provides support for "if" statements in multi-statement closures, producing an `Optional` view

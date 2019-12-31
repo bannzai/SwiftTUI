@@ -15,8 +15,6 @@ import Foundation
         self.computeValue = computeValue
     }
     public typealias Body = Swift.Never
-    
-    public var _baseProperty: _ViewBaseProperties? = nil
 }
 
 extension View {

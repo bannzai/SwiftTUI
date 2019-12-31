@@ -9,7 +9,7 @@ import Foundation
 
 /// A View created from a swift tuple of View values.
 public struct TupleView<T> {
-    public var _baseProperty: _ViewBaseProperties? = _ViewBaseProperties()
+    internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
     
     public var value: T
 
@@ -18,7 +18,7 @@ public struct TupleView<T> {
     }
 }
 
-extension TupleView: View {
+extension TupleView: View, Primitive {
     public typealias Body = Never
 }
 
@@ -43,9 +43,9 @@ extension TupleView: ViewSizeAcceptable {
         var width: PhysicalDistance = 0
         var height: PhysicalDistance = 0
         let children = Mirror(reflecting: value).children
-        
-        _baseProperty?.rect.size.width = argument.proposedSize.width
-        _baseProperty?.rect.size.height = argument.proposedSize.height
+
+        _baseProperty.rect.size.width = argument.proposedSize.width
+        _baseProperty.rect.size.height = argument.proposedSize.height
         
         children.forEach { (element) in
             guard let value = element.value as? ViewSizeAcceptable else {
@@ -65,7 +65,7 @@ extension TupleView: ViewSizeAcceptable {
             }
         }
         let size = Size(width: width, height: height)
-        _baseProperty?.rect.size = size
+        _baseProperty.rect.size = size
         return size
     }
 }

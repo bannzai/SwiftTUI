@@ -14,7 +14,8 @@ public final class _TextBaseProperty: _ViewBaseProperties {
 /// A view that displays one or more lines of read-only text.
 public struct Text {
     let content: String
-    public var _baseProperty: _TextBaseProperty? = _TextBaseProperty()
+    internal var _baseProperty: _ViewBaseProperties = _TextBaseProperty()
+    internal var _textProperty: _TextBaseProperty { _baseProperty as! _TextBaseProperty }
     /// Creates an instance that displays `content` verbatim.
     @inlinable public init(verbatim content: String) {
         self.init(content)
@@ -27,6 +28,7 @@ public struct Text {
 
 }
 
+extension Text: Primitive { }
 extension Text: Equatable {
     public static func == (lhs: Text, rhs: Text) -> Bool {
         return lhs.content == rhs.content
@@ -45,7 +47,7 @@ extension Text: View {
 
 extension Text: ViewContentAcceptable {
     internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
-        _baseProperty?.foregroundColor.map(visitor.driver.setForegroundColor)
+        _textProperty.foregroundColor.map(visitor.driver.setForegroundColor)
         defer { visitor.driver.restoreForegroundColor() }
         visitor.driver.add(string: content)
     }
@@ -53,7 +55,7 @@ extension Text: ViewContentAcceptable {
 extension Text: ViewSizeAcceptable {
     internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
         let size = Size(width: content.width, height: content.filter { $0 == "\n" }.count + 1)
-        _baseProperty?.rect.size = size
+        _textProperty.rect.size = size
         return size
     }
 }
@@ -66,7 +68,7 @@ extension Text {
     /// - Parameter color: The color to use when displaying this text.
     /// - Returns: Text that uses the color value you supply.
     public func foregroundColor(_ color: Color) -> Text {
-        _baseProperty?.foregroundColor = color
+        _textProperty.foregroundColor = color
         return self
     }
 

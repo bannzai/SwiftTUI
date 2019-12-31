@@ -18,7 +18,6 @@ public struct Font: Hashable {
 
 extension Font: View {
     public typealias Body = Never
-    public var _baseProperty: _ViewBaseProperties? { nil }
 }
 
 // MARK: - Font.Weight

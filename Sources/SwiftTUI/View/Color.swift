@@ -44,9 +44,6 @@ public enum Color: Hashable {
 }
 
 extension Color: View {
-    public var _baseProperty: _ViewBaseProperties? {
-        return nil
-    }
     public typealias Body = Never
 }
 

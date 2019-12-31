@@ -9,7 +9,4 @@ import Foundation
 
 extension Never: View {
     public typealias Body = Never
-    public var _baseProperty: _ViewBaseProperties? {
-        fatalError()
-    }
 }

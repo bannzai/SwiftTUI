@@ -16,9 +16,6 @@ import Foundation
         )
     }
     public typealias Body = Swift.Never
-    public var _baseProperty: _ViewBaseProperties? {
-        _ViewBaseProperties()
-    }
 }
 
 extension VStack: ViewContentAcceptable {

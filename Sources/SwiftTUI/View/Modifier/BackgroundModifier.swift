@@ -13,8 +13,7 @@ import Foundation
         self.background = background
     }
     public typealias Body = Swift.Never
-    
-    public var _baseProperty: _ViewBaseProperties? = _ViewBaseProperties()
+    internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
 extension _BackgroundModifier : Swift.Equatable where Background : Swift.Equatable {
@@ -29,7 +28,7 @@ extension View {
     }
 }
 
-extension _BackgroundModifier: _ViewModifier {
+extension _BackgroundModifier: _ViewModifier, Primitive {
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
         switch background {
         case let color as Color:
@@ -41,7 +40,7 @@ extension _BackgroundModifier: _ViewModifier {
     
     func visit<View: SwiftTUI.View, Visitor: ViewSizeVisitor>(view: View, visitor: Visitor, with argument: ViewSizeVisitor.Argument) -> Visitor.VisitResult {
         let size = visitor.visit(view, with: argument)
-        _baseProperty?.rect.size = size
+        _baseProperty.rect.size = size
         return size
     }
 }

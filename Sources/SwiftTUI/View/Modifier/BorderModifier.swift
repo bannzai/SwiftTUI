@@ -16,7 +16,7 @@ import Foundation
     }
     public typealias Body = Swift.Never
     
-    public var _baseProperty: _ViewBaseProperties? = _ViewBaseProperties()
+    internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
 extension _BorderModifier: Swift.Equatable where Target: Swift.Equatable {
@@ -29,6 +29,8 @@ extension View {
         modifier(_BorderModifier(target: self, border: Border(color: color, width: width, directionType: direction)))
     }
 }
+
+extension _BorderModifier: Primitive { }
 
 extension _BorderModifier: _ViewModifier {
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
@@ -44,7 +46,7 @@ extension _BorderModifier: _ViewModifier {
         var size = contentSize
         size.width += border.width * 2
         size.height += border.width * 2
-        _baseProperty?.rect.size = size
+        _baseProperty.rect.size = size
         
         return size
     }

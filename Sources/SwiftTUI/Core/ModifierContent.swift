@@ -60,7 +60,6 @@ extension ModifiedContent: ViewSizeAcceptable {
 
 extension ModifiedContent: View {
     public typealias Body = Swift.Never
-    public var _baseProperty: _ViewBaseProperties? { nil }
 }
 
 extension View {

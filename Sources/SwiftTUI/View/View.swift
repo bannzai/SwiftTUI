@@ -35,6 +35,10 @@ public class _ViewBaseProperties {
     internal var border: Border? = nil
 }
 
+internal protocol Primitive {
+    var _baseProperty: _ViewBaseProperties { get }
+}
+
 /// A piece of user interface.
 ///
 /// You create custom views by declaring types that conform to the `View`
@@ -42,8 +46,6 @@ public class _ViewBaseProperties {
 /// and behavior for your custom view.
 public protocol View {
     
-    var _baseProperty: _ViewBaseProperties? { get }
-
     /// The type of view representing the body of this view.
     ///
     /// When you create a custom view, Swift infers this type from your
@@ -58,8 +60,4 @@ extension View where Self.Body == Never {
     public var body: Self.Body {
         fatalError("Body is never")
     }
-}
-
-extension View {
-    public var _baseProperty: _ViewBaseProperties? { _ViewBaseProperties() }
 }
