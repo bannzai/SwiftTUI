@@ -42,21 +42,30 @@ extension TupleView: ViewSizeAcceptable {
     internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
         switch argument.listOption {
         case .vertical:
-            var totalElementHeight: PhysicalDistance = 0
+            let children = Mirror(reflecting: value).children
+            var allocableHeight: PhysicalDistance = argument.proposedSize.height / (children.count - 1) * argument.space
             var maxElementWidth = argument.proposedSize.width
-            Mirror(reflecting: value).children.enumerated().forEach { (offset, element) in
+            children.enumerated().forEach { (offset, element) in
                 guard let value = element.value as? ViewSizeAcceptable else {
                     return
                 }
                 
-                let proposedSizedArgument = argument.change(proposedSize: Size(width: argument.proposedSize.width, height: argument.proposedSize.height - max(totalElementHeight, 0)))
+                let provisionalElementHeight: PhysicalDistance = allocableHeight / (children.count - offset)
+                let proposedSizedArgument = argument.change(proposedSize: Size(width: argument.proposedSize.width, height: max(provisionalElementHeight, 0)))
                 let size = value.accept(visitor: visitor, with: proposedSizedArgument)
                 maxElementWidth = max(maxElementWidth, size.width)
-                totalElementHeight += size.height
+                allocableHeight -= size.height
             }
             
+            switch allocableHeight {
+            case let allocableHeight where allocableHeight < 0:
+                _baseProperty.rect.size.height = argument.proposedSize.height + abs(allocableHeight)
+            case let allocableHeight where allocableHeight > 0:
+                _baseProperty.rect.size.height = argument.proposedSize.height - allocableHeight
+            case _:
+                _baseProperty.rect.size.height = argument.proposedSize.height
+            }
             _baseProperty.rect.size.width = maxElementWidth
-            _baseProperty.rect.size.height = totalElementHeight
             return _baseProperty.rect.size
         case .horizontal:
             fatalError("TODO: Implement")

@@ -16,7 +16,7 @@ internal protocol ContainerViewAlignmentAcceptable {
 }
 
 internal final class ViewAlignmentVisitor: Visitor {
-    internal typealias VisitResult = Size
+    internal typealias VisitResult = Alignment
     internal init() { }
     
     internal var containerAlignment: Alignment = .default
@@ -39,6 +39,6 @@ internal final class ViewAlignmentVisitor: Visitor {
 extension ViewAlignmentVisitor {
     internal struct Argument {
         internal var listOption: ViewVisitorListOption
-        internal var space: PhysicalDistance
+        internal var space: Alignment
     }
 }
