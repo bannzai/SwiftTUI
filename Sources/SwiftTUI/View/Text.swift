@@ -53,8 +53,17 @@ extension Text: ViewContentAcceptable {
     }
 }
 extension Text: ViewSizeAcceptable {
+    private func calcTextSize(proposedWidth: PhysicalDistance) -> Size {
+        let baseHeight = content.filter { $0 == "\n" }.count + 1
+        let width = content.width
+        if width > proposedWidth {
+            let lineBreakCount = width / proposedWidth
+            return Size(width: width, height: baseHeight + lineBreakCount)
+        }
+        return Size(width: width, height: baseHeight)
+    }
     internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
-        let size = Size(width: content.width, height: content.filter { $0 == "\n" }.count + 1)
+        let size = calcTextSize(proposedWidth: argument.proposedSize.width)
         _textProperty.rect.size = size
         return size
     }
