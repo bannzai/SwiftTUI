@@ -120,9 +120,12 @@ extension HostViewController: Drawable, DrawableDriver {
     
     func draw() {
         resetContent()
-        let visitor = ViewContentVisitor(driver: self)
-        visitor.visit(root)
-        debugLogger.debug(userInfo: drawnContent)
+        
+        configureView: do {
+            let visitor = ViewContentVisitor(driver: self)
+            visitor.visit(root)
+            debugLogger.debug(userInfo: drawnContent)
+        }
         cncurses.refresh()
     }
 }
