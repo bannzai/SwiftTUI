@@ -1,5 +1,5 @@
 //
-//  ViewPositionVisitor.swift
+//  ViewAlignmentVisitor.swift
 //  SwiftTUI
 //
 //  Created by Yudai.Hirose on 2019/12/31.
@@ -7,15 +7,15 @@
 
 import Foundation
 
-internal protocol ViewPositionAcceptable {
-    func accept(visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult
+internal protocol ViewAlignmentAcceptable {
+    func accept(visitor: ViewAlignmentVisitor) -> ViewAlignmentVisitor.VisitResult
 }
 
-internal protocol ContainerViewPositionAcceptable {
-    func accept(visitor: ViewPositionVisitor, with argument: ViewPositionVisitor.Argument) -> ViewPositionVisitor.VisitResult
+internal protocol ContainerViewAlignmentAcceptable {
+    func accept(visitor: ViewAlignmentVisitor, with argument: ViewAlignmentVisitor.Argument) -> ViewAlignmentVisitor.VisitResult
 }
 
-internal final class ViewPositionVisitor: Visitor {
+internal final class ViewAlignmentVisitor: Visitor {
     internal typealias VisitResult = Size
     internal init() { }
     
@@ -26,9 +26,9 @@ internal final class ViewPositionVisitor: Visitor {
     internal func visit<T: View>(_ content: T, with argument: Argument) -> VisitResult {
         debugLogger.debug()
         switch content {
-        case let acceptable as ContainerViewPositionAcceptable:
+        case let acceptable as ContainerViewAlignmentAcceptable:
             return acceptable.accept(visitor: self, with: argument)
-        case let acceptable as ViewPositionAcceptable:
+        case let acceptable as ViewAlignmentAcceptable:
             return acceptable.accept(visitor: self)
         case _:
             return visit(content.body, with: argument)
@@ -36,7 +36,7 @@ internal final class ViewPositionVisitor: Visitor {
     }
 }
 
-extension ViewPositionVisitor {
+extension ViewAlignmentVisitor {
     internal struct Argument {
         internal var listOption: ViewVisitorListOption
         internal var space: PhysicalDistance
