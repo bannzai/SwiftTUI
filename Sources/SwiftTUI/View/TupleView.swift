@@ -43,29 +43,30 @@ extension TupleView: ViewSizeAcceptable {
         var width: PhysicalDistance = 0
         var height: PhysicalDistance = 0
         let children = Mirror(reflecting: value).children
-
+        
         _baseProperty.rect.size.width = argument.proposedSize.width
         _baseProperty.rect.size.height = argument.proposedSize.height
         
-        children.forEach { (element) in
-            guard let value = element.value as? ViewSizeAcceptable else {
-                return
+        switch argument.listOption {
+        case .vertical:
+            var totalElementHeight: PhysicalDistance = 0
+            var maxElementWidth = _baseProperty.rect.size.width
+            children.enumerated().forEach { (offset, element) in
+                guard let value = element.value as? ViewSizeAcceptable else {
+                    return
+                }
+                
+                let proposedSizedArgument = argument.change(proposedSize: Size(width: argument.proposedSize.width, height: _baseProperty.rect.size.height - max(totalElementHeight, 0)))
+                let size = value.accept(visitor: visitor, with: proposedSizedArgument)
+                maxElementWidth = max(maxElementWidth, size.width)
+                totalElementHeight += size.height
             }
             
-            let size = value.accept(visitor: visitor, with: argument)
-            switch argument.listOption {
-            case .vertical:
-                width = max(width, size.width)
-                height += size.height
-                height += argument.space
-            case .horizontal:
-                height = max(height, size.height)
-                width += size.width
-                width += argument.space
-            }
+            _baseProperty.rect.size.width = maxElementWidth
+            _baseProperty.rect.size.height = totalElementHeight
+            return _baseProperty.rect.size
+        case .horizontal:
+            fatalError("TODO: Implement")
         }
-        let size = Size(width: width, height: height)
-        _baseProperty.rect.size = size
-        return size
     }
 }
