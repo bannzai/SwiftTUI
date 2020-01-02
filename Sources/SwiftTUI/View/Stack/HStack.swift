@@ -37,6 +37,12 @@ extension HStack: ViewSizeAcceptable {
     }
 }
 
+extension HStack: ViewGraphSetAcceptable {
+    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        visitor.visit(view: tree)
+    }
+}
+
 @frozen public struct _HStackLayout {
   public var alignment: VerticalAlignment
   public var spacing: PhysicalDistance?

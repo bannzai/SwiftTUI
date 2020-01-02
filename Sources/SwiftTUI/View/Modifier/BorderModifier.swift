@@ -30,7 +30,8 @@ extension View {
     }
 }
 
-extension _BorderModifier: Primitive {
+extension _BorderModifier: Primitive  { }
+extension _BorderModifier: ViewGraphSetAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor)
     }

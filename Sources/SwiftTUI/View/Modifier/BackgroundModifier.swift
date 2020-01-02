@@ -28,7 +28,8 @@ extension View {
     }
 }
 
-extension _BackgroundModifier: Primitive {
+extension _BackgroundModifier: Primitive { }
+extension _BackgroundModifier: ViewGraphSetAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor)
     }

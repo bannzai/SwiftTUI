@@ -27,7 +27,8 @@ extension View {
     }
 }
 
-extension _FrameLayout: Primitive {
+extension _FrameLayout: Primitive { }
+extension _FrameLayout: ViewGraphSetAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor)
     }

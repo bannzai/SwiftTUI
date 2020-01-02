@@ -38,6 +38,12 @@ extension VStack: ViewSizeAcceptable {
     }
 }
 
+extension VStack: ViewGraphSetAcceptable {
+    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        visitor.visit(view: tree)
+    }
+}
+
 @frozen public struct _VStackLayout {
     @usableFromInline internal var alignment: HorizontalAlignment
     @usableFromInline internal var spacing: PhysicalDistance?

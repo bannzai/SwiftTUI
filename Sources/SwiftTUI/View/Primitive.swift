@@ -7,11 +7,11 @@
 
 import Foundation
 
-internal protocol Primitive {
+internal protocol ViewGraphSetAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }
 
-extension Primitive {
+extension ViewGraphSetAcceptable where Self: Primitive {
     func _accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraph(view: self)
         graph.parent = visitor.current
@@ -20,11 +20,11 @@ extension Primitive {
     }
 }
 
-internal protocol ContainerPrimitive: Primitive {
+internal protocol ContainerViewGraphSetAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }
 
-extension ContainerPrimitive {
+extension ContainerViewGraphSetAcceptable where Self: Primitive {
     func _accept<T>(visitor: ViewGraphSetVisitor, value: T) -> ViewGraph {
         let graph = ViewGraph(view: self)
         graph.parent = visitor.current
@@ -41,4 +41,12 @@ extension ContainerPrimitive {
         }
         return graph
     }
+}
+
+internal protocol Primitive {
+    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
+}
+
+internal protocol ContainerPrimitive: ViewGraphSetAcceptable {
+    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }

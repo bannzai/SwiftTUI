@@ -52,3 +52,9 @@ extension VariadicView.Tree: ViewContentAcceptable {
         fatalError("Unexpected variadic tree type of \(type(of:root))")
     }
 }
+
+extension VariadicView.Tree: ViewGraphSetAcceptable {
+    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        visitor.visit(view: content)
+    }
+}
