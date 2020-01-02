@@ -47,6 +47,19 @@ class ViewContentVisitorTests: XCTestCase {
     }
 
     func testViewContentVisitor() {
+        XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>, CustomView<Text>>") { (_) in
+            let view = CustomView(body: VStack {
+                CustomView(body: Text("123"))
+                CustomView(body: Text("456"))
+            })
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            visitor.visit(view)
+            let result = driver.content()
+            XCTAssertTrue(result.contains("123"))
+            XCTAssertTrue(result.contains("\n"))
+            XCTAssertTrue(result.contains("456"))
+        }
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>>") { (_) in
             let view = CustomView(body: VStack { CustomView(body: Text("123")) } )
             let driver = Driver()
