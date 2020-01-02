@@ -56,7 +56,7 @@ extension ViewBuilder._ConditionalContent: ViewContentAcceptable {
     }
 }
 extension ViewBuilder._ConditionalContent: _ViewSizeAcceptable {
-    internal func accept<V: ViewSizeVisitor>(visitor: V, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
+    internal func accept<V: _ViewSizeVisitor>(visitor: V, with argument: _ViewSizeVisitor.Argument) -> _ViewSizeVisitor.VisitResult {
         visitor.visit(storage.body, with: argument)
     }
 }

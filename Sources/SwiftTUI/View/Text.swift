@@ -67,7 +67,7 @@ extension Text: _ViewSizeAcceptable {
         }
         return Size(width: width, height: baseHeight)
     }
-    internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
+    internal func accept(visitor: _ViewSizeVisitor, with argument: _ViewSizeVisitor.Argument) -> _ViewSizeVisitor.VisitResult {
         let size = calcTextSize(proposedWidth: argument.proposedSize.width)
         _textProperty.rect.size = size
         return size

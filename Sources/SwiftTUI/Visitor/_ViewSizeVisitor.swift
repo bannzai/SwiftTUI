@@ -8,10 +8,10 @@
 import Foundation
 
 internal protocol _ViewSizeAcceptable {
-    func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult
+    func accept(visitor: _ViewSizeVisitor, with argument: _ViewSizeVisitor.Argument) -> _ViewSizeVisitor.VisitResult
 }
 
-internal final class ViewSizeVisitor: Visitor {
+internal final class _ViewSizeVisitor: Visitor {
     internal typealias VisitResult = Size
     internal init() { }
     
@@ -27,7 +27,7 @@ internal final class ViewSizeVisitor: Visitor {
     }
 }
 
-extension ViewSizeVisitor {
+extension _ViewSizeVisitor {
     internal struct Argument {
         internal var listOption: ViewVisitorListOption
         internal var space: PhysicalDistance

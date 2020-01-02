@@ -45,7 +45,7 @@ extension TupleView: ContainerViewGraphSetAcceptable {
 }
 
 extension TupleView: _ViewSizeAcceptable {
-    internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
+    internal func accept(visitor: _ViewSizeVisitor, with argument: _ViewSizeVisitor.Argument) -> _ViewSizeVisitor.VisitResult {
         switch argument.listOption {
         case .vertical:
             let children = Mirror(reflecting: value).children

@@ -28,7 +28,7 @@ extension HStack: ViewContentAcceptable {
     }
 }
 extension HStack: _ViewSizeAcceptable {
-    internal func accept<V: ViewSizeVisitor>(visitor: V, with argument: ViewSizeVisitor.Argument) -> V.VisitResult {
+    internal func accept<V: _ViewSizeVisitor>(visitor: V, with argument: _ViewSizeVisitor.Argument) -> V.VisitResult {
         let keepAlignment = visitor.containerAlignment
         defer {
             visitor.containerAlignment = keepAlignment

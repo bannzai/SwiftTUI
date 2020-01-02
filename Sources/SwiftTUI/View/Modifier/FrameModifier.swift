@@ -32,7 +32,7 @@ extension _FrameLayout: _ViewModifier {
         // TODO:
     }
     
-    func visit<View: SwiftTUI.View, Visitor: ViewSizeVisitor>(view: View, visitor: Visitor, with argument: ViewSizeVisitor.Argument) -> Visitor.VisitResult {
+    func visit<View: SwiftTUI.View, Visitor: _ViewSizeVisitor>(view: View, visitor: Visitor, with argument: _ViewSizeVisitor.Argument) -> Visitor.VisitResult {
         var proposedSize = argument.proposedSize
         width.map { width in proposedSize.width = min(width, proposedSize.width) }
         height.map { height in proposedSize.height = min(height, proposedSize.height) }

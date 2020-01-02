@@ -44,7 +44,7 @@ extension ModifiedContent: ViewContentAcceptable {
 }
 
 extension ModifiedContent: _ViewSizeAcceptable {
-    internal func accept<V: ViewSizeVisitor>(visitor: V, with argument: ViewSizeVisitor.Argument) -> V.VisitResult {
+    internal func accept<V: _ViewSizeVisitor>(visitor: V, with argument: _ViewSizeVisitor.Argument) -> V.VisitResult {
         debugLogger.debug()
         if let _modifier = modifier as? _ViewModifier {
             return _modifier.visit(view: content, visitor: visitor, with: argument)
