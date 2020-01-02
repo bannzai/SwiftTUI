@@ -63,7 +63,7 @@ extension ModifiedContent: View {
 }
 
 extension ModifiedContent: Primitive { }
-extension ModifiedContent: ViewGraphSetAcceptable {
+extension ModifiedContent: ViewGraphSetAttributeAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor)
     }

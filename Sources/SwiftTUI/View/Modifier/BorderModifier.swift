@@ -30,13 +30,6 @@ extension View {
     }
 }
 
-extension _BorderModifier: Primitive  { }
-extension _BorderModifier: ViewGraphSetAcceptable {
-    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        _accept(visitor: visitor)
-    }
-}
-
 extension _BorderModifier: _ViewModifier {
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
         // TODO:
