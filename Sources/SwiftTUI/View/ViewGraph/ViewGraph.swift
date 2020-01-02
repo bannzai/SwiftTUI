@@ -61,3 +61,9 @@ public final class ViewGraphSetVisitor {
         }
     }
 }
+
+extension ViewGraph: ViewRectSetAcceptable {
+    func accept(visitor: ViewRectSetVisitor, with argument: ViewRectSetVisitor.Argument) -> ViewRectSetVisitor.VisitResult {
+        
+    }
+}

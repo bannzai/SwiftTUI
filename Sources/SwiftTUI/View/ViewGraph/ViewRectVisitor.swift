@@ -12,18 +12,13 @@ internal protocol ViewRectSetAcceptable {
 }
 
 internal final class ViewRectSetVisitor: Visitor {
-    internal typealias VisitResult = Size
+    internal typealias VisitResult = Rect
     internal init() { }
     
     internal var containerAlignment: Alignment = .default
-    internal func visit<T: View>(_ content: T, with argument: Argument) -> VisitResult {
+    internal func visit(content: ViewGraph, with argument: Argument) -> VisitResult {
         debugLogger.debug()
-        switch content {
-        case let acceptable as ViewRectSetAcceptable:
-            return acceptable.accept(visitor: self, with: argument)
-        case _:
-            return visit(content.body, with: argument)
-        }
+        return content.accept(visitor: self, with: argument)
     }
 }
 
