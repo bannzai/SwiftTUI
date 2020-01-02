@@ -11,10 +11,8 @@ import Runtime
 @testable import SwiftTUI
 
 class ViewContentVisitorTests: XCTestCase {
-    struct CustomView: View {
-        var body: some View {
-            EmptyView()
-        }
+    struct CustomView<Target: View>: View {
+        let body: Target
     }
     
     class Driver: DrawableDriver {
@@ -49,8 +47,8 @@ class ViewContentVisitorTests: XCTestCase {
     }
 
     func testViewContentVisitor() {
-        XCTContext.runActivity(named: "when CustomView") { (_) in
-            let view = CustomView()
+        XCTContext.runActivity(named: "when CustomView has EmptyView") { (_) in
+            let view = CustomView(body: EmptyView())
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             visitor.visit(view)
