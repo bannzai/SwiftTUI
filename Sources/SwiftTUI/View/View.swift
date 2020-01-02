@@ -54,6 +54,7 @@ public protocol View: ViewGraphSetAcceptable {
 
 extension View {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        assert(!(self is Primitive), "This method call from Primitive type")
         let graph = _ViewGraph(view: self)
         visitor.current?.addChild(graph)
         let keepCurrent = visitor.current
