@@ -22,9 +22,9 @@ extension Terminal {
     static internal func _colorize(color: Color.Value, content: SwiftTUIContentType) -> SwiftTUIContentType {
         return ColorDecorate.start + "\(color)" + "m" + content + ColorDecorate.end
     }
-    static dynamic internal func colorize(color: Color.Value, content: SwiftTUIContentType) -> SwiftTUIContentType {
-        _colorize(color: color, content: content)
-    }
+//    static dynamic internal func colorize(color: Color.Value, content: SwiftTUIContentType) -> SwiftTUIContentType {
+//        _colorize(color: color, content: content)
+//    }
 }
 
 // MARK: - IO

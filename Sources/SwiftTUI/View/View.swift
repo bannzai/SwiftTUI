@@ -9,11 +9,11 @@ import Foundation
 
 public let defaultBorderWidth: PhysicalDistance = 1
 public struct Border {
-    public let color: Color
-    public let width: PhysicalDistance
-    public let directionType: DirectionType
+    internal var color: Color
+    internal var width: PhysicalDistance
+    internal var directionType: DirectionType
     
-    @inlinable public init(color: Color, width: PhysicalDistance, directionType: DirectionType) {
+    public init(color: Color, width: PhysicalDistance, directionType: DirectionType) {
         self.color = color
         self.width = width
         self.directionType = directionType

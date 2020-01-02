@@ -1,16 +1,23 @@
 import SwiftTUI
 import Foundation
 import cncurses
+import Runtime
 
-let hostViewController = HostViewController(root:
-    VStack {
-        Text("Hello")
-            .foregroundColor(.red)
-        Text(", ")
-        Text("World")
-            .background(Color.blue)
+struct ContentView: View {
+    var body: some View {
+        VStack {
+            Text("Hello")
+                .foregroundColor(.red)
+            Text(", ")
+            Text("World")
+                .background(Color.blue)
+        }
     }
-)
+}
+let view = ContentView()
+let hostViewController = HostViewController(root: view)
+typeInfo(of: )
+
 
 Application(viewController: hostViewController).run()
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct EmptyView {
+@frozen public struct EmptyView {
     @inlinable public init() { }
 }
 

@@ -8,8 +8,8 @@
 import Foundation
 
 /// An affordance for grouping view content.
-public struct Group<Content: View>: View {
-    public let content: Content
+@frozen public struct Group<Content: View>: View {
+    @usableFromInline internal var content: Content
     
     public typealias Body = Never
     
