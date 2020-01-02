@@ -55,6 +55,14 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             XCTAssertEqual(result, "")
         }
+        XCTContext.runActivity(named: "when CustomView has VStack<Text>") { (_) in
+            let view = CustomView(body: VStack { Text("123") } )
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            visitor.visit(view)
+            let result = driver.content()
+            XCTAssertEqual(result, "123")
+        }
         XCTContext.runActivity(named: "when Text with content") { (_) in
             let view = Text("hoge")
             let driver = Driver()
