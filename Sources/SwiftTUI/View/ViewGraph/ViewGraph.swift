@@ -11,26 +11,37 @@ internal final class ViewGraph {
     internal typealias View = Primitive
 
     internal weak var parent: ViewGraph?
-    internal var children: [ViewGraph] = []
+    internal var children: Set<ViewGraph> = []
     
     internal weak var beforeRelation: ViewGraph?
     internal var afterRelation: ViewGraph?
     
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     
-    internal var view: View
+    internal lazy var identifier: ObjectIdentifier = .init(self)
+    internal let view: View
     internal init(view: View) {
         self.view = view
     }
     
     func addChild(_ node: ViewGraph) {
-        children.append(node)
+        children.insert(node)
         node.parent = self
     }
     
     func addRelation(_ node: ViewGraph) {
         afterRelation = node
         node.beforeRelation = self
+    }
+}
+
+extension ViewGraph: Hashable {
+    internal func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
+    
+    internal static func == (lhs: ViewGraph, rhs: ViewGraph) -> Swift.Bool {
+        lhs.identifier == rhs.identifier
     }
 }
 
