@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal class AnyViewStorageBase: View, ViewContentAcceptable, ViewSizeAcceptable {
+internal class AnyViewStorageBase: View, ViewContentAcceptable, _ViewSizeAcceptable {
     internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
         fatalError("Should override this method to subclass")
     }

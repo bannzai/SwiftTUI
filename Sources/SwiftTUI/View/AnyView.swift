@@ -43,7 +43,7 @@ extension AnyView: ViewContentAcceptable {
         storage.accept(visitor: visitor)
     }
 }
-extension AnyView: ViewSizeAcceptable {
+extension AnyView: _ViewSizeAcceptable {
     internal func accept<V: ViewSizeVisitor>(visitor: V, with argument: ViewSizeVisitor.Argument) -> V.VisitResult {
         storage.accept(visitor: visitor, with: argument)
     }

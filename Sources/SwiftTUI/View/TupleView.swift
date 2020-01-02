@@ -38,7 +38,7 @@ extension TupleView: ContainerViewContentAcceptable {
     }
 }
 
-extension TupleView: ViewSizeAcceptable {
+extension TupleView: _ViewSizeAcceptable {
     internal func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
         switch argument.listOption {
         case .vertical:
@@ -46,7 +46,7 @@ extension TupleView: ViewSizeAcceptable {
             var allocableHeight: PhysicalDistance = argument.proposedSize.height / (children.count - 1) * argument.space
             var maxElementWidth = argument.proposedSize.width
             children.enumerated().forEach { (offset, element) in
-                guard let value = element.value as? ViewSizeAcceptable else {
+                guard let value = element.value as? _ViewSizeAcceptable else {
                     return
                 }
                 

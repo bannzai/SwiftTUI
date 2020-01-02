@@ -57,7 +57,7 @@ extension Text: ViewContentAcceptable {
         visitor.driver.add(string: content)
     }
 }
-extension Text: ViewSizeAcceptable {
+extension Text: _ViewSizeAcceptable {
     private func calcTextSize(proposedWidth: PhysicalDistance) -> Size {
         let baseHeight = content.filter { $0 == "\n" }.count + 1
         let width = content.width

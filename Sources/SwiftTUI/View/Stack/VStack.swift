@@ -24,7 +24,7 @@ extension VStack: ViewContentAcceptable {
     }
 }
 
-extension VStack: ViewSizeAcceptable {
+extension VStack: _ViewSizeAcceptable {
     internal func accept<V: ViewSizeVisitor>(visitor: V, with argument: ViewSizeVisitor.Argument) -> V.VisitResult {
         let keepAlignment = visitor.containerAlignment
         defer {
