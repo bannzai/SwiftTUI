@@ -28,24 +28,3 @@ public protocol _VariadicView_Root {
     // TODO:
     static var _viewListOptions: ViewVisitorListOption { get }
 }
-
-extension VariadicView.Tree: ViewContentAcceptable {
-    internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
-        let option = Root._viewListOptions
-        if let horizontal = root as? _HStackLayout {
-            let keepAlignment = visitor.containerAlignment
-            visitor.containerAlignment.vertical = horizontal.alignment
-            visitor.visit(content, with: option)
-            visitor.containerAlignment = keepAlignment
-            return
-        }
-        
-        fatalError("Unexpected variadic tree type of \(type(of:root))")
-    }
-}
-
-extension VariadicView.Tree: ViewGraphSetAcceptable {
-    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        visitor.visit(view: content)
-    }
-}

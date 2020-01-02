@@ -20,7 +20,11 @@ import Foundation
 
 extension HStack: ViewContentAcceptable {
     internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
-        visitor.visit(tree)
+        let option = _HStackLayout._viewListOptions
+        let keepAlignment = visitor.containerAlignment
+        visitor.containerAlignment.vertical = tree.root.alignment
+        visitor.visit(tree.content, with: option)
+        visitor.containerAlignment = keepAlignment
     }
 }
 extension HStack: _ViewSizeAcceptable {
