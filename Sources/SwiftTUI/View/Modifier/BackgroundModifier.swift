@@ -28,13 +28,6 @@ extension View {
     }
 }
 
-extension _BackgroundModifier: Primitive { }
-extension _BackgroundModifier: ViewGraphSetAcceptable {
-    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        _accept(visitor: visitor)
-    }
-}
-
 extension _BackgroundModifier: _ViewModifier {
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
         switch background {

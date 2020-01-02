@@ -62,6 +62,14 @@ extension ModifiedContent: View {
     public typealias Body = Swift.Never
 }
 
+extension ModifiedContent: Primitive { }
+extension ModifiedContent: ViewGraphSetAcceptable {
+    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        _accept(visitor: visitor)
+    }
+}
+
+
 extension View {
     @inlinable public func modifier<T: ViewModifier>(_ modifier: T) -> ModifiedContent<Self, T> {
         return .init(content: self, modifier: modifier)
