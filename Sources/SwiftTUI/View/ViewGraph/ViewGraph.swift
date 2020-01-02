@@ -36,6 +36,7 @@ internal final class ViewGraph {
 
 internal final class ViewGraphSetVisitor {
     internal var current: ViewGraph? = nil
+    
     internal func visit<T: View>(view: T) -> ViewGraph {
         switch view {
         case let tuple as ContainerViewGraphSetAcceptable:
