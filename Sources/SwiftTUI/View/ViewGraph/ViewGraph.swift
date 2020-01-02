@@ -34,7 +34,6 @@ public final class _ViewGraph<View: SwiftTUI.View>: ViewGraph {
     internal init(view: View) {
         self.view = view
     }
-    
 }
 
 extension ViewGraph: Hashable {
