@@ -54,7 +54,13 @@ public protocol View: ViewGraphSetAcceptable {
 
 extension View {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        body.accept(visitor: visitor)
+        let graph = _ViewGraph(view: self)
+        visitor.current?.addChild(graph)
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = graph
+        graph.addChild(body.accept(visitor: visitor))
+        return graph
     }
 }
 
