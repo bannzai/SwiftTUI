@@ -35,17 +35,12 @@ public class _ViewBaseProperties {
     internal var border: Border? = nil
 }
 
-public protocol ViewProxy {
-    associatedtype BodyType: View
-    func callBody() -> BodyType
-}
-
 /// A piece of user interface.
 ///
 /// You create custom views by declaring types that conform to the `View`
 /// protocol. Implement the required `body` property to provide the content
 /// and behavior for your custom view.
-public protocol View: ViewProxy {
+public protocol View: ViewGraphSetAcceptable {
     
     /// The type of view representing the body of this view.
     ///
@@ -57,9 +52,16 @@ public protocol View: ViewProxy {
     var body: Self.Body { get }
 }
 
-extension View where Self.BodyType == Self.Body {
-    public func callBody() -> Self.BodyType {
-        body
+extension View {
+    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        assert(!(self is Primitive), "This method call from Primitive type")
+        let graph = _ViewGraph(view: self)
+        visitor.current?.addChild(graph)
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = graph
+        graph.addChild(body.accept(visitor: visitor))
+        return graph
     }
 }
 

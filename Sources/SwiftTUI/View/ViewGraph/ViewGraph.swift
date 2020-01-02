@@ -59,8 +59,6 @@ public final class ViewGraphSetVisitor {
             return modifier.accept(visitor: self)
         case let view as ViewGraphSetAcceptable:
             return view.accept(visitor: self)
-        case let customView as ViewProxy:
-            return customView.callBody()
         }
     }
 }
