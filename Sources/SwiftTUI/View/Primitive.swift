@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal protocol ViewGraphSetAcceptable {
+public protocol ViewGraphSetAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }
 
@@ -15,7 +15,7 @@ internal protocol ViewGraphSetAttributeAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }
 
-internal protocol ContainerViewGraphSetAcceptable {
+internal protocol ContainerViewGraphSetAcceptable  {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }
 
@@ -55,9 +55,13 @@ extension ContainerViewGraphSetAcceptable where Self: View {
 }
 
 internal protocol Primitive {
-    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
+    
 }
 
 internal protocol ContainerPrimitive {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
+}
+
+public func XXX() {
+    
 }

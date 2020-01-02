@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal class ViewGraph {
+public class ViewGraph {
     internal lazy var identifier: ObjectIdentifier = .init(self)
     
     internal weak var parent: ViewGraph?
@@ -29,7 +29,7 @@ internal class ViewGraph {
     }
 }
 
-internal final class _ViewGraph<View: SwiftTUI.View>: ViewGraph {
+public final class _ViewGraph<View: SwiftTUI.View>: ViewGraph {
     internal let view: View
     internal init(view: View) {
         self.view = view
@@ -38,17 +38,18 @@ internal final class _ViewGraph<View: SwiftTUI.View>: ViewGraph {
 }
 
 extension ViewGraph: Hashable {
-    internal func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
     }
     
-    internal static func == (lhs: ViewGraph, rhs: ViewGraph) -> Swift.Bool {
+    public static func == (lhs: ViewGraph, rhs: ViewGraph) -> Swift.Bool {
         lhs.identifier == rhs.identifier
     }
 }
 
-internal final class ViewGraphSetVisitor {
+public final class ViewGraphSetVisitor {
     internal var current: ViewGraph? = nil
+    internal init() { }
     
     internal func visit<T: View>(view: T) -> ViewGraph {
         switch view {
@@ -58,8 +59,6 @@ internal final class ViewGraphSetVisitor {
             return modifier.accept(visitor: self)
         case let view as ViewGraphSetAcceptable:
             return view.accept(visitor: self)
-        case _:
-            return visit(view: view.body)
         }
     }
 }

@@ -54,7 +54,7 @@ extension VariadicView.Tree: ViewContentAcceptable {
 }
 
 extension VariadicView.Tree: ViewGraphSetAcceptable {
-    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         visitor.visit(view: content)
     }
 }

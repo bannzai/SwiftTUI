@@ -38,7 +38,7 @@ extension HStack: _ViewSizeAcceptable {
 }
 
 extension HStack: ViewGraphSetAcceptable {
-    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         visitor.visit(view: tree)
     }
 }

@@ -39,7 +39,7 @@ extension VStack: _ViewSizeAcceptable {
 }
 
 extension VStack: ViewGraphSetAcceptable {
-    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         visitor.visit(view: tree)
     }
 }

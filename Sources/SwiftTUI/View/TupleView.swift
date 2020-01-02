@@ -11,7 +11,7 @@ import Foundation
 @frozen public struct TupleView<T> {
     internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
     
-    @usableFromInline internal var value: T
+    public var value: T
 
     @inlinable public init(_ value: T) {
         self.value = value
@@ -39,7 +39,7 @@ extension TupleView: ContainerViewContentAcceptable {
 }
 
 extension TupleView: ContainerViewGraphSetAcceptable {
-    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor, value: value)
     }
 }
