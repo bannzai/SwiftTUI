@@ -35,10 +35,6 @@ public class _ViewBaseProperties {
     internal var border: Border? = nil
 }
 
-internal protocol Primitive {
-    var _baseProperty: _ViewBaseProperties { get }
-}
-
 /// A piece of user interface.
 ///
 /// You create custom views by declaring types that conform to the `View`
