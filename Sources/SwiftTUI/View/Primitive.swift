@@ -19,9 +19,9 @@ internal protocol ContainerViewGraphSetAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }
 
-extension ViewGraphSetAcceptable where Self: Primitive {
+extension ViewGraphSetAcceptable where Self: View {
     func _accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        let graph = ViewGraph(view: self)
+        let graph = _ViewGraph(view: self)
         visitor.current?.addChild(graph)
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
@@ -30,30 +30,25 @@ extension ViewGraphSetAcceptable where Self: Primitive {
     }
 }
 
-extension ViewGraphSetAttributeAcceptable where Self: Primitive {
-    func _accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        let graph = ViewGraph(view: self)
-        visitor.current?.addRelation(graph)
-        let keepCurrent = visitor.current
-        defer { visitor.current = keepCurrent }
-        visitor.current = graph
-        return graph
-    }
-}
-
-extension ContainerViewGraphSetAcceptable where Self: Primitive {
+extension ContainerViewGraphSetAcceptable where Self: View {
     func _accept<T>(visitor: ViewGraphSetVisitor, value: T) -> ViewGraph {
-        let graph = ViewGraph(view: self)
+        let graph = _ViewGraph(view: self)
         visitor.current?.addChild(graph)
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
         
         Mirror(reflecting: value).children.forEach { (element) in
-            guard let value = element.value as? ContainerPrimitive else {
-                return
+            switch value {
+            case let tuple as ContainerViewGraphSetAcceptable:
+                graph.addChild(tuple.accept(visitor: visitor))
+            case let modifier as ViewGraphSetAttributeAcceptable:
+                graph.addChild(modifier.accept(visitor: visitor))
+            case let view as ViewGraphSetAcceptable:
+                graph.addChild(view.accept(visitor: visitor))
+            case _:
+                fatalError("TODO: Access original view")
             }
-            _ = value.accept(visitor: visitor)
         }
         return graph
     }
@@ -63,6 +58,6 @@ internal protocol Primitive {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }
 
-internal protocol ContainerPrimitive: ViewGraphSetAcceptable {
+internal protocol ContainerPrimitive {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }

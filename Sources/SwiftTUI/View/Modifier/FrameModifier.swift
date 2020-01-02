@@ -27,12 +27,6 @@ extension View {
     }
 }
 
-extension _FrameLayout: Primitive { }
-extension _FrameLayout: ViewGraphSetAcceptable {
-    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        _accept(visitor: visitor)
-    }
-}
 extension _FrameLayout: _ViewModifier {
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
         // TODO:

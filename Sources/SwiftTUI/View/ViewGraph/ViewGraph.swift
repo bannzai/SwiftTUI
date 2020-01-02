@@ -7,9 +7,9 @@
 
 import Foundation
 
-internal final class ViewGraph {
-    internal typealias View = Primitive
-
+internal class ViewGraph {
+    internal lazy var identifier: ObjectIdentifier = .init(self)
+    
     internal weak var parent: ViewGraph?
     internal var children: Set<ViewGraph> = []
     
@@ -17,22 +17,24 @@ internal final class ViewGraph {
     internal var afterRelation: ViewGraph?
     
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
+
+    internal func addChild(_ node: ViewGraph) {
+        children.insert(node)
+        node.parent = self
+    }
     
-    internal lazy var identifier: ObjectIdentifier = .init(self)
+    internal func addRelation(_ node: ViewGraph) {
+        afterRelation = node
+        node.beforeRelation = self
+    }
+}
+
+internal final class _ViewGraph<View: SwiftTUI.View>: ViewGraph {
     internal let view: View
     internal init(view: View) {
         self.view = view
     }
     
-    func addChild(_ node: ViewGraph) {
-        children.insert(node)
-        node.parent = self
-    }
-    
-    func addRelation(_ node: ViewGraph) {
-        afterRelation = node
-        node.beforeRelation = self
-    }
 }
 
 extension ViewGraph: Hashable {

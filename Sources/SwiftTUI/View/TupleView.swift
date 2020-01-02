@@ -38,21 +38,9 @@ extension TupleView: ContainerViewContentAcceptable {
     }
 }
 
-extension TupleView: ContainerPrimitive {
+extension TupleView: ContainerViewGraphSetAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        let graph = ViewGraph(view: self)
-        visitor.current?.addChild(graph)
-        let keepCurrent = visitor.current
-        defer { visitor.current = keepCurrent }
-        visitor.current = graph
-        
-        Mirror(reflecting: value).children.forEach { (element) in
-            guard let value = element.value as? ContainerPrimitive else {
-                return
-            }
-            _ = value.accept(visitor: visitor)
-        }
-        return graph
+        _accept(visitor: visitor, value: value)
     }
 }
 
