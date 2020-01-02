@@ -59,9 +59,5 @@ internal protocol Primitive {
 }
 
 internal protocol ContainerPrimitive {
-    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
-}
-
-public func XXX() {
     
 }
