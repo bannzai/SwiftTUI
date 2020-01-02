@@ -40,6 +40,8 @@ internal final class ViewGraphSetVisitor {
         switch view {
         case let tuple as ContainerViewGraphSetAcceptable:
             return tuple.accept(visitor: self)
+        case let modifier as ViewGraphSetAttributeAcceptable:
+            return modifier.accept(visitor: self)
         case let view as ViewGraphSetAcceptable:
             return view.accept(visitor: self)
         case _:
