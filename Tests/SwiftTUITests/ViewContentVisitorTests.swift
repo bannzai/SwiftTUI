@@ -46,8 +46,6 @@ class ViewContentVisitorTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        
-        Terminal.isDisableColorize = true
     }
 
     func testViewContentVisitor() {
@@ -92,7 +90,6 @@ class ViewContentVisitorTests: XCTestCase {
             XCTAssertEqual("123", result)
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, _BackgroundModifier<Text>>") { (_) in
-            Terminal.isDisableColorize = false
             let view = VStack {
                 Text("1")
                     .foregroundColor(.blue)
@@ -116,7 +113,6 @@ class ViewContentVisitorTests: XCTestCase {
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
         }
         XCTContext.runActivity(named: "when Double _BackgroundModifier. _BackgroundModifier<_BackgroundModifier<Text>>") { (_) in
-            Terminal.isDisableColorize = false
             let view = Text("1").background(Color.red).background(Color.blue)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
@@ -130,8 +126,6 @@ class ViewContentVisitorTests: XCTestCase {
             XCTAssertEqual(driver.storedBackgroundColors[2], Style.Color.background.color)
         }
         XCTContext.runActivity(named: "when Original Modifier") { (_) in
-            Terminal.isDisableColorize = false
-            
             struct Modifier: ViewModifier {
                 func body(content: Content) -> some View {
                     content.background(Color.red)
