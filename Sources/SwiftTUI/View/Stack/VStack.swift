@@ -20,7 +20,11 @@ import Foundation
 
 extension VStack: ViewContentAcceptable {
     internal func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
-        visitor.visit(tree)
+        let option = _VStackLayout._viewListOptions
+        let keepAlignment = visitor.containerAlignment
+        visitor.containerAlignment.horizontal = tree.root.alignment
+        visitor.visit(tree.content, with: option)
+        visitor.containerAlignment = keepAlignment
     }
 }
 
