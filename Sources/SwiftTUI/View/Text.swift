@@ -28,7 +28,11 @@ public struct Text {
 
 }
 
-extension Text: Primitive { }
+extension Text: Primitive {
+    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        _accept(visitor: visitor)
+    }
+}
 extension Text: Equatable {
     public static func == (lhs: Text, rhs: Text) -> Bool {
         return lhs.content == rhs.content

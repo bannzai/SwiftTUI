@@ -28,7 +28,13 @@ extension View {
     }
 }
 
-extension _BackgroundModifier: _ViewModifier, Primitive {
+extension _BackgroundModifier: Primitive {
+    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        _accept(visitor: visitor)
+    }
+}
+
+extension _BackgroundModifier: _ViewModifier {
     func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
         switch background {
         case let color as Color:
