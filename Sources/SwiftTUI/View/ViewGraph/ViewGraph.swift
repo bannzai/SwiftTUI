@@ -31,6 +31,10 @@ public class ViewGraph: SwiftTUI.View {
     internal var isRoot: Bool {
         parent == nil
     }
+    
+    internal var anyBody: Any {
+        fatalError()
+    }
 }
 
 public final class ViewGraphImpl<View: SwiftTUI.View>: ViewGraph {
@@ -41,6 +45,10 @@ public final class ViewGraphImpl<View: SwiftTUI.View>: ViewGraph {
     
     public var body: some SwiftTUI.View {
         view.body
+    }
+    
+    override var anyBody: Any {
+        body
     }
 }
 
@@ -87,7 +95,7 @@ extension ViewGraph: ViewSizeAcceptable {
             return rect.size
         }
         
-        if let body = body as? HasContentSize {
+        if let body = anyBody as? HasContentSize {
             let size = body.contentSize(viewGraph: self)
             rect.size = size
             return size
