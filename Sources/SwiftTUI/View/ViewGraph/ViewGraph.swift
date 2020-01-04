@@ -7,8 +7,8 @@
 
 import Foundation
 
-public class ViewGraph {
-    internal lazy var identifier: ObjectIdentifier = .init(self)
+public class ViewGraph: SwiftTUI.View {
+    internal lazy private(set) var identifier: ObjectIdentifier = .init(self)
     
     internal weak var parent: ViewGraph?
     internal var children: Set<ViewGraph> = []
@@ -17,7 +17,7 @@ public class ViewGraph {
     internal var afterRelation: ViewGraph?
     
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
-
+    
     internal func addChild(_ node: ViewGraph) {
         children.insert(node)
         node.parent = self
@@ -27,12 +27,20 @@ public class ViewGraph {
         afterRelation = node
         node.beforeRelation = self
     }
+    
+    internal var isRoot: Bool {
+        parent == nil
+    }
 }
 
-public final class _ViewGraph<View: SwiftTUI.View>: ViewGraph {
+public final class ViewGraphImpl<View: SwiftTUI.View>: ViewGraph {
     internal let view: View
     internal init(view: View) {
         self.view = view
+    }
+    
+    public var body: some SwiftTUI.View {
+        view.body
     }
 }
 
@@ -64,6 +72,33 @@ public final class ViewGraphSetVisitor {
 
 extension ViewGraph: ViewRectSetAcceptable {
     func accept(visitor: ViewRectSetVisitor, with argument: ViewRectSetVisitor.Argument) -> ViewRectSetVisitor.VisitResult {
+        fatalError()
+    }
+}
+
+// e.g) Text, Padding
+internal protocol HasContentSize {
+    func contentSize(viewGraph: ViewGraph) -> Size
+}
+
+extension ViewGraph: ViewSizeAcceptable {
+    func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
+        if isRoot {
+            return rect.size
+        }
         
+        if let body = body as? HasContentSize {
+            let size = body.contentSize(viewGraph: self)
+            rect.size = size
+            return size
+        }
+        
+        if !children.isEmpty {
+            return children
+                .map { $0.accept(visitor: visitor, with: argument) }
+                .reduce(.zero) { Size(width: $0.width + $1.width, height: $0.height + $1.height) }
+        }
+        
+        fatalError("Unexpected pattern of \(self)")
     }
 }
