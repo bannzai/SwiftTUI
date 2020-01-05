@@ -12,12 +12,18 @@ public class ViewGraph: SwiftTUI.View {
     
     internal weak var parent: ViewGraph?
     internal var children: Set<ViewGraph> = []
+    internal var isUserDefinedView: Bool = false
     
+    internal var listType: ViewVisitorListOption = .default
+    internal var alignment: Alignment = .default
+    internal lazy var spacing: PhysicalDistance = listType.defaultSpace
+    internal var proposedSize: Size = .zero
+
     internal weak var beforeRelation: ViewGraph?
     internal var afterRelation: ViewGraph?
     
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
-    
+
     internal func addChild(_ node: ViewGraph) {
         children.insert(node)
         node.parent = self
@@ -32,9 +38,10 @@ public class ViewGraph: SwiftTUI.View {
         parent == nil
     }
     
-    internal var anyBody: Any {
+    internal var anyView: Any {
         fatalError()
     }
+    
 }
 
 public final class ViewGraphImpl<View: SwiftTUI.View>: ViewGraph {
@@ -47,8 +54,8 @@ public final class ViewGraphImpl<View: SwiftTUI.View>: ViewGraph {
         view.body
     }
     
-    override var anyBody: Any {
-        body
+    override var anyView: Any {
+        view
     }
 }
 
@@ -86,27 +93,75 @@ extension ViewGraph: ViewRectSetAcceptable {
 
 // e.g) Text, Padding
 internal protocol HasContentSize {
-    func contentSize(viewGraph: ViewGraph) -> Size
+    func contentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size
 }
 
 extension ViewGraph: ViewSizeAcceptable {
-    func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult {
+    func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
         if isRoot {
-            return rect.size
+            proposedSize = mainScreen.bounds.size
         }
-        
-        if let body = anyBody as? HasContentSize {
-            let size = body.contentSize(viewGraph: self)
+        children.forEach { $0.proposedSize = proposedSize }
+
+        if let view = anyView as? HasContentSize {
+            let size = view.contentSize(viewGraph: self, visitor: visitor)
             rect.size = size
             return size
         }
-        
+
         if !children.isEmpty {
             return children
-                .map { $0.accept(visitor: visitor, with: argument) }
+                .map { $0.accept(visitor: visitor) }
                 .reduce(.zero) { Size(width: $0.width + $1.width, height: $0.height + $1.height) }
         }
         
         fatalError("Unexpected pattern of \(self)")
+    }
+}
+
+extension Text: HasContentSize {
+    private func calcTextSize(proposedWidth: PhysicalDistance) -> Size {
+        let baseHeight = content.filter { $0 == "\n" }.count + 1
+        let width = content.width
+        if width > proposedWidth {
+            let lineBreakCount = width / proposedWidth
+            return Size(width: width, height: baseHeight + lineBreakCount)
+        }
+        return Size(width: width, height: baseHeight)
+    }
+    func contentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size {
+        let size = calcTextSize(proposedWidth: viewGraph.proposedSize.width)
+        return size
+    }
+}
+
+extension TupleView: HasContentSize {
+    func contentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size {
+        switch viewGraph.listType {
+        case .vertical:
+            let children = viewGraph.children
+            var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height / (children.count - 1) * viewGraph.spacing
+            var maxElementWidth = viewGraph.proposedSize.width
+            children.enumerated().forEach { (offset, element) in
+                let provisionalElementHeight: PhysicalDistance = allocableHeight / (children.count - offset)
+                let changedProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
+                viewGraph.proposedSize = changedProposedSize
+                
+                let elementSize = element.accept(visitor: visitor)
+                maxElementWidth = max(maxElementWidth, elementSize.width)
+                allocableHeight -= elementSize.height
+            }
+            
+            switch allocableHeight {
+            case let allocableHeight where allocableHeight < 0:
+                return Size(width: maxElementWidth, height: viewGraph.proposedSize.height + abs(allocableHeight))
+            case let allocableHeight where allocableHeight > 0:
+                return Size(width: maxElementWidth, height: viewGraph.proposedSize.height - allocableHeight)
+            case _:
+                return Size(width: maxElementWidth, height: viewGraph.proposedSize.height)
+            }
+        case .horizontal:
+            fatalError()
+        }
     }
 }

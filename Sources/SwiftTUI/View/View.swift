@@ -54,13 +54,14 @@ public protocol View: ViewGraphSetAcceptable {
 
 extension View {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        assert(!(self is Primitive), "This method call from Primitive type")
+        assert(!(self is Primitive), "This method can not allow to call from Primitive type")
         let graph = ViewGraphImpl(view: self)
         visitor.current?.addChild(graph)
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
         graph.addChild(body.accept(visitor: visitor))
+        graph.isUserDefinedView = true
         return graph
     }
 }

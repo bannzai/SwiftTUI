@@ -8,35 +8,20 @@
 import Foundation
 
 internal protocol ViewSizeAcceptable {
-    func accept(visitor: ViewSizeVisitor, with argument: ViewSizeVisitor.Argument) -> ViewSizeVisitor.VisitResult
+    func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult
 }
 
 internal final class ViewSizeVisitor: Visitor {
     internal typealias VisitResult = Size
     internal init() { }
     
-    internal var containerAlignment: Alignment = .default
-    internal func visit<T: View>(_ content: T, with argument: Argument) -> VisitResult {
+    internal func visit<T: View>(_ content: T) -> VisitResult {
         debugLogger.debug()
         switch content {
         case let acceptable as ViewSizeAcceptable:
-            return acceptable.accept(visitor: self, with: argument)
+            return acceptable.accept(visitor: self)
         case _:
-            return visit(content.body, with: argument)
-        }
-    }
-}
-
-extension ViewSizeVisitor {
-    internal struct Argument {
-        internal var listOption: ViewVisitorListOption
-        internal var space: PhysicalDistance
-        internal var proposedSize: Size
-        
-        func change(proposedSize: Size) -> Self {
-            var argument = self
-            argument.proposedSize = proposedSize
-            return argument
+            return visit(content.body)
         }
     }
 }

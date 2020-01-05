@@ -44,16 +44,15 @@ extension VStack: _ViewSizeAcceptable {
 
 extension VStack: ViewGraphSetAcceptable {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        visitor.visit(view: tree)
-//        let keepAlignment = visitor.containerAlignment
-//        defer {
-//            visitor.containerAlignment = keepAlignment
-//        }
-//        var argument = argument
-//        argument.listOption = ViewVisitorListOption.vertical
-//        argument.space = tree.root.spacing ?? ViewVisitorListOption.vertical.defaultSpace
-//        visitor.containerAlignment.horizontal = tree.root.alignment
-//        return visitor.visit(tree.content, with: argument)
+        let graph = ViewGraphImpl(view: self)
+        graph.listType = .vertical
+        graph.alignment.horizontal = tree.root.alignment
+        visitor.current?.addChild(graph)
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = graph
+        graph.addChild(tree.content.accept(visitor: visitor))
+        return graph
     }
 }
 

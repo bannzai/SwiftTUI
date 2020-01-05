@@ -43,7 +43,15 @@ extension HStack: _ViewSizeAcceptable {
 
 extension HStack: ViewGraphSetAcceptable {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        visitor.visit(view: tree)
+        let graph = ViewGraphImpl(view: self)
+        graph.listType = .horizontal
+        graph.alignment.vertical = tree.root.alignment
+        visitor.current?.addChild(graph)
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = graph
+        graph.addChild(tree.content.accept(visitor: visitor))
+        return graph
     }
 }
 
