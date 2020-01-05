@@ -48,6 +48,7 @@ class ViewContentVisitorTests: XCTestCase {
 
     func testViewContentVisitor() {
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>, CustomView<Text>>") { (_) in
+            // TODO: This test will be pass
             let view = CustomView(body: VStack {
                 CustomView(body: Text("123"))
                 CustomView(body: Text("456"))
