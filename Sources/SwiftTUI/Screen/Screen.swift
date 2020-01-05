@@ -9,8 +9,8 @@ import Foundation
 import cncurses
 
 // Screen is defines the properties associated with a `console` based display
-public final class Screen {
-    private init() { }
+public class Screen {
+    internal init() { }
     fileprivate static let shared: Screen = Screen()
 
     internal var columns: PhysicalDistance { PhysicalDistance(cncurses.getmaxx(cncurses.stdscr)) }
@@ -22,6 +22,5 @@ public final class Screen {
         Rect(origin: .zero, size: .init(width: width, height: height))
     }
 }
-
 
 internal var mainScreen = Screen.shared

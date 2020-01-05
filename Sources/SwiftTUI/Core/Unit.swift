@@ -20,6 +20,8 @@ public struct Size {
     }
 }
 
+extension Size: Equatable { }
+
 public struct Point {
     public static let zero = Point(x: 0, y: 0)
     
