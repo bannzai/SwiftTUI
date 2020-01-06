@@ -85,7 +85,22 @@ public final class ViewGraphSetVisitor {
             return modifier.accept(visitor: self)
         case let view as ViewGraphSetAcceptable:
             return view.accept(visitor: self)
+        case _:
+            break
         }
+        
+        if view.isPrimitive {
+            fatalError("It is mean about forgot implement calc size of Primitive View")
+        }
+        
+        let graph = ViewGraphImpl(view: view)
+        current?.addChild(graph)
+        let keepCurrent = current
+        defer { current = keepCurrent }
+        current = graph
+        graph.addChild(visit(view: view.body))
+        graph.isUserDefinedView = true
+        return graph
     }
 }
 

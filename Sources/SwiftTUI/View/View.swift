@@ -40,7 +40,7 @@ public class _ViewBaseProperties {
 /// You create custom views by declaring types that conform to the `View`
 /// protocol. Implement the required `body` property to provide the content
 /// and behavior for your custom view.
-public protocol View: ViewGraphSetAcceptable {
+public protocol View {
     
     /// The type of view representing the body of this view.
     ///
@@ -55,20 +55,6 @@ public protocol View: ViewGraphSetAcceptable {
 internal extension View {
     var isPrimitive: Bool {
         (self as? Primitive) != nil
-    }
-}
-
-extension View {
-    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        assert(!(self is Primitive), "This method can not allow to call from Primitive type")
-        let graph = ViewGraphImpl(view: self)
-        visitor.current?.addChild(graph)
-        let keepCurrent = visitor.current
-        defer { visitor.current = keepCurrent }
-        visitor.current = graph
-        graph.addChild(body.accept(visitor: visitor))
-        graph.isUserDefinedView = true
-        return graph
     }
 }
 
