@@ -27,6 +27,10 @@ public class ViewGraph: SwiftTUI.View {
     internal func addChild(_ node: ViewGraph) {
         children.insert(node)
         node.parent = self
+        
+        node.alignment = alignment
+        node.spacing = spacing
+        node.listType = listType
     }
     
     internal func addRelation(_ node: ViewGraph) {
@@ -144,17 +148,19 @@ extension TupleView: HasContentSize {
         switch viewGraph.listType {
         case .vertical:
             let children = viewGraph.children
-            var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height / (children.count - 1) * viewGraph.spacing
-            var maxElementWidth = viewGraph.proposedSize.width
+            var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (children.count - 1) * viewGraph.spacing
+            var maxElementWidth: PhysicalDistance = 0
             children.enumerated().forEach { (offset, element) in
                 let provisionalElementHeight: PhysicalDistance = allocableHeight / (children.count - offset)
-                let changedProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
-                viewGraph.proposedSize = changedProposedSize
+                let elementProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
+                element.proposedSize = elementProposedSize
                 
                 let elementSize = element.accept(visitor: visitor)
                 maxElementWidth = max(maxElementWidth, elementSize.width)
                 allocableHeight -= elementSize.height
             }
+            
+            maxElementWidth = min(maxElementWidth, viewGraph.proposedSize.width)
             
             switch allocableHeight {
             case let allocableHeight where allocableHeight < 0:

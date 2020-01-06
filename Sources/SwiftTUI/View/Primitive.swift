@@ -37,9 +37,9 @@ extension ContainerViewGraphSetAcceptable where Self: View, Self: Primitive {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
-        
+
         Mirror(reflecting: value).children.forEach { (element) in
-            switch value {
+            switch element.value {
             case let tuple as ContainerViewGraphSetAcceptable:
                 graph.addChild(tuple.accept(visitor: visitor))
             case let modifier as ViewGraphSetAttributeAcceptable:
@@ -47,7 +47,7 @@ extension ContainerViewGraphSetAcceptable where Self: View, Self: Primitive {
             case let view as ViewGraphSetAcceptable:
                 graph.addChild(view.accept(visitor: visitor))
             case _:
-                fatalError("Unexpected type value \(type(of: value))")
+                fatalError("Unexpected type value \(type(of: element.value))")
             }
         }
         return graph

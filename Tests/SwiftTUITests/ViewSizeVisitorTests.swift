@@ -29,19 +29,36 @@ class ViewSizeVisitorTests: XCTestCase {
     }
 
     func testVisit() {
-        XCTContext.runActivity(named: "when Text with content") { (_) in
-            let visitor = ViewSizeVisitor()
-            let graph = ViewGraphImpl(view: Text("hoge"))
-            let result = graph.accept(visitor: visitor)
+//        XCTContext.runActivity(named: "when Text with content") { (_) in
+//            let visitor = ViewSizeVisitor()
+//            let graph = ViewGraphImpl(view: Text("hoge"))
+//            let result = graph.accept(visitor: visitor)
+//
+//            XCTAssertEqual(result, Size(width: "hoge".width, height: 1))
+//        }
+//        XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
+//            let visitor = ViewSizeVisitor()
+//            let graph = ViewGraphImpl(view: Text("hoge\nfuga"))
+//            let result = graph.accept(visitor: visitor)
+//
+//            XCTAssertEqual(result, Size(width: "hoge".width, height: 2))
+//        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
+            let view = VStack {
+                Text("1")
+                Text("23")
+                Text("456")
+            }
             
-            XCTAssertEqual(result, Size(width: "hoge".width, height: 1))
-        }
-        XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
-            let visitor = ViewSizeVisitor()
-            let graph = ViewGraphImpl(view: Text("hoge\nfuga"))
-            let result = graph.accept(visitor: visitor)
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = view.accept(visitor: graphVisitor)
+            let sizeVisitor = ViewSizeVisitor()
+            let result = graph.accept(visitor: sizeVisitor)
             
-            XCTAssertEqual(result, Size(width: "hoge".width, height: 2))
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+
+            XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
         }
     }
 
