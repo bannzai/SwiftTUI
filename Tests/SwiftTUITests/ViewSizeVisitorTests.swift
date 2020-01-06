@@ -104,6 +104,20 @@ class ViewSizeVisitorTests: XCTestCase {
             
             XCTAssertEqual(result, Size(width: "123".width, height: 1))
         }
+        XCTContext.runActivity(named: "when CustomView has VStack<TupleView<Text, Text, Text>>") { (_) in
+            let view = CustomView(body: VStack {
+                Text("123")
+                Text("456")
+                Text("789")
+            })
+            
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = view.accept(visitor: graphVisitor)
+            let sizeVisitor = ViewSizeVisitor()
+            let result = graph.accept(visitor: sizeVisitor)
+            
+            XCTAssertEqual(result, Size(width: "123".width, height: 1))
+        }
     }
 
     func testPerformanceExample() {
