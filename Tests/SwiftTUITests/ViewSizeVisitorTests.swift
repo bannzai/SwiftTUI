@@ -121,6 +121,22 @@ class ViewSizeVisitorTests: XCTestCase {
 
             XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
         }
+        XCTContext.runActivity(named: "when CustomView has VStack<TupleView<CustomView<Text>, CustomView<Text>>>") { (_) in
+            let view = CustomView(body: VStack {
+                CustomView(body: Text("123"))
+                CustomView(body: Text("456"))
+            })
+            
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view: view)
+            let sizeVisitor = ViewSizeVisitor()
+            let result = graph.accept(visitor: sizeVisitor)
+            
+            let elementCount = 2
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(result, Size(width: "456".width, height: 2 + spacing))
+        }
     }
 
     func testPerformanceExample() {

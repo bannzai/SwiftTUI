@@ -38,6 +38,8 @@ public struct AnyView: View {
     public typealias Body = Never
 }
 
+extension AnyView: Primitive { }
+
 extension AnyView: ViewContentAcceptable {
     internal func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
         storage.accept(visitor: visitor)

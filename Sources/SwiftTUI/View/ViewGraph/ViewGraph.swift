@@ -90,7 +90,7 @@ public final class ViewGraphSetVisitor {
         }
         
         if view.isPrimitive {
-            fatalError("It is mean about forgot implement calc size of Primitive View")
+            fatalError("It is mean about forgot implement calc size of Primitive View. view type of \(type(of: view))")
         }
         
         let graph = ViewGraphImpl(view: view)

@@ -35,12 +35,16 @@ public class _ViewBaseProperties {
     internal var border: Border? = nil
 }
 
+public protocol _View {
+    var _view: _UserDefinedView { get }
+}
+
 /// A piece of user interface.
 ///
 /// You create custom views by declaring types that conform to the `View`
 /// protocol. Implement the required `body` property to provide the content
 /// and behavior for your custom view.
-public protocol View {
+public protocol View: _View {
     
     /// The type of view representing the body of this view.
     ///
@@ -60,6 +64,35 @@ internal extension View {
 
 extension View where Self.Body == Never {
     public var body: Self.Body {
-        fatalError("Body is never")
+        fatalError("Body is never. dump view: \(self)")
+    }
+}
+
+extension _View where Self: View {
+    public var _view: _UserDefinedView {
+        _UserDefinedView(self)
+    }
+}
+
+public struct _UserDefinedView: View, ViewGraphSetAcceptable {
+    fileprivate class Storage<T: View>: AnyViewStorageBase {
+        internal let view: T
+        internal init(_ view: T) {
+            self.view = view
+        }
+        internal override func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+            visitor.visit(view: view.body)
+        }
+    }
+    
+    let storage: AnyViewStorageBase
+    
+    /// Create an instance that typeerases `view`.
+    public init<V>(_ view: V) where V: View {
+        self.storage = Storage(view)
+    }
+    
+    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        storage.accept(visitor: visitor)
     }
 }

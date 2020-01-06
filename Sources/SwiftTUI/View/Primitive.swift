@@ -46,6 +46,8 @@ extension ContainerViewGraphSetAcceptable where Self: View, Self: Primitive {
                 graph.addChild(modifier.accept(visitor: visitor))
             case let view as ViewGraphSetAcceptable:
                 graph.addChild(view.accept(visitor: visitor))
+            case let _view as _View:
+                graph.addChild(visitor.visit(view: _view._view))
             case _:
                 fatalError("Unexpected type value \(type(of: element.value))")
             }
