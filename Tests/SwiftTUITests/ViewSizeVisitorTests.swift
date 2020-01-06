@@ -88,7 +88,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let view = CustomView(body: Text("123"))
 
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = view.accept(visitor: graphVisitor)
+            let graph = graphVisitor.visit(view: view)
             let sizeVisitor = ViewSizeVisitor()
             let result = graph.accept(visitor: sizeVisitor)
 
@@ -98,7 +98,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let view = CustomView(body: VStack { Text("123") })
             
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = view.accept(visitor: graphVisitor)
+            let graph = graphVisitor.visit(view: view)
             let sizeVisitor = ViewSizeVisitor()
             let result = graph.accept(visitor: sizeVisitor)
             
@@ -112,7 +112,7 @@ class ViewSizeVisitorTests: XCTestCase {
             })
             
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = view.accept(visitor: graphVisitor)
+            let graph = graphVisitor.visit(view: view)
             let sizeVisitor = ViewSizeVisitor()
             let result = graph.accept(visitor: sizeVisitor)
             
