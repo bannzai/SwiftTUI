@@ -20,6 +20,7 @@ class ViewSizeVisitorTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
+        
         mainScreen = DummyScreen.init()
     }
     
@@ -34,6 +35,13 @@ class ViewSizeVisitorTests: XCTestCase {
             let result = graph.accept(visitor: visitor)
             
             XCTAssertEqual(result, Size(width: "hoge".width, height: 1))
+        }
+        XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
+            let visitor = ViewSizeVisitor()
+            let graph = ViewGraphImpl(view: Text("hoge\nfuga"))
+            let result = graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(result, Size(width: "hoge".width, height: 2))
         }
     }
 

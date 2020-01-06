@@ -121,8 +121,12 @@ extension ViewGraph: ViewSizeAcceptable {
 
 extension Text: HasContentSize {
     private func calcTextSize(proposedWidth: PhysicalDistance) -> Size {
-        let baseHeight = content.filter { $0 == "\n" }.count + 1
-        let width = content.width
+        let contents = content.split(separator: "\n").map { String($0) }
+        let baseHeight = contents.count
+        guard let maxWidthString = contents.max (by: { $0.width < $1.width }) else {
+            return Size(width: proposedWidth, height: baseHeight)
+        }
+        let width = maxWidthString.width
         if width > proposedWidth {
             let lineBreakCount = width / proposedWidth
             return Size(width: width, height: baseHeight + lineBreakCount)
