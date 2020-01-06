@@ -95,8 +95,6 @@ public final class ViewGraphSetVisitor {
             return view.accept(visitor: self)
         case let _view as _View:
             return _view._wrappedViewForBuildGraph.accept(visitor: self)
-        case _:
-            fatalError("It is mean about forgot implement calc size of Primitive View. view type of \(type(of: view))")
         }
         
     }
