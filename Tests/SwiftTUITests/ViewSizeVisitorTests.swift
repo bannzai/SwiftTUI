@@ -30,16 +30,22 @@ class ViewSizeVisitorTests: XCTestCase {
 
     func testVisit() {
         XCTContext.runActivity(named: "when Text with content") { (_) in
-            let visitor = ViewSizeVisitor()
-            let graph = ViewGraphImpl(view: Text("hoge"))
-            let result = graph.accept(visitor: visitor)
+            let view = Text("hoge")
+            
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = view.accept(visitor: graphVisitor)
+            let sizeVisitor = ViewSizeVisitor()
+            let result = graph.accept(visitor: sizeVisitor)
 
             XCTAssertEqual(result, Size(width: "hoge".width, height: 1))
         }
         XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
-            let visitor = ViewSizeVisitor()
-            let graph = ViewGraphImpl(view: Text("hoge\nfuga"))
-            let result = graph.accept(visitor: visitor)
+            let view = Text("hoge\nfuga")
+
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = view.accept(visitor: graphVisitor)
+            let sizeVisitor = ViewSizeVisitor()
+            let result = graph.accept(visitor: sizeVisitor)
 
             XCTAssertEqual(result, Size(width: "hoge".width, height: 2))
         }
