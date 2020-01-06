@@ -75,8 +75,18 @@ class ViewSizeVisitorTests: XCTestCase {
             
             let elementCount = 3
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
-
+            
             XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
+        }
+        XCTContext.runActivity(named: "when CustomView has Text") { (_) in
+            let view = CustomView(body: Text("123"))
+
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = view.accept(visitor: graphVisitor)
+            let sizeVisitor = ViewSizeVisitor()
+            let result = graph.accept(visitor: sizeVisitor)
+
+            XCTAssertEqual(result, Size(width: "123".width, height: 1))
         }
     }
 
