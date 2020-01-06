@@ -13,37 +13,35 @@ public class ViewGraph: SwiftTUI.View {
     internal weak var parent: ViewGraph?
     internal var children: Set<ViewGraph> = []
     internal var isUserDefinedView: Bool = false
+    internal var isModifiedContent: Bool = false
     
     internal var listType: ViewVisitorListOption = .default
     internal var alignment: Alignment = .default
     internal lazy var spacing: PhysicalDistance = listType.defaultSpace
     internal var proposedSize: Size = .zero
 
-    internal weak var beforeRelation: ViewGraph?
-    internal var afterRelation: ViewGraph?
-    
-    internal var customizedChild: ViewGraph?
-    internal weak var customizedParent: ViewGraph?
-    
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
-
+    
+    private func defineProperties(to child: ViewGraph) {
+        child.alignment = alignment
+        child.spacing = spacing
+        child.listType = listType
+    }
+    
     internal func addChild(_ node: ViewGraph) {
         children.insert(node)
         node.parent = self
-        
-        node.alignment = alignment
-        node.spacing = spacing
-        node.listType = listType
+        defineProperties(to: node)
     }
 
-    internal func addRelation(_ node: ViewGraph) {
-        afterRelation = node
-        node.beforeRelation = self
+    internal func setModifier(_ modifierNode: ViewGraph) {
+        modifierNode.isModifiedContent = true
+        addChild(modifierNode)
     }
     
     internal func setCustomize(_ node: ViewGraph) {
-        customizedChild = node
-        node.customizedParent = self
+        node.isUserDefinedView = true
+        addChild(node)
     }
     
     internal var isRoot: Bool {
