@@ -36,8 +36,9 @@ public class _ViewBaseProperties {
 }
 
 public protocol _View {
-    var _view: _UserDefinedView { get }
+    var _wrappedViewForBuildGraph: _WrappedViewForBuildGraph { get }
 }
+
 
 /// A piece of user interface.
 ///
@@ -58,7 +59,7 @@ public protocol View: _View {
 
 internal extension View {
     var isPrimitive: Bool {
-        (self as? Primitive) != nil
+        self is Primitive
     }
 }
 
@@ -69,12 +70,13 @@ extension View where Self.Body == Never {
 }
 
 extension _View where Self: View {
-    public var _view: _UserDefinedView {
-        _UserDefinedView(self)
+    public var _wrappedViewForBuildGraph: _WrappedViewForBuildGraph {
+        assert(!isPrimitive, "Should not call from Primitive view. type of \(type(of: self))")
+        return _WrappedViewForBuildGraph(self)
     }
 }
 
-public struct _UserDefinedView: View, ViewGraphSetAcceptable {
+public struct _WrappedViewForBuildGraph: View, ViewGraphSetAcceptable {
     fileprivate class Storage<T: View>: AnyViewStorageBase {
         internal let view: T
         internal init(_ view: T) {
