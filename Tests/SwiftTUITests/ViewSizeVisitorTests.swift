@@ -117,7 +117,10 @@ class ViewSizeVisitorTests: XCTestCase {
             let sizeVisitor = ViewSizeVisitor()
             let result = graph.accept(visitor: sizeVisitor)
             
-            XCTAssertEqual(result, Size(width: "123".width, height: 1))
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+
+            XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
         }
     }
 
