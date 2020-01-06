@@ -22,6 +22,9 @@ public class ViewGraph: SwiftTUI.View {
     internal weak var beforeRelation: ViewGraph?
     internal var afterRelation: ViewGraph?
     
+    internal var customizedChild: ViewGraph?
+    internal weak var customizedParent: ViewGraph?
+    
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
 
     internal func addChild(_ node: ViewGraph) {
@@ -32,10 +35,15 @@ public class ViewGraph: SwiftTUI.View {
         node.spacing = spacing
         node.listType = listType
     }
-    
+
     internal func addRelation(_ node: ViewGraph) {
         afterRelation = node
         node.beforeRelation = self
+    }
+    
+    internal func setCustomize(_ node: ViewGraph) {
+        customizedChild = node
+        node.customizedParent = self
     }
     
     internal var isRoot: Bool {
@@ -85,22 +93,12 @@ public final class ViewGraphSetVisitor {
             return modifier.accept(visitor: self)
         case let view as ViewGraphSetAcceptable:
             return view.accept(visitor: self)
+        case let _view as _View:
+            return _view._view.accept(visitor: self)
         case _:
-            break
-        }
-        
-        if view.isPrimitive {
             fatalError("It is mean about forgot implement calc size of Primitive View. view type of \(type(of: view))")
         }
         
-        let graph = ViewGraphImpl(view: view)
-        current?.addChild(graph)
-        let keepCurrent = current
-        defer { current = keepCurrent }
-        current = graph
-        graph.addChild(visit(view: view.body))
-        graph.isUserDefinedView = true
-        return graph
     }
 }
 

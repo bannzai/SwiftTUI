@@ -81,7 +81,14 @@ public struct _UserDefinedView: View, ViewGraphSetAcceptable {
             self.view = view
         }
         internal override func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-            visitor.visit(view: view.body)
+            let graph = ViewGraphImpl(view: view)
+            visitor.current?.addChild(graph)
+            let keepCurrent = visitor.current
+            defer { visitor.current = keepCurrent }
+            visitor.current = graph
+            graph.setCustomize(visitor.visit(view: view.body))
+            graph.isUserDefinedView = true
+            return graph
         }
     }
     
