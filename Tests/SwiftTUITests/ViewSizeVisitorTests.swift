@@ -43,6 +43,24 @@ class ViewSizeVisitorTests: XCTestCase {
 
             XCTAssertEqual(result, Size(width: "hoge".width, height: 2))
         }
+        XCTContext.runActivity(named: "when TupleView<Text, Text, Text>") { (_) in
+            let view = TupleView((
+                Text("1"),
+                Text("23"),
+                Text("456")
+            ))
+            
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = view.accept(visitor: graphVisitor)
+            graph.listType = .vertical
+            let sizeVisitor = ViewSizeVisitor()
+            let result = graph.accept(visitor: sizeVisitor)
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
+        }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {
                 Text("1")
