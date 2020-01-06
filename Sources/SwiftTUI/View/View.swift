@@ -52,6 +52,12 @@ public protocol View: ViewGraphSetAcceptable {
     var body: Self.Body { get }
 }
 
+internal extension View {
+    var isPrimitive: Bool {
+        (self as? Primitive) != nil
+    }
+}
+
 extension View {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         assert(!(self is Primitive), "This method can not allow to call from Primitive type")
