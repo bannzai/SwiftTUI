@@ -105,7 +105,6 @@ class ViewSizeVisitorTests: XCTestCase {
             XCTAssertEqual(result, Size(width: "123".width, height: 1))
         }
         XCTContext.runActivity(named: "when CustomView has VStack<TupleView<Text, Text, Text>>") { (_) in
-            // TODO: This test is failed now
             let view = CustomView(body: VStack {
                 Text("123")
                 Text("456")
