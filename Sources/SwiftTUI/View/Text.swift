@@ -57,22 +57,6 @@ extension Text: ViewContentAcceptable {
         visitor.driver.add(string: content)
     }
 }
-extension Text: _ViewSizeAcceptable {
-    private func calcTextSize(proposedWidth: PhysicalDistance) -> Size {
-        let baseHeight = content.filter { $0 == "\n" }.count + 1
-        let width = content.width
-        if width > proposedWidth {
-            let lineBreakCount = width / proposedWidth
-            return Size(width: width, height: baseHeight + lineBreakCount)
-        }
-        return Size(width: width, height: baseHeight)
-    }
-    internal func accept(visitor: _ViewSizeVisitor, with argument: _ViewSizeVisitor.Argument) -> _ViewSizeVisitor.VisitResult {
-        let size = calcTextSize(proposedWidth: argument.proposedSize.width)
-        _textProperty.rect.size = size
-        return size
-    }
-}
 
 // TODO: Implement
 // Mark: - Text interfaces

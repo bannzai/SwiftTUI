@@ -28,20 +28,6 @@ extension VStack: ViewContentAcceptable {
     }
 }
 
-extension VStack: _ViewSizeAcceptable {
-    internal func accept<V: _ViewSizeVisitor>(visitor: V, with argument: _ViewSizeVisitor.Argument) -> V.VisitResult {
-        let keepAlignment = visitor.containerAlignment
-        defer {
-            visitor.containerAlignment = keepAlignment
-        }
-        var argument = argument
-        argument.listOption = ViewVisitorListOption.vertical
-        argument.space = tree.root.spacing ?? ViewVisitorListOption.vertical.defaultSpace
-        visitor.containerAlignment.horizontal = tree.root.alignment
-        return visitor.visit(tree.content, with: argument)
-    }
-}
-
 extension VStack: ViewGraphSetAcceptable {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)

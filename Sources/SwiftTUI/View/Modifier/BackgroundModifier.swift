@@ -37,12 +37,6 @@ extension _BackgroundModifier: _ViewModifier {
             return
         }
     }
-    
-    func visit<View: SwiftTUI.View, Visitor: _ViewSizeVisitor>(view: View, visitor: Visitor, with argument: _ViewSizeVisitor.Argument) -> Visitor.VisitResult {
-        let size = visitor.visit(view, with: argument)
-        _baseProperty.rect.size = size
-        return size
-    }
 }
 
 extension _BackgroundModifier: _RestoreableViewModifier {

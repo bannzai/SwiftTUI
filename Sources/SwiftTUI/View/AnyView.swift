@@ -23,9 +23,6 @@ public struct AnyView: View {
         internal override func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
             visitor.visit(view)
         }
-        internal override func accept(visitor: _ViewSizeVisitor, with argument: _ViewSizeVisitor.Argument) -> _ViewSizeVisitor.VisitResult {
-            visitor.visit(view, with: argument)
-        }
     }
 
     let storage: AnyViewStorageBase
@@ -43,10 +40,5 @@ extension AnyView: Primitive { }
 extension AnyView: ViewContentAcceptable {
     internal func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
         storage.accept(visitor: visitor)
-    }
-}
-extension AnyView: _ViewSizeAcceptable {
-    internal func accept<V: _ViewSizeVisitor>(visitor: V, with argument: _ViewSizeVisitor.Argument) -> V.VisitResult {
-        storage.accept(visitor: visitor, with: argument)
     }
 }

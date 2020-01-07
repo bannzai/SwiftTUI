@@ -1,5 +1,5 @@
 //
-//  _ViewSizeVisitor.swift
+//  ViewSizeVisitor.swift
 //  Demo
 //
 //  Created by Yudai.Hirose on 2020/01/02.

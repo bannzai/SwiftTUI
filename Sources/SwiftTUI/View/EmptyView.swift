@@ -20,8 +20,3 @@ extension EmptyView: ViewContentAcceptable {
         
     }
 }
-extension EmptyView: _ViewSizeAcceptable {
-    internal func accept(visitor: _ViewSizeVisitor, with argument: _ViewSizeVisitor.Argument) -> _ViewSizeVisitor.VisitResult {
-        return .zero
-    }
-}

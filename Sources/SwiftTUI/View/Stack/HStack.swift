@@ -27,19 +27,6 @@ extension HStack: ViewContentAcceptable {
         visitor.containerAlignment = keepAlignment
     }
 }
-extension HStack: _ViewSizeAcceptable {
-    internal func accept<V: _ViewSizeVisitor>(visitor: V, with argument: _ViewSizeVisitor.Argument) -> V.VisitResult {
-        let keepAlignment = visitor.containerAlignment
-        defer {
-            visitor.containerAlignment = keepAlignment
-        }
-        var argument = argument
-        argument.listOption = ViewVisitorListOption.horizontal
-        argument.space = tree.root.spacing ?? ViewVisitorListOption.horizontal.defaultSpace
-        visitor.containerAlignment.vertical = tree.root.alignment
-        return visitor.visit(tree.content, with: argument)
-    }
-}
 
 extension HStack: ViewGraphSetAcceptable {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
