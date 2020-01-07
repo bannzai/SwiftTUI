@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import SwiftTUI
 
 class ViewGraphSetVisitorTests: XCTestCase {
 
@@ -17,9 +18,21 @@ class ViewGraphSetVisitorTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testVisit() {
+        // TODO: alignmentやlisttypeのテスト？
+        
+        XCTContext.runActivity(named: "when Text with content") { (_) in
+            let view = Text("123")
+            let visitor = ViewGraphSetVisitor()
+            let graph = visitor.visit(view: view)
+            
+            XCTAssertTrue(graph.anyView is Text)
+            XCTAssertTrue(graph.children.isEmpty)
+            XCTAssertTrue(graph.isRoot)
+            XCTAssertFalse(graph.isUserDefinedView)
+            XCTAssertFalse(graph.isModifiedContent)
+        }
+        
     }
 
     func testPerformanceExample() {
