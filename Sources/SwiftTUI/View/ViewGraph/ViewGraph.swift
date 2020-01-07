@@ -180,8 +180,7 @@ extension TupleView: HasContentSize {
                 return Size(width: maxElementWidth, height: viewGraph.proposedSize.height)
             }
         case .horizontal:
-            return .zero
-//            fatalError()
+            fatalError()
         }
     }
 }
