@@ -89,7 +89,6 @@ public struct _WrappedViewForBuildGraph: View, ViewGraphSetAcceptable {
             defer { visitor.current = keepCurrent }
             visitor.current = graph
             graph.setCustomize(visitor.visit(view: view.body))
-            graph.isUserDefinedView = true
             return graph
         }
     }

@@ -40,7 +40,7 @@ public class ViewGraph: SwiftTUI.View {
     }
     
     internal func setCustomize(_ node: ViewGraph) {
-        node.isUserDefinedView = true
+        isUserDefinedView = true
         addChild(node)
     }
     
