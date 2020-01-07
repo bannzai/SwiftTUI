@@ -46,6 +46,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
             
             XCTAssertTrue(graph.anyView is TupleView<(Text, Text, Text)>)
             XCTAssertEqual(graph.children.count, 3)
+            XCTAssertTrue(graph.isRoot)
             XCTAssertFalse(graph.isUserDefinedView)
             XCTAssertFalse(graph.isModifiedContent)
             
@@ -72,6 +73,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
             
             XCTAssertTrue(graph.anyView is VStack<TupleView<(Text, Text, Text)>>)
             XCTAssertEqual(graph.children.count, 1)
+            XCTAssertTrue(graph.isRoot)
             XCTAssertFalse(graph.isUserDefinedView)
             XCTAssertFalse(graph.isModifiedContent)
             
@@ -109,6 +111,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
             
             XCTAssertTrue(graph.anyView is CustomView<Text>)
             XCTAssertEqual(graph.children.count, 1)
+            XCTAssertTrue(graph.isRoot)
             XCTAssertTrue(graph.isUserDefinedView)
             XCTAssertFalse(graph.isModifiedContent)
 
@@ -129,6 +132,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
             
             XCTAssertTrue(graph.anyView is CustomView<VStack<Text>>)
             XCTAssertEqual(graph.children.count, 1)
+            XCTAssertTrue(graph.isRoot)
             XCTAssertTrue(graph.isUserDefinedView)
             XCTAssertFalse(graph.isModifiedContent)
             
@@ -141,6 +145,86 @@ class ViewGraphSetVisitorTests: XCTestCase {
                     XCTAssertFalse(child.isModifiedContent)
                 }
             }
+        }
+        XCTContext.runActivity(named: "when CustomView has VStack<TupleView<Text, Text, Text>>") { (_) in
+            let horizontalAlignment: HorizontalAlignment = .leading
+            let spacing: PhysicalDistance = PhysicalDistance(100)
+            let view = CustomView(body: VStack(alignment: horizontalAlignment, spacing: spacing) {
+                Text("123")
+                Text("456")
+                Text("789")
+            })
+            let visitor = ViewGraphSetVisitor()
+            let graph = visitor.visit(view: view)
+            
+            XCTAssertTrue(graph.anyView is CustomView<VStack<TupleView<(Text, Text, Text)>>>)
+            XCTAssertEqual(graph.children.count, 1)
+            XCTAssertTrue(graph.isRoot)
+            XCTAssertTrue(graph.isUserDefinedView)
+            XCTAssertFalse(graph.isModifiedContent)
+            
+            XCTContext.runActivity(named: "And check children view of VStack<TupleView<Text, Text, Text>>") { (_) in
+                graph.children.forEach { child in
+                    XCTAssertTrue(child.anyView is VStack<TupleView<(Text, Text, Text)>>)
+                    XCTAssertEqual(child.children.count, 1)
+                    XCTAssertFalse(child.isRoot)
+                    XCTAssertFalse(child.isUserDefinedView)
+                    XCTAssertFalse(child.isModifiedContent)
+                    
+                }
+                XCTContext.runActivity(named: "And check VStack children view of TupleView<Text, Text, Text>") { (_) in
+                    graph.children.map { $0 }[0].children.forEach { child in
+                        XCTAssertTrue(child.anyView is TupleView<(Text, Text, Text)>)
+                        XCTAssertEqual(child.children.count, 3)
+                        XCTAssertFalse(child.isRoot)
+                        XCTAssertFalse(child.isUserDefinedView)
+                        XCTAssertFalse(child.isModifiedContent)
+                        
+                        XCTAssertEqual(child.alignment, Alignment(horizontal: horizontalAlignment, vertical: .default))
+                        XCTAssertEqual(child.listType, .vertical)
+                        XCTAssertEqual(child.spacing, spacing)
+                    }
+                }
+            }
+        }
+        XCTContext.runActivity(named: "when CustomView has VStack<TupleView<CustomView<Text>, CustomView<Text>>>") { (_) in
+            let view = CustomView(body: VStack {
+                CustomView(body: Text("123"))
+                CustomView(body: Text("456"))
+            })
+            let visitor = ViewGraphSetVisitor()
+            let graph = visitor.visit(view: view)
+            
+            XCTAssertTrue(graph.anyView is CustomView<VStack<TupleView<(CustomView<Text>, CustomView<Text>)>>>)
+            XCTAssertEqual(graph.children.count, 1)
+            XCTAssertTrue(graph.isRoot)
+            XCTAssertTrue(graph.isUserDefinedView)
+            XCTAssertFalse(graph.isModifiedContent)
+            
+            XCTContext.runActivity(named: "And check VStack<TupleView<(CustomView<Text>, CustomView<Text>)>> children view of TupleView<(CustomView<Text>, CustomView<Text>)>") { (_) in
+                let vStackGraph = graph.children.map { $0 }[0]
+                vStackGraph.children.forEach { child in
+                    XCTAssertTrue(child.anyView is TupleView<(CustomView<Text>, CustomView<Text>)>)
+                    XCTAssertEqual(child.children.count, 2)
+                    XCTAssertFalse(child.isRoot)
+                    XCTAssertFalse(child.isUserDefinedView)
+                    XCTAssertFalse(child.isModifiedContent)
+                    
+                    XCTContext.runActivity(named: "And check TupleVeiw children view") { (_) in
+                        let tupleViewGraph = vStackGraph.children.map { $0 }[0]
+                        tupleViewGraph.children.forEach { child in
+                            XCTAssertTrue(child.anyView is CustomView<Text>)
+                            XCTAssertEqual(child.children.count, 1)
+                            XCTAssertTrue(child.children.map { $0 }[0].anyView is Text)
+                            XCTAssertFalse(child.isRoot)
+                            XCTAssertTrue(child.isUserDefinedView)
+                            XCTAssertFalse(child.isModifiedContent)
+                        }
+                    }
+                }
+            }
+            
+            
         }
     }
 
