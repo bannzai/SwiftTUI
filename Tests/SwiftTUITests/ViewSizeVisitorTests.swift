@@ -137,6 +137,15 @@ class ViewSizeVisitorTests: XCTestCase {
             
             XCTAssertEqual(result, Size(width: "456".width, height: 2 + spacing))
         }
+        XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
+            let view = Text("123").background(Color.red)
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view: view)
+            let sizeVisitor = ViewSizeVisitor()
+            let result = graph.accept(visitor: sizeVisitor)
+            
+            XCTAssertEqual(result, Size(width: "123".width, height: 1))
+        }
     }
 
     func testPerformanceExample() {
