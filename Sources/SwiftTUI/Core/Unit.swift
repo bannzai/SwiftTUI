@@ -33,6 +33,8 @@ public struct Point {
     }
 }
 
+extension Point: Equatable { }
+
 public struct Rect {
     internal static let zero = Rect(origin: .zero, size: .zero)
     public var origin: Point
@@ -50,3 +52,5 @@ public struct Rect {
         self.size = Size(width: width, height: height)
     }
 }
+
+extension Rect: Equatable { }
