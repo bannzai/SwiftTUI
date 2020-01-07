@@ -35,7 +35,7 @@ public class ViewGraph: SwiftTUI.View {
     }
 
     internal func setModifier(_ modifierNode: ViewGraph) {
-        modifierNode.isModifiedContent = true
+        isModifiedContent = true
         addChild(modifierNode)
     }
     

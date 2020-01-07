@@ -224,7 +224,54 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 }
             }
             
+            XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
+                let view = Text("123").background(Color.red)
+                let visitor = ViewGraphSetVisitor()
+                let graph = visitor.visit(view: view)
+                
+                XCTAssertTrue(graph.anyView is ModifiedContent<Text, _BackgroundModifier<Color>>)
+                XCTAssertEqual(graph.children.count, 1)
+                XCTAssertTrue(graph.isRoot)
+                XCTAssertFalse(graph.isUserDefinedView)
+                XCTAssertTrue(graph.isModifiedContent)
+                
+                XCTContext.runActivity(named: "And check children view of Text") { (_) in
+                    graph.children.forEach { child in
+                        XCTAssertTrue(child.anyView is Text)
+                        XCTAssertTrue(child.children.isEmpty)
+                        XCTAssertFalse(child.isRoot)
+                        XCTAssertFalse(child.isUserDefinedView)
+                        XCTAssertFalse(child.isModifiedContent)
+                    }
+                }
+            }
             
+            XCTContext.runActivity(named: "when Original Modifier") { (_) in
+                struct Modifier: ViewModifier {
+                    func body(content: Content) -> some View {
+                        content.background(Color.red)
+                    }
+                }
+                let view = Text("1").modifier(Modifier())
+                let visitor = ViewGraphSetVisitor()
+                let graph = visitor.visit(view: view)
+                
+                XCTAssertTrue(graph.anyView is ModifiedContent<Text, Modifier>)
+                XCTAssertEqual(graph.children.count, 1)
+                XCTAssertTrue(graph.isRoot)
+                XCTAssertFalse(graph.isUserDefinedView)
+                XCTAssertTrue(graph.isModifiedContent)
+                
+                XCTContext.runActivity(named: "And check children view of Text") { (_) in
+                    graph.children.forEach { child in
+                        XCTAssertTrue(child.anyView is Text)
+                        XCTAssertTrue(child.children.isEmpty)
+                        XCTAssertFalse(child.isRoot)
+                        XCTAssertFalse(child.isUserDefinedView)
+                        XCTAssertFalse(child.isModifiedContent)
+                    }
+                }
+            }
         }
     }
 
