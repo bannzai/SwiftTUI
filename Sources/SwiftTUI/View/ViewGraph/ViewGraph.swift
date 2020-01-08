@@ -143,14 +143,8 @@ extension ViewGraph: ViewPositionAcceptable {
             rect.origin = position
             return position
         }
-        
 
-        if let modifier = anyView as? HasAnyModifier, let alignmentModifier = modifier.anyModifier as? _AlignmentWritingModifier {
-            
-        }
-        
-        
-        fatalError("Unexpected pattern of \(self)")
+        return .zero
     }
 }
 
