@@ -12,6 +12,12 @@ public struct ViewDimensions {
     public internal(set) var width: PhysicalDistance
     public internal(set) var height: PhysicalDistance
     
+    internal var size: Size { Size(width: width, height: height) }
+    internal init() {
+        self.width = 0
+        self.height = 0
+    }
+
     private var explicitContainer = ExplicitContainer()
     
     public subscript(guide: HorizontalAlignment) -> PhysicalDistance {
