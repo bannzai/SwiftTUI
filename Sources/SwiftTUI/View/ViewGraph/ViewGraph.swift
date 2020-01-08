@@ -99,12 +99,6 @@ public final class ViewGraphSetVisitor {
     }
 }
 
-extension ViewGraph: ViewRectSetAcceptable {
-    func accept(visitor: ViewRectSetVisitor, with argument: ViewRectSetVisitor.Argument) -> ViewRectSetVisitor.VisitResult {
-        fatalError()
-    }
-}
-
 // e.g) Text, Padding
 internal protocol HasContentSize {
     func contentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size
