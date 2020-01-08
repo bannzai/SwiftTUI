@@ -19,7 +19,7 @@ public class ViewGraph: SwiftTUI.View {
     internal var alignment: Alignment = .default
     internal lazy var spacing: PhysicalDistance = listType.defaultSpace
     internal var proposedSize: Size = .zero
-
+    
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     
     private func defineProperties(to child: ViewGraph) {
@@ -127,6 +127,33 @@ extension ViewGraph: ViewSizeAcceptable {
                 .map { $0.accept(visitor: visitor) }
                 .reduce(.zero) { Size(width: $0.width + $1.width, height: $0.height + $1.height) }
         }
+        
+        fatalError("Unexpected pattern of \(self)")
+    }
+}
+
+internal protocol HasFixedPosition {
+    func fixedPosition(viewGraph: ViewGraph, visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult
+}
+
+extension ViewGraph: ViewPositionAcceptable {
+    func accept(visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult {
+        if !children.isEmpty {
+            children
+                .forEach { _ = $0.accept(visitor: visitor) }
+        }
+        
+        if let view = anyView as? HasFixedPosition {
+            let position = view.fixedPosition(viewGraph: self, visitor: visitor)
+            rect.origin = position
+            return position
+        }
+        
+
+        if let modifier = anyView as? HasAnyModifier, let alignmentModifier = modifier.anyModifier as? _AlignmentWritingModifier {
+            
+        }
+        
         
         fatalError("Unexpected pattern of \(self)")
     }

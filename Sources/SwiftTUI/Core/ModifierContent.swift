@@ -66,3 +66,10 @@ extension View {
         return .init(content: self, modifier: modifier)
     }
 }
+
+internal protocol HasAnyModifier {
+    var anyModifier: Any { get }
+}
+extension ModifiedContent: HasAnyModifier {
+    var anyModifier: Any { modifier }
+}
