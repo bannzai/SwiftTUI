@@ -27,3 +27,16 @@ extension View {
         return position(Point(x: x, y: y))
     }
 }
+
+internal protocol HasFixedPosition {
+    func fixedPosition(viewGraph: ViewGraph, visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult
+}
+
+extension ModifiedContent: HasFixedPosition where Modifier == _PositionLayout {
+    func fixedPosition(viewGraph: ViewGraph, visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult {
+        let position = modifier.position
+        viewGraph.rect.origin = position
+        return position
+    }
+}
+

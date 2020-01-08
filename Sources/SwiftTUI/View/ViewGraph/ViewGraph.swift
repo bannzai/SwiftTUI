@@ -127,10 +127,6 @@ extension ViewGraph: ViewSizeAcceptable {
     }
 }
 
-internal protocol HasFixedPosition {
-    func fixedPosition(viewGraph: ViewGraph, visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult
-}
-
 extension ViewGraph: ViewPositionAcceptable {
     func accept(visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult {
         if !children.isEmpty {
