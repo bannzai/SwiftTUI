@@ -18,7 +18,7 @@ public class ViewGraph: SwiftTUI.View {
     internal var listType: ViewVisitorListOption = .default
     internal var alignment: Alignment = .default
     internal lazy var spacing: PhysicalDistance = listType.defaultSpace
-    internal lazy var dimensions: ViewDimensions = ViewDimensions(width: rect.size.width, height: rect.size.height)
+    internal lazy var dimensions: ViewDimensions = ViewDimensions(graph: self)
     internal var proposedSize: Size = .zero
 
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
@@ -141,6 +141,26 @@ extension ViewGraph: ViewPositionAcceptable {
         }
 
         return .zero
+    }
+}
+
+extension ViewGraph: ViewDimensionsAcceptable {
+    func accept(visitor: ViewDimensionsVisitor) -> ViewDimensionsVisitor.VisitResult {
+        defer {
+            visitor.current = self
+        }
+        
+        if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier {
+            if visitor.current.alignment.horizontal.key == modifier.key || visitor.current.alignment.vertical.key == modifier.key {
+                let guide = modifier.computeValue(visitor.current.dimensions)
+            }
+        }
+        
+        children.forEach {
+            _ = $0.accept(visitor: visitor)
+        }
+        
+        return dimensions
     }
 }
 

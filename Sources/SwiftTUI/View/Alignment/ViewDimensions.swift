@@ -9,13 +9,13 @@ import Foundation
 
 
 public struct ViewDimensions {
-    public internal(set) var width: PhysicalDistance
-    public internal(set) var height: PhysicalDistance
+    public var width: PhysicalDistance { graph.rect.size.width }
+    public var height: PhysicalDistance { graph.rect.size.height }
     
     internal var size: Size { Size(width: width, height: height) }
-    internal init(width: PhysicalDistance, height: PhysicalDistance) {
-        self.width = width
-        self.height = height
+    private var graph: ViewGraph
+    internal init(graph: ViewGraph) {
+        self.graph = graph
     }
 
     private var explicitContainer = ExplicitContainer()
@@ -27,29 +27,34 @@ public struct ViewDimensions {
         guide.id.defaultValue(in: self)
     }
     public subscript(explicit guide: HorizontalAlignment) -> PhysicalDistance? {
-        var horizontal: PhysicalDistance? = explicitContainer.horizontal[guide]
-        guide.id._combineExplicit(childValue: childValue, level, into: &horizontal)
-        explicitContainer.horizontal[guide] = horizontal
-        return horizontal
+        guard let childValue = graph
+            .children
+            .map ({ $0.dimensions })
+            .compactMap({ dimensions in dimensions[explicit: guide] })
+            .first
+            else {
+            return nil
+        }
+        guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
+        return explicitContainer.container[guide.key]
     }
     public subscript(explicit guide: VerticalAlignment) -> PhysicalDistance? {
-        var vertical: PhysicalDistance? = explicitContainer.vertical[guide]
-        guide.id._combineExplicit(childValue: childValue, level, into: &vertical)
-        explicitContainer.vertical[guide] = vertical
-        return vertical
+        guard let childValue = graph
+            .children
+            .map ({ $0.dimensions })
+            .compactMap({ dimensions in dimensions[explicit: guide] })
+            .first
+            else {
+                return nil
+        }
+        guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
+        return explicitContainer.container[guide.key]
     }
 }
 
 extension ViewDimensions {
-    class ExplicitContainer {
-        fileprivate var horizontal: [HorizontalAlignment: PhysicalDistance] = [:]
-        fileprivate var vertical: [VerticalAlignment: PhysicalDistance] = [:]
-    }
-    private var childValue: PhysicalDistance {
-        fatalError("TODO:")
-    }
-    private var level: Int {
-        fatalError("TODO:")
+    fileprivate class ExplicitContainer {
+        var container: [AlignmentKey: PhysicalDistance] = [:]
     }
 }
 

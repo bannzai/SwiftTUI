@@ -13,7 +13,11 @@ internal protocol ViewDimensionsAcceptable {
 
 internal final class ViewDimensionsVisitor: Visitor {
     internal typealias VisitResult = ViewDimensions
-    internal init() { }
+    internal init(graph: ViewGraph) {
+        self.current = graph
+    }
+    
+    internal var current: ViewGraph
     
     internal func visit<T: View>(_ content: T) -> VisitResult {
         debugLogger.debug()
