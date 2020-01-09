@@ -13,9 +13,9 @@ public struct ViewDimensions {
     public internal(set) var height: PhysicalDistance
     
     internal var size: Size { Size(width: width, height: height) }
-    internal init() {
-        self.width = 0
-        self.height = 0
+    internal init(width: PhysicalDistance, height: PhysicalDistance) {
+        self.width = width
+        self.height = height
     }
 
     private var explicitContainer = ExplicitContainer()

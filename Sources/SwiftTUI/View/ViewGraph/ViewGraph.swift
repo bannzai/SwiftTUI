@@ -18,7 +18,7 @@ public class ViewGraph: SwiftTUI.View {
     internal var listType: ViewVisitorListOption = .default
     internal var alignment: Alignment = .default
     internal lazy var spacing: PhysicalDistance = listType.defaultSpace
-    internal var dimensions: ViewDimensions = ViewDimensions()
+    internal lazy var dimensions: ViewDimensions = ViewDimensions(width: rect.size.width, height: rect.size.height)
     internal var proposedSize: Size = .zero
 
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
