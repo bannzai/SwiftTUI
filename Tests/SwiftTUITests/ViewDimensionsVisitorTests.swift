@@ -173,46 +173,14 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ModifiedContent<Text, _AlignmentWritingModifier>})!
             
             XCTAssertTrue(firstModifier.anyView is ModifiedContent<Text, _AlignmentWritingModifier>)
-            XCTAssertEqual(firstModifier.alignment.horizontal, .trailing)
             
             let textGraph = firstModifier.children.first(where: { $0.anyView is Text })!
             XCTAssertTrue(textGraph.anyView is Text)
-            XCTAssertEqual(textGraph.alignment.horizontal, .trailing)
 
             let visitor = ViewDimensionsVisitor()
             let dimensions = visitor.visit(firstModifier)
             
             XCTAssertNil(dimensions[explicit: .trailing])
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
-        }
-        
-        XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide then VStack using same(.trailing) horizontal alignment") { (_) in
-            let view = VStack(alignment: .trailing) {
-                Text("1")
-                    .alignmentGuide(.trailing) { _ in 200000 }
-                Text("23")
-                Text("456")
-            }
-            
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
-            
-            XCTAssertEqual(graph.alignment.horizontal, .trailing)
-            
-            // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewSizeVisitor()
-            _ = sizeVisitor.visit(graph)
-            
-            let firstText = graph.children.first!.children.first(where: { $0.anyView is Text})!
-            
-            XCTAssertTrue(firstText.anyView is Text)
-            XCTAssertEqual(firstText.alignment.horizontal, .trailing)
-            
-            let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(firstText)
-            
-            XCTAssertEqual(dimensions[explicit: .trailing], 200000)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
         }
     }
