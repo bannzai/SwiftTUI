@@ -109,6 +109,7 @@ extension ViewGraph: ViewSizeAcceptable {
         if isRoot {
             proposedSize = mainScreen.bounds.size
         }
+        
         children.forEach { $0.proposedSize = proposedSize }
 
         if let view = anyView as? HasContentSize {
@@ -118,9 +119,11 @@ extension ViewGraph: ViewSizeAcceptable {
         }
 
         if !children.isEmpty {
-            return children
+            let size = children
                 .map { $0.accept(visitor: visitor) }
                 .reduce(.zero) { Size(width: $0.width + $1.width, height: $0.height + $1.height) }
+            rect.size = size
+            return size
         }
         
         fatalError("Unexpected pattern of \(self)")
