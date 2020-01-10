@@ -146,18 +146,21 @@ extension ViewGraph: ViewPositionAcceptable {
 
 extension ViewGraph: ViewDimensionsAcceptable {
     func accept(visitor: ViewDimensionsVisitor) -> ViewDimensionsVisitor.VisitResult {
-        defer {
-            visitor.current = self
+        visitor.current = self
+
+        children.forEach {
+            _ = $0.accept(visitor: visitor)
         }
         
         if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier {
-            if visitor.current.alignment.horizontal.key == modifier.key || visitor.current.alignment.vertical.key == modifier.key {
-                let guide = modifier.computeValue(visitor.current.dimensions)
+            if visitor.current.alignment.horizontal.key == modifier.key {
+                let computedValue = modifier.computeValue(visitor.current.dimensions)
+                dimensions.set(guide: visitor.current.alignment.horizontal, value: computedValue)
             }
-        }
-        
-        children.forEach {
-            _ = $0.accept(visitor: visitor)
+            if visitor.current.alignment.vertical.key == modifier.key {
+                let computedValue = modifier.computeValue(visitor.current.dimensions)
+                dimensions.set(guide: visitor.current.alignment.vertical, value: computedValue)
+            }
         }
         
         return dimensions

@@ -27,28 +27,39 @@ public struct ViewDimensions {
         guide.id.defaultValue(in: self)
     }
     public subscript(explicit guide: HorizontalAlignment) -> PhysicalDistance? {
-        guard let childValue = graph
-            .children
-            .map ({ $0.dimensions })
-            .compactMap({ dimensions in dimensions[explicit: guide] })
-            .first
-            else {
-            return nil
-        }
-        guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
-        return explicitContainer.container[guide.key]
+        extract(explicit: guide.key)
     }
     public subscript(explicit guide: VerticalAlignment) -> PhysicalDistance? {
+        extract(explicit: guide.key)
+    }
+    
+    private func extract(explicit key: AlignmentKey) -> PhysicalDistance? {
+        explicitContainer.container[key]
+    }
+}
+
+extension ViewDimensions {
+    internal func set(guide: VerticalAlignment, value: PhysicalDistance) {
         guard let childValue = graph
             .children
             .map ({ $0.dimensions })
             .compactMap({ dimensions in dimensions[explicit: guide] })
             .first
             else {
-                return nil
+                return
         }
         guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
-        return explicitContainer.container[guide.key]
+    }
+    internal func set(guide: HorizontalAlignment, value: PhysicalDistance) {
+        guard let childValue = graph
+            .children
+            .map ({ $0.dimensions })
+            .compactMap({ dimensions in dimensions[explicit: guide] })
+            .first
+            else {
+                return
+        }
+        guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
     }
 }
 
