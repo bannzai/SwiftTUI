@@ -38,6 +38,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let result = graph.accept(visitor: sizeVisitor)
 
             XCTAssertEqual(result, Size(width: "hoge".width, height: 1))
+            XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
             let view = Text("hoge\nfuga")
@@ -48,6 +49,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let result = graph.accept(visitor: sizeVisitor)
 
             XCTAssertEqual(result, Size(width: "hoge".width, height: 2))
+            XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when TupleView<Text, Text, Text>") { (_) in
             let view = TupleView((
@@ -66,6 +68,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
             
             XCTAssertEqual(result, Size(width: "456".width, height: elementCount + spacing))
+            XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {
@@ -83,6 +86,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
             
             XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
+            XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when CustomView has Text") { (_) in
             let view = CustomView(body: Text("123"))
@@ -93,6 +97,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let result = graph.accept(visitor: sizeVisitor)
 
             XCTAssertEqual(result, Size(width: "123".width, height: 1))
+            XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when CustomView has VStack<Text>") { (_) in
             let view = CustomView(body: VStack { Text("123") })
@@ -103,6 +108,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let result = graph.accept(visitor: sizeVisitor)
             
             XCTAssertEqual(result, Size(width: "123".width, height: 1))
+            XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when CustomView has VStack<TupleView<Text, Text, Text>>") { (_) in
             let view = CustomView(body: VStack {
@@ -120,6 +126,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
 
             XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
+            XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when CustomView has VStack<TupleView<CustomView<Text>, CustomView<Text>>>") { (_) in
             let view = CustomView(body: VStack {
@@ -136,6 +143,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
             
             XCTAssertEqual(result, Size(width: "456".width, height: 2 + spacing))
+            XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
             let view = Text("123").background(Color.red)
@@ -145,6 +153,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let result = graph.accept(visitor: sizeVisitor)
             
             XCTAssertEqual(result, Size(width: "123".width, height: 1))
+            XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when Original Modifier") { (_) in
             struct Modifier: ViewModifier {
@@ -161,6 +170,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let result = graph.accept(visitor: sizeVisitor)
             
             XCTAssertEqual(result, Size(width: "1".width, height: 1))
+            XCTAssertEqual(result, graph.rect.size)
         }
     }
 
