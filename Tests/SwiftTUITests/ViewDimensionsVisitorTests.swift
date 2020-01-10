@@ -164,16 +164,23 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
             
+            XCTAssertEqual(graph.alignment.horizontal, .default)
+            
             // FIXME: Remove Size Visitor??
             let sizeVisitor = ViewSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
-            let firstText = graph.children.first!.children.first(where: { $0.anyView is Text})!
+            let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ModifiedContent<Text, _AlignmentWritingModifier>})!
             
-            XCTAssertTrue(firstText.anyView is Text)
+            XCTAssertTrue(firstModifier.anyView is ModifiedContent<Text, _AlignmentWritingModifier>)
+            XCTAssertEqual(firstModifier.alignment.horizontal, .trailing)
             
+            let textGraph = firstModifier.children.first(where: { $0.anyView is Text })!
+            XCTAssertTrue(textGraph.anyView is Text)
+            XCTAssertEqual(textGraph.alignment.horizontal, .trailing)
+
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(firstText)
+            let dimensions = visitor.visit(firstModifier)
             
             XCTAssertNil(dimensions[explicit: .trailing])
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
@@ -191,11 +198,17 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
             
+            XCTAssertEqual(graph.alignment.horizontal, .trailing)
+            
             // FIXME: Remove Size Visitor??
             let sizeVisitor = ViewSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
-            let firstText = graph.children.first!
+            let firstText = graph.children.first!.children.first(where: { $0.anyView is Text})!
+            
+            XCTAssertTrue(firstText.anyView is Text)
+            XCTAssertEqual(firstText.alignment.horizontal, .trailing)
+            
             let visitor = ViewDimensionsVisitor()
             let dimensions = visitor.visit(firstText)
             
