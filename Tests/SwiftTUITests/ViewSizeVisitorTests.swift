@@ -65,7 +65,7 @@ class ViewSizeVisitorTests: XCTestCase {
             let elementCount = 3
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
             
-            XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
+            XCTAssertEqual(result, Size(width: "456".width, height: elementCount + spacing))
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {

@@ -65,6 +65,34 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
         }
+        XCTContext.runActivity(named: "when TupleView<Text, Text, Text>") { (_) in
+            let view = TupleView((
+                Text("1"),
+                Text("23"),
+                Text("456")
+            ))
+            
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view: view)
+            graph.listType = .vertical
+
+            // FIXME: Remove Size Visitor??
+            let sizeVisitor = ViewSizeVisitor()
+            _ = sizeVisitor.visit(graph)
+            
+            let visitor = ViewDimensionsVisitor()
+            let dimensions = visitor.visit(graph)
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(dimensions.width, "456".width)
+            XCTAssertEqual(dimensions.height, elementCount + spacing)
+            XCTAssertEqual(dimensions[HorizontalAlignment.default], "456".width / 2)
+            XCTAssertEqual(dimensions[VerticalAlignment.default], (elementCount + spacing) / 2)
+            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
+        }
     }
 
 }
