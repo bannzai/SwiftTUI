@@ -44,7 +44,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
         }
-        
         XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
             let view = Text("hoge\nfuga")
 
@@ -119,6 +118,89 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertEqual(dimensions[VerticalAlignment.default], (elementCount + spacing) / 2)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
+        }
+        XCTContext.runActivity(named: "when Text with alignmentGuide") { (_) in
+            let view = Text("hoge").alignmentGuide(.bottom) { _ in 20000 }
+
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view: view)
+            
+            // FIXME: Remove Size Visitor??
+            let sizeVisitor = ViewSizeVisitor()
+            _ = sizeVisitor.visit(graph)
+            
+            let visitor = ViewDimensionsVisitor()
+            let dimensions = visitor.visit(graph)
+            
+            XCTAssertNil(dimensions[explicit: .bottom])
+        }
+    }
+    
+    func testVisit_withAlignmentGuide() {
+        XCTContext.runActivity(named: "when Text with alignmentGuide") { (_) in
+            let view = Text("hoge").alignmentGuide(.bottom) { _ in 20000 }
+            
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view: view)
+            
+            // FIXME: Remove Size Visitor??
+            let sizeVisitor = ViewSizeVisitor()
+            _ = sizeVisitor.visit(graph)
+            
+            let visitor = ViewDimensionsVisitor()
+            let dimensions = visitor.visit(graph)
+            
+            XCTAssertNil(dimensions[explicit: .bottom])
+        }
+        XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide. But VStack using .default(.leading) horizontal alignment") { (_) in
+            let view = VStack {
+                Text("1")
+                    .alignmentGuide(.trailing) { _ in 200000 }
+                Text("23")
+                Text("456")
+            }
+            
+
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view: view)
+            
+            // FIXME: Remove Size Visitor??
+            let sizeVisitor = ViewSizeVisitor()
+            _ = sizeVisitor.visit(graph)
+            
+            let firstText = graph.children.first!.children.first(where: { $0.anyView is Text})!
+            
+            XCTAssertTrue(firstText.anyView is Text)
+            
+            let visitor = ViewDimensionsVisitor()
+            let dimensions = visitor.visit(firstText)
+            
+            XCTAssertNil(dimensions[explicit: .trailing])
+            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
+        }
+        
+        XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide then VStack using same(.trailing) horizontal alignment") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                    .alignmentGuide(.trailing) { _ in 200000 }
+                Text("23")
+                Text("456")
+            }
+            
+            
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view: view)
+            
+            // FIXME: Remove Size Visitor??
+            let sizeVisitor = ViewSizeVisitor()
+            _ = sizeVisitor.visit(graph)
+            
+            let firstText = graph.children.first!
+            let visitor = ViewDimensionsVisitor()
+            let dimensions = visitor.visit(firstText)
+            
+            XCTAssertEqual(dimensions[explicit: .trailing], 200000)
+            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
         }
     }
 
