@@ -271,6 +271,37 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertEqual(dimensions[explicit: .trailing], 200)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
         }
+        
+        XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using not same horizontal alignment referenced child explicit alignmentGuide") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                    .alignmentGuide(.top) { dimensions in 200 }
+                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .top] ?? 100 }
+                Text("23")
+                Text("456")
+            }
+            
+            
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view: view)
+            
+            XCTAssertEqual(graph.alignment.horizontal, .trailing)
+            
+            // FIXME: Remove Size Visitor??
+            let sizeVisitor = ViewSizeVisitor()
+            _ = sizeVisitor.visit(graph)
+            
+            typealias ViewType = ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>
+            let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ViewType })!
+            
+            XCTAssertTrue(firstModifier.anyView is ViewType)
+            
+            let visitor = ViewDimensionsVisitor()
+            let dimensions = visitor.visit(firstModifier)
+            
+            XCTAssertEqual(dimensions[explicit: .trailing], 200)
+            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
+        }
     }
 
 }
