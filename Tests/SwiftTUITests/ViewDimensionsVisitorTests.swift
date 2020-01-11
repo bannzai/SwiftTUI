@@ -180,7 +180,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertNil(dimensions[explicit: .trailing])
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
         }
-        XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide. But VStack using same (.trailing) horizontal alignment") { (_) in
+        XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using same (.trailing) horizontal alignment") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("1")
                     .alignmentGuide(.trailing) { _ in 200000 }
