@@ -40,26 +40,32 @@ public struct ViewDimensions {
 
 extension ViewDimensions {
     internal func set(guide: VerticalAlignment, value: PhysicalDistance) {
-        guard let childValue = graph
+        // FIXME: Correct behavior is not known even in SwiftUI
+        let childValue = graph
             .children
             .map ({ $0.dimensions })
             .compactMap({ dimensions in dimensions[explicit: guide] })
             .first
-            else {
-                return
+        switch childValue {
+        case nil:
+            guide.id._combineExplicit(childValue: value, into: &explicitContainer.container[guide.key])
+        case .some(let childValue):
+            guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
         }
-        guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
     }
     internal func set(guide: HorizontalAlignment, value: PhysicalDistance) {
-        guard let childValue = graph
+        // FIXME: Correct behavior is not known even in SwiftUI
+        let childValue = graph
             .children
             .map ({ $0.dimensions })
             .compactMap({ dimensions in dimensions[explicit: guide] })
             .first
-            else {
-                return
+        switch childValue {
+        case nil:
+            guide.id._combineExplicit(childValue: value, into: &explicitContainer.container[guide.key])
+        case .some(let childValue):
+            guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
         }
-        guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
     }
 }
 
