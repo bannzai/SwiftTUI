@@ -13,9 +13,11 @@ public protocol AlignmentID {
 }
 
 fileprivate let noSpecifyLevel = 0
+fileprivate let undefinedValue: PhysicalDistance? = nil
 extension AlignmentID {
     public static func _combineExplicit(childValue: PhysicalDistance, _ n: Swift.Int, into parentValue: inout PhysicalDistance?) {
-        if parentValue == nil {
+        // FIXME: Myabe incorrect
+        if parentValue == undefinedValue {
             parentValue = childValue
             return
         }
