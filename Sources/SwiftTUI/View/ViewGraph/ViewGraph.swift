@@ -149,39 +149,46 @@ extension ViewGraph: ViewPositionAcceptable {
 
 extension ViewGraph: ViewDimensionsAcceptable {
     func accept(visitor: ViewDimensionsVisitor) -> ViewDimensionsVisitor.VisitResult {
+        let dimensions = ViewDimensions(graph: self)
+        let originalDimensions = visitor.current
+        visitor.current = dimensions
+        defer { visitor.current = originalDimensions }
+        self.dimensions = dimensions
+        
         guard let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier else {
-            children.forEach { $0.accept(visitor: visitor) }
             return dimensions
         }
         
-        let dimensions = ViewDimensions(graph: self)
-        visitor.current = dimensions
-        self.dimensions = dimensions
-        
-        // TODO: Visitorに現在のViewDimensions渡して、子供にalignment.horizontal.id._combineExplicit(childValue: childValue, into: &dimensions[explicit: alignment.horizontal]) していく方式でどうだろうか
-        
-        if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier {
-            if alignment.horizontal.key == modifier.key {
-                var parentValue: PhysicalDistance? = 0
-                children.forEach {
-                    let childDimensions = $0.accept(visitor: visitor)
-                    let childValue = childDimensions[explicit: alignment.horizontal]
-                    switch childValue {
-                    case nil:
-                        let computedValue = modifier.computeValue(dimensions)
-                        dimensions.set(guide: alignment.horizontal, value: computedValue)
-                    case .some(let childValue):
-                        alignment.horizontal.id._combineExplicit(childValue: childValue, into: &dimensions[explicit: alignment.horizontal])
-                        dimensions.set(guide: alignment.horizontal, value: parentValue ?? 0)
-                    }
+        children.forEach { _ = $0.accept(visitor: visitor) }
+        dimensions.set(key: modifier.key, value: modifier.computeValue(dimensions))
+
+        if alignment.horizontal.key == modifier.key {
+            children.forEach { child in
+                let childDimensions = child.accept(visitor: visitor)
+                let childValue = childDimensions[explicit: alignment.horizontal]
+                switch childValue {
+                case nil:
+                    let computedValue = modifier.computeValue(dimensions)
+                    visitor.current?[explicit: alignment.horizontal] = computedValue
+                case .some(let childValue):
+                    alignment.horizontal.id._combineExplicit(childValue: childValue, into: &visitor.current![explicit: alignment.horizontal])
                 }
             }
-            if alignment.vertical.key == modifier.key {
-                let computedValue = modifier.computeValue(dimensions)
-                dimensions.set(guide: alignment.vertical, value: computedValue)
+        }
+        if alignment.vertical.key == modifier.key {
+            children.forEach { child in
+                let childDimensions = child.accept(visitor: visitor)
+                let childValue = childDimensions[explicit: alignment.vertical]
+                switch childValue {
+                case nil:
+                    let computedValue = modifier.computeValue(dimensions)
+                    visitor.current?[explicit: alignment.vertical] = computedValue
+                case .some(let childValue):
+                    alignment.vertical.id._combineExplicit(childValue: childValue, into: &visitor.current![explicit: alignment.vertical])
+                }
             }
         }
-        
+
         return dimensions
     }
 }

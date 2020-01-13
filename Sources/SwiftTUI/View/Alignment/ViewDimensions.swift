@@ -36,38 +36,21 @@ public struct ViewDimensions {
     }
     
     private func extract(explicit key: AlignmentKey) -> PhysicalDistance? {
-        explicitContainer.container[key]
+        print("explicitContainer.container[key]: \(explicitContainer.container[key])")
+        print("graph.children.compactMap { $0.dimensions?.extract(explicit: key) }.last: \(graph.children.compactMap { $0.dimensions?.extract(explicit: key) }.last)")
+        return explicitContainer.container[key] ?? graph.children.compactMap { $0.dimensions?.extract(explicit: key) }.last
     }
 }
 
 extension ViewDimensions {
-    internal func set(guide: VerticalAlignment, value: PhysicalDistance) {
-        // FIXME: Correct behavior is not known even in SwiftUI
-        let childValue = graph
-            .children
-            .map ({ $0.dimensions })
-            .compactMap({ dimensions in dimensions[explicit: guide] })
-            .first
-        switch childValue {
-        case nil:
-            guide.id._combineExplicit(childValue: value, into: &explicitContainer.container[guide.key])
-        case .some(let childValue):
-            guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
-        }
+    func set(key: AlignmentKey, value: PhysicalDistance) {
+        explicitContainer.container[key] = value
     }
-    internal func set(guide: HorizontalAlignment, value: PhysicalDistance) {
-        // FIXME: Correct behavior is not known even in SwiftUI
-        let childValue = graph
-            .children
-            .map ({ $0.dimensions })
-            .compactMap({ dimensions in dimensions[explicit: guide] })
-            .first
-        switch childValue {
-        case nil:
-            guide.id._combineExplicit(childValue: value, into: &explicitContainer.container[guide.key])
-        case .some(let childValue):
-            guide.id._combineExplicit(childValue: childValue, into: &explicitContainer.container[guide.key])
-        }
+    private func set(guide: VerticalAlignment, value: PhysicalDistance) {
+        set(key: guide.key, value: value)
+    }
+    private func set(guide: HorizontalAlignment, value: PhysicalDistance) {
+        set(key: guide.key, value: value)
     }
 }
 
