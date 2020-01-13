@@ -26,11 +26,13 @@ public struct ViewDimensions {
     public subscript(guide: VerticalAlignment) -> PhysicalDistance {
         guide.id.defaultValue(in: self)
     }
-    public subscript(explicit guide: HorizontalAlignment) -> PhysicalDistance? {
-        extract(explicit: guide.key)
+    public internal(set) subscript(explicit guide: HorizontalAlignment) -> PhysicalDistance? {
+        get { extract(explicit: guide.key) }
+        set { set(guide: guide, value: newValue ?? 0) }
     }
-    public subscript(explicit guide: VerticalAlignment) -> PhysicalDistance? {
-        extract(explicit: guide.key)
+    public internal(set) subscript(explicit guide: VerticalAlignment) -> PhysicalDistance? {
+        get { extract(explicit: guide.key) }
+        set { set(guide: guide, value: newValue ?? 0) }
     }
     
     private func extract(explicit key: AlignmentKey) -> PhysicalDistance? {

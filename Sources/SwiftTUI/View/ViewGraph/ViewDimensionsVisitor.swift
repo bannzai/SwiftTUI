@@ -12,8 +12,10 @@ internal protocol ViewDimensionsAcceptable {
 }
 
 internal final class ViewDimensionsVisitor: Visitor {
-    internal typealias VisitResult = ViewDimensions
+    internal typealias VisitResult = ViewDimensions?
     internal init() { }
+    
+    internal var current: ViewDimensions?
 
     internal func visit<T: View>(_ content: T) -> VisitResult {
         debugLogger.debug()
