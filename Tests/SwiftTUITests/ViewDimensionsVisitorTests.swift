@@ -275,7 +275,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertEqual(dimensions[explicit: .trailing], 200)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
         }
-        
     }
     
     func testX() {
@@ -313,6 +312,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertEqual(dimensions[explicit: .bottom], 200)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
         }
+
     }
 
 }

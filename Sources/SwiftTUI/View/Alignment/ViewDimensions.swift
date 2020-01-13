@@ -27,18 +27,30 @@ public struct ViewDimensions {
         guide.id.defaultValue(in: self)
     }
     public internal(set) subscript(explicit guide: HorizontalAlignment) -> PhysicalDistance? {
-        get { extract(explicit: guide.key) }
+        get { self[explicit: (id: guide.id, guide.key)] }
         set { set(guide: guide, value: newValue ?? 0) }
     }
     public internal(set) subscript(explicit guide: VerticalAlignment) -> PhysicalDistance? {
-        get { extract(explicit: guide.key) }
+        get { self[explicit: (id: guide.id, guide.key)] }
         set { set(guide: guide, value: newValue ?? 0) }
     }
     
-    private func extract(explicit key: AlignmentKey) -> PhysicalDistance? {
-        print("explicitContainer.container[key]: \(explicitContainer.container[key])")
-        print("graph.children.compactMap { $0.dimensions?.extract(explicit: key) }.last: \(graph.children.compactMap { $0.dimensions?.extract(explicit: key) }.last)")
-        return explicitContainer.container[key] ?? graph.children.compactMap { $0.dimensions?.extract(explicit: key) }.last
+    internal subscript(explicit values: (id: AlignmentID.Type, key: AlignmentKey)) -> PhysicalDistance? {
+        get {
+            if let value = explicitContainer.container[values.key] {
+                return value
+            }
+            if let value = graph.children.compactMap({ $0.dimensions[explicit: values] }).last {
+                return value
+            }
+            if let value = graph.children.compactMap({ $0.decideAlignmentGuide(for: values)}).last?[explicit: values] {
+                return value
+            }
+            return nil
+        }
+        set {
+            set(key: values.key, value: newValue ?? 0)
+        }
     }
 }
 

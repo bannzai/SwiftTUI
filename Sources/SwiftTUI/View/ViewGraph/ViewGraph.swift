@@ -18,7 +18,7 @@ public class ViewGraph: SwiftTUI.View {
     internal var listType: ViewVisitorListOption = .default
     internal var alignment: Alignment = .default
     internal lazy var spacing: PhysicalDistance = listType.defaultSpace
-    internal var dimensions: ViewDimensions?
+    internal lazy var dimensions: ViewDimensions = ViewDimensions(graph: self)
     internal var proposedSize: Size = .zero
 
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
@@ -148,47 +148,38 @@ extension ViewGraph: ViewPositionAcceptable {
 }
 
 extension ViewGraph: ViewDimensionsAcceptable {
-    func accept(visitor: ViewDimensionsVisitor) -> ViewDimensionsVisitor.VisitResult {
-        let dimensions = ViewDimensions(graph: self)
-        let originalDimensions = visitor.current
-        visitor.current = dimensions
-        defer { visitor.current = originalDimensions }
-        self.dimensions = dimensions
-        
+    func decideAlignmentGuide(for values: (id: AlignmentID.Type, key: AlignmentKey)) -> ViewDimensionsVisitor.VisitResult {
         guard let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier else {
+            children.forEach { _ = $0.decideAlignmentGuide(for: values) }
             return dimensions
         }
         
-        children.forEach { _ = $0.accept(visitor: visitor) }
-        dimensions.set(key: modifier.key, value: modifier.computeValue(dimensions))
-
-        if alignment.horizontal.key == modifier.key {
+        if values.key == modifier.key {
             children.forEach { child in
-                let childDimensions = child.accept(visitor: visitor)
-                let childValue = childDimensions[explicit: alignment.horizontal]
+                let childDimensions = child.decideAlignmentGuide(for: values)
+                let childValue = childDimensions[explicit: values]
                 switch childValue {
                 case nil:
                     let computedValue = modifier.computeValue(dimensions)
-                    visitor.current?[explicit: alignment.horizontal] = computedValue
+                    dimensions.set(key: values.key, value: computedValue)
                 case .some(let childValue):
-                    alignment.horizontal.id._combineExplicit(childValue: childValue, into: &visitor.current![explicit: alignment.horizontal])
+                    values.id._combineExplicit(childValue: childValue, into: &dimensions[explicit: values])
                 }
             }
         }
-        if alignment.vertical.key == modifier.key {
-            children.forEach { child in
-                let childDimensions = child.accept(visitor: visitor)
-                let childValue = childDimensions[explicit: alignment.vertical]
-                switch childValue {
-                case nil:
-                    let computedValue = modifier.computeValue(dimensions)
-                    visitor.current?[explicit: alignment.vertical] = computedValue
-                case .some(let childValue):
-                    alignment.vertical.id._combineExplicit(childValue: childValue, into: &visitor.current![explicit: alignment.vertical])
-                }
-            }
+        return dimensions
+    }
+    func accept(visitor: ViewDimensionsVisitor) -> ViewDimensionsVisitor.VisitResult {
+        horizontal: do {
+            let id = alignment.horizontal.id
+            let key = alignment.horizontal.key
+            _ = decideAlignmentGuide(for: (id: id, key: key))
         }
-
+        vertical: do {
+            let id = alignment.vertical.id
+            let key = alignment.vertical.key
+            _ = decideAlignmentGuide(for: (id: id, key: key))
+        }
         return dimensions
     }
 }
