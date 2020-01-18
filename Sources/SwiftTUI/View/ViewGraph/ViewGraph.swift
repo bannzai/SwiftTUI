@@ -131,19 +131,56 @@ extension ViewGraph: ViewSizeAcceptable {
 }
 
 extension ViewGraph: ViewPositionAcceptable {
-    func accept(visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult {
-        if !children.isEmpty {
-            children
-                .forEach { _ = $0.accept(visitor: visitor) }
+    func extract(visitor: ViewPositionVisitor) -> (x: PhysicalDistance, y: PhysicalDistance) {
+        let x: PhysicalDistance
+        horizontal: switch dimensions[explicit: alignment.horizontal] {
+        case nil:
+            x = alignment.horizontal.id.defaultValue(in: dimensions)
+        case .some(let explicitValue):
+            let baseLine = alignment.horizontal.id.defaultValue(in: dimensions)
+            x = baseLine - explicitValue
         }
+        
+        let y: PhysicalDistance
+        vertical: switch dimensions[explicit: alignment.vertical] {
+        case nil:
+            y = alignment.vertical.id.defaultValue(in: dimensions)
+        case .some(let explicitValue):
+            let baseLine = alignment.vertical.id.defaultValue(in: dimensions)
+            y = baseLine - explicitValue
+        }
+        return (x: x, y: y)
+    }
+    
+    func accept(visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult {
+        children.forEach { _ = $0.accept(visitor: visitor) }
         
         if let view = anyView as? HasFixedPosition {
             let position = view.fixedPosition(viewGraph: self, visitor: visitor)
             rect.origin = position
             return position
         }
+        
+        var xList: ContiguousArray<PhysicalDistance> = ContiguousArray(repeating: 0, count: children.count)
+        var yList: ContiguousArray<PhysicalDistance> = ContiguousArray(repeating: 0, count: children.count)
+        children.enumerated().forEach { (offset, child) in
+            let (x, y) = child.extract(visitor: visitor)
+            xList[offset] = x
+            yList[offset] = y
+        }
+        
+        let maxX = xList.max()!
+        let maxY = yList.max()!
+        children.enumerated().forEach { (offset, child) in
+            child.rect.origin.x = maxX - xList[offset]
+            child.rect.origin.y = maxY - yList[offset]
+            
+            child.rect.origin.x += alignment.horizontal.id.defaultValue(in: dimensions)
+            child.rect.origin.y += alignment.vertical.id.defaultValue(in: dimensions)
+            
+        }
 
-        return .zero
+        return rect.origin
     }
 }
 
