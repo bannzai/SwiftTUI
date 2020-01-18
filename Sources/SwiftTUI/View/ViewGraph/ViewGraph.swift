@@ -153,6 +153,10 @@ extension ViewGraph: ViewPositionAcceptable {
     }
     
     func accept(visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult {
+        if children.isEmpty {
+            return rect.origin
+        }
+        
         children.forEach { _ = $0.accept(visitor: visitor) }
         
         if let view = anyView as? HasFixedPosition {
