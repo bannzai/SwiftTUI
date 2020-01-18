@@ -19,9 +19,10 @@ class ViewPositionVisitorTests: XCTestCase {
         
         mainScreen = DummyScreen.init()
     }
-    private func prepare<T: View>(view: T) -> ViewGraph {
+    private func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
         let graphVisitor = ViewGraphSetVisitor()
         let graph = graphVisitor.visit(view: view)
+        graph.listType = viewListOption
         
         // FIXME: Remove Size Visitor??
         let sizeVisitor = ViewSizeVisitor()
@@ -44,6 +45,36 @@ class ViewPositionVisitorTests: XCTestCase {
             XCTAssertEqual(position.x, "hoge".width / 2)
             XCTAssertEqual(position.y, 0)
         }
+        XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
+            let view = Text("hoge\nfuga")
+            let graph = prepare(view: view)
+            
+            let visitor = ViewPositionVisitor()
+            let position = graph.extract(visitor: visitor)
+            
+            XCTAssertEqual(position.x, "hoge".width / 2)
+            XCTAssertEqual(position.y, 1)
+        }
+        XCTContext.runActivity(named: "when TupleView<Text, Text, Text>") { (_) in
+            let view = TupleView((
+                Text("1"),
+                Text("23"),
+                Text("456")
+            ))
+            let graph = prepare(view: view)
+            
+            let visitor = ViewPositionVisitor()
+            let position = graph.extract(visitor: visitor)
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            let height = elementCount + spacing
+            XCTAssertEqual(position.x, "456".width / 2)
+            XCTAssertEqual(position.y, height / 2)
+        }
+    }
+    
+    func test() {
     }
     
     func testAccept() {
