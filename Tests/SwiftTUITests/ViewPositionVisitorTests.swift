@@ -104,12 +104,56 @@ class ViewPositionVisitorTests: XCTestCase {
             XCTAssertEqual(position.x, "123".width / 2)
             XCTAssertEqual(position.y, 0)
         }
-    }
-    
-    func test() {
+        XCTContext.runActivity(named: "when CustomView has VStack<TupleView<Text, Text, Text>>") { (_) in
+            let view = CustomView(body: VStack {
+                Text("123")
+                Text("456")
+                Text("789")
+            })
+            let graph = prepare(view: view)
+            
+            let visitor = ViewPositionVisitor()
+            let position = graph.extract(visitor: visitor)
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            let height = elementCount + spacing
+            
+            XCTAssertEqual(position.x, "456".width / 2)
+            XCTAssertEqual(position.y, height / 2)
+        }
+        XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
+            let view = Text("123").background(Color.red)
+            let graph = prepare(view: view)
+            
+            let visitor = ViewPositionVisitor()
+            let position = graph.extract(visitor: visitor)
+            
+            XCTAssertEqual(position.x, "123".width / 2)
+            XCTAssertEqual(position.y, 0)
+        }
+        XCTContext.runActivity(named: "when Original Modifier") { (_) in
+            struct Modifier: ViewModifier {
+                func body(content: Content) -> some View {
+                    content.background(Color.red)
+                }
+            }
+            
+            let view = Text("1").modifier(Modifier())
+            let graph = prepare(view: view)
+            
+            let visitor = ViewPositionVisitor()
+            let position = graph.extract(visitor: visitor)
+            
+            XCTAssertEqual(position.x, "1".width / 2)
+            XCTAssertEqual(position.y, 0)
+        }
     }
     
     func testAccept() {
         
+    }
+    
+    func test() {
     }
 }
