@@ -9,6 +9,9 @@ import XCTest
 @testable import SwiftTUI
 
 class ViewPositionVisitorTests: XCTestCase {
+    struct CustomView<Target: View>: View {
+        let body: Target
+    }
     class DummyScreen: Screen {
         override var columns: PhysicalDistance { 100 }
         override var rows: PhysicalDistance { 100 }
@@ -90,6 +93,16 @@ class ViewPositionVisitorTests: XCTestCase {
             
             XCTAssertEqual(position.x, "456".width / 2)
             XCTAssertEqual(position.y, height / 2)
+        }
+        XCTContext.runActivity(named: "when CustomView has Text") { (_) in
+            let view = CustomView(body: Text("123"))
+            let graph = prepare(view: view)
+            
+            let visitor = ViewPositionVisitor()
+            let position = graph.extract(visitor: visitor)
+
+            XCTAssertEqual(position.x, "123".width / 2)
+            XCTAssertEqual(position.y, 0)
         }
     }
     
