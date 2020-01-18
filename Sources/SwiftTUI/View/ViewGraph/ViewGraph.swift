@@ -163,9 +163,7 @@ extension ViewGraph: ViewDimensionsAcceptable {
                     let computedValue = modifier.computeValue(dimensions)
                     dimensions.set(key: values.key, value: computedValue)
                 case .some(let childValue):
-                    var parentValue: PhysicalDistance? = nil
-                    values.id._combineExplicit(childValue: childValue, into: &parentValue)
-                    dimensions[explicit: values] = parentValue
+                    values.id._combineExplicit(childValue: childValue, into: &dimensions[explicit: values])
                 }
             }
         }
