@@ -69,6 +69,25 @@ class ViewPositionVisitorTests: XCTestCase {
             let elementCount = 3
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
             let height = elementCount + spacing
+            
+            XCTAssertEqual(position.x, "456".width / 2)
+            XCTAssertEqual(position.y, height / 2)
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
+            let view = VStack {
+                Text("1")
+                Text("23")
+                Text("456")
+            }
+            let graph = prepare(view: view)
+            
+            let visitor = ViewPositionVisitor()
+            let position = graph.extract(visitor: visitor)
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            let height = elementCount + spacing
+            
             XCTAssertEqual(position.x, "456".width / 2)
             XCTAssertEqual(position.y, height / 2)
         }
