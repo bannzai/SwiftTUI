@@ -22,8 +22,6 @@ class ViewGraphSetVisitorTests: XCTestCase {
     }
 
     func testVisit() {
-        // TODO: alignmentやlisttypeのテスト？
-        
         XCTContext.runActivity(named: "when Text with content") { (_) in
             let view = Text("123")
             let visitor = ViewGraphSetVisitor()
@@ -271,6 +269,41 @@ class ViewGraphSetVisitorTests: XCTestCase {
                         XCTAssertFalse(child.isModifiedContent)
                     }
                 }
+            }
+        }
+        XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using same (.trailing) horizontal alignment referenced child explicit alignmentGuide") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                    .alignmentGuide(.trailing) { dimensions in
+                        dimensions[explicit: .trailing] ?? 200
+                }
+                .alignmentGuide(.trailing) { dimensions in
+                    dimensions[explicit: .trailing] ?? 100
+                }
+                Text("23")
+                Text("456")
+            }
+            let visitor = ViewGraphSetVisitor()
+            let graph = visitor.visit(view: view)
+            
+            XCTAssertTrue(graph.anyView is VStack<TupleView<(ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>, Text, Text)>>)
+            XCTAssertEqual(graph.children.count, 1)
+            XCTAssertTrue(graph.isRoot)
+            XCTAssertFalse(graph.isUserDefinedView)
+            XCTAssertFalse(graph.isModifiedContent)
+            
+            XCTContext.runActivity(named: "And check children view of AlignmentWriteModifier relations") { (_) in
+                let tupleView = graph.children[0]
+                XCTAssertTrue(tupleView.anyView is TupleView<(ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>, Text, Text)>)
+                
+                let modifier = tupleView.children[0]
+                XCTAssertTrue(modifier.anyView is ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>)
+                
+                let childModifier = modifier.children[0]
+                XCTAssertTrue(childModifier.anyView is ModifiedContent<Text, _AlignmentWritingModifier>)
+                
+                let text = childModifier.children[0]
+                XCTAssertTrue(text.anyView is Text)
             }
         }
     }
