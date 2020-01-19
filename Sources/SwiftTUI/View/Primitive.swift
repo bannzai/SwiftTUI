@@ -22,6 +22,7 @@ internal protocol ContainerViewGraphSetAcceptable  {
 extension ViewGraphSetAcceptable where Self: Primitive, Self: View {
     func _accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)
+        visitor.current?.addChild(graph)
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
@@ -32,6 +33,7 @@ extension ViewGraphSetAcceptable where Self: Primitive, Self: View {
 extension ContainerViewGraphSetAcceptable where Self: View, Self: Primitive {
     func _accept<T>(visitor: ViewGraphSetVisitor, value: T) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)
+        visitor.current?.addChild(graph)
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph

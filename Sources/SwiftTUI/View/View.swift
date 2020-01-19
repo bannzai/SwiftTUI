@@ -84,6 +84,7 @@ public struct _WrappedViewForBuildGraph: View, ViewGraphSetAcceptable {
         }
         internal override func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
             let graph = ViewGraphImpl(view: view)
+            visitor.current?.addChild(graph)
             let keepCurrent = visitor.current
             defer { visitor.current = keepCurrent }
             visitor.current = graph
