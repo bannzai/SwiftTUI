@@ -31,7 +31,6 @@ extension VStack: ViewContentAcceptable {
 extension VStack: ViewGraphSetAcceptable {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)
-        visitor.current?.addChild(graph)
         graph.listType = .vertical
         graph.alignment.horizontal = tree.root.alignment
         graph.spacing = tree.root.spacing ?? graph.listType.defaultSpace
