@@ -95,6 +95,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
                     graph.children.map { $0 }[0].children.forEach { child in
                         XCTAssertTrue(child.anyView is Text)
                         XCTAssertTrue(child.children.isEmpty)
+                        XCTAssertEqual(child.alignment, Alignment(horizontal: horizontalAlignment, vertical: .default))
                         XCTAssertFalse(child.isRoot)
                         XCTAssertFalse(child.isUserDefinedView)
                         XCTAssertFalse(child.isModifiedContent)
@@ -307,6 +308,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
             }
         }
     }
+    
 
     func testPerformanceExample() {
         // This is an example of a performance test case.

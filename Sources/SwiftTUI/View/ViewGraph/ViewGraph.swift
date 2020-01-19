@@ -23,7 +23,7 @@ public class ViewGraph: SwiftTUI.View {
 
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     
-    private func inheritProperties(to child: ViewGraph) {
+    internal func inheritProperties(to child: ViewGraph) {
         child.alignment = alignment
         child.spacing = spacing
         child.listType = listType

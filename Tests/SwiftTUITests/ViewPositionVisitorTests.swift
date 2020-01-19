@@ -201,7 +201,7 @@ class ViewPositionVisitorTests: XCTestCase {
                     XCTAssertTrue(textGraph.anyView is Text)
                     let text = textGraph.anyView as! Text
                     
-                    XCTAssertEqual(text.content, "2")
+                    XCTAssertEqual(text.content, "23")
                     XCTAssertEqual(textGraph.rect.origin.x, "23".width / 2)
                     XCTAssertEqual(textGraph.rect.origin.y, 1)
                 }
