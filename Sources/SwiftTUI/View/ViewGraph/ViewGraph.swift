@@ -11,7 +11,7 @@ public class ViewGraph: SwiftTUI.View {
     internal lazy private(set) var identifier: ObjectIdentifier = .init(self)
     
     internal weak var parent: ViewGraph?
-    internal var children: Set<ViewGraph> = []
+    internal private(set) var children: [ViewGraph] = []
     internal var isUserDefinedView: Bool = false
     internal var isModifiedContent: Bool = false
     
@@ -23,16 +23,16 @@ public class ViewGraph: SwiftTUI.View {
 
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     
-    private func defineProperties(to child: ViewGraph) {
+    private func inheritProperties(to child: ViewGraph) {
         child.alignment = alignment
         child.spacing = spacing
         child.listType = listType
     }
     
     internal func addChild(_ node: ViewGraph) {
-        children.insert(node)
+        children.append(node)
         node.parent = self
-        defineProperties(to: node)
+        inheritProperties(to: node)
     }
 
     internal func setModifier(_ modifierNode: ViewGraph) {
