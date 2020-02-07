@@ -164,11 +164,8 @@ class ViewPositionVisitorTests: XCTestCase {
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
         }
-    }
-    
-    func testX() {
-        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text>") { (_) in
-            let view = VStack {
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text> when .leading alignment") { (_) in
+            let view = VStack(alignment: .leading) {
                 Text("1")
                 Text("23")
             }
@@ -192,7 +189,7 @@ class ViewPositionVisitorTests: XCTestCase {
                     let text = textGraph.anyView as! Text
                     
                     XCTAssertEqual(text.content, "1")
-                    XCTAssertEqual(textGraph.rect.origin.x, "1".width / 2)
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
                 }
                 second: do {
@@ -202,11 +199,14 @@ class ViewPositionVisitorTests: XCTestCase {
                     let text = textGraph.anyView as! Text
                     
                     XCTAssertEqual(text.content, "23")
-                    XCTAssertEqual(textGraph.rect.origin.x, "23".width / 2)
-                    XCTAssertEqual(textGraph.rect.origin.y, 1)
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 3)
                 }
             }
         }
+    }
+    
+    func testX() {
     }
     
     func test() {

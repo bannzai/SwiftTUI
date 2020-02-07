@@ -165,6 +165,30 @@ extension ViewGraph: ViewPositionAcceptable {
             return position
         }
         
+        switch listType {
+        case .vertical:
+            var horizontalExplicitAlignments: ContiguousArray<PhysicalDistance?> = ContiguousArray(repeating: nil, count: children.count)
+            children.enumerated().forEach { (offset, child) in
+                let explicitValue = child.dimensions[explicit: child.alignment.horizontal]
+                explicitValue.map { horizontalExplicitAlignments[offset] = $0 }
+            }
+            let maxX = horizontalExplicitAlignments.compactMap { $0 }.max() ?? alignment.horizontal.id.defaultValue(in: dimensions)
+            children.enumerated().forEach { (offset, child) in
+                let (x, _) = child.extract(visitor: visitor)
+                child.rect.origin.x = maxX - x
+                child.rect.origin.x += alignment.horizontal.id.defaultValue(in: dimensions)
+            }
+            var beforeHeight: PhysicalDistance?
+            children.enumerated().forEach { (offset, child) in
+                let padding = offset * listType.defaultSpace + (beforeHeight ?? 0)
+                child.rect.origin.y = padding
+                beforeHeight = child.rect.size.height
+            }
+            return rect.origin
+        case .horizontal:
+            break
+        }
+
         var xList: ContiguousArray<PhysicalDistance> = ContiguousArray(repeating: 0, count: children.count)
         var yList: ContiguousArray<PhysicalDistance> = ContiguousArray(repeating: 0, count: children.count)
         children.enumerated().forEach { (offset, child) in
@@ -176,14 +200,23 @@ extension ViewGraph: ViewPositionAcceptable {
         let maxX = xList.max()!
         let maxY = yList.max()!
         children.enumerated().forEach { (offset, child) in
-            child.rect.origin.x = maxX - xList[offset]
-            child.rect.origin.y = maxY - yList[offset]
+            let xOffset: PhysicalDistance
+            let yOffset: PhysicalDistance
+            switch listType {
+            case .vertical:
+                xOffset = 0
+                yOffset = offset * ViewVisitorListOption.horizontal.defaultSpace
+            case .horizontal:
+                xOffset = offset * ViewVisitorListOption.horizontal.defaultSpace
+                yOffset = 0
+            }
+            child.rect.origin.x = maxX - xList[offset] + xOffset
+            child.rect.origin.y = maxY - yList[offset] + yOffset
             
             child.rect.origin.x += alignment.horizontal.id.defaultValue(in: dimensions)
             child.rect.origin.y += alignment.vertical.id.defaultValue(in: dimensions)
-            
         }
-
+        
         return rect.origin
     }
 }
