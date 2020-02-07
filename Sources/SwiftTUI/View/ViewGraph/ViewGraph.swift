@@ -186,38 +186,8 @@ extension ViewGraph: ViewPositionAcceptable {
             }
             return rect.origin
         case .horizontal:
-            break
+            return rect.origin
         }
-
-        var xList: ContiguousArray<PhysicalDistance> = ContiguousArray(repeating: 0, count: children.count)
-        var yList: ContiguousArray<PhysicalDistance> = ContiguousArray(repeating: 0, count: children.count)
-        children.enumerated().forEach { (offset, child) in
-            let (x, y) = child.extract(visitor: visitor)
-            xList[offset] = x
-            yList[offset] = y
-        }
-        
-        let maxX = xList.max()!
-        let maxY = yList.max()!
-        children.enumerated().forEach { (offset, child) in
-            let xOffset: PhysicalDistance
-            let yOffset: PhysicalDistance
-            switch listType {
-            case .vertical:
-                xOffset = 0
-                yOffset = offset * ViewVisitorListOption.horizontal.defaultSpace
-            case .horizontal:
-                xOffset = offset * ViewVisitorListOption.horizontal.defaultSpace
-                yOffset = 0
-            }
-            child.rect.origin.x = maxX - xList[offset] + xOffset
-            child.rect.origin.y = maxY - yList[offset] + yOffset
-            
-            child.rect.origin.x += alignment.horizontal.id.defaultValue(in: dimensions)
-            child.rect.origin.y += alignment.vertical.id.defaultValue(in: dimensions)
-        }
-        
-        return rect.origin
     }
 }
 
