@@ -204,45 +204,48 @@ class ViewPositionVisitorTests: XCTestCase {
                 }
             }
         }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text> when .leading alignment. And configure alignmentGuide") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("1")
+                Text("23")
+            }
+            
+            let graph = prepare(view: view)
+            
+            let visitor = ViewPositionVisitor()
+            let position = visitor.visit(graph)
+            
+            XCTAssertEqual(position.x, 0)
+            XCTAssertEqual(position.y, 0)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+            
+            XCTContext.runActivity(named: "Text graph confirm to center position") { (_) in
+                first: do {
+                    let textGraph = graph.children.map { $0 }[0].children.map { $0 }[0]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "1")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                }
+                second: do {
+                    let textGraph = graph.children.map { $0 }[0].children.map { $0 }[1]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "23")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 3)
+                }
+            }
+        }
     }
     
     func testX() {
-    }
-    
-    func test() {
-        //        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
-        //            let view = VStack {
-        //                Text("1")
-        //                Text("23")
-        //                Text("456")
-        //            }
-        //
-        //            let graph = prepare(view: view)
-        //
-        //            let visitor = ViewPositionVisitor()
-        //            let position = visitor.visit(graph)
-        //
-        //            XCTAssertEqual(position.x, 0)
-        //            XCTAssertEqual(position.y, 0)
-        //
-        //            XCTAssertEqual(graph.rect.origin.x, 0)
-        //            XCTAssertEqual(graph.rect.origin.y, 0)
-        //
-        //            XCTContext.runActivity(named: "Text graph confirm to center position") { (_) in
-        //                graph.children.map { $0 }[0].children.forEach { textGraph in
-        //                    XCTAssertTrue(textGraph.anyView is Text)
-        //                    let text = textGraph.anyView as! Text
-        //
-        //                    let elementCount = 3
-        //                    let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
-        //                    let height = elementCount + spacing
-        //
-        //                    print("-- text.content: \(text.content): text.content.width: \(text.content.width)")
-        //                    XCTAssertEqual(textGraph.rect.origin.x, text.content.width / 2)
-        //                    XCTAssertEqual(textGraph.rect.origin.y, height / 2)
-        //                }
-        //            }
-        //        }
-        
     }
 }
