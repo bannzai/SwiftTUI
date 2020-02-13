@@ -51,7 +51,9 @@ extension ModifiedContent: Primitive { }
 extension ModifiedContent: ViewGraphSetAttributeAcceptable {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)
-        visitor.current?.addChild(graph)
+        if visitor.current?.anyView is ModifiedContent {
+            visitor.current?.addChild(graph)
+        }
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
