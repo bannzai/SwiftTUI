@@ -227,6 +227,8 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graph = graphVisitor.visit(view: view)
             
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
+            XCTAssertEqual(graph.children.count, 1)
+            XCTAssertEqual(graph.children[0].children.count, 3)
             
             // FIXME: Remove Size Visitor??
             let sizeVisitor = ViewSizeVisitor()
@@ -260,7 +262,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
-            
+
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
             
             // FIXME: Remove Size Visitor??

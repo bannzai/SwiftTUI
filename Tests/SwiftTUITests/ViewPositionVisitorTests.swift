@@ -261,7 +261,6 @@ class ViewPositionVisitorTests: XCTestCase {
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
                     XCTAssertEqual(modifierGraph.rect.origin.x, 0)
                     XCTAssertEqual(modifierGraph.rect.origin.y, 5)
-                    
                 }
             }
         }
