@@ -331,24 +331,4 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
         }
     }
-    
-    // NOTE: Method for playground test
-    func test_playground() {
-        XCTContext.runActivity(named: "Playground for child count") { (_) in
-            let view = VStack(alignment: .trailing) {
-                Text("1")
-                    .alignmentGuide(.leading, computeValue: { _ in 10 })
-                Text("23")
-                Text("456")
-            }
-            
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
-            
-            XCTAssertEqual(graph.alignment.horizontal, .trailing)
-            XCTAssertEqual(graph.children.count, 1)
-            XCTAssertEqual(graph.children[0].children.count, 3)
-        }
-    }
 }
