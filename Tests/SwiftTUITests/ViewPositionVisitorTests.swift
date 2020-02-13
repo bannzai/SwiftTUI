@@ -216,7 +216,6 @@ class ViewPositionVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            
             let visitor = ViewPositionVisitor()
             let position = visitor.visit(graph)
             
