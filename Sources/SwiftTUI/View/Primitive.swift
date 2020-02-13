@@ -37,7 +37,7 @@ extension ContainerViewGraphSetAcceptable where Self: View, Self: Primitive {
         defer { visitor.current = keepCurrent }
         visitor.current = graph
 
-        Mirror(reflecting: value).children.forEach { (element) in
+        Mirror(reflecting: value).children.enumerated().forEach { (offset, element) in
             switch element.value {
             case let tuple as ContainerViewGraphSetAcceptable:
                 graph.addChild(tuple.accept(visitor: visitor))
