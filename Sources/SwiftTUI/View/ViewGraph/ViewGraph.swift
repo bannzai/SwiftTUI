@@ -155,15 +155,15 @@ extension ViewGraph: ViewPositionSetterAcceptable {
     
     func accept(visitor: ViewPositionSetVisitor) -> ViewPositionSetVisitor.VisitResult {
         if children.isEmpty {
-            return rect.origin
+            return
         }
         
-        children.forEach { _ = $0.accept(visitor: visitor) }
+        children.forEach { $0.accept(visitor: visitor) }
         
         if let view = anyView as? HasFixedPosition {
             let position = view.fixedPosition(viewGraph: self, visitor: visitor)
             rect.origin = position
-            return position
+            return
         }
         
         switch listType {
@@ -185,9 +185,9 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 child.rect.origin.y = padding
                 beforeHeight = child.rect.size.height
             }
-            return rect.origin
+            return
         case .horizontal:
-            return rect.origin
+            return
         }
     }
 }

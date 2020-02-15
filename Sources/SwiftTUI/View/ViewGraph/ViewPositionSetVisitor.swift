@@ -12,7 +12,7 @@ internal protocol ViewPositionSetterAcceptable {
 }
 
 internal final class ViewPositionSetVisitor: Visitor {
-    internal typealias VisitResult = Point
+    internal typealias VisitResult = Void
     internal init() { }
     
     internal func visit<T: View>(_ content: T) -> VisitResult {
