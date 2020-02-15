@@ -252,4 +252,60 @@ class ViewPositionSetVisitorTests: XCTestCase {
             }
         }
     }
+    
+    func test_playground() {
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>> when .trailing alignment. And configure alignmentGuide") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                Text("23")
+                Text("456")
+                    .alignmentGuide(.trailing, computeValue: { _ in return 2 })
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewPositionSetVisitor()
+            visitor.visit(graph)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+            
+            XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
+                first: do {
+                    let textGraph = graph.children.map { $0 }[0].children.map { $0 }[0]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "1")
+                    XCTAssertEqual(textGraph.rect.origin.x, 1)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                }
+                second: do {
+                    let textGraph = graph.children.map { $0 }[0].children.map { $0 }[1]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "23")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 3)
+                }
+                third: do {
+                    let modifierGraph = graph.children.map { $0 }[0].children.map { $0 }[2]
+                    let hasModifier = modifierGraph.anyView as! HasAnyModifier
+                    XCTAssertTrue(hasModifier.anyModifier is _AlignmentWritingModifier)
+                    
+                    let textGraph = modifierGraph.children[0]
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "456")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                    XCTAssertEqual(modifierGraph.rect.origin.x, 0)
+                    XCTAssertEqual(modifierGraph.rect.origin.y, 5)
+                }
+            }
+        }
+    }
 }
