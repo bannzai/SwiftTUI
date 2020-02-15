@@ -140,8 +140,7 @@ extension ViewGraph: ViewPositionAcceptable {
         case nil:
             x = alignment.horizontal.id.defaultValue(in: dimensions)
         case .some(let explicitValue):
-            let baseLine = alignment.horizontal.id.defaultValue(in: dimensions)
-            x = baseLine - explicitValue
+            x = explicitValue
         }
         
         let y: PhysicalDistance
@@ -149,8 +148,7 @@ extension ViewGraph: ViewPositionAcceptable {
         case nil:
             y = alignment.vertical.id.defaultValue(in: dimensions)
         case .some(let explicitValue):
-            let baseLine = alignment.vertical.id.defaultValue(in: dimensions)
-            y = baseLine - explicitValue
+            y = explicitValue
         }
         return (x: x, y: y)
     }

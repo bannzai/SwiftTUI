@@ -204,10 +204,7 @@ class ViewPositionVisitorTests: XCTestCase {
                 }
             }
         }
-    }
-    
-    func testX() {
-        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text> when .leading alignment. And configure alignmentGuide") { (_) in
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>> when .leading alignment. And configure alignmentGuide") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("1")
                 Text("23")
@@ -225,7 +222,7 @@ class ViewPositionVisitorTests: XCTestCase {
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
             
-            XCTContext.runActivity(named: "Text graph confirm to center position") { (_) in
+            XCTContext.runActivity(named: "Child graph confirm to leading position") { (_) in
                 first: do {
                     let textGraph = graph.children.map { $0 }[0].children.map { $0 }[0]
                     
