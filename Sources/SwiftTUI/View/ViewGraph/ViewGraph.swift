@@ -30,6 +30,9 @@ public class ViewGraph: SwiftTUI.View {
     }
     
     internal func addChild(_ node: ViewGraph) {
+        if children.contains(where: { $0 === node }) {
+            return
+        }
         children.append(node)
         node.parent = self
         inheritProperties(to: node)
