@@ -80,17 +80,16 @@ class ViewGraphSetVisitorTests: XCTestCase {
             XCTAssertEqual(graph.spacing, spacing)
             
             XCTContext.runActivity(named: "And check children view of TupleView<(Text, Text, Text)>") { (_) in
-                graph.children.forEach { child in
-                    XCTAssertTrue(child.anyView is TupleView<(Text, Text, Text)>)
-                    XCTAssertEqual(child.children.count, 3)
-                    XCTAssertFalse(child.isRoot)
-                    XCTAssertFalse(child.isUserDefinedView)
-                    XCTAssertFalse(child.isModifiedContent)
-                    
-                    XCTAssertEqual(child.alignment, Alignment(horizontal: horizontalAlignment, vertical: .default))
-                    XCTAssertEqual(child.listType, .vertical)
-                    XCTAssertEqual(child.spacing, spacing)
-                }
+                let tuple = graph.children[0]
+                XCTAssertTrue(tuple.anyView is TupleView<(Text, Text, Text)>)
+                XCTAssertEqual(tuple.children.count, 3)
+                XCTAssertFalse(tuple.isRoot)
+                XCTAssertFalse(tuple.isUserDefinedView)
+                XCTAssertFalse(tuple.isModifiedContent)
+                XCTAssertEqual(tuple.alignment, Alignment(horizontal: horizontalAlignment, vertical: .default))
+                XCTAssertEqual(tuple.listType, .vertical)
+                XCTAssertEqual(tuple.spacing, spacing)
+                
                 XCTContext.runActivity(named: "check TupleView children view") { (_) in
                     graph.children.map { $0 }[0].children.forEach { child in
                         XCTAssertTrue(child.anyView is Text)
