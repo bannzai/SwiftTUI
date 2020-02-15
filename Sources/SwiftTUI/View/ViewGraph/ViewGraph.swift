@@ -133,8 +133,8 @@ extension ViewGraph: ViewSizeAcceptable {
     }
 }
 
-extension ViewGraph: ViewPositionAcceptable {
-    func extract(visitor: ViewPositionVisitor) -> (x: PhysicalDistance, y: PhysicalDistance) {
+extension ViewGraph: ViewPositionSetterAcceptable {
+    func extract(visitor: ViewPositionSetVisitor) -> (x: PhysicalDistance, y: PhysicalDistance) {
         let x: PhysicalDistance
         horizontal: switch dimensions[explicit: alignment.horizontal] {
         case nil:
@@ -153,7 +153,7 @@ extension ViewGraph: ViewPositionAcceptable {
         return (x: x, y: y)
     }
     
-    func accept(visitor: ViewPositionVisitor) -> ViewPositionVisitor.VisitResult {
+    func accept(visitor: ViewPositionSetVisitor) -> ViewPositionSetVisitor.VisitResult {
         if children.isEmpty {
             return rect.origin
         }

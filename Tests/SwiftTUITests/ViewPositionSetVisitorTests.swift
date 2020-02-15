@@ -8,7 +8,7 @@
 import XCTest
 @testable import SwiftTUI
 
-class ViewPositionVisitorTests: XCTestCase {
+class ViewPositionSetVisitorTests: XCTestCase {
     struct CustomView<Target: View>: View {
         let body: Target
     }
@@ -42,7 +42,7 @@ class ViewPositionVisitorTests: XCTestCase {
             let view = Text("hoge")
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = graph.extract(visitor: visitor)
             
             XCTAssertEqual(position.x, "hoge".width / 2)
@@ -52,7 +52,7 @@ class ViewPositionVisitorTests: XCTestCase {
             let view = Text("hoge\nfuga")
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = graph.extract(visitor: visitor)
             
             XCTAssertEqual(position.x, "hoge".width / 2)
@@ -66,7 +66,7 @@ class ViewPositionVisitorTests: XCTestCase {
             ))
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = graph.extract(visitor: visitor)
             
             let elementCount = 3
@@ -84,7 +84,7 @@ class ViewPositionVisitorTests: XCTestCase {
             }
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = graph.extract(visitor: visitor)
             
             let elementCount = 3
@@ -98,7 +98,7 @@ class ViewPositionVisitorTests: XCTestCase {
             let view = CustomView(body: Text("123"))
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = graph.extract(visitor: visitor)
 
             XCTAssertEqual(position.x, "123".width / 2)
@@ -112,7 +112,7 @@ class ViewPositionVisitorTests: XCTestCase {
             })
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = graph.extract(visitor: visitor)
             
             let elementCount = 3
@@ -126,7 +126,7 @@ class ViewPositionVisitorTests: XCTestCase {
             let view = Text("123").background(Color.red)
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = graph.extract(visitor: visitor)
             
             XCTAssertEqual(position.x, "123".width / 2)
@@ -142,7 +142,7 @@ class ViewPositionVisitorTests: XCTestCase {
             let view = Text("1").modifier(Modifier())
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = graph.extract(visitor: visitor)
             
             XCTAssertEqual(position.x, "1".width / 2)
@@ -155,7 +155,7 @@ class ViewPositionVisitorTests: XCTestCase {
             let view = Text("hoge")
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = visitor.visit(graph)
             
             XCTAssertEqual(position.x, 0)
@@ -172,7 +172,7 @@ class ViewPositionVisitorTests: XCTestCase {
             
             let graph = prepare(view: view)
             
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = visitor.visit(graph)
             
             XCTAssertEqual(position.x, 0)
@@ -213,7 +213,7 @@ class ViewPositionVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            let visitor = ViewPositionVisitor()
+            let visitor = ViewPositionSetVisitor()
             let position = visitor.visit(graph)
             
             XCTAssertEqual(position.x, 0)
