@@ -173,11 +173,28 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 let explicitValue = child.dimensions[explicit: child.alignment.horizontal]
                 explicitValue.map { horizontalExplicitAlignments[offset] = $0 }
             }
-            let maxX = horizontalExplicitAlignments.compactMap { $0 }.max() ?? alignment.horizontal.id.defaultValue(in: dimensions)
-            children.enumerated().forEach { (offset, child) in
-                let (x, _) = child.extract(visitor: visitor)
-                child.rect.origin.x = maxX - x
-                child.rect.origin.x += alignment.horizontal.id.defaultValue(in: dimensions)
+            
+            //            let maxX = horizontalExplicitAlignments.compactMap { $0 }.max() ?? alignment.horizontal.id.defaultValue(in: dimensions)
+            let maxX = horizontalExplicitAlignments.compactMap{ $0 }.max()
+            switch maxX {
+            case nil:
+                children.enumerated().forEach { (offset, child) in
+                    child.rect.origin.x = alignment.horizontal.id.defaultValue(in: dimensions)
+                }
+            case .some(let maxX):
+                children.enumerated().forEach { (offset, child) in
+                    child.rect.origin.x = alignment.horizontal.id.defaultValue(in: dimensions)
+                    if horizontalExplicitAlignments[offset] == maxX {
+                        return
+                    }
+                    if let explicitValue = child.dimensions[explicit: child.alignment.horizontal] {
+                        child.rect.origin.x = maxX - explicitValue
+                        return
+                    }
+                    child.rect.origin.x = maxX
+                    //                let (x, _) = child.extract(visitor: visitor)
+                }
+                break
             }
             var beforeHeight: PhysicalDistance?
             children.enumerated().forEach { (offset, child) in
