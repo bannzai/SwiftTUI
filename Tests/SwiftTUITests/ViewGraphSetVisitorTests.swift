@@ -103,6 +103,74 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 }
             }
         }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
+            let horizontalAlignment: HorizontalAlignment = .leading
+            let spacing: PhysicalDistance = PhysicalDistance(100)
+            let view = VStack(alignment: horizontalAlignment, spacing: spacing) {
+                Text("1")
+                Text("23")
+                Text("456")
+                    .alignmentGuide(.leading, computeValue: { _ in 10 })
+            }
+            let visitor = ViewGraphSetVisitor()
+            let graph = visitor.visit(view: view)
+            
+            XCTAssertTrue(graph.anyView is VStack<TupleView<(Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>)>>)
+            XCTAssertEqual(graph.children.count, 1)
+            XCTAssertTrue(graph.isRoot)
+            XCTAssertFalse(graph.isUserDefinedView)
+            XCTAssertFalse(graph.isModifiedContent)
+            
+            XCTAssertEqual(graph.alignment, Alignment(horizontal: horizontalAlignment, vertical: .default))
+            XCTAssertEqual(graph.listType, .vertical)
+            XCTAssertEqual(graph.spacing, spacing)
+            
+            XCTContext.runActivity(named: "And check children view of TupleView<(Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>)>") { (_) in
+                let tuple = graph.children[0]
+                XCTAssertTrue(tuple.anyView is TupleView<(Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>)>)
+                XCTAssertEqual(tuple.children.count, 3)
+                XCTAssertFalse(tuple.isRoot)
+                XCTAssertFalse(tuple.isUserDefinedView)
+                XCTAssertFalse(tuple.isModifiedContent)
+                XCTAssertEqual(tuple.alignment, Alignment(horizontal: horizontalAlignment, vertical: .default))
+                XCTAssertEqual(tuple.listType, .vertical)
+                XCTAssertEqual(tuple.spacing, spacing)
+                
+                XCTContext.runActivity(named: "check TupleView children view") { (_) in
+                    first: do {
+                        let text = tuple.children[0]
+                        XCTAssertTrue(text.anyView is Text)
+                        XCTAssertTrue(text.children.isEmpty)
+                        XCTAssertEqual(text.alignment, Alignment(horizontal: horizontalAlignment, vertical: .default))
+                        XCTAssertFalse(text.isRoot)
+                        XCTAssertFalse(text.isUserDefinedView)
+                        XCTAssertFalse(text.isModifiedContent)
+                    }
+                    second: do {
+                        let text = tuple.children[1]
+                        XCTAssertTrue(text.anyView is Text)
+                        XCTAssertTrue(text.children.isEmpty)
+                        XCTAssertEqual(text.alignment, Alignment(horizontal: horizontalAlignment, vertical: .default))
+                        XCTAssertFalse(text.isRoot)
+                        XCTAssertFalse(text.isUserDefinedView)
+                        XCTAssertFalse(text.isModifiedContent)
+                    }
+                    second: do {
+                        let modifierGraph = tuple.children[2]
+                        let alignmentModifier = modifierGraph.anyView as! HasAnyModifier
+                        XCTAssertTrue(alignmentModifier.anyModifier is _AlignmentWritingModifier)
+
+                        let text = modifierGraph.children[0]
+                        XCTAssertTrue(text.anyView is Text)
+                        XCTAssertTrue(text.children.isEmpty)
+                        XCTAssertEqual(text.alignment, Alignment(horizontal: horizontalAlignment, vertical: .default))
+                        XCTAssertFalse(text.isRoot)
+                        XCTAssertFalse(text.isUserDefinedView)
+                        XCTAssertFalse(text.isModifiedContent)
+                    }
+                }
+            }
+        }
         XCTContext.runActivity(named: "when CustomView has Text") { (_) in
             let view = CustomView(body: Text("123"))
             let visitor = ViewGraphSetVisitor()
