@@ -188,7 +188,7 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 }
             case .some(let maxX):
                 children.enumerated().forEach { (offset, child) in
-                    child.rect.origin.x = alignment.horizontal.id.defaultValue(in: dimensions)
+                    child.rect.origin.x = alignment.horizontal.id.defaultValue(in: child.dimensions)
                     if horizontalExplicitAlignments[offset] == maxX {
                         return
                     }
