@@ -166,6 +166,12 @@ extension ViewGraph: ViewPositionSetterAcceptable {
             return
         }
         
+        if let view = anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
+            children[0].rect.origin.x = 0
+            children[0].rect.origin.y = 0
+            return
+        }
+        
         switch listType {
         case .vertical:
             var horizontalExplicitAlignments: ContiguousArray<PhysicalDistance?> = ContiguousArray(repeating: nil, count: children.count)
