@@ -302,7 +302,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     XCTAssertEqual(text.content, "456")
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
-                    XCTAssertEqual(modifierGraph.rect.origin.x, 2)
+                    XCTAssertEqual(modifierGraph.rect.origin.x, 0)
                     XCTAssertEqual(modifierGraph.rect.origin.y, 5)
                 }
             }
