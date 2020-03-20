@@ -180,7 +180,6 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 explicitValue.map { horizontalExplicitAlignments[offset] = $0 }
             }
             
-            //            let maxX = horizontalExplicitAlignments.compactMap { $0 }.max() ?? alignment.horizontal.id.defaultValue(in: dimensions)
             let maxX = horizontalExplicitAlignments.compactMap{ $0 }.max()
             switch maxX {
             case nil:
@@ -198,7 +197,6 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                         return
                     }
                     child.rect.origin.x = maxX
-                    //                let (x, _) = child.extract(visitor: visitor)
                 }
                 break
             }
