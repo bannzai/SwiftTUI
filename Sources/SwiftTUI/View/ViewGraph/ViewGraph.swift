@@ -104,11 +104,11 @@ public final class ViewGraphSetVisitor {
 
 // e.g) Text, Padding
 internal protocol HasFixedContentSize {
-    func fixedContentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size
+    func fixedContentSize(viewGraph: ViewGraph, visitor: ViewFixedContentSizeVisitor) -> Size
 }
 
-extension ViewGraph: ViewSizeAcceptable {
-    func accept(visitor: ViewSizeVisitor) -> ViewSizeVisitor.VisitResult {
+extension ViewGraph: ViewFixedContentSizeAcceptable {
+    func accept(visitor: ViewFixedContentSizeVisitor) -> ViewFixedContentSizeVisitor.VisitResult {
         if isRoot {
             proposedSize = mainScreen.bounds.size
         }
@@ -256,18 +256,18 @@ extension Text: HasFixedContentSize {
         }
         return Size(width: width, height: baseHeight)
     }
-    func fixedContentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size {
+    func fixedContentSize(viewGraph: ViewGraph, visitor: ViewFixedContentSizeVisitor) -> Size {
         let size = calcTextSize(proposedWidth: viewGraph.proposedSize.width)
         return size
     }
 }
 
 protocol HasContainerContentSize {
-    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size
+    func containerContentSize(viewGraph: ViewGraph, visitor: ViewFixedContentSizeVisitor) -> Size
 }
 
 extension TupleView {
-    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size {
+    func containerContentSize(viewGraph: ViewGraph, visitor: ViewFixedContentSizeVisitor) -> Size {
         switch viewGraph.listType {
         case .vertical:
             let children = viewGraph.children
