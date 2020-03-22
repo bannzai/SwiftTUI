@@ -37,10 +37,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let visitor = ViewDimensionsVisitor()
             let dimensions = visitor.visit(graph)
 
-            XCTAssertEqual(dimensions.width, "hoge".width)
-            XCTAssertEqual(dimensions.height, 1)
-            XCTAssertEqual(dimensions[HorizontalAlignment.default], "hoge".width / 2)
-            XCTAssertEqual(dimensions[VerticalAlignment.default], 0)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
         }
@@ -57,10 +53,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let visitor = ViewDimensionsVisitor()
             let dimensions = visitor.visit(graph)
             
-            XCTAssertEqual(dimensions.width, "hoge".width)
-            XCTAssertEqual(dimensions.height, 2)
-            XCTAssertEqual(dimensions[HorizontalAlignment.default], "hoge".width / 2)
-            XCTAssertEqual(dimensions[VerticalAlignment.default], 1)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
         }
@@ -82,9 +74,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let visitor = ViewDimensionsVisitor()
             let dimensions = visitor.visit(graph)
             
-
-            XCTAssertEqual(dimensions.width, "456".width)
-            XCTAssertEqual(dimensions[HorizontalAlignment.default], "456".width / 2)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
         }
@@ -105,9 +94,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let visitor = ViewDimensionsVisitor()
             let dimensions = visitor.visit(graph)
             
-
-            XCTAssertEqual(dimensions.width, "456".width)
-            XCTAssertEqual(dimensions[HorizontalAlignment.default], "456".width / 2)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
         }
@@ -152,7 +138,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
                 Text("456")
             }
 
-
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
 
@@ -178,8 +163,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
                 Text("23")
                 Text("456")
             }
-            
-            
+
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
@@ -210,8 +194,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
                 Text("23")
                 Text("456")
             }
-            
-            
+
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
@@ -243,8 +226,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
                 Text("23")
                 Text("456")
             }
-            
-            
+
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
@@ -278,8 +260,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
                 Text("23")
                 Text("456")
             }
-            
-            
+
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
