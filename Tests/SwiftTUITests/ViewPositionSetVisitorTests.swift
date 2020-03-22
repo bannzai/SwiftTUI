@@ -251,9 +251,6 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
-    }
-    
-    func test_playground() {
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>> when .trailing alignment. And configure alignmentGuide") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("1")
@@ -307,5 +304,8 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
+    }
+    
+    func test_playground() {
     }
 }

@@ -180,25 +180,21 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 explicitValue.map { horizontalExplicitAlignments[offset] = $0 }
             }
             
-            let maxX = horizontalExplicitAlignments.compactMap{ $0 }.max()
-            switch maxX {
-            case nil:
-                children.enumerated().forEach { (offset, child) in
-                    child.rect.origin.x = alignment.horizontal.id.defaultValue(in: dimensions)
+            var maxX = PhysicalDistance(0)
+            children.enumerated().forEach { (offset, child) in
+                let x: PhysicalDistance
+                switch horizontalExplicitAlignments[offset] {
+                case nil:
+                    x = alignment.horizontal.id.defaultValue(in: child.dimensions)
+                case .some(let explicitValue):
+                    x = explicitValue - maxX
                 }
-            case .some(let maxX):
-                children.enumerated().forEach { (offset, child) in
-                    child.rect.origin.x = alignment.horizontal.id.defaultValue(in: child.dimensions)
-                    if horizontalExplicitAlignments[offset] == maxX {
-                        return
-                    }
-                    if let explicitValue = child.dimensions[explicit: child.alignment.horizontal] {
-                        child.rect.origin.x = maxX - explicitValue
-                        return
-                    }
-                    child.rect.origin.x = maxX
+                
+                child.rect.origin.x = 0
+                if x > maxX {
+                    children[0..<offset].forEach { $0.rect.origin.x += x - maxX }
+                    maxX = max(x, maxX)
                 }
-                break
             }
             var beforeHeight: PhysicalDistance?
             children.enumerated().forEach { (offset, child) in
