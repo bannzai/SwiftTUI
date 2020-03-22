@@ -263,7 +263,7 @@ extension Text: HasFixedContentSize {
 }
 
 protocol HasContainerContentSize {
-    func containerContentSize(viewGraph: ViewGraph, visitor: ViewFixedContentSizeVisitor) -> Size
+    func containerContentSize(viewGraph: ViewGraph, visitor: ViewContainerContentSizeVisitor) -> Size
 }
 
 extension TupleView {
@@ -296,5 +296,26 @@ extension TupleView {
         case .horizontal:
             fatalError()
         }
+    }
+}
+
+
+extension ViewGraph: ViewContainerContentSizeAcceptable {
+    func accept(visitor: ViewContainerContentSizeVisitor) -> ViewContainerContentSizeVisitor.VisitResult {
+        if let view = anyView as? HasContainerContentSize {
+            let size = view.containerContentSize(viewGraph: self, visitor: visitor)
+            rect.size = size
+            return size
+        }
+        
+        if !children.isEmpty {
+            let size = children
+                .map { $0.accept(visitor: visitor) }
+                .reduce(.zero) { Size(width: $0.width + $1.width, height: $0.height + $1.height) }
+            rect.size = size
+            return size
+        }
+        
+        fatalError("Unexpected pattern of \(self)")
     }
 }
