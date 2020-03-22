@@ -251,7 +251,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
-        XCTContext.runActivity(named: "when VStack contains TupleView<Text(1), Text(23), Text(456)> when .trailing alignment.") { (_) in
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text(\"1\"), Text(\"23\"), Text(\"456\")> when .trailing alignment.") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("1")
                 Text("23")
@@ -351,7 +351,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
-        XCTContext.runActivity(named: "when VStack contains TupleView<Text(456), Text(23), Text(1)> when .trailing alignment.") { (_) in
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text(\"456\"), Text(\"23\"), Text(\"1\")> when .trailing alignment.") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("456")
                 Text("23")
