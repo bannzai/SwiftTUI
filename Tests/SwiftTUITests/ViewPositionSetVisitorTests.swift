@@ -177,7 +177,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             XCTContext.runActivity(named: "Text graph confirm to leading position") { (_) in
                 first: do {
-                    let textGraph = graph.children.map { $0 }[0].children.map { $0 }[0]
+                    let textGraph = graph.children[0].children[0]
                     
                     XCTAssertTrue(textGraph.anyView is Text)
                     let text = textGraph.anyView as! Text
@@ -187,7 +187,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
                 }
                 second: do {
-                    let textGraph = graph.children.map { $0 }[0].children.map { $0 }[1]
+                    let textGraph = graph.children[0].children[1]
                     
                     XCTAssertTrue(textGraph.anyView is Text)
                     let text = textGraph.anyView as! Text
@@ -215,7 +215,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             XCTContext.runActivity(named: "Child graph confirm to leading position") { (_) in
                 first: do {
-                    let textGraph = graph.children.map { $0 }[0].children.map { $0 }[0]
+                    let textGraph = graph.children[0].children[0]
                     
                     XCTAssertTrue(textGraph.anyView is Text)
                     let text = textGraph.anyView as! Text
@@ -225,7 +225,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
                 }
                 second: do {
-                    let textGraph = graph.children.map { $0 }[0].children.map { $0 }[1]
+                    let textGraph = graph.children[0].children[1]
                     
                     XCTAssertTrue(textGraph.anyView is Text)
                     let text = textGraph.anyView as! Text
@@ -235,7 +235,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     XCTAssertEqual(textGraph.rect.origin.y, 3)
                 }
                 third: do {
-                    let modifierGraph = graph.children.map { $0 }[0].children.map { $0 }[2]
+                    let modifierGraph = graph.children[0].children[2]
                     let hasModifier = modifierGraph.anyView as! HasAnyModifier
                     XCTAssertTrue(hasModifier.anyModifier is _AlignmentWritingModifier)
                     
@@ -315,7 +315,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
                 first: do {
-                    let textGraph = graph.children.map { $0 }[0].children[0]
+                    let textGraph = graph.children[0].children[0]
                     
                     XCTAssertTrue(textGraph.anyView is Text)
                     let text = textGraph.anyView as! Text
@@ -325,7 +325,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
                 }
                 second: do {
-                    let textGraph = graph.children.map { $0 }[0].children[1]
+                    let textGraph = graph.children[0].children[1]
                     
                     XCTAssertTrue(textGraph.anyView is Text)
                     let text = textGraph.anyView as! Text
@@ -335,7 +335,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     XCTAssertEqual(textGraph.rect.origin.y, 3)
                 }
                 third: do {
-                    let modifierGraph = graph.children.map { $0 }[0].children[2]
+                    let modifierGraph = graph.children[0].children[2]
                     let hasModifier = modifierGraph.anyView as! HasAnyModifier
                     XCTAssertTrue(hasModifier.anyModifier is _AlignmentWritingModifier)
                     
