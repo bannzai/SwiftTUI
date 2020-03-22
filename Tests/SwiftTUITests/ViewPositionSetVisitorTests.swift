@@ -251,7 +251,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
-        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text> when .trailing alignment.") { (_) in
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text(1), Text(23), Text(456)> when .trailing alignment.") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("1")
                 Text("23")
@@ -354,5 +354,52 @@ class ViewPositionSetVisitorTests: XCTestCase {
     }
     
     func test_playground() {
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text(456), Text(23), Text(1)> when .trailing alignment.") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("456")
+                Text("23")
+                Text("1")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewPositionSetVisitor()
+            visitor.visit(graph)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+            
+            XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
+                third: do {
+                    let textGraph = graph.children[0].children[0]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "456")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                }
+                second: do {
+                    let textGraph = graph.children[0].children[1]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "23")
+                    XCTAssertEqual(textGraph.rect.origin.x, 1)
+                    XCTAssertEqual(textGraph.rect.origin.y, 3)
+                }
+                first: do {
+                    let textGraph = graph.children[0].children[2]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "1")
+                    XCTAssertEqual(textGraph.rect.origin.x, 2)
+                    XCTAssertEqual(textGraph.rect.origin.y, 5)
+                }
+            }
+        }
     }
 }
