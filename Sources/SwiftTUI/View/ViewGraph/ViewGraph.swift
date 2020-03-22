@@ -103,8 +103,8 @@ public final class ViewGraphSetVisitor {
 }
 
 // e.g) Text, Padding
-internal protocol HasContentSize {
-    func contentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size
+internal protocol HasFixedContentSize {
+    func fixedContentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size
 }
 
 extension ViewGraph: ViewSizeAcceptable {
@@ -115,8 +115,8 @@ extension ViewGraph: ViewSizeAcceptable {
         
         children.forEach { $0.proposedSize = proposedSize }
 
-        if let view = anyView as? HasContentSize {
-            let size = view.contentSize(viewGraph: self, visitor: visitor)
+        if let view = anyView as? HasFixedContentSize {
+            let size = view.fixedContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
             return size
         }
@@ -242,7 +242,7 @@ extension ViewGraph: ViewDimensionsAcceptable {
     }
 }
 
-extension Text: HasContentSize {
+extension Text: HasFixedContentSize {
     private func calcTextSize(proposedWidth: PhysicalDistance) -> Size {
         let contents = content.split(separator: "\n").map { String($0) }
         let baseHeight = contents.count
@@ -256,14 +256,18 @@ extension Text: HasContentSize {
         }
         return Size(width: width, height: baseHeight)
     }
-    func contentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size {
+    func fixedContentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size {
         let size = calcTextSize(proposedWidth: viewGraph.proposedSize.width)
         return size
     }
 }
 
-extension TupleView: HasContentSize {
-    func contentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size {
+protocol HasContainerContentSize {
+    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size
+}
+
+extension TupleView {
+    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSizeVisitor) -> Size {
         switch viewGraph.listType {
         case .vertical:
             let children = viewGraph.children
