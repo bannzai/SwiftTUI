@@ -174,16 +174,10 @@ extension ViewGraph: ViewPositionSetterAcceptable {
         
         switch listType {
         case .vertical:
-            var horizontalExplicitAlignments: ContiguousArray<PhysicalDistance?> = ContiguousArray(repeating: nil, count: children.count)
-            children.enumerated().forEach { (offset, child) in
-                let explicitValue = child.dimensions[explicit: child.alignment.horizontal]
-                explicitValue.map { horizontalExplicitAlignments[offset] = $0 }
-            }
-            
             var maxX = PhysicalDistance(0)
             children.enumerated().forEach { (offset, child) in
                 let x: PhysicalDistance
-                switch horizontalExplicitAlignments[offset] {
+                switch child.dimensions[explicit: child.alignment.horizontal] {
                 case nil:
                     x = alignment.horizontal.id.defaultValue(in: child.dimensions)
                 case .some(let explicitValue):
