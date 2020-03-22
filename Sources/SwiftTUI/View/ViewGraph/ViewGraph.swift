@@ -190,13 +190,14 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                     maxX = max(x, maxX)
                 }
             }
+            
             var beforeHeight: PhysicalDistance?
             children.enumerated().forEach { (offset, child) in
                 let padding = offset * listType.defaultSpace + (beforeHeight ?? 0)
                 child.rect.origin.y = padding
                 beforeHeight = child.rect.size.height
             }
-            return
+            
         case .horizontal:
             return
         }
