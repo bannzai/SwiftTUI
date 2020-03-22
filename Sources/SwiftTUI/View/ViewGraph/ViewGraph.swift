@@ -181,14 +181,14 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 case nil:
                     x = alignment.horizontal.id.defaultValue(in: child.dimensions)
                 case .some(let explicitValue):
-                    x = explicitValue - maxX
+                    x = explicitValue
                 }
                 
-                child.rect.origin.x = 0
+                child.rect.origin.x = max(maxX - x, 0)
                 if x > maxX {
                     children[0..<offset].forEach { $0.rect.origin.x += x - maxX }
-                    maxX = max(x, maxX)
                 }
+                maxX = max(x, maxX)
             }
             
             var beforeHeight: PhysicalDistance = 0

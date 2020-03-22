@@ -351,9 +351,6 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
-    }
-    
-    func test_playground() {
         XCTContext.runActivity(named: "when VStack contains TupleView<Text(456), Text(23), Text(1)> when .trailing alignment.") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("456")
@@ -401,5 +398,8 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
+    }
+    
+    func test_playground() {
     }
 }
