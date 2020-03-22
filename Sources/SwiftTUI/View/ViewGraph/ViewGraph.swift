@@ -134,25 +134,6 @@ extension ViewGraph: ViewFixedContentSizeAcceptable {
 }
 
 extension ViewGraph: ViewPositionSetterAcceptable {
-    func extract(visitor: ViewPositionSetVisitor) -> (x: PhysicalDistance, y: PhysicalDistance) {
-        let x: PhysicalDistance
-        horizontal: switch dimensions[explicit: alignment.horizontal] {
-        case nil:
-            x = alignment.horizontal.id.defaultValue(in: dimensions)
-        case .some(let explicitValue):
-            x = explicitValue
-        }
-        
-        let y: PhysicalDistance
-        vertical: switch dimensions[explicit: alignment.vertical] {
-        case nil:
-            y = alignment.vertical.id.defaultValue(in: dimensions)
-        case .some(let explicitValue):
-            y = explicitValue
-        }
-        return (x: x, y: y)
-    }
-    
     func accept(visitor: ViewPositionSetVisitor) -> ViewPositionSetVisitor.VisitResult {
         if children.isEmpty {
             return
