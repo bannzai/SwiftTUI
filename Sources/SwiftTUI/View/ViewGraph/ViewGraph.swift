@@ -191,9 +191,9 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 }
             }
             
-            var beforeHeight: PhysicalDistance?
+            var beforeHeight: PhysicalDistance = 0
             children.enumerated().forEach { (offset, child) in
-                let padding = offset * listType.defaultSpace + (beforeHeight ?? 0)
+                let padding = offset * listType.defaultSpace + beforeHeight
                 child.rect.origin.y = padding
                 beforeHeight = child.rect.size.height
             }
