@@ -12,7 +12,7 @@ internal protocol ViewContainerContentSizeAcceptable {
 }
 
 internal final class ViewContainerContentSizeVisitor: Visitor {
-    internal typealias VisitResult = Size
+    internal typealias VisitResult = Void
     internal init() { }
     
     internal func visit<T: View>(_ content: T) -> VisitResult {

@@ -51,43 +51,6 @@ class ViewFixedContentSizeVisitorTests: XCTestCase {
             XCTAssertEqual(result, Size(width: "hoge".width, height: 2))
             XCTAssertEqual(result, graph.rect.size)
         }
-        XCTContext.runActivity(named: "when TupleView<Text, Text, Text>") { (_) in
-            let view = TupleView((
-                Text("1"),
-                Text("23"),
-                Text("456")
-            ))
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = view.accept(visitor: graphVisitor)
-            graph.listType = .vertical
-            let sizeVisitor = ViewFixedContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
-            
-            let elementCount = 3
-            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
-            
-            XCTAssertEqual(result, Size(width: "456".width, height: elementCount + spacing))
-            XCTAssertEqual(result, graph.rect.size)
-        }
-        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
-            let view = VStack {
-                Text("1")
-                Text("23")
-                Text("456")
-            }
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = view.accept(visitor: graphVisitor)
-            let sizeVisitor = ViewFixedContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
-            
-            let elementCount = 3
-            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
-            
-            XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
-            XCTAssertEqual(result, graph.rect.size)
-        }
         XCTContext.runActivity(named: "when CustomView has Text") { (_) in
             let view = CustomView(body: Text("123"))
 
@@ -97,52 +60,6 @@ class ViewFixedContentSizeVisitorTests: XCTestCase {
             let result = graph.accept(visitor: sizeVisitor)
 
             XCTAssertEqual(result, Size(width: "123".width, height: 1))
-            XCTAssertEqual(result, graph.rect.size)
-        }
-        XCTContext.runActivity(named: "when CustomView has VStack<Text>") { (_) in
-            let view = CustomView(body: VStack { Text("123") })
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
-            let sizeVisitor = ViewFixedContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
-            
-            XCTAssertEqual(result, Size(width: "123".width, height: 1))
-            XCTAssertEqual(result, graph.rect.size)
-        }
-        XCTContext.runActivity(named: "when CustomView has VStack<TupleView<Text, Text, Text>>") { (_) in
-            let view = CustomView(body: VStack {
-                Text("123")
-                Text("456")
-                Text("789")
-            })
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
-            let sizeVisitor = ViewFixedContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
-            
-            let elementCount = 3
-            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
-
-            XCTAssertEqual(result, Size(width: "456".width, height: 3 + spacing))
-            XCTAssertEqual(result, graph.rect.size)
-        }
-        XCTContext.runActivity(named: "when CustomView has VStack<TupleView<CustomView<Text>, CustomView<Text>>>") { (_) in
-            let view = CustomView(body: VStack {
-                CustomView(body: Text("123"))
-                CustomView(body: Text("456"))
-            })
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
-            let sizeVisitor = ViewFixedContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
-            
-            let elementCount = 2
-            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
-            
-            XCTAssertEqual(result, Size(width: "456".width, height: 2 + spacing))
             XCTAssertEqual(result, graph.rect.size)
         }
         XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
