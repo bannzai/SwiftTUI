@@ -42,8 +42,35 @@ class ViewContentVisitorTests: XCTestCase {
         }
     }
     
+    class DummyScreen: Screen {
+        override var columns: PhysicalDistance { 100 }
+        override var rows: PhysicalDistance { 100 }
+    }
+    private func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
+        let graphVisitor = ViewGraphSetVisitor()
+        let graph = graphVisitor.visit(view: view)
+        graph.listType = viewListOption
+        
+        // FIXME: Remove Size Visitor??
+        let sizeVisitor = ViewIntrinsicContentSizeVisitor()
+        _ = sizeVisitor.visit(graph)
+        
+        let dimensionsVisitor = ViewDimensionsVisitor()
+        _ = dimensionsVisitor.visit(graph)
+        
+        let positionSetVisitor = ViewPositionSetVisitor()
+        _ = positionSetVisitor.visit(graph)
+        
+        let containerContentSizeVisitor = ViewContainerContentSizeVisitor()
+        containerContentSizeVisitor.visit(graph)
+        
+        return graph
+    }
+    
     override func setUp() {
         super.setUp()
+        
+        mainScreen = DummyScreen.init()
     }
 
     func testViewContentVisitor() {
@@ -55,7 +82,8 @@ class ViewContentVisitorTests: XCTestCase {
             })
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("123"))
             XCTAssertTrue(result.contains("\n"))
@@ -65,7 +93,8 @@ class ViewContentVisitorTests: XCTestCase {
             let view = CustomView(body: VStack { CustomView(body: Text("123")) } )
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual(result, "123")
         }
@@ -73,7 +102,8 @@ class ViewContentVisitorTests: XCTestCase {
             let view = CustomView(body: EmptyView())
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual(result, "")
         }
@@ -81,7 +111,8 @@ class ViewContentVisitorTests: XCTestCase {
             let view = CustomView(body: VStack { Text("123") } )
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual(result, "123")
         }
@@ -89,7 +120,8 @@ class ViewContentVisitorTests: XCTestCase {
             let view = Text("hoge")
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual("hoge", result)
         }
@@ -101,7 +133,8 @@ class ViewContentVisitorTests: XCTestCase {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual("1\n2\n3\n", result)
         }
@@ -113,7 +146,8 @@ class ViewContentVisitorTests: XCTestCase {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual("123", result)
         }
@@ -127,7 +161,8 @@ class ViewContentVisitorTests: XCTestCase {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             
             XCTAssertEqual(result.filter { $0 == "\n" }.count, 3)
@@ -144,7 +179,8 @@ class ViewContentVisitorTests: XCTestCase {
             let view = Text("1").background(Color.red).background(Color.blue)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             
             XCTAssertEqual("1", result)
@@ -163,7 +199,8 @@ class ViewContentVisitorTests: XCTestCase {
             let view = Text("1").modifier(Modifier())
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            visitor.visit(view)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
             let result = driver.content()
             
             XCTAssertEqual("1", result)

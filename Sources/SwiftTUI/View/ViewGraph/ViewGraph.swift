@@ -299,3 +299,19 @@ extension ViewGraph: ViewContainerContentSizeAcceptable {
         rect.size = size
     }
 }
+
+extension ViewGraph: ViewContentAcceptable {
+    func accept(visitor: ViewContentVisitor) {
+        children.forEach { $0.accept(visitor: visitor) }
+        
+        if let tupleView = anyView as? ContainerViewContentAcceptable {
+            tupleView.accept(visitor: visitor, with: listType)
+            return
+        }
+        
+        if let content = anyView as? ViewContentAcceptable {
+            content.accept(visitor: visitor)
+            return
+        }
+    }
+}
