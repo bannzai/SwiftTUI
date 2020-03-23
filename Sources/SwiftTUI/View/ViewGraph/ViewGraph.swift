@@ -123,8 +123,16 @@ extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
             rect.size = size
             return size
         }
+        
+        if !children.isEmpty {
+            let size = children
+                .map { $0.accept(visitor: visitor) }
+                .reduce(.zero) { Size(width: $0.width + $1.width, height: $0.height + $1.height) }
+            rect.size = size
+            return size
+        }
 
-        return .zero
+        fatalError("unexpected pattern \(self)")
     }
 }
 
@@ -280,7 +288,7 @@ extension ViewGraph: ViewContainerContentSizeAcceptable {
         
         children.forEach { $0.accept(visitor: visitor) }
 
-        if !children.isEmpty {
+        if children.isEmpty {
             return
         }
         
@@ -289,8 +297,5 @@ extension ViewGraph: ViewContainerContentSizeAcceptable {
                 Size(width: $0.width + $1.rect.size.width, height: $0.height + $1.rect.size.height)
         }
         rect.size = size
-//        let maxX = children.map { $0.rect.origin.x }.max() ?? 0
-//        let maxY = children.map { $0.rect.origin.y }.max() ?? 0
-//        rect.size = Size(width: size.width + maxX, height: size.height + maxY)
     }
 }
