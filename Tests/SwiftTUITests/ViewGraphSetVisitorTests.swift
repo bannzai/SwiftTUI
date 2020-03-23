@@ -374,8 +374,28 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 XCTAssertTrue(text.anyView is Text)
             }
         }
+        XCTContext.runActivity(named: "when CustomView has EmptyView") { (_) in
+            let view = CustomView(body: EmptyView())
+            let visitor = ViewGraphSetVisitor()
+            let graph = visitor.visit(view: view)
+            
+            XCTAssertTrue(graph.anyView is CustomView<EmptyView>)
+            XCTAssertEqual(graph.children.count, 1)
+            XCTAssertTrue(graph.isRoot)
+            XCTAssertTrue(graph.isUserDefinedView)
+            XCTAssertFalse(graph.isModifiedContent)
+            
+            XCTContext.runActivity(named: "And check children view of EmptyView") { (_) in
+                graph.children.forEach { child in
+                    XCTAssertTrue(child.anyView is EmptyView)
+                    XCTAssertTrue(child.children.isEmpty)
+                    XCTAssertFalse(child.isRoot)
+                    XCTAssertFalse(child.isUserDefinedView)
+                    XCTAssertFalse(child.isModifiedContent)
+                }
+            }
+        }
     }
-    
 
     func testPerformanceExample() {
         // This is an example of a performance test case.

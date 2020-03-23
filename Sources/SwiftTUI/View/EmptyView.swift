@@ -20,3 +20,10 @@ extension EmptyView: ViewContentAcceptable {
         
     }
 }
+
+extension EmptyView: Primitive { }
+extension EmptyView: ViewGraphSetAcceptable {
+    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        _accept(visitor: visitor)
+    }
+}
