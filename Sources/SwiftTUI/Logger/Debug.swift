@@ -15,7 +15,7 @@ internal func createFileIfNotExists(path: String) {
 }
 
 // NOTE: prevent infite loop
-fileprivate var limit = 100
+fileprivate var limit = 1000
 fileprivate var calledCount = 0
 internal struct Debug {
     internal struct Logger {
