@@ -256,7 +256,7 @@ extension TupleView: HasContainerContentSize {
                 element.proposedSize = elementProposedSize
                 
                 element.accept(visitor: visitor)
-                maxElementWidth = max(maxElementWidth, element.rect.size.width)
+                maxElementWidth = max(maxElementWidth, element.rect.size.width + element.rect.origin.x)
                 allocableHeight -= element.rect.size.height
             }
             

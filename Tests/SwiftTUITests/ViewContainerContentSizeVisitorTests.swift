@@ -108,9 +108,21 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             
             XCTAssertEqual(graph.rect.size, Size(width: "456".width, height: elementCount + spacing))
         }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>> when .trailing alignment. And configure alignmentGuide") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                Text("23")
+                Text("456")
+                    .alignmentGuide(.trailing, computeValue: { _ in return 1 })
+            }
+            
+            let graph = prepare(view: view)
+            graph.accept(visitor: ViewContainerContentSizeVisitor())
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(graph.rect.size, Size(width: 4, height: elementCount + spacing))
+        }
     }
-    
-    func test_playground() {
-    }
-
 }
