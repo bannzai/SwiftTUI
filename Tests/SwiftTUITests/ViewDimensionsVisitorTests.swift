@@ -31,7 +31,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graph = graphVisitor.visit(view: view)
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
@@ -47,7 +47,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graph = graphVisitor.visit(view: view)
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
@@ -68,7 +68,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             graph.listType = .vertical
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
@@ -88,7 +88,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graph = graphVisitor.visit(view: view)
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
@@ -104,7 +104,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graph = graphVisitor.visit(view: view)
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
@@ -122,7 +122,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graph = graphVisitor.visit(view: view)
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
@@ -144,7 +144,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertEqual(graph.alignment.horizontal, .default)
             
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ModifiedContent<Text, _AlignmentWritingModifier>})!
@@ -169,7 +169,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ModifiedContent<Text, _AlignmentWritingModifier>})!
@@ -200,7 +200,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             typealias ViewType = ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>
@@ -232,7 +232,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
             
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             typealias ViewType = ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>
@@ -266,7 +266,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
             
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             _ = sizeVisitor.visit(graph)
             
             typealias ViewType = ModifiedContent<ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>, _AlignmentWritingModifier>

@@ -1,5 +1,5 @@
 //
-//  ViewFixedContentSizeVisitorTests.swift
+//  ViewIntrinsicContentSizeVisitorTests.swift
 //  SwiftTUITests
 //
 //  Created by Yudai.Hirose on 2020/01/05.
@@ -8,7 +8,7 @@
 import XCTest
 @testable import SwiftTUI
 
-class ViewFixedContentSizeVisitorTests: XCTestCase {
+class ViewIntrinsicContentSizeVisitorTests: XCTestCase {
     struct CustomView<Target: View>: View {
         let body: Target
     }
@@ -34,7 +34,7 @@ class ViewFixedContentSizeVisitorTests: XCTestCase {
             
             let graphVisitor = ViewGraphSetVisitor()
             let graph = view.accept(visitor: graphVisitor)
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             let result = graph.accept(visitor: sizeVisitor)
 
             XCTAssertEqual(result, Size(width: "hoge".width, height: 1))
@@ -45,7 +45,7 @@ class ViewFixedContentSizeVisitorTests: XCTestCase {
 
             let graphVisitor = ViewGraphSetVisitor()
             let graph = view.accept(visitor: graphVisitor)
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             let result = graph.accept(visitor: sizeVisitor)
 
             XCTAssertEqual(result, Size(width: "hoge".width, height: 2))
@@ -56,7 +56,7 @@ class ViewFixedContentSizeVisitorTests: XCTestCase {
 
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             let result = graph.accept(visitor: sizeVisitor)
 
             XCTAssertEqual(result, Size(width: "123".width, height: 1))
@@ -66,7 +66,7 @@ class ViewFixedContentSizeVisitorTests: XCTestCase {
             let view = Text("123").background(Color.red)
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             let result = graph.accept(visitor: sizeVisitor)
             
             XCTAssertEqual(result, Size(width: "123".width, height: 1))
@@ -83,7 +83,7 @@ class ViewFixedContentSizeVisitorTests: XCTestCase {
             
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view: view)
-            let sizeVisitor = ViewFixedContentSizeVisitor()
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
             let result = graph.accept(visitor: sizeVisitor)
             
             XCTAssertEqual(result, Size(width: "1".width, height: 1))

@@ -103,12 +103,12 @@ public final class ViewGraphSetVisitor {
 }
 
 // e.g) Text, Padding
-internal protocol HasFixedContentSize {
-    func fixedContentSize(viewGraph: ViewGraph, visitor: ViewFixedContentSizeVisitor) -> Size
+internal protocol HasIntrinsicContentSize {
+    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewIntrinsicContentSizeVisitor) -> Size
 }
 
-extension ViewGraph: ViewFixedContentSizeAcceptable {
-    func accept(visitor: ViewFixedContentSizeVisitor) -> ViewFixedContentSizeVisitor.VisitResult {
+extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
+    func accept(visitor: ViewIntrinsicContentSizeVisitor) -> ViewIntrinsicContentSizeVisitor.VisitResult {
         if isRoot {
             proposedSize = mainScreen.bounds.size
         }
@@ -118,8 +118,8 @@ extension ViewGraph: ViewFixedContentSizeAcceptable {
             _ = $0.accept(visitor: visitor)
         }
 
-        if let view = anyView as? HasFixedContentSize {
-            let size = view.fixedContentSize(viewGraph: self, visitor: visitor)
+        if let view = anyView as? HasIntrinsicContentSize {
+            let size = view.intrinsicContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
             return size
         }
@@ -135,12 +135,6 @@ extension ViewGraph: ViewPositionSetterAcceptable {
         }
         
         children.forEach { $0.accept(visitor: visitor) }
-        
-        if let view = anyView as? HasFixedPosition {
-            let position = view.fixedPosition(viewGraph: self, visitor: visitor)
-            rect.origin = position
-            return
-        }
         
         if let view = anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
             children[0].rect.origin.x = 0
@@ -218,7 +212,7 @@ extension ViewGraph: ViewDimensionsAcceptable {
     }
 }
 
-extension Text: HasFixedContentSize {
+extension Text: HasIntrinsicContentSize {
     private func calcTextSize(proposedWidth: PhysicalDistance) -> Size {
         let contents = content.split(separator: "\n").map { String($0) }
         let baseHeight = contents.count
@@ -232,7 +226,7 @@ extension Text: HasFixedContentSize {
         }
         return Size(width: width, height: baseHeight)
     }
-    func fixedContentSize(viewGraph: ViewGraph, visitor: ViewFixedContentSizeVisitor) -> Size {
+    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewIntrinsicContentSizeVisitor) -> Size {
         let size = calcTextSize(proposedWidth: viewGraph.proposedSize.width)
         return size
     }
