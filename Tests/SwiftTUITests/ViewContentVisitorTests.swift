@@ -138,19 +138,6 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             XCTAssertEqual("1\n2\n3\n", result)
         }
-        XCTContext.runActivity(named: "when HStack contains TupleView<Text, Text, Text>") { (_) in
-            let view = HStack {
-                Text("1")
-                Text("2")
-                Text("3")
-            }
-            let driver = Driver()
-            let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
-            visitor.visit(graph)
-            let result = driver.content()
-            XCTAssertEqual("123", result)
-        }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, _BackgroundModifier<Text>>") { (_) in
             let view = VStack {
                 Text("1")
