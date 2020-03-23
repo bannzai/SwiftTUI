@@ -93,9 +93,6 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             
             XCTAssertEqual(graph.rect.size, Size(width: "456".width, height: 3 + spacing))
         }
-    }
-    
-    func test_playground() {
         XCTContext.runActivity(named: "when TupleView<Text, Text, Text>") { (_) in
             let view = TupleView((
                 Text("1"),
@@ -111,6 +108,9 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             
             XCTAssertEqual(graph.rect.size, Size(width: "456".width, height: elementCount + spacing))
         }
+    }
+    
+    func test_playground() {
     }
 
 }
