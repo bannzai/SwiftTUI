@@ -240,11 +240,10 @@ extension TupleView: HasContainerContentSize {
     func containerContentSize(viewGraph: ViewGraph, visitor: ViewContainerContentSizeVisitor) -> Size {
         switch viewGraph.listType {
         case .vertical:
-            let children = viewGraph.children
-            var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (children.count - 1) * viewGraph.spacing
+            var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (viewGraph.children.count - 1) * viewGraph.spacing
             var maxElementWidth: PhysicalDistance = 0
-            children.enumerated().forEach { (offset, element) in
-                let provisionalElementHeight: PhysicalDistance = allocableHeight / (children.count - offset)
+            viewGraph.children.enumerated().forEach { (offset, element) in
+                let provisionalElementHeight: PhysicalDistance = allocableHeight / (viewGraph.children.count - offset)
                 let elementProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
                 element.proposedSize = elementProposedSize
                 
@@ -280,7 +279,8 @@ extension ViewGraph: ViewContainerContentSizeAcceptable {
         }
         
         children.forEach { $0.accept(visitor: visitor) }
-        if children.isEmpty {
+
+        if !children.isEmpty {
             return
         }
         
