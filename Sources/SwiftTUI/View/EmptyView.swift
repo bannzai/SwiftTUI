@@ -27,3 +27,9 @@ extension EmptyView: ViewGraphSetAcceptable {
         _accept(visitor: visitor)
     }
 }
+
+extension EmptyView: HasIntrinsicContentSize {
+    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewIntrinsicContentSizeVisitor) -> Size {
+        return .zero
+    }
+}
