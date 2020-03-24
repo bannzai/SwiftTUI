@@ -19,7 +19,8 @@ internal extension Cursor {
     mutating func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
         self.x = x
         self.y = y
-        cncurses.move(Int32(x), Int32(y))
+        let result = cncurses.move(Int32(y), Int32(x))
+        debugLogger.debug(userInfo: "move: \(result), x: \(x), y: \(y)")
     }
     mutating func move(x: PhysicalDistance, y: PhysicalDistance) {
         let _x = self.x + x
