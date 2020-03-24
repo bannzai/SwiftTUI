@@ -55,7 +55,7 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
-        graph.setModifier(visitor.visit(view: content))
+        graph.setModifier(visitor.visit(content))
         return graph
     }
 }

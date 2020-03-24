@@ -27,7 +27,7 @@ extension VStack: ViewGraphSetAcceptable {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
-        graph.addChild(visitor.visit(view: tree.content))
+        graph.addChild(visitor.visit(tree.content))
         return graph
     }
 }

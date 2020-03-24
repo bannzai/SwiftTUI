@@ -83,11 +83,11 @@ extension ViewGraph: Hashable {
     }
 }
 
-public final class ViewGraphSetVisitor {
+public final class ViewGraphSetVisitor: Visitor {
     internal var current: ViewGraph? = nil
     internal init() { }
     
-    internal func visit<T: View>(view: T) -> ViewGraph {
+    internal func visit<T: View>(_ view: T) -> ViewGraph {
         switch view {
         case let tuple as ContainerViewGraphSetAcceptable:
             return tuple.accept(visitor: self)
