@@ -14,11 +14,6 @@ struct ContentView: View {
         }
     }
 }
-extension View {
-    func callBody() -> Body {
-        body
-    }
-}
 let view = ContentView()
 let hostViewController = HostViewController(root: view)
 Application(viewController: hostViewController).run()
