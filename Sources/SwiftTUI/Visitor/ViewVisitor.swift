@@ -33,7 +33,7 @@ internal protocol ContainerViewContentAcceptable {
 
 internal final class ViewContentVisitor: Visitor {
     internal typealias VisitResult = Void
-    internal let driver: DrawableDriver
+    internal var driver: DrawableDriver
     internal init(driver: DrawableDriver) {
         self.driver = driver
     }
