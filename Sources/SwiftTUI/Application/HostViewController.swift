@@ -79,24 +79,21 @@ fileprivate var pairNumber: Int32 = 2
 // MARK: - Draw on console
 extension HostViewController: Drawable, DrawableDriver {
     func add(rune: Rune) {
-        let point = drawPoint()
-        
+        debugLogger.debug(userInfo: "start rune: \(rune)")
+
         cncurses.addch(rune)
         drawnContent.append(rune)
 
-        switch point.x >= window.frame.size.width {
-        case false:
-            sharedCursor.moveTo(x: point.x + 1, y: point.y)
+        let point = drawPoint()
+        debugLogger.debug(userInfo: "point is \(point)")
+        debugLogger.debug(userInfo: "window size is \(window.frame.size)")
+        switch point.x < window.frame.size.width {
         case true:
-            break
-        }
-        switch point.y >= window.frame.size.height {
+            sharedCursor.moveTo(x: point.x + 1, y: point.y)
         case false:
             sharedCursor.moveTo(x: 0, y: point.y + 1)
-        case true:
-            sharedCursor.moveTo(x: 0, y: 0)
         }
-        debugLogger.debug(userInfo: "rune: \(rune)")
+        debugLogger.debug(userInfo: "end rune: \(rune)")
     }
     
     func setBackgroundColor(_ color: Color) {
