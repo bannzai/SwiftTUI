@@ -16,18 +16,22 @@ class ViewContentVisitorTests: XCTestCase {
     }
     
     class Driver: DrawableDriver {
+        var callBag: [StaticString] = []
         var storedRunes: [Rune] = []
         func add(rune: Rune) {
+            callBag.append(#function)
             storedRunes.append(rune)
         }
         
         var storedForegroundColors: [Color] = []
         func setForegroundColor(_ color: Color) {
+            callBag.append(#function)
             storedForegroundColors.append(color)
         }
         
         var storedBackgroundColors: [Color] = []
         func setBackgroundColor(_ color: Color) {
+            callBag.append(#function)
             storedBackgroundColors.append(color)
         }
         
@@ -35,10 +39,19 @@ class ViewContentVisitorTests: XCTestCase {
         var keepBackgroundColor: Color?
         
         func content() -> String {
-            storedRunes.compactMap(Unicode.Scalar.init)
+            callBag.append(#function)
+            return storedRunes.compactMap(Unicode.Scalar.init)
                 .map(Character.init)
                 .map(String.init)
                 .reduce("", +)
+        }
+        
+        func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
+            callBag.append(#function)
+        }
+        
+        func move(x: PhysicalDistance, y: PhysicalDistance) {
+            callBag.append(#function)
         }
     }
     
@@ -85,7 +98,6 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("123"))
-            XCTAssertTrue(result.contains("\n"))
             XCTAssertTrue(result.contains("456"))
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
@@ -99,7 +111,7 @@ class ViewContentVisitorTests: XCTestCase {
             let graph = prepare(view: view)
             visitor.visit(graph)
             let result = driver.content()
-            XCTAssertEqual("1\n2\n3\n", result)
+            XCTAssertEqual("123", result)
         }
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>>") { (_) in
             let view = CustomView(body: VStack { CustomView(body: Text("123")) } )

@@ -15,7 +15,7 @@ public struct Cursor {
     fileprivate init() { }
 }
 
-internal extension Cursor {
+extension Cursor: CursorMover {
     mutating func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
         self.x = x
         self.y = y

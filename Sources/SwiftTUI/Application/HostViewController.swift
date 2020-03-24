@@ -70,12 +70,25 @@ extension AttributeRestorer where Self: AttributeSetter {
     }
 }
 
-internal protocol DrawableDriver: class, ContentSetter, AttributeSetter, AttributeRestorer {
+internal protocol CursorMover {
+    mutating func moveTo(x: PhysicalDistance, y: PhysicalDistance)
+    mutating func move(x: PhysicalDistance, y: PhysicalDistance)
+}
+
+internal protocol DrawableDriver: class, ContentSetter, AttributeSetter, AttributeRestorer, CursorMover {
     
 }
 
 fileprivate var pairNumber: Int32 = 2
 
+extension HostViewController: CursorMover {
+    func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
+        sharedCursor.moveTo(x: x, y: y)
+    }
+    func move(x: PhysicalDistance, y: PhysicalDistance) {
+        sharedCursor.move(x: x, y: y)
+    }
+}
 // MARK: - Draw on console
 extension HostViewController: Drawable, DrawableDriver {
     func add(rune: Rune) {
