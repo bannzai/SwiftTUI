@@ -15,9 +15,9 @@ internal enum ViewVisitorListOption {
     internal var defaultSpace: PhysicalDistance {
         switch self {
         case .vertical:
-            return 2
+            return 0
         case .horizontal:
-            return 2
+            return 0
         }
     }
 }
