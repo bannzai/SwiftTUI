@@ -171,7 +171,6 @@ class ViewContentVisitorTests: XCTestCase {
             
             XCTAssertEqual("1", result)
 
-            
             XCTAssertEqual(driver.storedBackgroundColors[0..<2], [.blue, .red])
             XCTAssertEqual(driver.storedBackgroundColors[2], Style.Color.background.color)
         }
