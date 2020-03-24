@@ -28,7 +28,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let view = Text("hoge")
             
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
 
             // FIXME: Remove Size Visitor??
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
@@ -44,7 +44,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let view = Text("hoge\nfuga")
 
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
 
             // FIXME: Remove Size Visitor??
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
@@ -64,7 +64,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             ))
             
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
             graph.listType = .vertical
 
             // FIXME: Remove Size Visitor??
@@ -85,7 +85,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
             
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
 
             // FIXME: Remove Size Visitor??
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
@@ -101,7 +101,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let view = Text("hoge").alignmentGuide(.bottom) { _ in 20000 }
 
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
 
             // FIXME: Remove Size Visitor??
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
@@ -119,7 +119,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let view = Text("hoge").alignmentGuide(.bottom) { _ in 20000 }
 
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
 
             // FIXME: Remove Size Visitor??
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
@@ -139,7 +139,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
 
             XCTAssertEqual(graph.alignment.horizontal, .default)
             
@@ -165,7 +165,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
 
             // FIXME: Remove Size Visitor??
@@ -196,7 +196,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
 
             // FIXME: Remove Size Visitor??
@@ -228,7 +228,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
             
             // FIXME: Remove Size Visitor??
@@ -262,7 +262,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view: view)
+            let graph = graphVisitor.visit(view)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
             
             // FIXME: Remove Size Visitor??

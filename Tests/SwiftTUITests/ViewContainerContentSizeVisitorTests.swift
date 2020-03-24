@@ -18,7 +18,7 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
     }
     private func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
         let graphVisitor = ViewGraphSetVisitor()
-        let graph = graphVisitor.visit(view: view)
+        let graph = graphVisitor.visit(view)
         graph.listType = viewListOption
         
         // FIXME: Remove Size Visitor??

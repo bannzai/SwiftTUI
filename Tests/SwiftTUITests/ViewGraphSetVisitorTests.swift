@@ -25,7 +25,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
         XCTContext.runActivity(named: "when Text with content") { (_) in
             let view = Text("123")
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is Text)
             XCTAssertTrue(graph.children.isEmpty)
@@ -40,7 +40,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 Text("456")
             ))
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is TupleView<(Text, Text, Text)>)
             XCTAssertEqual(graph.children.count, 3)
@@ -67,7 +67,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 Text("456")
             }
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is VStack<TupleView<(Text, Text, Text)>>)
             XCTAssertEqual(graph.children.count, 1)
@@ -112,7 +112,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
                     .alignmentGuide(.leading, computeValue: { _ in 10 })
             }
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is VStack<TupleView<(Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>)>>)
             XCTAssertEqual(graph.children.count, 1)
@@ -173,7 +173,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
         XCTContext.runActivity(named: "when CustomView has Text") { (_) in
             let view = CustomView(body: Text("123"))
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is CustomView<Text>)
             XCTAssertEqual(graph.children.count, 1)
@@ -194,7 +194,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
         XCTContext.runActivity(named: "when CustomView has VStack<Text>") { (_) in
             let view = CustomView(body: VStack { Text("123") })
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is CustomView<VStack<Text>>)
             XCTAssertEqual(graph.children.count, 1)
@@ -221,7 +221,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 Text("789")
             })
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is CustomView<VStack<TupleView<(Text, Text, Text)>>>)
             XCTAssertEqual(graph.children.count, 1)
@@ -259,7 +259,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 CustomView(body: Text("456"))
             })
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is CustomView<VStack<TupleView<(CustomView<Text>, CustomView<Text>)>>>)
             XCTAssertEqual(graph.children.count, 1)
@@ -293,7 +293,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
             XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
                 let view = Text("123").background(Color.red)
                 let visitor = ViewGraphSetVisitor()
-                let graph = visitor.visit(view: view)
+                let graph = visitor.visit(view)
                 
                 XCTAssertTrue(graph.anyView is ModifiedContent<Text, _BackgroundModifier<Color>>)
                 XCTAssertEqual(graph.children.count, 1)
@@ -320,7 +320,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 }
                 let view = Text("1").modifier(Modifier())
                 let visitor = ViewGraphSetVisitor()
-                let graph = visitor.visit(view: view)
+                let graph = visitor.visit(view)
                 
                 XCTAssertTrue(graph.anyView is ModifiedContent<Text, Modifier>)
                 XCTAssertEqual(graph.children.count, 1)
@@ -352,7 +352,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 Text("456")
             }
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is VStack<TupleView<(ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>, Text, Text)>>)
             XCTAssertEqual(graph.children.count, 1)
@@ -377,7 +377,7 @@ class ViewGraphSetVisitorTests: XCTestCase {
         XCTContext.runActivity(named: "when CustomView has EmptyView") { (_) in
             let view = CustomView(body: EmptyView())
             let visitor = ViewGraphSetVisitor()
-            let graph = visitor.visit(view: view)
+            let graph = visitor.visit(view)
             
             XCTAssertTrue(graph.anyView is CustomView<EmptyView>)
             XCTAssertEqual(graph.children.count, 1)
