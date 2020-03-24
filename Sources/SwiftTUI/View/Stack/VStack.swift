@@ -43,6 +43,4 @@ extension VStack: ViewGraphSetAcceptable {
     public typealias Body = Swift.Never
 }
 
-extension _VStackLayout: VariadicView.Root {
-    public static var _viewListOptions: ViewVisitorListOption { .vertical }
-}
+extension _VStackLayout: VariadicView.Root { }

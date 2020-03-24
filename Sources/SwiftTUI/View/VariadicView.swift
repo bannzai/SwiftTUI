@@ -24,7 +24,4 @@ public enum VariadicView {
     }
 }
 
-public protocol _VariadicView_Root {
-    // TODO:
-    static var _viewListOptions: ViewVisitorListOption { get }
-}
+public protocol _VariadicView_Root { }

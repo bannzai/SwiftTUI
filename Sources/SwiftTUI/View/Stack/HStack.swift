@@ -18,16 +18,6 @@ import Foundation
     public typealias Body = Swift.Never
 }
 
-extension HStack: ViewContentAcceptable {
-    internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
-        let option = _HStackLayout._viewListOptions
-        let keepAlignment = visitor.containerAlignment
-        visitor.containerAlignment.vertical = tree.root.alignment
-        visitor.visit(tree.content, with: option)
-        visitor.containerAlignment = keepAlignment
-    }
-}
-
 @frozen public struct _HStackLayout {
   public var alignment: VerticalAlignment
   public var spacing: PhysicalDistance?
@@ -40,5 +30,5 @@ extension HStack: ViewContentAcceptable {
 }
 
 extension _HStackLayout: VariadicView.Root {
-    public static var _viewListOptions: ViewVisitorListOption { .horizontal }
+    
 }

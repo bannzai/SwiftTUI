@@ -38,7 +38,6 @@ internal final class ViewAlignmentVisitor: Visitor {
 
 extension ViewAlignmentVisitor {
     internal struct Argument {
-        internal var listOption: ViewVisitorListOption
         internal var space: Alignment
     }
 }
