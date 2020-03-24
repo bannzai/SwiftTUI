@@ -72,6 +72,28 @@ class ViewContentVisitorTests: XCTestCase {
         
         mainScreen = DummyScreen.init()
     }
+    
+    func test_playground() {
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text(\"1\"), Text(\"23\"), ModifiedContent<Text(\"456\"), _AlignmentWritingModifier>> when .trailing alignment. And configure alignmentGuide") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                Text("23")
+                Text("456")
+                    .alignmentGuide(.trailing, computeValue: { _ in return 2 })
+            }
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
+            let result = driver.content()
+            let splited = result.split(separator: "\n")
+            XCTAssertEqual(splited.count, 3)
+            
+            XCTAssertEqual(splited[0], " 1 ")
+            XCTAssertEqual(splited[1], "23 ")
+            XCTAssertEqual(splited[2], "456")
+        }
+    }
 
     func testViewContentVisitor() {
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>, CustomView<Text>>") { (_) in
