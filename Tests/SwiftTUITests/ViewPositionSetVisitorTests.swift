@@ -82,7 +82,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     
                     XCTAssertEqual(text.content, "23")
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
-                    XCTAssertEqual(textGraph.rect.origin.y, 3)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "1".height)
                 }
             }
         }
@@ -120,7 +120,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     
                     XCTAssertEqual(text.content, "23")
                     XCTAssertEqual(textGraph.rect.origin.x, 2)
-                    XCTAssertEqual(textGraph.rect.origin.y, 3)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "1".height)
                 }
                 third: do {
                     let modifierGraph = graph.children[0].children[2]
@@ -135,7 +135,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
                     XCTAssertEqual(modifierGraph.rect.origin.x, 0)
-                    XCTAssertEqual(modifierGraph.rect.origin.y, 5)
+                    XCTAssertEqual(modifierGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace * 2 + "1".height + "23".height)
                 }
             }
         }
@@ -172,7 +172,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     
                     XCTAssertEqual(text.content, "23")
                     XCTAssertEqual(textGraph.rect.origin.x, 1)
-                    XCTAssertEqual(textGraph.rect.origin.y, 3)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "1".height)
                 }
                 third: do {
                     let textGraph = graph.children[0].children[2]
@@ -182,7 +182,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     
                     XCTAssertEqual(text.content, "456")
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
-                    XCTAssertEqual(textGraph.rect.origin.y, 5)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace * 2 + "1".height + "23".height)
                 }
             }
         }
@@ -220,7 +220,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     
                     XCTAssertEqual(text.content, "23")
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
-                    XCTAssertEqual(textGraph.rect.origin.y, 3)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "1".height)
                 }
                 third: do {
                     let modifierGraph = graph.children[0].children[2]
@@ -235,7 +235,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
                     XCTAssertEqual(modifierGraph.rect.origin.x, 0)
-                    XCTAssertEqual(modifierGraph.rect.origin.y, 5)
+                    XCTAssertEqual(modifierGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace * 2 + "1".height + "23".height)
                 }
             }
         }
@@ -272,7 +272,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     
                     XCTAssertEqual(text.content, "23")
                     XCTAssertEqual(textGraph.rect.origin.x, 1)
-                    XCTAssertEqual(textGraph.rect.origin.y, 3)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "1".height)
                 }
                 first: do {
                     let textGraph = graph.children[0].children[2]
@@ -282,7 +282,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     
                     XCTAssertEqual(text.content, "1")
                     XCTAssertEqual(textGraph.rect.origin.x, 2)
-                    XCTAssertEqual(textGraph.rect.origin.y, 5)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace * 2 + "1".height + "23".height)
                 }
             }
         }
@@ -325,7 +325,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     
                     XCTAssertEqual(text.content, "23")
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
-                    XCTAssertEqual(textGraph.rect.origin.y, 3)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "456".height)
                 }
                 third: do {
                     let textGraph = graph.children[0].children[2]
@@ -335,12 +335,9 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     
                     XCTAssertEqual(text.content, "1")
                     XCTAssertEqual(textGraph.rect.origin.x, 1)
-                    XCTAssertEqual(textGraph.rect.origin.y, 5)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace * 2 + "456".height + "23".height)
                 }
             }
         }
-    }
-    
-    func test_playground() {
     }
 }
