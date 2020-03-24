@@ -46,12 +46,18 @@ class ViewContentVisitorTests: XCTestCase {
                 .reduce("", +)
         }
         
+        var storedMoveTo: [(x: PhysicalDistance, y: PhysicalDistance)] = []
         func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
             callBag.append(#function)
+            sharedCursor.moveTo(x: x, y: y)
+            storedMoveTo.append((x: x, y: y))
         }
         
+        var storedMove: [(x: PhysicalDistance, y: PhysicalDistance)] = []
         func move(x: PhysicalDistance, y: PhysicalDistance) {
             callBag.append(#function)
+            sharedCursor.move(x: x, y: y)
+            storedMove.append((x: x, y: y))
         }
     }
     
@@ -60,6 +66,8 @@ class ViewContentVisitorTests: XCTestCase {
         override var rows: PhysicalDistance { 100 }
     }
     private func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
+        sharedCursor.moveTo(x: 0, y: 0)
+        
         let graphVisitor = ViewGraphSetVisitor()
         let graph = graphVisitor.visit(view)
         graph.listType = viewListOption
@@ -98,7 +106,9 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("123"))
+            XCTAssertEqual(driver.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "123".height)
             XCTAssertTrue(result.contains("456"))
+            XCTAssertEqual(driver.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "123".height + "456".height)
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {
@@ -111,7 +121,12 @@ class ViewContentVisitorTests: XCTestCase {
             let graph = prepare(view: view)
             visitor.visit(graph)
             let result = driver.content()
-            XCTAssertEqual("123", result)
+            XCTAssertTrue(result.contains("1"))
+            XCTAssertEqual(driver.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "1".height)
+            XCTAssertTrue(result.contains("2"))
+            XCTAssertEqual(driver.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
+            XCTAssertTrue(result.contains("3"))
+            XCTAssertEqual(driver.storedMoveTo[2].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height + "3".height)
         }
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>>") { (_) in
             let view = CustomView(body: VStack { CustomView(body: Text("123")) } )
@@ -163,11 +178,13 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             let result = driver.content()
             
-            XCTAssertEqual(result.filter { $0 == "\n" }.count, 3)
             XCTAssertTrue(result.contains("1"))
+            XCTAssertEqual(driver.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "1".height)
             XCTAssertTrue(result.contains("2"))
+            XCTAssertEqual(driver.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
             XCTAssertTrue(result.contains("3"))
-            
+            XCTAssertEqual(driver.storedMoveTo[2].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height + "3".height)
+
             XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
             XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
             XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
