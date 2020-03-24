@@ -9,8 +9,8 @@ import Foundation
 import cncurses
 
 public struct Cursor {
-    internal var x: PhysicalDistance = 0
-    internal var y: PhysicalDistance = 0
+    internal private(set) var x: PhysicalDistance = 0
+    internal private(set) var y: PhysicalDistance = 0
     
     fileprivate init() { }
 }
