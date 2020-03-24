@@ -9,6 +9,7 @@ struct ContentView: View {
             Text("Hello")
                 .foregroundColor(.red)
             Text(",")
+                .alignmentGuide(HorizontalAlignment.default, computeValue: { _ in return 2})
             Text("World")
                 .background(Color.blue)
         }
