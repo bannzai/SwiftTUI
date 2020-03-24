@@ -169,11 +169,11 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 maxX = max(x, maxX)
             }
             
-            var beforeHeight: PhysicalDistance = 0
+            var beforeYPoistion: PhysicalDistance = 0
             children.enumerated().forEach { (offset, child) in
-                let padding = offset * listType.defaultSpace + beforeHeight
+                let padding = offset * listType.defaultSpace + beforeYPoistion
                 child.rect.origin.y = padding
-                beforeHeight = child.rect.size.height
+                beforeYPoistion = child.rect.origin.y + child.rect.size.height
             }
             
         case .horizontal:
