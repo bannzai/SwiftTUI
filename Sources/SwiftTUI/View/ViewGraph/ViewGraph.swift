@@ -302,16 +302,22 @@ extension ViewGraph: ViewContainerContentSizeAcceptable {
 
 extension ViewGraph: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
-        children.forEach { $0.accept(visitor: visitor) }
-        
-        if let tupleView = anyView as? ContainerViewContentAcceptable {
-            tupleView.accept(visitor: visitor, with: listType)
-            return
-        }
-        
-        if let content = anyView as? ViewContentAcceptable {
+        switch anyView {
+        case is ContainerViewContentAcceptable:
+            children.forEach { child in
+                child.accept(visitor: visitor)
+                switch listType {
+                case .vertical:
+                    visitor.driver.add(string: "\n")
+                case .horizontal:
+                    break
+                }
+            }
+        case let content as ViewContentAcceptable:
             content.accept(visitor: visitor)
-            return
+        case _:
+            print("self: \(self), children: \(children)")
+            children.forEach { $0.accept(visitor: visitor) }
         }
     }
 }

@@ -22,21 +22,7 @@ extension TupleView: View, Primitive {
     public typealias Body = Never
 }
 
-extension TupleView: ContainerViewContentAcceptable {
-    internal func accept(visitor: ViewContentVisitor, with listOption: ViewVisitorListOption) -> ViewContentVisitor.VisitResult {
-        Mirror(reflecting: value).children.forEach { (element) in
-            if let value = element.value as? ViewContentAcceptable {
-                value.accept(visitor: visitor)
-            }
-            switch listOption {
-            case .vertical:
-                visitor.driver.add(string: "\n")
-            case .horizontal:
-                break
-            }
-        }
-    }
-}
+extension TupleView: ContainerViewContentAcceptable { }
 
 extension TupleView: ContainerViewGraphSetAcceptable {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {

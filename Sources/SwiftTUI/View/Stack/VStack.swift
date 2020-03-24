@@ -18,16 +18,6 @@ import Foundation
     public typealias Body = Swift.Never
 }
 
-extension VStack: ViewContentAcceptable {
-    internal func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
-        let option = _VStackLayout._viewListOptions
-        let keepAlignment = visitor.containerAlignment
-        visitor.containerAlignment.horizontal = tree.root.alignment
-        visitor.visit(tree.content, with: option)
-        visitor.containerAlignment = keepAlignment
-    }
-}
-
 extension VStack: ViewGraphSetAcceptable {
     public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)

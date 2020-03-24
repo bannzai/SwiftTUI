@@ -28,7 +28,7 @@ internal protocol ViewContentAcceptable {
 }
 
 internal protocol ContainerViewContentAcceptable {
-    func accept(visitor: ViewContentVisitor, with listOption: ViewVisitorListOption) -> ViewContentVisitor.VisitResult
+    
 }
 
 public final class ViewContentVisitor: Visitor {
@@ -43,8 +43,6 @@ public final class ViewContentVisitor: Visitor {
     internal func visit<T: View>(_ content: T, with listOptions: ViewVisitorListOption) -> VisitResult {
         debugLogger.debug()
         switch content {
-        case let containerViewContentAcceptable as ContainerViewContentAcceptable:
-            return containerViewContentAcceptable.accept(visitor: self, with: listOptions)
         case let viewAcceptable as ViewContentAcceptable:
             return viewAcceptable.accept(visitor: self)
         case _:

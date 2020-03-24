@@ -28,20 +28,6 @@ extension HStack: ViewContentAcceptable {
     }
 }
 
-extension HStack: ViewGraphSetAcceptable {
-    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        let graph = ViewGraphImpl(view: self)
-        graph.listType = .horizontal
-        graph.alignment.vertical = tree.root.alignment
-        graph.spacing = tree.root.spacing ?? graph.listType.defaultSpace
-        let keepCurrent = visitor.current
-        defer { visitor.current = keepCurrent }
-        visitor.current = graph
-        graph.addChild(visitor.visit(view: tree.content))
-        return graph
-    }
-}
-
 @frozen public struct _HStackLayout {
   public var alignment: VerticalAlignment
   public var spacing: PhysicalDistance?
