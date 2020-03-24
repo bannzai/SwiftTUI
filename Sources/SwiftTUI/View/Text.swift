@@ -30,7 +30,7 @@ public struct Text {
 
 extension Text: Primitive { }
 extension Text: ViewGraphSetAcceptable {
-    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+    internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor)
     }
 }

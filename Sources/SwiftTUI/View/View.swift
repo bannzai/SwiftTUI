@@ -99,7 +99,7 @@ public struct _WrappedViewForBuildGraph: View, ViewGraphSetAcceptable {
         self.storage = Storage(view)
     }
     
-    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+    internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         storage.accept(visitor: visitor)
     }
 }

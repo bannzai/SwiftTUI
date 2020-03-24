@@ -19,7 +19,7 @@ import Foundation
 }
 
 extension VStack: ViewGraphSetAcceptable {
-    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+    internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)
         graph.listType = .vertical
         graph.alignment.horizontal = tree.root.alignment

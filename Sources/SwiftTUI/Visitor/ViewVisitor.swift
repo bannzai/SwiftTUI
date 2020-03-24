@@ -7,7 +7,6 @@
 
 import Foundation
 
-// TODO: Internal
 public enum ViewVisitorListOption {
     static let `default`: ViewVisitorListOption = .horizontal
     case vertical
@@ -31,7 +30,7 @@ internal protocol ContainerViewContentAcceptable {
     
 }
 
-public final class ViewContentVisitor: Visitor {
+internal final class ViewContentVisitor: Visitor {
     internal typealias VisitResult = Void
     internal let driver: DrawableDriver
     internal init(driver: DrawableDriver) {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol ViewGraphSetAcceptable {
+internal protocol ViewGraphSetAcceptable {
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph
 }
 

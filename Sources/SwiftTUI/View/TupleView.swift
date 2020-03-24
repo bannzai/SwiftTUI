@@ -25,7 +25,7 @@ extension TupleView: View, Primitive {
 extension TupleView: ContainerViewContentAcceptable { }
 
 extension TupleView: ContainerViewGraphSetAcceptable {
-    public func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+    internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor, value: value)
     }
 }

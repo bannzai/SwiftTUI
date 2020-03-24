@@ -83,7 +83,7 @@ extension ViewGraph: Hashable {
     }
 }
 
-public final class ViewGraphSetVisitor: Visitor {
+internal final class ViewGraphSetVisitor: Visitor {
     internal var current: ViewGraph? = nil
     internal init() { }
     
