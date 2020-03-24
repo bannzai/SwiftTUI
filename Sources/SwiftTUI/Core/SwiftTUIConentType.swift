@@ -13,8 +13,13 @@ public typealias SwiftTUIContentType = String
 
 // MARK: - Size
 extension SwiftTUIContentType {
+    // NOTE: Maybe always 1
+    internal static var defaultHeight: PhysicalDistance = 1
     internal var width: PhysicalDistance {
         map { $0.width }.reduce(0, +)
+    }
+    internal var height: PhysicalDistance {
+        SwiftTUIContentType.defaultHeight
     }
 }
 
@@ -36,5 +41,8 @@ fileprivate extension Character {
             .map { cncurses.wcwidth(Int32($0.value)) }
             .reduce(0) { max($0, $1) }
         return doCache(width: Int(width))
+    }
+    var height: PhysicalDistance {
+        SwiftTUIContentType.defaultHeight
     }
 }
