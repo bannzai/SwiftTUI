@@ -8,7 +8,7 @@ struct ContentView: View {
         VStack {
             Text("Hello")
                 .foregroundColor(.red)
-            Text(", ")
+            Text(",")
             Text("World")
                 .background(Color.blue)
         }
