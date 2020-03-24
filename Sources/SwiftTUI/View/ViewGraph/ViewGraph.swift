@@ -316,7 +316,6 @@ extension ViewGraph: ViewContentAcceptable {
         case let content as ViewContentAcceptable:
             content.accept(visitor: visitor)
         case _:
-            print("self: \(self), children: \(children)")
             children.forEach { $0.accept(visitor: visitor) }
         }
     }
