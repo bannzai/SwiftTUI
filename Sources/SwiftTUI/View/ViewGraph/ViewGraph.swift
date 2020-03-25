@@ -303,7 +303,6 @@ extension ViewGraph: ViewContainerContentSizeAcceptable {
 extension ViewGraph: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         defer { visitor.driver.restoreBackgroundColor() }
-//        visitor.driver.moveTo(x: rect.origin.x, y: rect.origin.y)
         switch anyView {
         case is ContainerViewContentAcceptable:
             children.forEach { child in
