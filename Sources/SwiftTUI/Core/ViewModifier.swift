@@ -11,7 +11,6 @@ public struct _ViewModifier_Content<Modifier>: View where Modifier: ViewModifier
     public typealias Body = Swift.Never
 }
 
-
 public protocol ViewModifier {
     associatedtype Body : View
     func body(content: Self.Content) -> Self.Body

@@ -28,8 +28,8 @@ extension View {
     }
 }
 
-extension _BackgroundModifier: _ViewModifier {
-    func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
+extension _BackgroundModifier: ViewContentAcceptable {
+    func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
         switch background {
         case let color as Color:
             visitor.driver.setBackgroundColor(color)
