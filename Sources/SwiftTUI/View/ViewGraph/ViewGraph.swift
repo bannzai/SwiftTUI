@@ -58,6 +58,19 @@ public class ViewGraph: SwiftTUI.View {
     
 }
 
+// MARK: - Utility
+internal extension ViewGraph {
+    func positionToWindow() -> Point {
+        switch parent {
+        case .some(let parent):
+            let parentPosition = parent.positionToWindow()
+            return Point(x: parentPosition.x + rect.origin.x  , y: parentPosition.y + rect.origin.y)
+        case nil:
+            return Point(x: rect.origin.x, y: rect.origin.y)
+        }
+    }
+}
+
 public final class ViewGraphImpl<View: SwiftTUI.View>: ViewGraph {
     internal let view: View
     internal init(view: View) {
