@@ -319,13 +319,13 @@ extension ViewGraph: ViewContentAcceptable {
         switch anyView {
         case is ContainerViewContentAcceptable:
             children.forEach { child in
-                child.accept(visitor: visitor)
                 switch listType {
                 case .vertical:
-                    sharedCursor.moveTo(x: sharedCursor.x, y: sharedCursor.y + spacing + child.rect.size.height)
+                    sharedCursor.moveTo(point: child.positionToWindow())
                 case .horizontal:
                     break
                 }
+                child.accept(visitor: visitor)
             }
         case let content as ViewContentAcceptable:
             content.accept(visitor: visitor)

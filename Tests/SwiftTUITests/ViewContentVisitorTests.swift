@@ -97,9 +97,9 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("123"))
-            XCTAssertEqual(testSharedCursor.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "123".height)
+            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains("456"))
-            XCTAssertEqual(testSharedCursor.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "123".height + "456".height)
+            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "123".height)
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {
@@ -113,11 +113,11 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("1"))
-            XCTAssertEqual(testSharedCursor.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "1".height)
+            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains("2"))
-            XCTAssertEqual(testSharedCursor.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
+            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "1".height)
             XCTAssertTrue(result.contains("3"))
-            XCTAssertEqual(testSharedCursor.storedMoveTo[2].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height + "3".height)
+            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
         }
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>>") { (_) in
             let view = CustomView(body: VStack { CustomView(body: Text("123")) } )
@@ -155,7 +155,7 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             XCTAssertEqual("hoge", result)
         }
-        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, _BackgroundModifier<Text>>") { (_) in
+        XCTContext.runActivity(named: "when VStack contains TupleView<_BackgroundModifier<Text>, Text, _BackgroundModifier<Text>>") { (_) in
             let view = VStack {
                 Text("1")
                     .foregroundColor(.blue)
@@ -170,17 +170,18 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             
             XCTAssertTrue(result.contains("1"))
-            XCTAssertEqual(testSharedCursor.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "1".height)
+            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains("2"))
-            XCTAssertEqual(testSharedCursor.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
+            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "1".height)
             XCTAssertTrue(result.contains("3"))
-            XCTAssertEqual(testSharedCursor.storedMoveTo[2].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height + "3".height)
+            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
 
             XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
             XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
             XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
         }
+        
         XCTContext.runActivity(named: "when Double _BackgroundModifier. _BackgroundModifier<_BackgroundModifier<Text>>") { (_) in
             let view = Text("1").background(Color.red).background(Color.blue)
             let driver = Driver()
