@@ -38,14 +38,3 @@ extension _BackgroundModifier: ViewContentAcceptable {
         }
     }
 }
-
-extension _BackgroundModifier: _RestoreableViewModifier {
-    func restore<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
-        switch background {
-        case is Color:
-            visitor.driver.restoreBackgroundColor()
-        case _:
-            break
-        }
-    }
-}
