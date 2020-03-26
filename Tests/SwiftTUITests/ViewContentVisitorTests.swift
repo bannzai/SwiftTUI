@@ -85,6 +85,9 @@ class ViewContentVisitorTests: XCTestCase {
     
     var testSharedCursor: TestCursor { sharedCursor as! TestCursor }
     
+    func test_playground() {
+    }
+    
     func testViewContentVisitor() {
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>, CustomView<Text>>") { (_) in
             let view = CustomView(body: VStack {
@@ -213,6 +216,28 @@ class ViewContentVisitorTests: XCTestCase {
 
             XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
             XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
+        }
+        XCTContext.runActivity(named: "when VStack(alignment: .trailing) contains TupleView<Text, Text, Text>") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                Text("23")
+                Text("456")
+            }
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
+            let result = driver.content()
+            
+            XCTAssertTrue(result.contains("1"))
+            XCTAssertEqual(testSharedCursor.xHistory[0], 2)
+            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
+            XCTAssertTrue(result.contains("23"))
+            XCTAssertEqual(testSharedCursor.xHistory[1], 1)
+            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "1".height)
+            XCTAssertTrue(result.contains("456"))
+            XCTAssertEqual(testSharedCursor.xHistory[2], 0)
+            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "1".height + "23".height)
         }
     }
 }
