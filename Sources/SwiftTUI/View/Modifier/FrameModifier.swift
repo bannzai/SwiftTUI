@@ -26,9 +26,3 @@ extension View {
         frame(width: nil, height: nil)
     }
 }
-
-extension _FrameLayout: _ViewModifier {
-    func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
-        // TODO:
-    }
-}

@@ -29,11 +29,3 @@ extension View {
         modifier(_BorderModifier(target: self, border: Border(color: color, width: width, directionType: direction)))
     }
 }
-
-extension _BorderModifier: _ViewModifier {
-    func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult {
-        // TODO:
-    }
-}
-
-

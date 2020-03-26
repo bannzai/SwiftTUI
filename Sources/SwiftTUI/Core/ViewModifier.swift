@@ -22,7 +22,3 @@ extension ViewModifier where Body == Never {
         fatalError("body is never. received argument \(content)")
     }
 }
-
-internal protocol _ViewModifier {
-    func visit<View: SwiftTUI.View, Visitor: ViewContentVisitor>(view: View, visitor: Visitor) -> Visitor.VisitResult
-}
