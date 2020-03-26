@@ -12,6 +12,7 @@ internal protocol Cursor {
     var x: PhysicalDistance { get }
     var y: PhysicalDistance { get }
     
+    mutating func moveTo(point: Point)
     mutating func moveTo(x: PhysicalDistance, y: PhysicalDistance)
     mutating func move(x: PhysicalDistance, y: PhysicalDistance)
 }
@@ -24,11 +25,13 @@ internal struct CursorImpl {
 }
 
 extension CursorImpl: Cursor {
+    mutating func moveTo(point: Point) {
+        moveTo(x: point.x, y: point.y)
+    }
     mutating func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
         self.x = x
         self.y = y
-        let result = cncurses.move(Int32(y), Int32(x))
-        debugLogger.debug(userInfo: "move: \(result), x: \(x), y: \(y)")
+        cncurses.move(Int32(y), Int32(x))
     }
     mutating func move(x: PhysicalDistance, y: PhysicalDistance) {
         let _x = self.x + x
