@@ -28,3 +28,9 @@ extension View {
               _AlignmentWritingModifier(key: g.key, computeValue: computeValue))
       }
 }
+
+extension _AlignmentWritingModifier: ViewContentAcceptable {
+    func accept(visitor: ViewContentVisitor) {
+        
+    }
+}

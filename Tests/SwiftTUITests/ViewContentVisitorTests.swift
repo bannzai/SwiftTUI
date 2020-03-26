@@ -86,6 +86,7 @@ class ViewContentVisitorTests: XCTestCase {
     var testSharedCursor: TestCursor { sharedCursor as! TestCursor }
     
     func test_playground() {
+
     }
     
     func testViewContentVisitor() {
@@ -238,6 +239,31 @@ class ViewContentVisitorTests: XCTestCase {
             XCTAssertTrue(result.contains("456"))
             XCTAssertEqual(testSharedCursor.xHistory[2], 0)
             XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "1".height + "23".height)
+        }
+        XCTContext.runActivity(named: "when VStack(alignment: .trailing) contains TupleView<_AlignmentWritingModifier<Text>, Text, Text>") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("Hello")
+                    .alignmentGuide(.trailing, computeValue: { _ in return 2 })
+                Text(",")
+                Text("World")
+            }
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
+            let result = driver.content()
+            
+            XCTAssertTrue(result.contains("Hello"))
+            XCTAssertEqual(testSharedCursor.xHistory[0], 3)
+            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
+            XCTAssertTrue(result.contains(","))
+            XCTAssertEqual(testSharedCursor.xHistory[1], 4)
+            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "Hello".height)
+            XCTAssertTrue(result.contains("World"))
+            XCTAssertEqual(testSharedCursor.xHistory[2], 0)
+            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height)
+            
+            XCTAssertEqual(graph.rect.size.width, 8)
         }
     }
 }
