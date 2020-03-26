@@ -8,14 +8,22 @@
 import Foundation
 import cncurses
 
-public struct Cursor {
-    internal private(set) var x: PhysicalDistance = 0
-    internal private(set) var y: PhysicalDistance = 0
+internal protocol Cursor {
+    var x: PhysicalDistance { get }
+    var y: PhysicalDistance { get }
+    
+    mutating func moveTo(x: PhysicalDistance, y: PhysicalDistance)
+    mutating func move(x: PhysicalDistance, y: PhysicalDistance)
+}
+
+internal struct CursorImpl {
+    internal var x: PhysicalDistance = 0
+    internal var y: PhysicalDistance = 0
     
     fileprivate init() { }
 }
 
-extension Cursor: CursorMover {
+extension CursorImpl: Cursor {
     mutating func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
         self.x = x
         self.y = y
@@ -29,7 +37,7 @@ extension Cursor: CursorMover {
     }
 }
 
-internal var sharedCursor = Cursor()
+internal var sharedCursor: Cursor = CursorImpl()
 internal func drawPoint() -> Point {
     Point(x: sharedCursor.x, y: sharedCursor.y)
 }

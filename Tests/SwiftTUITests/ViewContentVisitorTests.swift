@@ -46,28 +46,16 @@ class ViewContentVisitorTests: XCTestCase {
                 .reduce("", +)
         }
         
-        var storedMoveTo: [(x: PhysicalDistance, y: PhysicalDistance)] = []
-        func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
-            callBag.append(#function)
-            sharedCursor.moveTo(x: x, y: y)
-            storedMoveTo.append((x: x, y: y))
-        }
-        
-        var storedMove: [(x: PhysicalDistance, y: PhysicalDistance)] = []
-        func move(x: PhysicalDistance, y: PhysicalDistance) {
-            callBag.append(#function)
-            sharedCursor.move(x: x, y: y)
-            storedMove.append((x: x, y: y))
-        }
     }
     
     class DummyScreen: Screen {
         override var columns: PhysicalDistance { 100 }
         override var rows: PhysicalDistance { 100 }
     }
+    
     private func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-        sharedCursor.moveTo(x: 0, y: 0)
-        
+        testSharedCursor.reset()
+
         let graphVisitor = ViewGraphSetVisitor()
         let graph = graphVisitor.visit(view)
         graph.listType = viewListOption
@@ -91,8 +79,11 @@ class ViewContentVisitorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
+        sharedCursor = TestCursor()
         mainScreen = DummyScreen.init()
     }
+    
+    var testSharedCursor: TestCursor { sharedCursor as! TestCursor }
     
     func testViewContentVisitor() {
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>, CustomView<Text>>") { (_) in
@@ -106,9 +97,9 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("123"))
-            XCTAssertEqual(driver.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "123".height)
+            XCTAssertEqual(testSharedCursor.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "123".height)
             XCTAssertTrue(result.contains("456"))
-            XCTAssertEqual(driver.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "123".height + "456".height)
+            XCTAssertEqual(testSharedCursor.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "123".height + "456".height)
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {
@@ -122,11 +113,11 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("1"))
-            XCTAssertEqual(driver.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "1".height)
+            XCTAssertEqual(testSharedCursor.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "1".height)
             XCTAssertTrue(result.contains("2"))
-            XCTAssertEqual(driver.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
+            XCTAssertEqual(testSharedCursor.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
             XCTAssertTrue(result.contains("3"))
-            XCTAssertEqual(driver.storedMoveTo[2].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height + "3".height)
+            XCTAssertEqual(testSharedCursor.storedMoveTo[2].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height + "3".height)
         }
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>>") { (_) in
             let view = CustomView(body: VStack { CustomView(body: Text("123")) } )
@@ -179,11 +170,11 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             
             XCTAssertTrue(result.contains("1"))
-            XCTAssertEqual(driver.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "1".height)
+            XCTAssertEqual(testSharedCursor.storedMoveTo[0].y, ViewVisitorListOption.vertical.defaultSpace + "1".height)
             XCTAssertTrue(result.contains("2"))
-            XCTAssertEqual(driver.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
+            XCTAssertEqual(testSharedCursor.storedMoveTo[1].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
             XCTAssertTrue(result.contains("3"))
-            XCTAssertEqual(driver.storedMoveTo[2].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height + "3".height)
+            XCTAssertEqual(testSharedCursor.storedMoveTo[2].y, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height + "3".height)
 
             XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
             XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)

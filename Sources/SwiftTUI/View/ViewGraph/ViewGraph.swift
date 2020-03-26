@@ -322,7 +322,7 @@ extension ViewGraph: ViewContentAcceptable {
                 child.accept(visitor: visitor)
                 switch listType {
                 case .vertical:
-                    visitor.driver.moveTo(x: sharedCursor.x, y: sharedCursor.y + spacing + child.rect.size.height)
+                    sharedCursor.moveTo(x: sharedCursor.x, y: sharedCursor.y + spacing + child.rect.size.height)
                 case .horizontal:
                     break
                 }
