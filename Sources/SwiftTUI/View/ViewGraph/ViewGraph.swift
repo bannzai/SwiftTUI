@@ -211,7 +211,7 @@ extension ViewGraph: ViewDimensionsAcceptable {
                     let computedValue = modifier.computeValue(dimensions)
                     dimensions.set(key: values.key, value: computedValue)
                 case .some(let childValue):
-                    values.id._combineExplicit(childValue: childValue, noSpecifyLevel, into: &dimensions[explicit: values])
+                    values.id._combineExplicit(childValue: childValue, into: &dimensions[explicit: values])
                 }
             }
         }
