@@ -181,13 +181,13 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 case false:
                     child.rect.origin.x = x
                 }
-                
+
                 if x > maxX {
                     children[0..<offset].forEach { $0.rect.origin.x += x - maxX }
                 }
                 maxX = max(x, maxX)
             }
-            
+
             var beforeYPoistion: PhysicalDistance = 0
             children.enumerated().forEach { (offset, child) in
                 let padding = offset * listType.defaultSpace + beforeYPoistion
@@ -204,7 +204,6 @@ extension ViewGraph: ViewPositionSetterAcceptable {
 extension ViewGraph: ViewDimensionsAcceptable {
     func decideAlignmentGuide(for values: (id: AlignmentID.Type, key: AlignmentKey)) -> ViewDimensionsVisitor.VisitResult {
         guard let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier else {
-            children.forEach { _ = $0.decideAlignmentGuide(for: values) }
             return dimensions
         }
         
@@ -225,15 +224,17 @@ extension ViewGraph: ViewDimensionsAcceptable {
     }
     
     func accept(visitor: ViewDimensionsVisitor) -> ViewDimensionsVisitor.VisitResult {
+        children.forEach { _ = $0.accept(visitor: visitor) }
+        
         horizontal: do {
             let id = alignment.horizontal.id
             let key = alignment.horizontal.key
-            _ = decideAlignmentGuide(for: (id: id, key: key))
+            dimensions = decideAlignmentGuide(for: (id: id, key: key))
         }
         vertical: do {
             let id = alignment.vertical.id
             let key = alignment.vertical.key
-            _ = decideAlignmentGuide(for: (id: id, key: key))
+            dimensions = decideAlignmentGuide(for: (id: id, key: key))
         }
         return dimensions
     }
