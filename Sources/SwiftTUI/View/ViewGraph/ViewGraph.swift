@@ -155,14 +155,14 @@ extension ViewGraph: ViewPositionSetterAcceptable {
             return
         }
         
-        children.forEach { $0.accept(visitor: visitor) }
-        
         if let view = anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
             children[0].rect.origin.x = 0
             children[0].rect.origin.y = 0
             return
         }
         
+        children.forEach { $0.accept(visitor: visitor) }
+
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
