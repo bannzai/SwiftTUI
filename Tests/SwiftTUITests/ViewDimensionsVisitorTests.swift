@@ -217,12 +217,8 @@ class ViewDimensionsVisitorTests: XCTestCase {
         XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using not same horizontal alignment referenced child explicit alignmentGuide") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("1")
-                    .alignmentGuide(.top) { dimensions in
-                        200
-                }
-                .alignmentGuide(.trailing) { dimensions in
-                    dimensions[explicit: .top] ?? 100
-                }
+                    .alignmentGuide(.top) { dimensions in 200 }
+                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .top] ?? 100 }
                 Text("23")
                 Text("456")
             }
@@ -248,15 +244,9 @@ class ViewDimensionsVisitorTests: XCTestCase {
         XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using same (.trailing) horizontal alignment referenced double child explicit alignmentGuide") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("1")
-                    .alignmentGuide(.trailing) { dimensions in
-                        dimensions[explicit: .trailing] ?? 200
-                    }
-                    .alignmentGuide(.trailing) { dimensions in
-                        dimensions[explicit: .trailing] ?? 100
-                    }
-                    .alignmentGuide(.trailing) { dimensions in
-                        dimensions[explicit: .trailing] ?? 50
-                    }
+                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing] ?? 200 }
+                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing] ?? 100 }
+                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing] ?? 50 }
                 Text("23")
                 Text("456")
             }
