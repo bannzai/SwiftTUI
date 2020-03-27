@@ -175,7 +175,13 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                     x = explicitValue
                 }
                 
-                child.rect.origin.x = max(maxX - x, 0)
+                switch x > 0 {
+                case true:
+                    child.rect.origin.x = max(maxX - x, 0)
+                case false:
+                    child.rect.origin.x = x
+                }
+                
                 if x > maxX {
                     children[0..<offset].forEach { $0.rect.origin.x += x - maxX }
                 }
@@ -319,6 +325,7 @@ extension ViewGraph: ViewContentAcceptable {
         switch anyView {
         case is ContainerViewContentAcceptable:
             children.forEach { child in
+                debugLogger.debug(userInfo: "view type is \(child.anyView.self), child.positionToWindow(): \(child.positionToWindow()), actualy origin \(child.rect.origin)")
                 switch listType {
                 case .vertical:
                     sharedCursor.moveTo(point: child.positionToWindow())
