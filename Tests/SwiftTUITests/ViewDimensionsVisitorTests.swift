@@ -244,9 +244,9 @@ class ViewDimensionsVisitorTests: XCTestCase {
         XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using same (.trailing) horizontal alignment referenced double child explicit alignmentGuide") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("1")
-                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing] ?? 200 }
-                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing] ?? 100 }
-                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing] ?? 50 }
+                    .alignmentGuide(.trailing) { dimensions in 200 }
+                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing]! + 1 }
+                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing]! + 1 }
                 Text("23")
                 Text("456")
             }
@@ -266,7 +266,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let visitor = ViewDimensionsVisitor()
             let dimensions = visitor.visit(firstModifier)
             
-            XCTAssertEqual(dimensions[explicit: .trailing], 200)
+            XCTAssertEqual(dimensions[explicit: .trailing], 202)
             XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
         }
     }

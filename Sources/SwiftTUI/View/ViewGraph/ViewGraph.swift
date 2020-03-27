@@ -209,15 +209,8 @@ extension ViewGraph: ViewDimensionsAcceptable {
         
         if values.key == modifier.key {
             children.forEach { child in
-                let childDimensions = child.decideAlignmentGuide(for: values)
-                let childValue = childDimensions[explicit: values]
-                switch childValue {
-                case nil:
-                    let computedValue = modifier.computeValue(dimensions)
-                    dimensions.set(key: values.key, value: computedValue)
-                case .some(let childValue):
-                    values.id._combineExplicit(childValue: childValue, into: &dimensions[explicit: values])
-                }
+                let computedValue = modifier.computeValue(dimensions)
+                values.id._combineExplicit(childValue: computedValue, into: &dimensions[explicit: values])
             }
         }
         return dimensions
