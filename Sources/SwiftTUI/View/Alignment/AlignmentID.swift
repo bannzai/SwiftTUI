@@ -12,19 +12,15 @@ public protocol AlignmentID {
     static func _combineExplicit(childValue: PhysicalDistance, _ n: Swift.Int, into parentValue: inout PhysicalDistance?)
 }
 
-fileprivate let noSpecifyLevel = 0
+internal let noSpecifyLevel = 0
 fileprivate let undefinedValue: PhysicalDistance? = nil
 extension AlignmentID {
     public static func _combineExplicit(childValue: PhysicalDistance, _ n: Swift.Int, into parentValue: inout PhysicalDistance?) {
-        // FIXME: Myabe incorrect
-        if parentValue == undefinedValue {
-            parentValue = childValue
-            return
-        }
+        // TODO: Implement
     }
     
-    internal static func _combineExplicit(childValue: PhysicalDistance, into parentValue: inout PhysicalDistance?) {
-        _combineExplicit(childValue: childValue, noSpecifyLevel, into: &parentValue)
+    private static func _combineExplicit(childValue: PhysicalDistance, into parentValue: inout PhysicalDistance?) {
+       _combineExplicit(childValue: childValue, noSpecifyLevel, into: &parentValue)
     }
 }
 
