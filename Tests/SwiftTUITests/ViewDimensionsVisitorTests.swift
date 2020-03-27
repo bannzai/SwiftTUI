@@ -250,13 +250,13 @@ class ViewDimensionsVisitorTests: XCTestCase {
                 Text("1")
                     .alignmentGuide(.trailing) { dimensions in
                         dimensions[explicit: .trailing] ?? 200
-                }
-                .alignmentGuide(.trailing) { dimensions in
-                    dimensions[explicit: .trailing] ?? 100
-                }
-                .alignmentGuide(.trailing) { dimensions in
-                    dimensions[explicit: .trailing] ?? 50
-                }
+                    }
+                    .alignmentGuide(.trailing) { dimensions in
+                        dimensions[explicit: .trailing] ?? 100
+                    }
+                    .alignmentGuide(.trailing) { dimensions in
+                        dimensions[explicit: .trailing] ?? 50
+                    }
                 Text("23")
                 Text("456")
             }
