@@ -5,13 +5,11 @@ import Runtime
 
 struct ContentView: View {
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text("Hello")
-                .foregroundColor(.red)
+                .alignmentGuide(.leading, computeValue: { _ in return 1 })
             Text(",")
-                .alignmentGuide(HorizontalAlignment.default, computeValue: { _ in return 2})
             Text("World")
-                .background(Color.blue)
         }
     }
 }
