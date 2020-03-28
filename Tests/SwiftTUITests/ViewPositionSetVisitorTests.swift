@@ -392,5 +392,65 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
+        XCTContext.runActivity(named: "when VStack contains TupleView<_AlignmentWritingModifier<Text>, Text, _AlignmentWritingModifier<Text>> when .leading alignment and specity two negative value") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                    .alignmentGuide(.leading, computeValue: { _ in return -1 })
+                Text(",")
+                Text("World")
+                    .alignmentGuide(.leading, computeValue: { _ in return -2 })
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewPositionSetVisitor()
+            visitor.visit(graph)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+            
+            XCTContext.runActivity(named: "Text graph confirm to leading position") { (_) in
+                first: do {
+                    let modifierGraph = graph.children[0].children[0]
+                    let hasModifier = modifierGraph.anyView as! HasAnyModifier
+                    XCTAssertTrue(hasModifier.anyModifier is _AlignmentWritingModifier)
+                    
+                    let textGraph = modifierGraph.children[0]
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "Hello")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                    XCTAssertEqual(modifierGraph.rect.origin.x, 1)
+                    XCTAssertEqual(modifierGraph.rect.origin.y, 0)
+                }
+                second: do {
+                    let textGraph = graph.children[0].children[1]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, ",")
+                    XCTAssertEqual(textGraph.rect.origin.x, 2)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height)
+                }
+                third: do {
+                    let modifierGraph = graph.children[0].children[2]
+
+                    let hasModifier = modifierGraph.anyView as! HasAnyModifier
+                    XCTAssertTrue(hasModifier.anyModifier is _AlignmentWritingModifier)
+                    
+                    let textGraph = modifierGraph.children[0]
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+
+                    XCTAssertEqual(text.content, "World")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                    XCTAssertEqual(modifierGraph.rect.origin.x, 0)
+                    XCTAssertEqual(modifierGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height + ",".height)
+                }
+            }
+        }
     }
 }
