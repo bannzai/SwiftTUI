@@ -8,6 +8,8 @@ struct ContentView: View {
         VStack(alignment: .leading) {
             Text("Hello")
                 .alignmentGuide(.leading, computeValue: { _ in return 1 })
+                .alignmentGuide(.leading, computeValue: { d in d[explicit: .leading]! + 2 })
+                .background(Color.red)
             Text(",")
             Text("World")
         }
