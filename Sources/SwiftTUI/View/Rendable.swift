@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+
+/// Rendable is annotation about it can be render view
+internal protocol Rendable {
+    
+}

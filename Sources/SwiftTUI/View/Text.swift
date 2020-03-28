@@ -29,6 +29,7 @@ public struct Text {
 }
 
 extension Text: Primitive { }
+extension Text: Rendable { }
 extension Text: ViewGraphSetAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor)
