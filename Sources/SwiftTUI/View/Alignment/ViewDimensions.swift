@@ -43,9 +43,6 @@ public struct ViewDimensions {
             if let value = graph.children.compactMap({ $0.dimensions[explicit: values] }).last {
                 return value
             }
-            if let value = graph.children.compactMap({ $0.decideAlignmentGuide(for: values)}).last?[explicit: values] {
-                return value
-            }
             return nil
         }
         set {

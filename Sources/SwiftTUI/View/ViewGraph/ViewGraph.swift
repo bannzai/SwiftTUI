@@ -204,32 +204,41 @@ extension ViewGraph: ViewPositionSetterAcceptable {
 extension ViewGraph: ViewDimensionsAcceptable {
     func decideAlignmentGuide(for values: (id: AlignmentID.Type, key: AlignmentKey)) -> ViewDimensionsVisitor.VisitResult {
         guard let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier else {
-            return dimensions
+            return
         }
         
-        if values.key == modifier.key {
-            children.forEach { child in
-                let computedValue = modifier.computeValue(dimensions)
+        children.forEach { child in
+            let computedValue = modifier.computeValue(dimensions)
+            dimensions.set(key: modifier.key, value: computedValue)
+            if values.key == modifier.key {
                 values.id._combineExplicit(childValue: computedValue, into: &dimensions[explicit: values])
             }
         }
-        return dimensions
     }
     
     func accept(visitor: ViewDimensionsVisitor) -> ViewDimensionsVisitor.VisitResult {
-        children.forEach { _ = $0.accept(visitor: visitor) }
+        let keepCurrentContainer = visitor.currentContainerGraph
+        defer { visitor.currentContainerGraph = keepCurrentContainer }
+        if anyView is ContainerViewType {
+            visitor.currentContainerGraph = self
+        }
+        
+        children.forEach { $0.accept(visitor: visitor) }
+        
+        guard let containerGraph = visitor.currentContainerGraph else {
+            return
+        }
         
         horizontal: do {
-            let id = alignment.horizontal.id
-            let key = alignment.horizontal.key
-            dimensions = decideAlignmentGuide(for: (id: id, key: key))
+            let id = containerGraph.alignment.horizontal.id
+            let key = containerGraph.alignment.horizontal.key
+            decideAlignmentGuide(for: (id: id, key: key))
         }
         vertical: do {
-            let id = alignment.vertical.id
-            let key = alignment.vertical.key
-            dimensions = decideAlignmentGuide(for: (id: id, key: key))
+            let id = containerGraph.alignment.vertical.id
+            let key = containerGraph.alignment.vertical.key
+            decideAlignmentGuide(for: (id: id, key: key))
         }
-        return dimensions
     }
 }
 
