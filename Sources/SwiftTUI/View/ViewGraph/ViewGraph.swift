@@ -56,16 +56,22 @@ public class ViewGraph: SwiftTUI.View {
         fatalError()
     }
     
-    private func extractPrimitiveChild() -> ViewGraph? {
-        if self.anyView is Primitive {
-            return self
+    private func extractPrimitiveChild() -> ViewGraph {
+        func _extractPrimitiveChild() -> ViewGraph? {
+            if self.anyView is Primitive {
+                return self
+            }
+            if children.isEmpty {
+                fatalError()
+            }
+            return children.compactMap { $0.extractPrimitiveChild() }.first
         }
-        return children.compactMap { $0.extractPrimitiveChild() }.first
+        
+        return _extractPrimitiveChild()!
     }
     
     var primitiveChildren: [ViewGraph] {
         let primitiveChildren = children.compactMap { $0.extractPrimitiveChild() }
-        assert(primitiveChildren.count == children.count)
         return primitiveChildren
     }
 }
@@ -337,7 +343,7 @@ extension ViewGraph: ViewContentAcceptable {
                 debugLogger.debug(userInfo: "view type is \(child.anyView.self), child.positionToWindow(): \(child.positionToWindow()), actualy origin \(child.rect.origin)")
                 switch listType {
                 case .vertical:
-                    sharedCursor.moveTo(point: child.positionToWindow())
+                    sharedCursor.moveTo(point: child.extractPrimitiveChild().positionToWindow())
                 case .horizontal:
                     break
                 }
