@@ -276,13 +276,13 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             
             XCTAssertTrue(result.contains("Hello"))
-            XCTAssertEqual(testSharedCursor.xHistory[0], 0)
+            XCTAssertEqual(testSharedCursor.xHistory[0], 1)
             XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains(","))
-            XCTAssertEqual(testSharedCursor.xHistory[1], 1)
+            XCTAssertEqual(testSharedCursor.xHistory[1], 0)
             XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "Hello".height)
             XCTAssertTrue(result.contains("World"))
-            XCTAssertEqual(testSharedCursor.xHistory[2], 1)
+            XCTAssertEqual(testSharedCursor.xHistory[2], 0)
             XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height)
             
             XCTAssertEqual(graph.rect.size.width, 6)

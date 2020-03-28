@@ -166,7 +166,6 @@ extension ViewGraph: ViewPositionSetterAcceptable {
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
-            var minX = PhysicalDistance(0)
             children.enumerated().forEach { (offset, child) in
                 let x: PhysicalDistance
                 switch child.dimensions[explicit: child.alignment.horizontal] {
@@ -177,20 +176,16 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 }
                 
                 switch x {
+                case let x where x < 0:
+                    child.rect.origin.x = maxX + abs(x)
                 case let x where x == 0:
-                    child.rect.origin.x = abs(minX)
+                    child.rect.origin.x = maxX
                 case let x where x > 0:
                     child.rect.origin.x = max(maxX - x, 0)
                     if x > maxX {
                         children[0..<offset].forEach { $0.rect.origin.x += x - maxX }
                     }
                     maxX = max(x, maxX)
-                case let x where x < 0:
-                    child.rect.origin.x = 0
-                    if x < minX {
-                        children[0..<offset].forEach { $0.rect.origin.x += minX - x }
-                    }
-                    minX = min(x, minX)
                 case _:
                     fatalError()
                 }
