@@ -202,20 +202,6 @@ extension ViewGraph: ViewPositionSetterAcceptable {
 }
 
 extension ViewGraph: ViewDimensionsAcceptable {
-    func decideAlignmentGuide(for values: (id: AlignmentID.Type, key: AlignmentKey)) -> ViewDimensionsVisitor.VisitResult {
-        guard let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier else {
-            return
-        }
-        
-        children.forEach { child in
-            let computedValue = modifier.computeValue(dimensions)
-            dimensions.set(key: modifier.key, value: computedValue)
-            if values.key == modifier.key {
-                values.id._combineExplicit(childValue: computedValue, into: &dimensions[explicit: values])
-            }
-        }
-    }
-    
     func accept(visitor: ViewDimensionsVisitor) -> ViewDimensionsVisitor.VisitResult {
         let keepCurrentContainer = visitor.currentContainerGraph
         defer { visitor.currentContainerGraph = keepCurrentContainer }
@@ -229,15 +215,20 @@ extension ViewGraph: ViewDimensionsAcceptable {
             return
         }
         
-        horizontal: do {
-            let id = containerGraph.alignment.horizontal.id
-            let key = containerGraph.alignment.horizontal.key
-            decideAlignmentGuide(for: (id: id, key: key))
+        guard let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier else {
+            return
         }
-        vertical: do {
-            let id = containerGraph.alignment.vertical.id
-            let key = containerGraph.alignment.vertical.key
-            decideAlignmentGuide(for: (id: id, key: key))
+        
+        let computedValue = modifier.computeValue(dimensions)
+        dimensions.set(key: modifier.key, value: computedValue)
+
+        if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
+            horizontal: do {
+                containerGraph.alignment.horizontal.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
+            }
+            vertical: do {
+                containerGraph.alignment.vertical.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
+            }
         }
     }
 }

@@ -27,26 +27,23 @@ public struct ViewDimensions {
         guide.id.defaultValue(in: self)
     }
     public internal(set) subscript(explicit guide: HorizontalAlignment) -> PhysicalDistance? {
-        get { self[explicit: (id: guide.id, guide.key)] }
+        get { self[explicit: guide.key] }
         set { set(guide: guide, value: newValue ?? 0) }
     }
     public internal(set) subscript(explicit guide: VerticalAlignment) -> PhysicalDistance? {
-        get { self[explicit: (id: guide.id, guide.key)] }
+        get { self[explicit: guide.key] }
         set { set(guide: guide, value: newValue ?? 0) }
     }
     
-    internal subscript(explicit values: (id: AlignmentID.Type, key: AlignmentKey)) -> PhysicalDistance? {
+    internal subscript(explicit key: AlignmentKey) -> PhysicalDistance? {
         get {
-            if let value = explicitContainer.container[values.key] {
-                return value
-            }
-            if let value = graph.children.compactMap({ $0.dimensions[explicit: values] }).last {
+            if let value = explicitContainer.container[key] {
                 return value
             }
             return nil
         }
         set {
-            set(key: values.key, value: newValue ?? 0)
+            set(key: key, value: newValue ?? 0)
         }
     }
 }
