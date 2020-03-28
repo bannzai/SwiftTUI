@@ -155,6 +155,11 @@ extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
             return size
         }
         
+        if let view = anyView as? HasAnyModifier, let paddingLayout = view.anyModifier as? _PaddingLayout {
+            rect.size.width = paddingLayout.width(from: rect.size.width)
+            rect.size.height = paddingLayout.width(from: rect.size.width)
+        }
+        
         if !children.isEmpty {
             let size = children
                 .map { $0.accept(visitor: visitor) }
