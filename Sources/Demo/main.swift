@@ -12,6 +12,16 @@ struct ContentView: View {
                 .background(Color.red)
             Text(",")
             Text("World")
+            
+            VStack(alignment: .trailing) {
+                Text("Hello")
+                    .foregroundColor(.yellow)
+                Text(",")
+                    .background(Color.blue)
+                Text("World")
+                    .alignmentGuide(.leading, computeValue: { _ in return 10 })
+                    .alignmentGuide(.trailing, computeValue: { d in d[explicit: .leading]! + 2 })
+            }
         }
     }
 }

@@ -245,7 +245,7 @@ extension ViewGraph: ViewDimensionsAcceptable {
             }
         }
         if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
-            dimensions = parent.dimensions
+            extractPrimitiveChild().dimensions = parent.dimensions
         }
     }
 }
