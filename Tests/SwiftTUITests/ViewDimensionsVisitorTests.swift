@@ -22,7 +22,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
         
         mainScreen = DummyScreen.init()
     }
-
+    
     func testVisit() {
         XCTContext.runActivity(named: "when Text with content") { (_) in
             let view = Text("hoge")
@@ -35,10 +35,10 @@ class ViewDimensionsVisitorTests: XCTestCase {
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(graph)
-
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
-            XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
+            visitor.visit(graph)
+            
+            XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertNil(graph.dimensions[explicit: VerticalAlignment.default])
         }
         XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
             let view = Text("hoge\nfuga")
@@ -51,10 +51,10 @@ class ViewDimensionsVisitorTests: XCTestCase {
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(graph)
+            visitor.visit(graph)
             
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
-            XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
+            XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertNil(graph.dimensions[explicit: VerticalAlignment.default])
         }
         XCTContext.runActivity(named: "when TupleView<Text, Text, Text>") { (_) in
             let view = TupleView((
@@ -72,10 +72,10 @@ class ViewDimensionsVisitorTests: XCTestCase {
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(graph)
+            visitor.visit(graph)
             
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
-            XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
+            XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertNil(graph.dimensions[explicit: VerticalAlignment.default])
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {
@@ -92,25 +92,10 @@ class ViewDimensionsVisitorTests: XCTestCase {
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(graph)
+            visitor.visit(graph)
             
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
-            XCTAssertNil(dimensions[explicit: VerticalAlignment.default])
-        }
-        XCTContext.runActivity(named: "when Text with alignmentGuide") { (_) in
-            let view = Text("hoge").alignmentGuide(.bottom) { _ in 20000 }
-
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-
-            // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
-            _ = sizeVisitor.visit(graph)
-            
-            let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(graph)
-            
-            XCTAssertNil(dimensions[explicit: .bottom])
+            XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertNil(graph.dimensions[explicit: VerticalAlignment.default])
         }
     }
     
@@ -126,9 +111,9 @@ class ViewDimensionsVisitorTests: XCTestCase {
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(graph)
+            visitor.visit(graph)
             
-            XCTAssertNil(dimensions[explicit: .bottom])
+            XCTAssertNil(graph.dimensions[explicit: .bottom])
         }
         XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide. But VStack using .default(.leading) horizontal alignment") { (_) in
             let view = VStack {
@@ -151,10 +136,9 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertTrue(firstModifier.anyView is ModifiedContent<Text, _AlignmentWritingModifier>)
             
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(firstModifier)
+            visitor.visit(graph)
             
-            XCTAssertNil(dimensions[explicit: .trailing])
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertEqual(firstModifier.dimensions[explicit: .trailing], 200000)
         }
         XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using same (.trailing) horizontal alignment") { (_) in
             let view = VStack(alignment: .trailing) {
@@ -176,10 +160,9 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertTrue(firstModifier.anyView is ModifiedContent<Text, _AlignmentWritingModifier>)
 
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(firstModifier)
+            visitor.visit(graph)
             
-            XCTAssertEqual(dimensions[explicit: .trailing], 200000)
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertEqual(firstModifier.dimensions[explicit: .trailing], 200000)
         }
         
         XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using same (.trailing) horizontal alignment referenced child explicit alignmentGuide") { (_) in
@@ -208,10 +191,9 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertTrue(firstModifier.anyView is ViewType)
             
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(firstModifier)
+            visitor.visit(graph)
             
-            XCTAssertEqual(dimensions[explicit: .trailing], 200)
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertEqual(firstModifier.dimensions[explicit: .trailing], 200)
         }
 
         XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using not same horizontal alignment referenced child explicit alignmentGuide") { (_) in
@@ -236,10 +218,9 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertTrue(firstModifier.anyView is ViewType)
             
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(firstModifier)
+            visitor.visit(graph)
             
-            XCTAssertEqual(dimensions[explicit: .trailing], 200)
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertEqual(firstModifier.dimensions[explicit: .trailing], 200)
         }
         XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using same (.trailing) horizontal alignment referenced double child explicit alignmentGuide") { (_) in
             let view = VStack(alignment: .trailing) {
@@ -264,10 +245,9 @@ class ViewDimensionsVisitorTests: XCTestCase {
             XCTAssertTrue(firstModifier.anyView is ViewType)
             
             let visitor = ViewDimensionsVisitor()
-            let dimensions = visitor.visit(firstModifier)
+            visitor.visit(graph)
             
-            XCTAssertEqual(dimensions[explicit: .trailing], 202)
-            XCTAssertNil(dimensions[explicit: HorizontalAlignment.default])
+            XCTAssertEqual(firstModifier.dimensions[explicit: .trailing], 202)
         }
     }
 }
