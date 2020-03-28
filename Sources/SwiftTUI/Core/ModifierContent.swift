@@ -46,7 +46,6 @@ extension ModifiedContent: View {
     public typealias Body = Swift.Never
 }
 
-extension ModifiedContent: Primitive { }
 extension ModifiedContent: ViewGraphSetAttributeAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)

@@ -56,6 +56,18 @@ public class ViewGraph: SwiftTUI.View {
         fatalError()
     }
     
+    private func extractPrimitiveChild() -> ViewGraph? {
+        if self.anyView is Primitive {
+            return self
+        }
+        return children.compactMap { $0.extractPrimitiveChild() }.first
+    }
+    
+    var primitiveChildren: [ViewGraph] {
+        let primitiveChildren = children.compactMap { $0.extractPrimitiveChild() }
+        assert(primitiveChildren.count == children.count)
+        return primitiveChildren
+    }
 }
 
 // MARK: - Utility
@@ -155,18 +167,12 @@ extension ViewGraph: ViewPositionSetterAcceptable {
             return
         }
         
-        if let view = anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
-            children[0].rect.origin.x = 0
-            children[0].rect.origin.y = 0
-            return
-        }
-        
         children.forEach { $0.accept(visitor: visitor) }
 
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
-            children.enumerated().forEach { (offset, child) in
+            primitiveChildren.enumerated().forEach { (offset, child) in
                 let x: PhysicalDistance
                 switch child.dimensions[explicit: child.alignment.horizontal] {
                 case nil:
@@ -183,7 +189,7 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 case let x where x > 0:
                     child.rect.origin.x = max(maxX - x, 0)
                     if x > maxX {
-                        children[0..<offset].forEach { $0.rect.origin.x += x - maxX }
+                        primitiveChildren[0..<offset].forEach { $0.rect.origin.x += x - maxX }
                     }
                     maxX = max(x, maxX)
                 case _:
@@ -192,7 +198,7 @@ extension ViewGraph: ViewPositionSetterAcceptable {
             }
 
             var beforeYPoistion: PhysicalDistance = 0
-            children.enumerated().forEach { (offset, child) in
+            primitiveChildren.enumerated().forEach { (offset, child) in
                 let padding = offset * listType.defaultSpace + beforeYPoistion
                 child.rect.origin.y = padding
                 beforeYPoistion = child.rect.origin.y + child.rect.size.height
@@ -218,21 +224,22 @@ extension ViewGraph: ViewDimensionsAcceptable {
             return
         }
         
-        guard let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier else {
-            return
+        if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier {
+            let computedValue = modifier.computeValue(dimensions)
+            dimensions.set(key: modifier.key, value: computedValue)
+            
+            // FIXME: maybe incorrect. how to use _combineExplicit??
+            if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
+                horizontal: do {
+                    containerGraph.alignment.horizontal.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
+                }
+                vertical: do {
+                    containerGraph.alignment.vertical.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
+                }
+            }
         }
-        
-        let computedValue = modifier.computeValue(dimensions)
-        dimensions.set(key: modifier.key, value: computedValue)
-
-        // FIXME: maybe incorrect. how to use _combineExplicit??
         if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
-            horizontal: do {
-                containerGraph.alignment.horizontal.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
-            }
-            vertical: do {
-                containerGraph.alignment.vertical.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
-            }
+            dimensions = parent.dimensions
         }
     }
 }
@@ -267,7 +274,7 @@ extension TupleView: HasContainerContentSize {
         case .vertical:
             var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (viewGraph.children.count - 1) * viewGraph.spacing
             var maxElementWidth: PhysicalDistance = 0
-            viewGraph.children.enumerated().forEach { (offset, element) in
+            viewGraph.primitiveChildren.enumerated().forEach { (offset, element) in
                 let provisionalElementHeight: PhysicalDistance = allocableHeight / (viewGraph.children.count - offset)
                 let elementProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
                 element.proposedSize = elementProposedSize
