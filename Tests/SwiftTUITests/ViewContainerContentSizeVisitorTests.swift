@@ -39,7 +39,7 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
         
         mainScreen = DummyScreen.init()
     }
-
+    
     func testAccept() {
         XCTContext.runActivity(named: "when CustomView has VStack<Text>") { (_) in
             let view = CustomView(body: VStack { Text("123") })
@@ -123,6 +123,22 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
             
             XCTAssertEqual(graph.rect.size, Size(width: 4, height: elementCount + spacing))
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<_AlignmentWritingModifier<Text>, Text, Text> when .leading alignment and specity negative value") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                    .alignmentGuide(.leading, computeValue: { _ in return -1 })
+                Text(",")
+                Text("World")
+            }
+            
+            let graph = prepare(view: view)
+            graph.accept(visitor: ViewContainerContentSizeVisitor())
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(graph.rect.size, Size(width: 6, height: elementCount + spacing))
         }
     }
 }

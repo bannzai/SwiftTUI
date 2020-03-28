@@ -166,6 +166,7 @@ extension ViewGraph: ViewPositionSetterAcceptable {
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
+            var minX = PhysicalDistance(0)
             children.enumerated().forEach { (offset, child) in
                 let x: PhysicalDistance
                 switch child.dimensions[explicit: child.alignment.horizontal] {
@@ -175,17 +176,24 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                     x = explicitValue
                 }
                 
-                switch x > 0 {
-                case true:
+                switch x {
+                case let x where x == 0:
+                    child.rect.origin.x = abs(minX)
+                case let x where x > 0:
                     child.rect.origin.x = max(maxX - x, 0)
-                case false:
-                    child.rect.origin.x = x
+                    if x > maxX {
+                        children[0..<offset].forEach { $0.rect.origin.x += x - maxX }
+                    }
+                    maxX = max(x, maxX)
+                case let x where x < 0:
+                    child.rect.origin.x = 0
+                    if x < minX {
+                        children[0..<offset].forEach { $0.rect.origin.x += minX - x }
+                    }
+                    minX = min(x, minX)
+                case _:
+                    fatalError()
                 }
-
-                if x > maxX {
-                    children[0..<offset].forEach { $0.rect.origin.x += x - maxX }
-                }
-                maxX = max(x, maxX)
             }
 
             var beforeYPoistion: PhysicalDistance = 0
@@ -293,7 +301,6 @@ extension TupleView: HasContainerContentSize {
 
 extension ViewGraph: ViewContainerContentSizeAcceptable {
     func accept(visitor: ViewContainerContentSizeVisitor) -> ViewContainerContentSizeVisitor.VisitResult {
-
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
@@ -306,11 +313,16 @@ extension ViewGraph: ViewContainerContentSizeAcceptable {
             return
         }
         
-        let size = children
-            .reduce(.zero) {
-                Size(width: $0.width + $1.rect.size.width, height: $0.height + $1.rect.size.height)
+        width: do {
+            let minX = children.map { $0.rect.origin.x }.min()!
+            let maxX = children.map { $0.rect.size.width }.max()!
+            rect.size.width = maxX - minX
         }
-        rect.size = size
+        height: do {
+            let minY = children.map { $0.rect.origin.y }.min()!
+            let maxY = children.map { $0.rect.size.height }.max()!
+            rect.size.height = maxY - minY
+        }
     }
 }
 

@@ -38,9 +38,6 @@ class ViewPositionSetVisitorTests: XCTestCase {
     }
     
     
-    func test_playground() {
-    }
-
     func testAccept() {
         XCTContext.runActivity(named: "when Text with content") { (_) in
             let view = Text("hoge")
@@ -370,7 +367,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     XCTAssertEqual(text.content, "Hello")
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
-                    XCTAssertEqual(modifierGraph.rect.origin.x, -1)
+                    XCTAssertEqual(modifierGraph.rect.origin.x, 0)
                     XCTAssertEqual(modifierGraph.rect.origin.y, 0)
                 }
                 second: do {
@@ -380,7 +377,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     let text = textGraph.anyView as! Text
                     
                     XCTAssertEqual(text.content, ",")
-                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.x, 1)
                     XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height)
                 }
                 third: do {
@@ -390,7 +387,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
                     let text = textGraph.anyView as! Text
                     
                     XCTAssertEqual(text.content, "World")
-                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.x, 1)
                     XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height + ",".height)
                 }
             }

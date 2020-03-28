@@ -85,10 +85,6 @@ class ViewContentVisitorTests: XCTestCase {
     
     var testSharedCursor: TestCursor { sharedCursor as! TestCursor }
     
-    func test_playground() {
-
-    }
-    
     func testViewContentVisitor() {
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>, CustomView<Text>>") { (_) in
             let view = CustomView(body: VStack {
@@ -264,6 +260,32 @@ class ViewContentVisitorTests: XCTestCase {
             XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height)
             
             XCTAssertEqual(graph.rect.size.width, 8)
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<_AlignmentWritingModifier<Text>, Text, Text> when .leading alignment and specity negative value") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                    .alignmentGuide(.leading, computeValue: { _ in return -1 })
+                Text(",")
+                Text("World")
+            }
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepare(view: view)
+            visitor.visit(graph)
+            
+            let result = driver.content()
+            
+            XCTAssertTrue(result.contains("Hello"))
+            XCTAssertEqual(testSharedCursor.xHistory[0], 0)
+            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
+            XCTAssertTrue(result.contains(","))
+            XCTAssertEqual(testSharedCursor.xHistory[1], 1)
+            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "Hello".height)
+            XCTAssertTrue(result.contains("World"))
+            XCTAssertEqual(testSharedCursor.xHistory[2], 1)
+            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height)
+            
+            XCTAssertEqual(graph.rect.size.width, 6)
         }
     }
 }

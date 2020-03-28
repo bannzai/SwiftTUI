@@ -23,6 +23,37 @@ class ViewDimensionsVisitorTests: XCTestCase {
         mainScreen = DummyScreen.init()
     }
     
+    func test_playground() {
+        XCTContext.runActivity(named: "when VStack<TupleView<(Text, Text, Text)>> with first Text has alignmentGuide and VStack using same (.trailing) horizontal alignment referenced double child explicit alignmentGuide") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                    .alignmentGuide(.trailing) { dimensions in 200 }
+                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing]! + 1 }
+                    .alignmentGuide(.trailing) { dimensions in dimensions[explicit: .trailing]! + 1 }
+                Text("23")
+                Text("456")
+            }
+
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            XCTAssertEqual(graph.alignment.horizontal, .trailing)
+            
+            // FIXME: Remove Size Visitor??
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
+            _ = sizeVisitor.visit(graph)
+            
+            typealias ViewType = ModifiedContent<ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>, _AlignmentWritingModifier>
+            let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ViewType })!
+            XCTAssertTrue(firstModifier.anyView is ViewType)
+            
+            let visitor = ViewDimensionsVisitor()
+            visitor.visit(graph)
+            
+            XCTAssertEqual(firstModifier.dimensions[explicit: .trailing], 202)
+        }
+
+    }
+    
     func testVisit() {
         XCTContext.runActivity(named: "when Text with content") { (_) in
             let view = Text("hoge")
