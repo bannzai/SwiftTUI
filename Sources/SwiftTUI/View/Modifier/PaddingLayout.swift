@@ -18,13 +18,13 @@ import Foundation
         public init(_ e: Edge) {
             self.init(rawValue: e.rawValue)
         }
-        public static let top: Edge.Set = Element(rawValue: 0)
-        public static let leading: Edge.Set = Element(rawValue: 1)
-        public static let bottom: Edge.Set = Element(rawValue: 2)
-        public static let trailing: Edge.Set = Element(rawValue: 3)
-        public static let all: Edge.Set = Element(rawValue: 4)
-        public static let horizontal: Edge.Set = Element(rawValue: 5)
-        public static let vertical: Edge.Set = Element(rawValue: 6)
+        public static let top: Edge.Set = Element(rawValue: 1 << 0)
+        public static let leading: Edge.Set = Element(rawValue: 1 << 1)
+        public static let bottom: Edge.Set = Element(rawValue: 1 << 2)
+        public static let trailing: Edge.Set = Element(rawValue: 1 << 3)
+        public static let all: Edge.Set = [.top, .leading, .bottom, .trailing]
+        public static let horizontal: Edge.Set = [.leading, .trailing]
+        public static let vertical: Edge.Set = [.top, .bottom]
     }
 }
 
@@ -54,6 +54,7 @@ extension EdgeInsets {
     }
 }
 
+fileprivate let defaultPadding = 1
 @frozen public struct _PaddingLayout: ViewModifier {
     public var edges: Edge.Set
     public var insets: EdgeInsets?
@@ -62,6 +63,29 @@ extension EdgeInsets {
         self.insets = insets
     }
     public typealias Body = Swift.Never
+}
+
+internal extension _PaddingLayout {
+    func height(from height: PhysicalDistance) -> PhysicalDistance {
+        if let insets = insets {
+            return height + insets.top + insets.bottom
+        }
+        
+        var height = height
+        if edges.contains(.top) { height = height + defaultPadding }
+        if edges.contains(.bottom) { height = height + defaultPadding }
+        return height
+    }
+    func width(from width: PhysicalDistance) -> PhysicalDistance {
+        if let insets = insets {
+            return width + insets.leading + insets.trailing
+        }
+        
+        var width = width
+        if edges.contains(.leading) { width = width + defaultPadding }
+        if edges.contains(.trailing) { width = width + defaultPadding }
+        return width
+    }
 }
 
 extension View {
@@ -77,5 +101,4 @@ extension View {
     @inlinable public func padding(_ length: PhysicalDistance) -> some View {
         return padding(.all, length)
     }
-    
 }
