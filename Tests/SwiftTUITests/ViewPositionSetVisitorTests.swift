@@ -41,7 +41,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             let graph = prepare(view: view)
             
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -55,7 +55,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             let graph = prepare(view: view)
             
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
 
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -93,7 +93,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             let graph = prepare(view: view)
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -143,7 +143,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             let graph = prepare(view: view)
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -191,7 +191,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             let graph = prepare(view: view)
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -241,7 +241,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             let graph = prepare(view: view)
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -289,7 +289,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             let graph = prepare(view: view)
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -342,7 +342,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             let graph = prepare(view: view)
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -394,7 +394,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             let graph = prepare(view: view)
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -449,7 +449,7 @@ class ViewPositionSetVisitorTests: XCTestCase {
             
             let graph = prepare(view: view)
             let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            graph.accept_position(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
