@@ -13,9 +13,9 @@ public struct ViewDimensions {
     public var height: PhysicalDistance { graph.rect.size.height }
     
     internal var size: Size { Size(width: width, height: height) }
-    private var graph: ViewGraph
-    internal init(graph: ViewGraph) {
-        self.graph = graph
+    internal var graph: ViewGraph!
+    internal init() {
+        
     }
 
     private var explicitContainer = ExplicitContainer()
