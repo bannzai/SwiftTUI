@@ -149,12 +149,6 @@ extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
             _ = $0.accept(visitor: visitor)
         }
 
-        if let view = anyView as? HasIntrinsicContentSize {
-            let size = view.intrinsicContentSize(viewGraph: self, visitor: visitor)
-            rect.size = size
-            return size
-        }
-        
         if !children.isEmpty {
             let size = children
                 .map { $0.accept(visitor: visitor) }
@@ -163,6 +157,11 @@ extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
             return size
         }
 
+        if let view = anyView as? HasIntrinsicContentSize {
+            let size = view.intrinsicContentSize(viewGraph: self, visitor: visitor)
+            rect.size = size
+            return size
+        }
         fatalError("unexpected pattern \(self)")
     }
 }
