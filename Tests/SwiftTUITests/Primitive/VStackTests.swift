@@ -15,6 +15,70 @@ class VStackTests: XCTestCase {
         mainScreen = DummyScreen.init()
     }
     
+    func testSize() {
+        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            graph.listType = viewListOption
+            return graph
+        }
+        
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
+            let view = VStack {
+                Text("1")
+                Text("23")
+                Text("456")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(graph.rect.size, Size(width: "456".width, height: 3 + spacing))
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>> when .trailing alignment. And configure alignmentGuide") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                Text("23")
+                Text("456")
+                    .alignmentGuide(.trailing, computeValue: { _ in return 1 })
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(graph.rect.size, Size(width: 4, height: elementCount + spacing))
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<_AlignmentWritingModifier<Text>, Text, Text> when .leading alignment and specity negative value") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                    .alignmentGuide(.leading, computeValue: { _ in return -1 })
+                Text(",")
+                Text("World")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(graph.rect.size, Size(width: 6, height: elementCount + spacing))
+        }
+    }
+}
+
+
+// MARK: - Children
+extension VStackTests {
     func testChildrenPositionWithoutAlignmentGuide() {
         func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
             let graphVisitor = ViewGraphSetVisitor()
@@ -70,7 +134,7 @@ class VStackTests: XCTestCase {
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
-
+            
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
             
@@ -155,7 +219,6 @@ class VStackTests: XCTestCase {
             }
         }
     }
-    
     func testChildrenPositionWithAlignmentGuide() {
         func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
             let graphVisitor = ViewGraphSetVisitor()
@@ -226,7 +289,7 @@ class VStackTests: XCTestCase {
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
-
+            
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
             
@@ -277,7 +340,7 @@ class VStackTests: XCTestCase {
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
-
+            
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
             
@@ -330,7 +393,7 @@ class VStackTests: XCTestCase {
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
-
+            
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
             
@@ -382,7 +445,7 @@ class VStackTests: XCTestCase {
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
-
+            
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
             
@@ -437,7 +500,7 @@ class VStackTests: XCTestCase {
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
-
+            
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
             
@@ -480,5 +543,5 @@ class VStackTests: XCTestCase {
             }
         }
     }
-    
+
 }
