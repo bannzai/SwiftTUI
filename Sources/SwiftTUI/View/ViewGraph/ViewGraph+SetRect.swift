@@ -20,6 +20,18 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
             visitor.proposedSize = mainScreen.bounds.size
         }
         
+        if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _PaddingLayout {
+            let baseGraph = extractRendableChlid()
+            let width = modifier.width(from: baseGraph.rect.size.width)
+            let height = modifier.height(from: baseGraph.rect.size.height)
+            
+            rect.size.width = width
+            rect.size.height = height
+            
+            visitor.proposedSize.width -= width
+            visitor.proposedSize.height -= height
+        }
+        
         if !children.isEmpty {
             children.forEach { $0.accept(visitor: visitor) }
             let size = children
