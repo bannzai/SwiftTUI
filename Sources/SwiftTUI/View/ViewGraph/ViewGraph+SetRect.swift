@@ -11,9 +11,9 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
     func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
         defer {
             if isRoot {
-                accept_dimensions(visitor: visitor)
-                accept_position(visitor: visitor)
-                accept_container(visitor: visitor)
+                acceptSetDimensions(visitor: visitor)
+                acceptSetPosition(visitor: visitor)
+                acceptSetContainerSize(visitor: visitor)
             }
         }
         if isRoot {
@@ -39,12 +39,12 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
 }
 
 extension ViewGraph {
-    private func accept_position(visitor: ViewSetRectVisitor) {
+    private func acceptSetPosition(visitor: ViewSetRectVisitor) {
         if children.isEmpty {
             return
         }
         
-        children.forEach { $0.accept_position(visitor: visitor) }
+        children.forEach { $0.acceptSetPosition(visitor: visitor) }
         
         switch listType {
         case .vertical:
@@ -88,14 +88,14 @@ extension ViewGraph {
 }
 
 extension ViewGraph {
-    private func accept_dimensions(visitor: ViewSetRectVisitor) {
+    private func acceptSetDimensions(visitor: ViewSetRectVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
         defer { visitor.currentContainerGraph = keepCurrentContainer }
         if anyView is ContainerViewType {
             visitor.currentContainerGraph = self
         }
         
-        children.forEach { $0.accept_dimensions(visitor: visitor) }
+        children.forEach { $0.acceptSetDimensions(visitor: visitor) }
         
         guard let containerGraph = visitor.currentContainerGraph else {
             return
@@ -122,14 +122,14 @@ extension ViewGraph {
 }
 
 extension ViewGraph {
-    private func accept_container(visitor: ViewSetRectVisitor) {
+    private func acceptSetContainerSize(visitor: ViewSetRectVisitor) {
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
             return
         }
         
-        children.forEach { $0.accept_container(visitor: visitor) }
+        children.forEach { $0.acceptSetContainerSize(visitor: visitor) }
         
         if children.isEmpty {
             return
