@@ -54,7 +54,7 @@ extension EdgeInsets {
     }
 }
 
-fileprivate let defaultPadding = 1
+internal let defaultPadding = 1
 @frozen public struct _PaddingLayout: ViewModifier {
     public var edges: Edge.Set
     public var insets: EdgeInsets?
