@@ -53,7 +53,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let sizeVisitor = ViewSetRectVisitor()
             _ = sizeVisitor.visit(graph)
             
-            let visitor = ViewDimensionsVisitor()
+            let visitor = ViewSetRectVisitor()
             visitor.visit(graph)
             
             XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
@@ -85,7 +85,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let sizeVisitor = ViewSetRectVisitor()
             _ = sizeVisitor.visit(graph)
             
-            let visitor = ViewDimensionsVisitor()
+            let visitor = ViewSetRectVisitor()
             visitor.visit(graph)
             
             XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])

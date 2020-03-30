@@ -231,8 +231,8 @@ extension ViewGraph: ViewPositionSetterAcceptable {
     }
 }
 
-extension ViewGraph: ViewDimensionsAcceptable {
-    private func accept_dimensions(visitor: ViewDimensionsVisitor) {
+extension ViewGraph {
+    private func accept_dimensions(visitor: ViewSetRectVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
         defer { visitor.currentContainerGraph = keepCurrentContainer }
         if anyView is ContainerViewType {
