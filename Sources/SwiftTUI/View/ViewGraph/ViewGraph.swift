@@ -315,14 +315,14 @@ extension TupleView: HasContainerContentSize {
 
 
 extension ViewGraph: ViewContainerContentSizeAcceptable {
-    func accept(visitor: ViewContainerContentSizeVisitor) -> ViewContainerContentSizeVisitor.VisitResult {
+    func accept_container(visitor: ViewContainerContentSizeVisitor) {
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
             return
         }
         
-        children.forEach { $0.accept(visitor: visitor) }
+        children.forEach { $0.accept_container(visitor: visitor) }
 
         if children.isEmpty {
             return
