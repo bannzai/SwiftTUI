@@ -14,6 +14,8 @@ public class ViewGraph: SwiftTUI.View {
     internal private(set) var children: [ViewGraph] = []
     internal var isUserDefinedView: Bool = false
     internal var isModifiedContent: Bool = false
+    internal var isContainerType: Bool { anyView is ContainerViewType }
+    internal var isRendableType: Bool { anyView is Rendable }
     
     internal var listType: ViewVisitorListOption = .default
     internal var alignment: Alignment = .default
@@ -56,9 +58,9 @@ public class ViewGraph: SwiftTUI.View {
         fatalError()
     }
     
-    private func extractRendableChlid() -> ViewGraph {
+    internal func extractRendableChlid() -> ViewGraph {
         func _extractRendableChlid() -> ViewGraph? {
-            if self.anyView is Rendable {
+            if isRendableType {
                 return self
             }
             if children.isEmpty {
@@ -70,9 +72,19 @@ public class ViewGraph: SwiftTUI.View {
         return _extractRendableChlid()!
     }
     
-    var rendableChildren: [ViewGraph] {
+    internal var rendableChildren: [ViewGraph] {
         let rendableChildren = children.compactMap { $0.extractRendableChlid() }
         return rendableChildren
+    }
+     
+    internal var nearContainer: ViewGraph? {
+        if isContainerType {
+            return self
+        }
+        guard let parent = parent else {
+            return nil
+        }
+        return parent.nearContainer
     }
 }
 
