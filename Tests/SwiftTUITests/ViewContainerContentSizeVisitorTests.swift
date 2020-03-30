@@ -35,19 +35,5 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
     }
     
     func testAccept() {
-        XCTContext.runActivity(named: "when TupleView<Text, Text, Text>") { (_) in
-            let view = TupleView((
-                Text("1"),
-                Text("23"),
-                Text("456")
-            ))
-            
-            let graph = prepare(view: view)
-
-            let elementCount = 3
-            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
-            
-            XCTAssertEqual(graph.rect.size, Size(width: "456".width, height: elementCount + spacing))
-        }
     }
 }
