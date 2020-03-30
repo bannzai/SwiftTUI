@@ -395,6 +395,28 @@ class ViewGraphSetVisitorTests: XCTestCase {
                 }
             }
         }
+        
+        XCTContext.runActivity(named: "when Text with _PaddingLayut") { _ in
+            let view = Text("123").padding()
+            let visitor = ViewGraphSetVisitor()
+            let graph = visitor.visit(view)
+            
+            XCTAssertTrue(graph.anyView is ModifiedContent<Text, _PaddingLayout>)
+            XCTAssertEqual(graph.children.count, 1)
+            XCTAssertTrue(graph.isRoot)
+            XCTAssertFalse(graph.isUserDefinedView)
+            XCTAssertTrue(graph.isModifiedContent)
+            
+            XCTContext.runActivity(named: "And check children view of Text") { (_) in
+                graph.children.forEach { child in
+                    XCTAssertTrue(child.anyView is Text)
+                    XCTAssertTrue(child.children.isEmpty)
+                    XCTAssertFalse(child.isRoot)
+                    XCTAssertFalse(child.isUserDefinedView)
+                    XCTAssertFalse(child.isModifiedContent)
+                }
+            }
+        }
     }
 
     func testPerformanceExample() {
