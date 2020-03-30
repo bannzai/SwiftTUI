@@ -16,7 +16,6 @@ internal final class ViewSetRectVisitor: Visitor {
     internal init() { }
     
     internal var proposedSize: Size = .zero
-//    internal var dimensions: ViewDimensions = .init()
     internal var currentContainerGraph: ViewGraph?
 
     internal func visit<T: View>(_ content: T) -> VisitResult {
