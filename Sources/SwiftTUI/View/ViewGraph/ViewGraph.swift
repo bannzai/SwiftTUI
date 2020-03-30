@@ -175,12 +175,12 @@ extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
 }
 
 extension ViewGraph: ViewPositionSetterAcceptable {
-    func accept(visitor: ViewPositionSetVisitor) -> ViewPositionSetVisitor.VisitResult {
+    func accept_position(visitor: ViewPositionSetVisitor) {
         if children.isEmpty {
             return
         }
         
-        children.forEach { $0.accept(visitor: visitor) }
+        children.forEach { $0.accept_position(visitor: visitor) }
 
         switch listType {
         case .vertical:
