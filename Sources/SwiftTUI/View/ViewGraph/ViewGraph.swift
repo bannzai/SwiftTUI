@@ -253,9 +253,9 @@ extension ViewGraph: ViewDimensionsAcceptable {
                     containerGraph.alignment.vertical.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
                 }
             }
-        }
-        if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
-            extractRendableChlid().dimensions = parent.dimensions
+            
+        } else if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
+            dimensions = parent.dimensions
         }
     }
 }
