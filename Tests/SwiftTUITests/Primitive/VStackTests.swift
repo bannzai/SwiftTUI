@@ -1,54 +1,93 @@
 //
-//  ViewOriginVisitorTests.swift
+//  VStackTests.swift
 //  SwiftTUITests
 //
-//  Created by Yudai.Hirose on 2020/01/18.
+//  Created by Yudai.Hirose on 2020/03/31.
 //
 
 import XCTest
 @testable import SwiftTUI
 
-class ViewPositionSetVisitorTests: XCTestCase {
-    struct CustomView<Target: View>: View {
-        let body: Target
-    }
-    class DummyScreen: Screen {
-        override var columns: PhysicalDistance { 100 }
-        override var rows: PhysicalDistance { 100 }
-    }
-    
+class VStackTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
         mainScreen = DummyScreen.init()
     }
-    private func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-        let graphVisitor = ViewGraphSetVisitor()
-        let graph = graphVisitor.visit(view)
-        graph.listType = viewListOption
-        
-        // FIXME: Remove Size Visitor??
-        let sizeVisitor = ViewIntrinsicContentSizeVisitor()
-        _ = sizeVisitor.visit(graph)
-        
-        let dimensionsVisitor = ViewDimensionsVisitor()
-        _ = dimensionsVisitor.visit(graph)
-        
-        return graph
-    }
     
-    
-    func testAccept() {
-        XCTContext.runActivity(named: "when Text with content") { (_) in
-            let view = Text("hoge")
-            let graph = prepare(view: view)
-            
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
-            
-            XCTAssertEqual(graph.rect.origin.x, 0)
-            XCTAssertEqual(graph.rect.origin.y, 0)
+    func testSize() {
+        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            graph.listType = viewListOption
+            return graph
         }
+        
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
+            let view = VStack {
+                Text("1")
+                Text("23")
+                Text("456")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(graph.rect.size, Size(width: "456".width, height: 3 + spacing))
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>> when .trailing alignment. And configure alignmentGuide") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                Text("23")
+                Text("456")
+                    .alignmentGuide(.trailing, computeValue: { _ in return 1 })
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(graph.rect.size, Size(width: 4, height: elementCount + spacing))
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<_AlignmentWritingModifier<Text>, Text, Text> when .leading alignment and specity negative value") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                    .alignmentGuide(.leading, computeValue: { _ in return -1 })
+                Text(",")
+                Text("World")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(graph.rect.size, Size(width: 6, height: elementCount + spacing))
+        }
+    }
+}
+
+
+// MARK: - Children
+extension VStackTests {
+    func testChildrenPositionWithoutAlignmentGuide() {
+        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            graph.listType = viewListOption
+            
+            return graph
+        }
+        
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text> when .leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("1")
@@ -56,10 +95,9 @@ class ViewPositionSetVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
             
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
-
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
             
@@ -86,6 +124,109 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text(\"1\"), Text(\"23\"), Text(\"456\")> when .trailing alignment.") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                Text("23")
+                Text("456")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+            
+            XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
+                first: do {
+                    let textGraph = graph.children[0].children[0]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "1")
+                    XCTAssertEqual(textGraph.rect.origin.x, 2)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                }
+                second: do {
+                    let textGraph = graph.children[0].children[1]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "23")
+                    XCTAssertEqual(textGraph.rect.origin.x, 1)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "1".height)
+                }
+                third: do {
+                    let textGraph = graph.children[0].children[2]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "456")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace * 2 + "1".height + "23".height)
+                }
+            }
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text(\"456\"), Text(\"23\"), Text(\"1\")> when .trailing alignment.") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("456")
+                Text("23")
+                Text("1")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+            
+            XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
+                third: do {
+                    let textGraph = graph.children[0].children[0]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "456")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                }
+                second: do {
+                    let textGraph = graph.children[0].children[1]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "23")
+                    XCTAssertEqual(textGraph.rect.origin.x, 1)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "1".height)
+                }
+                first: do {
+                    let textGraph = graph.children[0].children[2]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "1")
+                    XCTAssertEqual(textGraph.rect.origin.x, 2)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace * 2 + "1".height + "23".height)
+                }
+            }
+        }
+    }
+    func testChildrenPositionWithAlignmentGuide() {
+        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            graph.listType = viewListOption
+            
+            return graph
+        }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>> when .leading alignment. And configure alignmentGuide") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("1")
@@ -95,8 +236,8 @@ class ViewPositionSetVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -137,53 +278,6 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
-        XCTContext.runActivity(named: "when VStack contains TupleView<Text(\"1\"), Text(\"23\"), Text(\"456\")> when .trailing alignment.") { (_) in
-            let view = VStack(alignment: .trailing) {
-                Text("1")
-                Text("23")
-                Text("456")
-            }
-            
-            let graph = prepare(view: view)
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
-            
-            XCTAssertEqual(graph.rect.origin.x, 0)
-            XCTAssertEqual(graph.rect.origin.y, 0)
-            
-            XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
-                first: do {
-                    let textGraph = graph.children[0].children[0]
-                    
-                    XCTAssertTrue(textGraph.anyView is Text)
-                    let text = textGraph.anyView as! Text
-                    
-                    XCTAssertEqual(text.content, "1")
-                    XCTAssertEqual(textGraph.rect.origin.x, 2)
-                    XCTAssertEqual(textGraph.rect.origin.y, 0)
-                }
-                second: do {
-                    let textGraph = graph.children[0].children[1]
-                    
-                    XCTAssertTrue(textGraph.anyView is Text)
-                    let text = textGraph.anyView as! Text
-                    
-                    XCTAssertEqual(text.content, "23")
-                    XCTAssertEqual(textGraph.rect.origin.x, 1)
-                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "1".height)
-                }
-                third: do {
-                    let textGraph = graph.children[0].children[2]
-                    
-                    XCTAssertTrue(textGraph.anyView is Text)
-                    let text = textGraph.anyView as! Text
-                    
-                    XCTAssertEqual(text.content, "456")
-                    XCTAssertEqual(textGraph.rect.origin.x, 0)
-                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace * 2 + "1".height + "23".height)
-                }
-            }
-        }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text(\"1\"), Text(\"23\"), ModifiedContent<Text(\"456\"), _AlignmentWritingModifier>> when .trailing alignment. And configure alignmentGuide") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("1")
@@ -193,8 +287,8 @@ class ViewPositionSetVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -235,53 +329,6 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
             }
         }
-        XCTContext.runActivity(named: "when VStack contains TupleView<Text(\"456\"), Text(\"23\"), Text(\"1\")> when .trailing alignment.") { (_) in
-            let view = VStack(alignment: .trailing) {
-                Text("456")
-                Text("23")
-                Text("1")
-            }
-            
-            let graph = prepare(view: view)
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
-            
-            XCTAssertEqual(graph.rect.origin.x, 0)
-            XCTAssertEqual(graph.rect.origin.y, 0)
-            
-            XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
-                third: do {
-                    let textGraph = graph.children[0].children[0]
-                    
-                    XCTAssertTrue(textGraph.anyView is Text)
-                    let text = textGraph.anyView as! Text
-                    
-                    XCTAssertEqual(text.content, "456")
-                    XCTAssertEqual(textGraph.rect.origin.x, 0)
-                    XCTAssertEqual(textGraph.rect.origin.y, 0)
-                }
-                second: do {
-                    let textGraph = graph.children[0].children[1]
-                    
-                    XCTAssertTrue(textGraph.anyView is Text)
-                    let text = textGraph.anyView as! Text
-                    
-                    XCTAssertEqual(text.content, "23")
-                    XCTAssertEqual(textGraph.rect.origin.x, 1)
-                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "1".height)
-                }
-                first: do {
-                    let textGraph = graph.children[0].children[2]
-                    
-                    XCTAssertTrue(textGraph.anyView is Text)
-                    let text = textGraph.anyView as! Text
-                    
-                    XCTAssertEqual(text.content, "1")
-                    XCTAssertEqual(textGraph.rect.origin.x, 2)
-                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace * 2 + "1".height + "23".height)
-                }
-            }
-        }
         XCTContext.runActivity(named: "when VStack contains TupleView<ModifiedContent<Text(\"1\"), _AlignmentWritingModifier>, Text(\"23\"), Text(\"456\")> when .trailing alignment. And configure alignmentGuide") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("456")
@@ -291,8 +338,8 @@ class ViewPositionSetVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -344,8 +391,8 @@ class ViewPositionSetVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -396,8 +443,8 @@ class ViewPositionSetVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -428,14 +475,14 @@ class ViewPositionSetVisitorTests: XCTestCase {
                 }
                 third: do {
                     let modifierGraph = graph.children[0].children[2]
-
+                    
                     let hasModifier = modifierGraph.anyView as! HasAnyModifier
                     XCTAssertTrue(hasModifier.anyModifier is _AlignmentWritingModifier)
                     
                     let textGraph = modifierGraph.children[0]
                     XCTAssertTrue(textGraph.anyView is Text)
                     let text = textGraph.anyView as! Text
-
+                    
                     XCTAssertEqual(text.content, "World")
                     XCTAssertEqual(textGraph.rect.origin.x, 2)
                     XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height + ",".height)
@@ -451,8 +498,8 @@ class ViewPositionSetVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            let visitor = ViewPositionSetVisitor()
-            visitor.visit(graph)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
             
             XCTAssertEqual(graph.rect.origin.x, 0)
             XCTAssertEqual(graph.rect.origin.y, 0)
@@ -496,4 +543,5 @@ class ViewPositionSetVisitorTests: XCTestCase {
             }
         }
     }
+
 }
