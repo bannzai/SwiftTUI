@@ -286,11 +286,11 @@ extension Text: HasIntrinsicContentSize {
 }
 
 protocol HasContainerContentSize {
-    func containerContentSize(viewGraph: ViewGraph, visitor: ViewContainerContentSizeVisitor) -> Size
+    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size
 }
 
 extension TupleView: HasContainerContentSize {
-    func containerContentSize(viewGraph: ViewGraph, visitor: ViewContainerContentSizeVisitor) -> Size {
+    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
         switch viewGraph.listType {
         case .vertical:
             var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (viewGraph.children.count - 1) * viewGraph.spacing
@@ -322,8 +322,8 @@ extension TupleView: HasContainerContentSize {
 }
 
 
-extension ViewGraph: ViewContainerContentSizeAcceptable {
-    private func accept_container(visitor: ViewContainerContentSizeVisitor) {
+extension ViewGraph {
+    private func accept_container(visitor: ViewSetRectVisitor) {
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size

@@ -126,9 +126,6 @@ extension HostViewController: Drawable, DrawableDriver {
         let sizeVisitor = ViewSetRectVisitor()
         _ = sizeVisitor.visit(graph)
         
-        let containerContentSizeVisitor = ViewContainerContentSizeVisitor()
-        containerContentSizeVisitor.visit(graph)
-        
         configureView: do {
             let visitor = ViewContentVisitor(driver: self)
             visitor.visit(graph)
