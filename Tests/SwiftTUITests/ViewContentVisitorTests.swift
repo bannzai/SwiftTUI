@@ -65,10 +65,8 @@ class ViewContentVisitorTests: XCTestCase {
         _ = sizeVisitor.visit(graph)
         graph.accept_dimensions(visitor: sizeVisitor)
         graph.accept_position(visitor: sizeVisitor)
+        graph.accept_container(visitor: sizeVisitor)
 
-        let containerContentSizeVisitor = ViewContainerContentSizeVisitor()
-        containerContentSizeVisitor.visit(graph)
-        
         return graph
     }
     
