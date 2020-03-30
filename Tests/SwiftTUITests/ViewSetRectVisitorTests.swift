@@ -13,11 +13,6 @@ class ViewSetRectVisitorTests: XCTestCase {
         let body: Target
     }
     
-    class DummyScreen: Screen {
-        override var columns: PhysicalDistance { 100 }
-        override var rows: PhysicalDistance { 100 }
-    }
-    
     override func setUp() {
         super.setUp()
         
@@ -29,36 +24,6 @@ class ViewSetRectVisitorTests: XCTestCase {
     }
 
     func testVisit() {
-        XCTContext.runActivity(named: "when Text with content") { (_) in
-            let view = Text("hoge")
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = view.accept(visitor: graphVisitor)
-            let sizeVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: sizeVisitor)
-
-            XCTAssertEqual(graph.rect.size, Size(width: "hoge".width, height: 1))
-        }
-        XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
-            let view = Text("hoge\nfuga")
-
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = view.accept(visitor: graphVisitor)
-            let sizeVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: sizeVisitor)
-
-            XCTAssertEqual(graph.rect.size, Size(width: "hoge".width, height: 2))
-        }
-        XCTContext.runActivity(named: "when CustomView has Text") { (_) in
-            let view = CustomView(body: Text("123"))
-
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            let sizeVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: sizeVisitor)
-
-            XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: 1))
-        }
         XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
             let view = Text("123").background(Color.red)
             let graphVisitor = ViewGraphSetVisitor()

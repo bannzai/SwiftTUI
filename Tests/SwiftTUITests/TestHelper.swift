@@ -55,3 +55,8 @@ class TestCursor: Cursor {
         yHistory.removeAll()
     }
 }
+
+class DummyScreen: Screen {
+    override var columns: PhysicalDistance { 100 }
+    override var rows: PhysicalDistance { 100 }
+}
