@@ -77,14 +77,11 @@ public class ViewGraph: SwiftTUI.View {
         return rendableChildren
     }
      
-    internal var nearContainer: ViewGraph? {
-        if isContainerType {
-            return self
-        }
+    internal var nearContainerParent: ViewGraph? {
         guard let parent = parent else {
             return nil
         }
-        return parent.nearContainer
+        return parent.nearContainerParent
     }
 }
 
