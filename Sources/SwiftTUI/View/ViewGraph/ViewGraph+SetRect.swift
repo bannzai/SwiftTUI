@@ -40,74 +40,64 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
 
 extension ViewGraph {
     private func accept_position(visitor: ViewSetRectVisitor) {
-//        if children.isEmpty {
-//            return
-//        }
-//
-//        children.forEach { $0.accept_position(visitor: visitor) }
-//
-//        switch listType {
-//        case .vertical:
-//            var maxX = PhysicalDistance(0)
-//            rendableChildren.enumerated().forEach { (offset, child) in
-//                let x: PhysicalDistance
-//                switch child.dimensions[explicit: child.alignment.horizontal] {
-//                case nil:
-//                    x = alignment.horizontal.id.defaultValue(in: child.dimensions)
-//                case .some(let explicitValue):
-//                    x = explicitValue
-//                }
-//
-//                switch x {
-//                case let x where x < 0:
-//                    child.rect.origin.x = maxX + abs(x)
-//                case let x where x == 0:
-//                    child.rect.origin.x = maxX
-//                case let x where x > 0:
-//                    child.rect.origin.x = max(maxX - x, 0)
-//                    if x > maxX {
-//                        rendableChildren[0..<offset].forEach { $0.rect.origin.x += x - maxX }
-//                    }
-//                    maxX = max(x, maxX)
-//                case _:
-//                    fatalError()
-//                }
-//            }
-//
-//            var beforeYPoistion: PhysicalDistance = 0
-//            rendableChildren.enumerated().forEach { (offset, child) in
-//                let padding = offset * listType.defaultSpace + beforeYPoistion
-//                child.rect.origin.y = padding
-//                beforeYPoistion = child.rect.origin.y + child.rect.size.height
-//            }
-//
-//        case .horizontal:
-//            return
-//        }
+        if children.isEmpty {
+            return
+        }
+        
+        children.forEach { $0.accept_position(visitor: visitor) }
+        
+        switch listType {
+        case .vertical:
+            var maxX = PhysicalDistance(0)
+            rendableChildren.enumerated().forEach { (offset, child) in
+                let x: PhysicalDistance
+                switch child.dimensions[explicit: child.alignment.horizontal] {
+                case nil:
+                    x = alignment.horizontal.id.defaultValue(in: child.dimensions)
+                case .some(let explicitValue):
+                    x = explicitValue
+                }
+                
+                switch x {
+                case let x where x < 0:
+                    child.rect.origin.x = maxX + abs(x)
+                case let x where x == 0:
+                    child.rect.origin.x = maxX
+                case let x where x > 0:
+                    child.rect.origin.x = max(maxX - x, 0)
+                    if x > maxX {
+                        rendableChildren[0..<offset].forEach { $0.rect.origin.x += x - maxX }
+                    }
+                    maxX = max(x, maxX)
+                case _:
+                    fatalError()
+                }
+            }
+            
+            var beforeYPoistion: PhysicalDistance = 0
+            rendableChildren.enumerated().forEach { (offset, child) in
+                let padding = offset * listType.defaultSpace + beforeYPoistion
+                child.rect.origin.y = padding
+                beforeYPoistion = child.rect.origin.y + child.rect.size.height
+            }
+            
+        case .horizontal:
+            return
+        }
     }
 }
 
 extension ViewGraph {
     private func accept_dimensions(visitor: ViewSetRectVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
-        let keepCurrentDimensions = visitor.currentDimensions
-        defer {
-            visitor.currentContainerGraph = keepCurrentContainer
-            visitor.currentDimensions = keepCurrentDimensions
-        }
+        defer { visitor.currentContainerGraph = keepCurrentContainer }
         if anyView is ContainerViewType {
             visitor.currentContainerGraph = self
-            visitor.currentDimensions = ViewDimensions()
         }
-        
-        visitor.currentDimensions?.graph = self
         
         children.forEach { $0.accept_dimensions(visitor: visitor) }
         
-        guard
-            let containerGraph = visitor.currentContainerGraph,
-            let dimensions = visitor.currentDimensions
-            else {
+        guard let containerGraph = visitor.currentContainerGraph else {
             return
         }
         
@@ -115,48 +105,18 @@ extension ViewGraph {
             let computedValue = modifier.computeValue(dimensions)
             dimensions.set(key: modifier.key, value: computedValue)
             
+            // FIXME: maybe incorrect. how to use _combineExplicit??
             if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
-                return
+                horizontal: do {
+                    containerGraph.alignment.horizontal.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
+                }
+                vertical: do {
+                    containerGraph.alignment.vertical.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
+                }
             }
             
-            switch listType {
-            case .vertical:
-                var maxX = PhysicalDistance(0)
-                rendableChildren.enumerated().forEach { (offset, child) in
-                    let x: PhysicalDistance
-                    switch dimensions[explicit: child.alignment.horizontal] {
-                    case nil:
-                        x = alignment.horizontal.id.defaultValue(in: dimensions)
-                    case .some(let explicitValue):
-                        x = explicitValue
-                    }
-                    
-                    switch x {
-                    case let x where x < 0:
-                        child.rect.origin.x = maxX + abs(x)
-                    case let x where x == 0:
-                        child.rect.origin.x = maxX
-                    case let x where x > 0:
-                        child.rect.origin.x = max(maxX - x, 0)
-                        if x > maxX {
-                            rendableChildren[0..<offset].forEach { $0.rect.origin.x += x - maxX }
-                        }
-                        maxX = max(x, maxX)
-                    case _:
-                        fatalError()
-                    }
-                }
-                
-                var beforeYPoistion: PhysicalDistance = 0
-                rendableChildren.enumerated().forEach { (offset, child) in
-                    let padding = offset * listType.defaultSpace + beforeYPoistion
-                    child.rect.origin.y = padding
-                    beforeYPoistion = child.rect.origin.y + child.rect.size.height
-                }
-                
-            case .horizontal:
-                return
-            }
+        } else if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
+            dimensions = parent.dimensions
         }
     }
 }
