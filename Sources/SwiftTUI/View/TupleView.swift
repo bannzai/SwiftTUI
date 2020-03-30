@@ -18,10 +18,12 @@ import Foundation
     }
 }
 
-extension TupleView: View, Primitive {
+extension TupleView: View {
     public typealias Body = Never
 }
 
+extension TupleView: Primitive { }
+extension TupleView: Rendable { }
 extension TupleView: ContainerViewContentAcceptable { }
 
 extension TupleView: ContainerViewGraphSetAcceptable {
