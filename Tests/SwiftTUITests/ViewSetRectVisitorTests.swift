@@ -9,10 +9,6 @@ import XCTest
 @testable import SwiftTUI
 
 class ViewSetRectVisitorTests: XCTestCase {
-    struct CustomView<Target: View>: View {
-        let body: Target
-    }
-    
     override func setUp() {
         super.setUp()
         
@@ -24,22 +20,6 @@ class ViewSetRectVisitorTests: XCTestCase {
     }
 
     func testVisit() {
-        XCTContext.runActivity(named: "when Original Modifier") { (_) in
-            struct Modifier: ViewModifier {
-                func body(content: Content) -> some View {
-                    content.background(Color.red)
-                }
-            }
-            
-            let view = Text("1").modifier(Modifier())
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            let sizeVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: sizeVisitor)
-            
-            XCTAssertEqual(graph.rect.size, Size(width: "1".width, height: 1))
-        }
     }
 
     func testPerformanceExample() {
