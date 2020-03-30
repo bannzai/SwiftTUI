@@ -8,20 +8,21 @@
 import Foundation
 
 internal protocol ViewPositionSetterAcceptable {
-    func accept(visitor: ViewPositionSetVisitor) -> ViewPositionSetVisitor.VisitResult
+//    func accept(visitor: ViewPositionSetVisitor) -> ViewPositionSetVisitor.VisitResult
 }
 
-internal final class ViewPositionSetVisitor: Visitor {
-    internal typealias VisitResult = Void
-    internal init() { }
-    
-    internal func visit<T: View>(_ content: T) -> VisitResult {
-        debugLogger.debug()
-        switch content {
-        case let acceptable as ViewPositionSetterAcceptable:
-            return acceptable.accept(visitor: self)
-        case _:
-            return visit(content.body)
-        }
-    }
-}
+typealias ViewPositionSetVisitor = ViewIntrinsicContentSizeVisitor
+//internal final class ViewPositionSetVisitor: Visitor {
+//    internal typealias VisitResult = Void
+//    internal init() { }
+//
+//    internal func visit<T: View>(_ content: T) -> VisitResult {
+//        debugLogger.debug()
+//        switch content {
+//        case let acceptable as ViewPositionSetterAcceptable:
+//            return acceptable.accept(visitor: self)
+//        case _:
+//            return visit(content.body)
+//        }
+//    }
+//}
