@@ -24,9 +24,7 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
         // FIXME: Remove Size Visitor??
         let sizeVisitor = ViewIntrinsicContentSizeVisitor()
         _ = sizeVisitor.visit(graph)
-        
-        let dimensionsVisitor = ViewDimensionsVisitor()
-        _ = dimensionsVisitor.visit(graph)
+        graph.accept_dimensions(visitor: sizeVisitor)
         
         let positionSetVisitor = ViewPositionSetVisitor()
         _ = positionSetVisitor.visit(graph)
