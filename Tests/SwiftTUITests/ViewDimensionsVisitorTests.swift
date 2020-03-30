@@ -23,7 +23,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
         graph.listType = viewListOption
         
         // FIXME: Remove Size Visitor??
-        let sizeVisitor = ViewIntrinsicContentSizeVisitor()
+        let sizeVisitor = ViewSetRectVisitor()
         _ = sizeVisitor.visit(graph)
         
         return graph
@@ -50,7 +50,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graph = graphVisitor.visit(view)
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
+            let sizeVisitor = ViewSetRectVisitor()
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()
@@ -82,7 +82,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let graph = graphVisitor.visit(view)
 
             // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
+            let sizeVisitor = ViewSetRectVisitor()
             _ = sizeVisitor.visit(graph)
             
             let visitor = ViewDimensionsVisitor()

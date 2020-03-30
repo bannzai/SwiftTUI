@@ -11,7 +11,7 @@ internal protocol ViewPositionSetterAcceptable {
 //    func accept(visitor: ViewPositionSetVisitor) -> ViewPositionSetVisitor.VisitResult
 }
 
-typealias ViewPositionSetVisitor = ViewIntrinsicContentSizeVisitor
+typealias ViewPositionSetVisitor = ViewSetRectVisitor
 //internal final class ViewPositionSetVisitor: Visitor {
 //    internal typealias VisitResult = Void
 //    internal init() { }

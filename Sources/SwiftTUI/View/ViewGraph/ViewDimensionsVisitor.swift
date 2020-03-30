@@ -11,7 +11,7 @@ internal protocol ViewDimensionsAcceptable {
 //    func accept(visitor: ViewDimensionsVisitor) -> ViewDimensionsVisitor.VisitResult
 }
 
-typealias ViewDimensionsVisitor = ViewIntrinsicContentSizeVisitor
+typealias ViewDimensionsVisitor = ViewSetRectVisitor
 //internal final class ViewDimensionsVisitor: Visitor {
 //    internal typealias VisitResult = Void
 //    internal init() { }

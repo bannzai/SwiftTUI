@@ -144,11 +144,11 @@ internal final class ViewGraphSetVisitor: Visitor {
 
 // e.g) Text, Padding
 internal protocol HasIntrinsicContentSize {
-    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewIntrinsicContentSizeVisitor) -> Size
+    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size
 }
 
 extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
-    func accept(visitor: ViewIntrinsicContentSizeVisitor) -> ViewIntrinsicContentSizeVisitor.VisitResult {
+    func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
         defer {
             if isRoot {
                 accept_dimensions(visitor: visitor)
@@ -279,7 +279,7 @@ extension Text: HasIntrinsicContentSize {
         }
         return Size(width: width, height: baseHeight)
     }
-    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewIntrinsicContentSizeVisitor) -> Size {
+    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
         let size = calcTextSize(proposedWidth: viewGraph.proposedSize.width)
         return size
     }

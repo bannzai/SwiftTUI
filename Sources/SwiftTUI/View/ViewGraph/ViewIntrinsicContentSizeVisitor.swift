@@ -1,5 +1,5 @@
 //
-//  ViewIntrinsicContentSizeVisitor.swift
+//  ViewSetRectVisitor.swift
 //  Demo
 //
 //  Created by Yudai.Hirose on 2020/01/02.
@@ -8,10 +8,10 @@
 import Foundation
 
 internal protocol ViewIntrinsicContentSizeAcceptable {
-    func accept(visitor: ViewIntrinsicContentSizeVisitor) -> ViewIntrinsicContentSizeVisitor.VisitResult
+    func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult
 }
 
-internal final class ViewIntrinsicContentSizeVisitor: Visitor {
+internal final class ViewSetRectVisitor: Visitor {
     internal typealias VisitResult = Void
     internal init() { }
     
