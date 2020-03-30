@@ -97,6 +97,10 @@ extension ViewGraph {
         
         children.forEach { $0.acceptSetDimensions(visitor: visitor) }
         
+        guard let _ = visitor.currentContainerGraph else {
+            return
+        }
+        
         if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier {
             let computedValue = modifier.computeValue(dimensions)
             dimensions.set(key: modifier.key, value: computedValue)
