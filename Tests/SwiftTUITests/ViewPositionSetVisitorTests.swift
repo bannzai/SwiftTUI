@@ -35,13 +35,6 @@ class ViewPositionSetVisitorTests: XCTestCase {
     
     
     func testAccept() {
-        XCTContext.runActivity(named: "when Text with content") { (_) in
-            let view = Text("hoge")
-            let graph = prepare(view: view)
-            
-            XCTAssertEqual(graph.rect.origin.x, 0)
-            XCTAssertEqual(graph.rect.origin.y, 0)
-        }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text> when .leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("1")

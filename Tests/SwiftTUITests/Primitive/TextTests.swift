@@ -41,5 +41,20 @@ class TextTests: XCTestCase {
         }
     }
 
+    
+    func testPosition() {
+        func prepare<T: View>(view: T) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            return graph
+        }
+        XCTContext.runActivity(named: "when Text has content") { (_) in
+            let view = Text("hoge")
+            let graph = prepare(view: view)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+        }
+    }
 
 }
