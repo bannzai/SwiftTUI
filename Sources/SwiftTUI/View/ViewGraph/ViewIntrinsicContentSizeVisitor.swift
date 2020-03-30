@@ -12,7 +12,7 @@ internal protocol ViewIntrinsicContentSizeAcceptable {
 }
 
 internal final class ViewIntrinsicContentSizeVisitor: Visitor {
-    internal typealias VisitResult = Size
+    internal typealias VisitResult = Void
     internal init() { }
     
     internal var proposedSize: Size = .zero

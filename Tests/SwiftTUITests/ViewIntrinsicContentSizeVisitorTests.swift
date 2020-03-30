@@ -35,10 +35,9 @@ class ViewIntrinsicContentSizeVisitorTests: XCTestCase {
             let graphVisitor = ViewGraphSetVisitor()
             let graph = view.accept(visitor: graphVisitor)
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
+            graph.accept(visitor: sizeVisitor)
 
-            XCTAssertEqual(result, Size(width: "hoge".width, height: 1))
-            XCTAssertEqual(result, graph.rect.size)
+            XCTAssertEqual(graph.rect.size, Size(width: "hoge".width, height: 1))
         }
         XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
             let view = Text("hoge\nfuga")
@@ -46,10 +45,9 @@ class ViewIntrinsicContentSizeVisitorTests: XCTestCase {
             let graphVisitor = ViewGraphSetVisitor()
             let graph = view.accept(visitor: graphVisitor)
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
+            graph.accept(visitor: sizeVisitor)
 
-            XCTAssertEqual(result, Size(width: "hoge".width, height: 2))
-            XCTAssertEqual(result, graph.rect.size)
+            XCTAssertEqual(graph.rect.size, Size(width: "hoge".width, height: 2))
         }
         XCTContext.runActivity(named: "when CustomView has Text") { (_) in
             let view = CustomView(body: Text("123"))
@@ -57,20 +55,18 @@ class ViewIntrinsicContentSizeVisitorTests: XCTestCase {
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view)
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
+            graph.accept(visitor: sizeVisitor)
 
-            XCTAssertEqual(result, Size(width: "123".width, height: 1))
-            XCTAssertEqual(result, graph.rect.size)
+            XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: 1))
         }
         XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
             let view = Text("123").background(Color.red)
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view)
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
+            graph.accept(visitor: sizeVisitor)
             
-            XCTAssertEqual(result, Size(width: "123".width, height: 1))
-            XCTAssertEqual(result, graph.rect.size)
+            XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: 1))
         }
         XCTContext.runActivity(named: "when Original Modifier") { (_) in
             struct Modifier: ViewModifier {
@@ -84,10 +80,9 @@ class ViewIntrinsicContentSizeVisitorTests: XCTestCase {
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view)
             let sizeVisitor = ViewIntrinsicContentSizeVisitor()
-            let result = graph.accept(visitor: sizeVisitor)
+            graph.accept(visitor: sizeVisitor)
             
-            XCTAssertEqual(result, Size(width: "1".width, height: 1))
-            XCTAssertEqual(result, graph.rect.size)
+            XCTAssertEqual(graph.rect.size, Size(width: "1".width, height: 1))
         }
     }
 
