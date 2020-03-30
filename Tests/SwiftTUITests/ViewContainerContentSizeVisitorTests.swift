@@ -39,7 +39,6 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             let view = CustomView(body: VStack { Text("123") })
             
             let graph = prepare(view: view)
-            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
 
             XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: 1))
         }
@@ -50,7 +49,6 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             })
             
             let graph = prepare(view: view)
-            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
 
             let elementCount = 2
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
@@ -65,7 +63,6 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
 
             let elementCount = 3
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
@@ -80,7 +77,6 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             })
             
             let graph = prepare(view: view)
-            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
 
             let elementCount = 3
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
@@ -95,8 +91,7 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             ))
             
             let graph = prepare(view: view)
-            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
-            
+
             let elementCount = 3
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
             
@@ -111,8 +106,7 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
-            
+
             let elementCount = 3
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
             
@@ -127,8 +121,7 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
             }
             
             let graph = prepare(view: view)
-            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
-            
+
             let elementCount = 3
             let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
             

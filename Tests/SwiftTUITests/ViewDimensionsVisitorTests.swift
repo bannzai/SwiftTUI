@@ -39,7 +39,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
         XCTContext.runActivity(named: "when Text with content") { (_) in
             let view = Text("hoge")
             let graph = prepare(view: view)
-            let visitor = ViewDimensionsVisitor()
 
             XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(graph.dimensions[explicit: VerticalAlignment.default])

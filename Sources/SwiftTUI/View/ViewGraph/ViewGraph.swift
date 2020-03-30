@@ -153,6 +153,7 @@ extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
             if isRoot {
                 accept_dimensions(visitor: visitor)
                 accept_position(visitor: visitor)
+                accept_container(visitor: visitor)
             }
         }
         if isRoot {
@@ -322,7 +323,7 @@ extension TupleView: HasContainerContentSize {
 
 
 extension ViewGraph: ViewContainerContentSizeAcceptable {
-    func accept_container(visitor: ViewContainerContentSizeVisitor) {
+    private func accept_container(visitor: ViewContainerContentSizeVisitor) {
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
