@@ -56,23 +56,23 @@ public class ViewGraph: SwiftTUI.View {
         fatalError()
     }
     
-    private func extractPrimitiveChild() -> ViewGraph {
-        func _extractPrimitiveChild() -> ViewGraph? {
-            if self.anyView is Primitive {
+    private func extractRendableChlid() -> ViewGraph {
+        func _extractRendableChlid() -> ViewGraph? {
+            if self.anyView is Rendable {
                 return self
             }
             if children.isEmpty {
                 fatalError()
             }
-            return children.compactMap { $0.extractPrimitiveChild() }.first
+            return children.compactMap { $0.extractRendableChlid() }.first
         }
         
-        return _extractPrimitiveChild()!
+        return _extractRendableChlid()!
     }
     
-    var primitiveChildren: [ViewGraph] {
-        let primitiveChildren = children.compactMap { $0.extractPrimitiveChild() }
-        return primitiveChildren
+    var rendableChildren: [ViewGraph] {
+        let rendableChildren = children.compactMap { $0.extractRendableChlid() }
+        return rendableChildren
     }
 }
 
@@ -178,7 +178,7 @@ extension ViewGraph: ViewPositionSetterAcceptable {
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
-            primitiveChildren.enumerated().forEach { (offset, child) in
+            rendableChildren.enumerated().forEach { (offset, child) in
                 let x: PhysicalDistance
                 switch child.dimensions[explicit: child.alignment.horizontal] {
                 case nil:
@@ -195,7 +195,7 @@ extension ViewGraph: ViewPositionSetterAcceptable {
                 case let x where x > 0:
                     child.rect.origin.x = max(maxX - x, 0)
                     if x > maxX {
-                        primitiveChildren[0..<offset].forEach { $0.rect.origin.x += x - maxX }
+                        rendableChildren[0..<offset].forEach { $0.rect.origin.x += x - maxX }
                     }
                     maxX = max(x, maxX)
                 case _:
@@ -204,7 +204,7 @@ extension ViewGraph: ViewPositionSetterAcceptable {
             }
 
             var beforeYPoistion: PhysicalDistance = 0
-            primitiveChildren.enumerated().forEach { (offset, child) in
+            rendableChildren.enumerated().forEach { (offset, child) in
                 let padding = offset * listType.defaultSpace + beforeYPoistion
                 child.rect.origin.y = padding
                 beforeYPoistion = child.rect.origin.y + child.rect.size.height
@@ -245,7 +245,7 @@ extension ViewGraph: ViewDimensionsAcceptable {
             }
         }
         if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
-            extractPrimitiveChild().dimensions = parent.dimensions
+            extractRendableChlid().dimensions = parent.dimensions
         }
     }
 }
@@ -280,7 +280,7 @@ extension TupleView: HasContainerContentSize {
         case .vertical:
             var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (viewGraph.children.count - 1) * viewGraph.spacing
             var maxElementWidth: PhysicalDistance = 0
-            viewGraph.primitiveChildren.enumerated().forEach { (offset, element) in
+            viewGraph.rendableChildren.enumerated().forEach { (offset, element) in
                 let provisionalElementHeight: PhysicalDistance = allocableHeight / (viewGraph.children.count - offset)
                 let elementProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
                 element.proposedSize = elementProposedSize
@@ -343,7 +343,7 @@ extension ViewGraph: ViewContentAcceptable {
                 debugLogger.debug(userInfo: "view type is \(child.anyView.self), child.positionToWindow(): \(child.positionToWindow()), actualy origin \(child.rect.origin)")
                 switch listType {
                 case .vertical:
-                    sharedCursor.moveTo(point: child.extractPrimitiveChild().positionToWindow())
+                    sharedCursor.moveTo(point: child.extractRendableChlid().positionToWindow())
                 case .horizontal:
                     break
                 }

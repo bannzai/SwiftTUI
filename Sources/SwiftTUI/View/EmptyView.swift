@@ -22,6 +22,7 @@ extension EmptyView: ViewContentAcceptable {
 }
 
 extension EmptyView: Primitive { }
+extension EmptyView: Rendable { }
 extension EmptyView: ViewGraphSetAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor)
