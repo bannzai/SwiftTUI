@@ -24,15 +24,6 @@ class ViewSetRectVisitorTests: XCTestCase {
     }
 
     func testVisit() {
-        XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
-            let view = Text("123").background(Color.red)
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            let sizeVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: sizeVisitor)
-            
-            XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: 1))
-        }
         XCTContext.runActivity(named: "when Original Modifier") { (_) in
             struct Modifier: ViewModifier {
                 func body(content: Content) -> some View {
