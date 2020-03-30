@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal protocol ViewIntrinsicContentSizeAcceptable {
+internal protocol ViewSetRectVisitorAcceptable {
     func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult
 }
 
@@ -22,7 +22,7 @@ internal final class ViewSetRectVisitor: Visitor {
     internal func visit<T: View>(_ content: T) -> VisitResult {
         debugLogger.debug()
         switch content {
-        case let acceptable as ViewIntrinsicContentSizeAcceptable:
+        case let acceptable as ViewSetRectVisitorAcceptable:
             return acceptable.accept(visitor: self)
         case _:
             return visit(content.body)

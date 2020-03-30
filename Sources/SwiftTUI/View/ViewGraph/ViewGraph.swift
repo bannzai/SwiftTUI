@@ -147,7 +147,7 @@ internal protocol HasIntrinsicContentSize {
     func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size
 }
 
-extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
+extension ViewGraph: ViewSetRectVisitorAcceptable {
     func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
         defer {
             if isRoot {
