@@ -35,46 +35,12 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
     }
     
     func testAccept() {
-        XCTContext.runActivity(named: "when CustomView has VStack<Text>") { (_) in
-            let view = CustomView(body: VStack { Text("123") })
-            
-            let graph = prepare(view: view)
-
-            XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: 1))
-        }
-        XCTContext.runActivity(named: "when CustomView has VStack<TupleView<CustomView<Text>, CustomView<Text>>>") { (_) in
-            let view = CustomView(body: VStack {
-                CustomView(body: Text("123"))
-                CustomView(body: Text("456"))
-            })
-            
-            let graph = prepare(view: view)
-
-            let elementCount = 2
-            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
-            
-            XCTAssertEqual(graph.rect.size, Size(width: "456".width, height: 2 + spacing))
-        }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {
                 Text("1")
                 Text("23")
                 Text("456")
             }
-            
-            let graph = prepare(view: view)
-
-            let elementCount = 3
-            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
-            
-            XCTAssertEqual(graph.rect.size, Size(width: "456".width, height: 3 + spacing))
-        }
-        XCTContext.runActivity(named: "when CustomView has VStack<TupleView<Text, Text, Text>>") { (_) in
-            let view = CustomView(body: VStack {
-                Text("123")
-                Text("456")
-                Text("789")
-            })
             
             let graph = prepare(view: view)
 
