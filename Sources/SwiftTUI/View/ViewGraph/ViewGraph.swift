@@ -152,6 +152,7 @@ extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
         defer {
             if isRoot {
                 accept_dimensions(visitor: visitor)
+                accept_position(visitor: visitor)
             }
         }
         if isRoot {
@@ -181,7 +182,7 @@ extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
 }
 
 extension ViewGraph: ViewPositionSetterAcceptable {
-    func accept_position(visitor: ViewPositionSetVisitor) {
+    private func accept_position(visitor: ViewPositionSetVisitor) {
         if children.isEmpty {
             return
         }
