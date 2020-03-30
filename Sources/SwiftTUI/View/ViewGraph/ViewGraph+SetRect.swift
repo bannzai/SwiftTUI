@@ -97,26 +97,16 @@ extension ViewGraph {
         
         children.forEach { $0.acceptSetDimensions(visitor: visitor) }
         
-        guard let containerGraph = visitor.currentContainerGraph else {
-            return
-        }
-        
         if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _AlignmentWritingModifier {
             let computedValue = modifier.computeValue(dimensions)
             dimensions.set(key: modifier.key, value: computedValue)
             
-            // FIXME: maybe incorrect. how to use _combineExplicit??
             if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
-                horizontal: do {
-                    containerGraph.alignment.horizontal.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
-                }
-                vertical: do {
-                    containerGraph.alignment.vertical.id._combineExplicit(childValue: computedValue, into: &parent.dimensions[explicit: modifier.key])
-                }
+                parent.dimensions = dimensions
+                return
             }
             
-        } else if let parent = parent, let view = parent.anyView as? HasAnyModifier, view.anyModifier is _AlignmentWritingModifier {
-            dimensions = parent.dimensions
+            extractRendableChlid().dimensions = dimensions
         }
     }
 }

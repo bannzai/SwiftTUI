@@ -12,8 +12,6 @@ public protocol AlignmentID {
 }
 
 extension AlignmentID {
-    static func _combineExplicit(childValue: PhysicalDistance, into parentValue: inout PhysicalDistance?) {
-        parentValue = childValue
-    }
+    
 }
 
