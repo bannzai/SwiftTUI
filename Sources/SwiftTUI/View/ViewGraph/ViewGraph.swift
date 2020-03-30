@@ -21,7 +21,6 @@ public class ViewGraph: SwiftTUI.View {
     internal var alignment: Alignment = .default
     internal lazy var spacing: PhysicalDistance = listType.defaultSpace
     internal lazy var dimensions: ViewDimensions = ViewDimensions(graph: self)
-    internal var proposedSize: Size = .zero
 
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     
