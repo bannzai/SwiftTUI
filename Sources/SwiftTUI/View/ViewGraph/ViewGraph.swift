@@ -146,7 +146,6 @@ extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
         
         children.forEach {
             $0.proposedSize = proposedSize
-            _ = $0.accept(visitor: visitor)
         }
 
         if !children.isEmpty {
