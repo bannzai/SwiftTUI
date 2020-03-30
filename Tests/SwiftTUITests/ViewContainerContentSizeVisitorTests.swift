@@ -36,6 +36,58 @@ class ViewContainerContentSizeVisitorTests: XCTestCase {
         mainScreen = DummyScreen.init()
     }
     
+    func testAcceptIntrinsicContentSize() {
+        XCTContext.runActivity(named: "when Text with content") { (_) in
+            let view = Text("hoge")
+            
+            let graph = prepare(view: view)
+            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
+            
+            XCTAssertEqual(graph.rect.size, Size(width: "hoge".width, height: 1))
+        }
+        XCTContext.runActivity(named: "when Text with content with linebreak") { (_) in
+            let view = Text("hoge\nfuga")
+
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = view.accept(visitor: graphVisitor)
+            let sizeVisitor = ViewIntrinsicContentSizeVisitor()
+            graph.accept(visitor: sizeVisitor)
+
+            XCTAssertEqual(graph.rect.size, Size(width: "hoge".width, height: 2))
+        }
+        XCTContext.runActivity(named: "when CustomView has Text") { (_) in
+            let view = CustomView(body: Text("123"))
+            
+            let graph = prepare(view: view)
+            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
+
+            XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: 1))
+        }
+        XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
+            let view = Text("123").background(Color.red)
+            
+            let graph = prepare(view: view)
+            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
+
+            XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: 1))
+        }
+        XCTContext.runActivity(named: "when Original Modifier") { (_) in
+            struct Modifier: ViewModifier {
+                func body(content: Content) -> some View {
+                    content.background(Color.red)
+                }
+            }
+            
+            let view = Text("1").modifier(Modifier())
+            
+            let graph = prepare(view: view)
+            graph.accept_container(visitor: ViewContainerContentSizeVisitor())
+
+            XCTAssertEqual(graph.rect.size, Size(width: "1".width, height: 1))
+        }
+
+    }
+    
     func testAccept() {
         XCTContext.runActivity(named: "when CustomView has VStack<Text>") { (_) in
             let view = CustomView(body: VStack { Text("123") })
