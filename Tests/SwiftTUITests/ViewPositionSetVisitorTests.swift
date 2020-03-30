@@ -29,7 +29,6 @@ class ViewPositionSetVisitorTests: XCTestCase {
         // FIXME: Remove Size Visitor??
         let sizeVisitor = ViewIntrinsicContentSizeVisitor()
         _ = sizeVisitor.visit(graph)
-        graph.accept_dimensions(visitor: sizeVisitor)
 
         return graph
     }

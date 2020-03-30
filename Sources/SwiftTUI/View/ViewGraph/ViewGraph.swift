@@ -149,10 +149,15 @@ internal protocol HasIntrinsicContentSize {
 
 extension ViewGraph: ViewIntrinsicContentSizeAcceptable {
     func accept(visitor: ViewIntrinsicContentSizeVisitor) -> ViewIntrinsicContentSizeVisitor.VisitResult {
+        defer {
+            if isRoot {
+                accept_dimensions(visitor: visitor)
+            }
+        }
         if isRoot {
             proposedSize = mainScreen.bounds.size
         }
-        
+
         children.forEach {
             $0.proposedSize = proposedSize
         }
@@ -225,7 +230,7 @@ extension ViewGraph: ViewPositionSetterAcceptable {
 }
 
 extension ViewGraph: ViewDimensionsAcceptable {
-    func accept_dimensions(visitor: ViewDimensionsVisitor) {
+    private func accept_dimensions(visitor: ViewDimensionsVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
         defer { visitor.currentContainerGraph = keepCurrentContainer }
         if anyView is ContainerViewType {

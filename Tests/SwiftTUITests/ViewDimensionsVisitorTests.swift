@@ -40,8 +40,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let view = Text("hoge")
             let graph = prepare(view: view)
             let visitor = ViewDimensionsVisitor()
-            graph.accept_dimensions(visitor: visitor)
-            
+
             XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(graph.dimensions[explicit: VerticalAlignment.default])
         }
@@ -69,8 +68,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             ))
             
             let graph = prepare(view: view)
-            let visitor = ViewDimensionsVisitor()
-            graph.accept_dimensions(visitor: visitor)
 
             XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(graph.dimensions[explicit: VerticalAlignment.default])
@@ -102,8 +99,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             let view = Text("hoge").alignmentGuide(.bottom) { _ in 20000 }
 
             let graph = prepare(view: view)
-            let visitor = ViewDimensionsVisitor()
-            graph.accept_dimensions(visitor: visitor)
 
             XCTAssertNil(graph.dimensions[explicit: .bottom])
         }
@@ -116,8 +111,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graph = prepare(view: view)
-            let visitor = ViewDimensionsVisitor()
-            graph.accept_dimensions(visitor: visitor)
 
             let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ModifiedContent<Text, _AlignmentWritingModifier>})!
             XCTAssertTrue(firstModifier.anyView is ModifiedContent<Text, _AlignmentWritingModifier>)
@@ -133,8 +126,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graph = prepare(view: view)
-            let visitor = ViewDimensionsVisitor()
-            graph.accept_dimensions(visitor: visitor)
 
             let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ModifiedContent<Text, _AlignmentWritingModifier>})!
             XCTAssertTrue(firstModifier.anyView is ModifiedContent<Text, _AlignmentWritingModifier>)
@@ -156,8 +147,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graph = prepare(view: view)
-            let visitor = ViewDimensionsVisitor()
-            graph.accept_dimensions(visitor: visitor)
 
             typealias ViewType = ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>
             let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ViewType })!
@@ -176,9 +165,7 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graph = prepare(view: view)
-            let visitor = ViewDimensionsVisitor()
-            graph.accept_dimensions(visitor: visitor)
-            
+
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
 
             typealias ViewType = ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>
@@ -198,8 +185,6 @@ class ViewDimensionsVisitorTests: XCTestCase {
             }
 
             let graph = prepare(view: view)
-            let visitor = ViewDimensionsVisitor()
-            graph.accept_dimensions(visitor: visitor)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
             
             typealias ViewType = ModifiedContent<ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>, _AlignmentWritingModifier>
