@@ -15,6 +15,10 @@ internal final class ViewIntrinsicContentSizeVisitor: Visitor {
     internal typealias VisitResult = Size
     internal init() { }
     
+    internal var proposedSize: Size = .zero
+    internal var dimensions: ViewDimensions = .init()
+    internal var currentContainerGraph: ViewGraph?
+
     internal func visit<T: View>(_ content: T) -> VisitResult {
         debugLogger.debug()
         switch content {
