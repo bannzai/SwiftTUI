@@ -41,7 +41,6 @@ class ViewDimensionsTests: XCTestCase {
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view)
 
-            // FIXME: Remove Size Visitor??
             let sizeVisitor = ViewSetRectVisitor()
             _ = sizeVisitor.visit(graph)
             
