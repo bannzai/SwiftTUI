@@ -182,8 +182,8 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
     }
 }
 
-extension ViewGraph: ViewPositionSetterAcceptable {
-    private func accept_position(visitor: ViewPositionSetVisitor) {
+extension ViewGraph {
+    private func accept_position(visitor: ViewSetRectVisitor) {
         if children.isEmpty {
             return
         }
