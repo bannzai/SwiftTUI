@@ -15,6 +15,7 @@ class ViewContentVisitorTests: XCTestCase {
         let body: Target
     }
     
+
     class Driver: DrawableDriver {
         var callBag: [StaticString] = []
         var storedRunes: [Rune] = []

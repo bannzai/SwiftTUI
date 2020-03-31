@@ -48,8 +48,16 @@ class PaddingLayoutTests: XCTestCase {
             
             XCTAssertEqual(graph.rect.size, Size(width: "123".width + 20, height: "123".height + 20))
         }
+        XCTContext.runActivity(named: "when call padding().padding()") { (_) in
+            let view = Text("123").padding().padding()
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.size, Size(width: "123".width + defaultPadding * 2 + defaultPadding * 2, height: "123".height + defaultPadding * 2 + defaultPadding * 2))
+        }
     }
-    
     
     func testChildrenPosition() throws {
         func prepare<T: View>(view: T) -> ViewGraph {
