@@ -46,6 +46,7 @@ extension ModifiedContent: View {
     public typealias Body = Swift.Never
 }
 
+extension ModifiedContent: Rendable where Modifier == _PaddingLayout { }
 extension ModifiedContent: ViewGraphSetAttributeAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)

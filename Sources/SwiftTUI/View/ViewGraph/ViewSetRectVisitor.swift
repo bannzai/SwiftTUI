@@ -15,7 +15,7 @@ internal final class ViewSetRectVisitor: Visitor {
     internal typealias VisitResult = Void
     internal init() { }
     
-    internal var proposedSize: Size = .zero
+    internal var proposedSize: Size = mainScreen.bounds.size
     internal var currentContainerGraph: ViewGraph?
 
     internal func visit<T: View>(_ content: T) -> VisitResult {

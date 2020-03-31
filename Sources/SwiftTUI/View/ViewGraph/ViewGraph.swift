@@ -57,22 +57,22 @@ public class ViewGraph: SwiftTUI.View {
         fatalError()
     }
     
-    internal func extractRendableChlid() -> ViewGraph {
-        func _extractRendableChlid() -> ViewGraph? {
-            if isRendableType {
-                return self
-            }
-            if children.isEmpty {
-                fatalError()
-            }
-            return children.compactMap { $0.extractRendableChlid() }.first
+    private func _extractRendableChlid(root: ViewGraph) -> ViewGraph? {
+        if isRendableType && root !== self {
+            return self
         }
-        
-        return _extractRendableChlid()!
+        if children.isEmpty {
+            return nil
+        }
+        return children.compactMap { $0._extractRendableChlid(root: root) }.first
+    }
+    
+    internal func extractRendableChlid() -> ViewGraph? {
+        _extractRendableChlid(root: self)
     }
     
     internal var rendableChildren: [ViewGraph] {
-        let rendableChildren = children.compactMap { $0.extractRendableChlid() }
+        let rendableChildren = children.compactMap { $0._extractRendableChlid(root: self) }
         return rendableChildren
     }
      
@@ -152,7 +152,8 @@ extension ViewGraph: ViewContentAcceptable {
                 debugLogger.debug(userInfo: "view type is \(child.anyView.self), child.positionToWindow(): \(child.positionToWindow()), actualy origin \(child.rect.origin)")
                 switch listType {
                 case .vertical:
-                    sharedCursor.moveTo(point: child.extractRendableChlid().positionToWindow())
+                    let render: ViewGraph = child.extractRendableChlid() ?? child
+                    sharedCursor.moveTo(point: render.positionToWindow())
                 case .horizontal:
                     break
                 }

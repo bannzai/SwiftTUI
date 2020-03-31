@@ -12,6 +12,7 @@ struct ContentView: View {
                 .background(Color.red)
             Text(",")
             Text("World")
+                .padding(2)
             
             VStack(alignment: .trailing) {
                 Text("Hello")

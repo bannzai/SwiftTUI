@@ -16,8 +16,12 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
                 acceptSetContainerSize(visitor: visitor)
             }
         }
-        if isRoot {
-            visitor.proposedSize = mainScreen.bounds.size
+        
+        if isModifiedContent {
+            if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _PaddingLayout {
+                modifier.sideEffect(for: self, visitor: visitor)
+                return
+            }
         }
         
         if !children.isEmpty {
@@ -110,7 +114,7 @@ extension ViewGraph {
                 return
             }
             
-            extractRendableChlid().dimensions = dimensions
+            extractRendableChlid()?.dimensions = dimensions
         }
     }
 }
@@ -120,6 +124,8 @@ extension ViewGraph {
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
+            // NOTE: Maybe VStack or HStack
+            parent?.rect.size = rect.size
             return
         }
         
@@ -129,14 +135,18 @@ extension ViewGraph {
             return
         }
         
+        if !isUserDefinedView {
+            return
+        }
+        
         width: do {
-            let minX = children.map { $0.rect.origin.x }.min()!
-            let maxX = children.map { $0.rect.size.width }.max()!
+            let minX = rendableChildren.map { $0.rect.origin.x }.min()!
+            let maxX = rendableChildren.map { $0.rect.size.width }.max()!
             rect.size.width = maxX - minX
         }
         height: do {
-            let minY = children.map { $0.rect.origin.y }.min()!
-            let maxY = children.map { $0.rect.size.height }.max()!
+            let minY = rendableChildren.map { $0.rect.origin.y }.min()!
+            let maxY = rendableChildren.map { $0.rect.size.height }.max()!
             rect.size.height = maxY - minY
         }
     }
@@ -175,10 +185,10 @@ extension TupleView: HasContainerContentSize {
     func containerContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
         switch viewGraph.listType {
         case .vertical:
-            var allocableHeight: PhysicalDistance = visitor.proposedSize.height - (viewGraph.children.count - 1) * viewGraph.spacing
+            var allocableHeight: PhysicalDistance = visitor.proposedSize.height - (viewGraph.rendableChildren.count - 1) * viewGraph.spacing
             var maxElementWidth: PhysicalDistance = 0
             viewGraph.rendableChildren.enumerated().forEach { (offset, element) in
-                let provisionalElementHeight: PhysicalDistance = allocableHeight / (viewGraph.children.count - offset)
+                let provisionalElementHeight: PhysicalDistance = allocableHeight / (viewGraph.rendableChildren.count - offset)
                 let elementProposedSize = Size(width: visitor.proposedSize.width, height: max(provisionalElementHeight, 0))
                 let keepProposedSize = visitor.proposedSize
                 defer { visitor.proposedSize = keepProposedSize }

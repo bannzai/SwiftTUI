@@ -54,7 +54,7 @@ extension EdgeInsets {
     }
 }
 
-fileprivate let defaultPadding = 1
+internal let defaultPadding = 1
 @frozen public struct _PaddingLayout: ViewModifier {
     public var edges: Edge.Set
     public var insets: EdgeInsets?
@@ -66,25 +66,40 @@ fileprivate let defaultPadding = 1
 }
 
 internal extension _PaddingLayout {
-    func height(from height: PhysicalDistance) -> PhysicalDistance {
-        if let insets = insets {
-            return height + insets.top + insets.bottom
-        }
+     func sideEffect(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
+        let horizontalLength = self.horizontalLength()
+        let verticalLength = self.verticalLength()
         
-        var height = height
-        if edges.contains(.top) { height = height + defaultPadding }
-        if edges.contains(.bottom) { height = height + defaultPadding }
-        return height
+        visitor.proposedSize.width -= horizontalLength
+        visitor.proposedSize.height -= verticalLength
+
+        assert(paddingGraph.extractRendableChlid() != nil, "it is necessary about rendable view")
+        let baseGraph = paddingGraph.extractRendableChlid()!
+        baseGraph.accept(visitor: visitor)
+
+        paddingGraph.rect.size.width = baseGraph.rect.size.width + horizontalLength
+        paddingGraph.rect.size.height = baseGraph.rect.size.height + verticalLength
+
+        if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultPadding) }
+        if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
     }
-    func width(from width: PhysicalDistance) -> PhysicalDistance {
-        if let insets = insets {
-            return width + insets.leading + insets.trailing
-        }
-        
-        var width = width
-        if edges.contains(.leading) { width = width + defaultPadding }
-        if edges.contains(.trailing) { width = width + defaultPadding }
-        return width
+    private func verticalLength() -> PhysicalDistance {
+        var length = 0
+        if edges.contains(.top) { length = length + (insets?.top ?? defaultPadding) }
+        if edges.contains(.bottom) { length = length + (insets?.bottom ?? defaultPadding) }
+        return length
+    }
+    private func horizontalLength() -> PhysicalDistance {
+        var length = 0
+        if edges.contains(.leading) { length = length + (insets?.leading ?? defaultPadding) }
+        if edges.contains(.trailing) { length = length + (insets?.trailing ?? defaultPadding) }
+        return length
+    }
+}
+
+extension _PaddingLayout: ViewContentAcceptable {
+    func accept(visitor: ViewContentVisitor) {
+        // NOTE: escape to reach ViewModifier.Body is Never
     }
 }
 

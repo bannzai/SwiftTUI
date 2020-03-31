@@ -60,3 +60,36 @@ class DummyScreen: Screen {
     override var columns: PhysicalDistance { 100 }
     override var rows: PhysicalDistance { 100 }
 }
+
+final class Driver: DrawableDriver {
+    var callBag: [StaticString] = []
+    var storedRunes: [Rune] = []
+    func add(rune: Rune) {
+        callBag.append(#function)
+        storedRunes.append(rune)
+    }
+    
+    var storedForegroundColors: [Color] = []
+    func setForegroundColor(_ color: Color) {
+        callBag.append(#function)
+        storedForegroundColors.append(color)
+    }
+    
+    var storedBackgroundColors: [Color] = []
+    func setBackgroundColor(_ color: Color) {
+        callBag.append(#function)
+        storedBackgroundColors.append(color)
+    }
+    
+    var keepForegroundColor: Color?
+    var keepBackgroundColor: Color?
+    
+    func content() -> String {
+        callBag.append(#function)
+        return storedRunes.compactMap(Unicode.Scalar.init)
+            .map(Character.init)
+            .map(String.init)
+            .reduce("", +)
+    }
+    
+}
