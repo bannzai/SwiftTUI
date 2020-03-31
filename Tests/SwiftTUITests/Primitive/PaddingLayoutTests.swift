@@ -101,5 +101,20 @@ class PaddingLayoutTests: XCTestCase {
             
             XCTAssertEqual(textGraph.rect.origin, Point(x: 10, y: 10))
         }
+        XCTContext.runActivity(named: "when call padding().padding()") { (_) in
+            let view = Text("123").padding().padding()
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let paddingGraph = graph.children[0]
+            XCTAssertTrue(paddingGraph.anyView is ModifiedContent<Text, _PaddingLayout>)
+            XCTAssertEqual(paddingGraph.rect.origin, Point(x: defaultPadding, y: defaultPadding))
+
+            let textGraph = paddingGraph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            XCTAssertEqual(textGraph.rect.origin, Point(x: defaultPadding, y: defaultPadding))
+        }
     }
 }
