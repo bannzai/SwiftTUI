@@ -66,25 +66,39 @@ internal let defaultPadding = 1
 }
 
 internal extension _PaddingLayout {
-    func height(from height: PhysicalDistance) -> PhysicalDistance {
-        if let insets = insets {
-            return height + insets.top + insets.bottom
-        }
+     func configureSize(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
+        let horizontalLength = self.horizontalLength()
+        let verticalLength = self.verticalLength()
         
-        var height = height
-        if edges.contains(.top) { height = height + defaultPadding }
-        if edges.contains(.bottom) { height = height + defaultPadding }
-        return height
+        visitor.proposedSize.width -= horizontalLength
+        visitor.proposedSize.height -= verticalLength
+
+        let baseGraph = paddingGraph.extractRendableChlid()
+        baseGraph.accept(visitor: visitor)
+        
+        paddingGraph.rect.size.width = baseGraph.rect.size.width + horizontalLength
+        paddingGraph.rect.size.height = baseGraph.rect.size.height + verticalLength
+        print("paddingGraph.rect.size: \(paddingGraph.rect.size)")
     }
-    func width(from width: PhysicalDistance) -> PhysicalDistance {
+    private func verticalLength() -> PhysicalDistance {
         if let insets = insets {
-            return width + insets.leading + insets.trailing
+            return insets.top + insets.bottom
         }
         
-        var width = width
-        if edges.contains(.leading) { width = width + defaultPadding }
-        if edges.contains(.trailing) { width = width + defaultPadding }
-        return width
+        var length = 0
+        if edges.contains(.top) { length = length + defaultPadding }
+        if edges.contains(.bottom) { length = length + defaultPadding }
+        return length
+    }
+    private func horizontalLength() -> PhysicalDistance {
+        if let insets = insets {
+            return insets.leading + insets.trailing
+        }
+        
+        var length = 0
+        if edges.contains(.leading) { length = length + defaultPadding }
+        if edges.contains(.trailing) { length = length + defaultPadding }
+        return length
     }
 }
 
