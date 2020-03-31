@@ -84,6 +84,23 @@ class VStackTests: XCTestCase {
             
             XCTAssertEqual(graph.rect.size, Size(width: 6, height: elementCount + spacing))
         }
+        XCTContext.runActivity(named: "when VStack contains TupleView<_AlignmentWritingModifier<Text>, Text, Text> when .leading alignment and specity negative value") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                    .padding(1)
+                Text(",")
+                Text("World")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let elementCount = 3
+            let spacing = (elementCount - 1) * ViewVisitorListOption.vertical.defaultSpace
+            
+            XCTAssertEqual(graph.rect.size, Size(width: "Hello".width + defaultPadding * 2, height: elementCount + spacing + defaultPadding * 2))
+        }
     }
 }
 
