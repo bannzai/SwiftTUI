@@ -78,7 +78,6 @@ internal extension _PaddingLayout {
         
         paddingGraph.rect.size.width = baseGraph.rect.size.width + horizontalLength
         paddingGraph.rect.size.height = baseGraph.rect.size.height + verticalLength
-        print("paddingGraph.rect.size: \(paddingGraph.rect.size)")
     }
     private func verticalLength() -> PhysicalDistance {
         if let insets = insets {
