@@ -51,4 +51,47 @@ class PaddingLayoutTests: XCTestCase {
     }
     
     
+    func testChildrenPosition() throws {
+        func prepare<T: View>(view: T) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            return graph
+        }
+        XCTContext.runActivity(named: "when call padding()") { (_) in
+            let view = Text("123").padding()
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let textGraph = graph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            
+            XCTAssertEqual(textGraph.rect.origin, Point(x: defaultPadding, y: defaultPadding))
+        }
+        XCTContext.runActivity(named: "when padding layout specify vector and length via .padding(.leading, 10)") { (_) in
+            let view = Text("123").padding(.leading, 10)
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let textGraph = graph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+
+            XCTAssertEqual(textGraph.rect.origin, Point(x: 10, y: 0))
+        }
+        XCTContext.runActivity(named: "when padding layout specify vector and length via .padding(.all, 10)") { (_) in
+            let view = Text("123").padding(.all, 10)
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let textGraph = graph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            
+            XCTAssertEqual(textGraph.rect.origin, Point(x: 10, y: 10))
+        }
+    }
 }
