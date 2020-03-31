@@ -125,6 +125,8 @@ extension ViewGraph {
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
+            // NOTE: Maybe VStack or HStack
+            parent?.rect.size = rect.size
             return
         }
         
@@ -134,14 +136,18 @@ extension ViewGraph {
             return
         }
         
+        if !isUserDefinedView {
+            return
+        }
+        
         width: do {
-            let minX = children.map { $0.rect.origin.x }.min()!
-            let maxX = children.map { $0.rect.size.width }.max()!
+            let minX = rendableChildren.map { $0.rect.origin.x }.min()!
+            let maxX = rendableChildren.map { $0.rect.size.width }.max()!
             rect.size.width = maxX - minX
         }
         height: do {
-            let minY = children.map { $0.rect.origin.y }.min()!
-            let maxY = children.map { $0.rect.size.height }.max()!
+            let minY = rendableChildren.map { $0.rect.origin.y }.min()!
+            let maxY = rendableChildren.map { $0.rect.size.height }.max()!
             rect.size.height = maxY - minY
         }
     }
