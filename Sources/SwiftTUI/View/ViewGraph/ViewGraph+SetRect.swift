@@ -114,7 +114,7 @@ extension ViewGraph {
                 return
             }
             
-            extractRendableChlid().dimensions = dimensions
+            extractRendableChlid()?.dimensions = dimensions
         }
     }
 }
