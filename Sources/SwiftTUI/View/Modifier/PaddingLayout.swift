@@ -80,23 +80,15 @@ internal extension _PaddingLayout {
         paddingGraph.rect.size.height = baseGraph.rect.size.height + verticalLength
     }
     private func verticalLength() -> PhysicalDistance {
-        if let insets = insets {
-            return insets.top + insets.bottom
-        }
-        
         var length = 0
-        if edges.contains(.top) { length = length + defaultPadding }
-        if edges.contains(.bottom) { length = length + defaultPadding }
+        if edges.contains(.top) { length = length + (insets?.top ?? defaultPadding) }
+        if edges.contains(.bottom) { length = length + (insets?.bottom ?? defaultPadding) }
         return length
     }
     private func horizontalLength() -> PhysicalDistance {
-        if let insets = insets {
-            return insets.leading + insets.trailing
-        }
-        
         var length = 0
-        if edges.contains(.leading) { length = length + defaultPadding }
-        if edges.contains(.trailing) { length = length + defaultPadding }
+        if edges.contains(.leading) { length = length + (insets?.leading ?? defaultPadding) }
+        if edges.contains(.trailing) { length = length + (insets?.trailing ?? defaultPadding) }
         return length
     }
 }

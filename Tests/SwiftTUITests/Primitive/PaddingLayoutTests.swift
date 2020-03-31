@@ -23,12 +23,21 @@ class PaddingLayoutTests: XCTestCase {
         }
         XCTContext.runActivity(named: "when call padding()") { (_) in
             let view = Text("123").padding()
+
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+
+            XCTAssertEqual(graph.rect.size, Size(width: "123".width + defaultPadding * 2, height: "123".height + defaultPadding * 2))
+        }
+        XCTContext.runActivity(named: "when padding layout specify vector and length via padding(.padding(.leading, 10))") { (_) in
+            let view = Text("123").padding(.leading, 10)
             
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
-            XCTAssertEqual(graph.rect.size, Size(width: "123".width + defaultPadding * 2, height: "123".height + defaultPadding * 2))
+            XCTAssertEqual(graph.rect.size, Size(width: "123".width + 10, height: "123".height))
         }
     }
     
