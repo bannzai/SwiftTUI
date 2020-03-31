@@ -16,20 +16,13 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
                 acceptSetContainerSize(visitor: visitor)
             }
         }
-        if isRoot {
-            visitor.proposedSize = mainScreen.bounds.size
-        }
         
-        if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _PaddingLayout {
-            let baseGraph = extractRendableChlid()
-            let width = modifier.width(from: baseGraph.rect.size.width)
-            let height = modifier.height(from: baseGraph.rect.size.height)
-            
-            rect.size.width = width
-            rect.size.height = height
-            
-            visitor.proposedSize.width -= width
-            visitor.proposedSize.height -= height
+        if isModifiedContent {
+            if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _PaddingLayout {
+                modifier.configureSize(for: self, visitor: visitor)
+                print("self.rect.size: \(self.rect.size)")
+                return
+            }
         }
         
         if !children.isEmpty {
