@@ -107,7 +107,7 @@ class VStackTests: XCTestCase {
 
 // MARK: - Children
 extension VStackTests {
-    func testChildrenPositionWithoutAlignmentGuide() {
+    func testChildrenPositionWithoutModifier() {
         func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
             let graphVisitor = ViewGraphSetVisitor()
             let graph = graphVisitor.visit(view)
