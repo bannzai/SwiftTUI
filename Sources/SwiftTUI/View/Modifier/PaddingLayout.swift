@@ -66,7 +66,7 @@ internal let defaultPadding = 1
 }
 
 internal extension _PaddingLayout {
-     func configureSize(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
+     func sideEffect(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
         let horizontalLength = self.horizontalLength()
         let verticalLength = self.verticalLength()
         
@@ -78,6 +78,9 @@ internal extension _PaddingLayout {
         
         paddingGraph.rect.size.width = baseGraph.rect.size.width + horizontalLength
         paddingGraph.rect.size.height = baseGraph.rect.size.height + verticalLength
+        
+        if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultPadding) }
+        if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
     }
     private func verticalLength() -> PhysicalDistance {
         var length = 0
