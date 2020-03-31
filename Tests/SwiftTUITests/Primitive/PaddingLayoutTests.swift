@@ -117,4 +117,23 @@ class PaddingLayoutTests: XCTestCase {
             XCTAssertEqual(textGraph.rect.origin, Point(x: defaultPadding, y: defaultPadding))
         }
     }
+    
+    func testContent() {
+        func prepare<T: View>(view: T) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            let setRectVisitor = ViewSetRectVisitor()
+            graph.accept(visitor: setRectVisitor)
+            return graph
+        }
+        XCTContext.runActivity(named: "when call padding()") { (_) in
+            let view = Text("123").padding()
+            
+            let graph = prepare(view: view)
+            let visitor = ViewContentVisitor(driver: Driver())
+            graph.accept(visitor: visitor)
+            
+            // Keep test for check not call fatalError
+        }
+    }
 }

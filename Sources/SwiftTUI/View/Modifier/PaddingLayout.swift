@@ -97,6 +97,12 @@ internal extension _PaddingLayout {
     }
 }
 
+extension _PaddingLayout: ViewContentAcceptable {
+    func accept(visitor: ViewContentVisitor) {
+        // NOTE: escape to reach ViewModifier.Body is Never
+    }
+}
+
 extension View {
     @inlinable public func padding(_ insets: EdgeInsets) -> some View {
         return modifier(_PaddingLayout(insets: insets))
