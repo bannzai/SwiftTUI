@@ -23,6 +23,17 @@ class VStackTests: XCTestCase {
             return graph
         }
         
+        XCTContext.runActivity(named: "when VStack contains Text") { (_) in
+            let view = VStack {
+                Text("123")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: "123".height))
+        }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {
                 Text("1")
