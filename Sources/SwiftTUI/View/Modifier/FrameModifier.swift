@@ -13,17 +13,26 @@ import Foundation
     internal let alignment: Alignment?
     public typealias Body = Swift.Never
     
+    @usableFromInline
+    internal init(width: PhysicalDistance?, height: PhysicalDistance?, alignment: Alignment) {
+        self.width = width
+        self.height = height
+        self.alignment = alignment
+    }
+
+    
     internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
 extension View {
-    public func frame(width: PhysicalDistance? = nil, height: PhysicalDistance? = nil, alignment: Alignment? = nil) -> some View {
+    @inlinable public func frame(width: PhysicalDistance? = nil, height: PhysicalDistance? = nil, alignment: Alignment = .center) -> some View {
         modifier(
             _FrameLayout(width: width, height: height, alignment: alignment)
         )
     }
     
-    public func frame() -> some View {
-        frame(width: nil, height: nil)
-    }
+    @available(*, deprecated, message: "Please pass one or more parameters.")
+    @inlinable public func frame() -> some View {
+          return frame(width: nil, height: nil, alignment: .center)
+      }
 }
