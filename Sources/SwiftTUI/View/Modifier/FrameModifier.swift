@@ -37,6 +37,7 @@ internal extension _FrameLayout {
     }
 }
 
+extension _FrameLayout: Rendable { }
 extension _FrameLayout: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         // NOTE: escape to reach ViewModifier.Body is Never
