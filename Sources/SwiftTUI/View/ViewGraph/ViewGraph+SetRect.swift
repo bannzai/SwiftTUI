@@ -19,7 +19,7 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
         
         if isModifiedContent {
             if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _PaddingLayout {
-                modifier.sideEffect(for: self, visitor: visitor)
+                modifier.modify(for: self, visitor: visitor)
                 return
             }
         }

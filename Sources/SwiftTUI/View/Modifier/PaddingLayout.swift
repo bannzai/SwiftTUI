@@ -66,7 +66,7 @@ internal let defaultPadding = 1
 }
 
 internal extension _PaddingLayout {
-     func sideEffect(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
+     func modify(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
         let horizontalLength = self.horizontalLength()
         let verticalLength = self.verticalLength()
         
