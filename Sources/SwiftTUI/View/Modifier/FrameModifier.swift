@@ -23,6 +23,8 @@ import Foundation
     internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
+extension _FrameLayout: Rendable { }
+
 extension View {
     @inlinable public func frame(width: PhysicalDistance? = nil, height: PhysicalDistance? = nil, alignment: Alignment = .center) -> some View {
         modifier(
