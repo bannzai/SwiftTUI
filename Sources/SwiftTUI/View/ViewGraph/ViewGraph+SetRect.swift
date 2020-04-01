@@ -57,6 +57,11 @@ extension ViewGraph {
         
         children.forEach { $0.acceptSetPosition(visitor: visitor) }
         
+        if let view = anyView as? HasAnyModifier, view.anyModifier is _PaddingLayout {
+            // NOTE: already set x,y
+            return
+        }
+        
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
