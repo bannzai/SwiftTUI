@@ -18,16 +18,11 @@ import Foundation
     public typealias Body = Swift.Never
 }
 
-extension VStack: AlignmentConfigurator {
-    func configureAlignment(visitor: ViewSetRectVisitor) {
-        visitor.alignment.horizontal = tree.root.alignment
-    }
-}
-
 extension VStack: ViewGraphSetAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)
         graph.listType = .vertical
+        graph.alignment.horizontal = tree.root.alignment
         graph.spacing = tree.root.spacing ?? graph.listType.defaultSpace
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
