@@ -23,6 +23,17 @@ import Foundation
     internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
+internal extension _FrameLayout {
+    func modify(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
+        assert(graph.extractRendableChlid() != nil, "it is necessary about rendable view")
+        let baseGraph = graph.extractRendableChlid()!
+        baseGraph.accept(visitor: visitor)
+        
+        graph.rect.size.width = width ?? baseGraph.rect.size.width
+        graph.rect.size.height = height ?? baseGraph.rect.size.height
+    }
+}
+
 extension _FrameLayout: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         // NOTE: escape to reach ViewModifier.Body is Never
