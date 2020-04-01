@@ -8,7 +8,7 @@
 import Foundation
 
 internal enum ViewVisitorListOption {
-    internal static let `default`: ViewVisitorListOption = .horizontal
+    internal static let `default`: ViewVisitorListOption = .vertical
     case vertical
     case horizontal
 
