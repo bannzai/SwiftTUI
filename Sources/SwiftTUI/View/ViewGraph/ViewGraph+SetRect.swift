@@ -18,7 +18,14 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
         }
         
         if isModifiedContent {
-            if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _PaddingLayout {
+            guard let view = anyView as? HasAnyModifier else {
+                fatalError("isModifiedContent is true but it has not anyModifier \(self)")
+            }
+            if let modifier = view.anyModifier as? _PaddingLayout {
+                modifier.modify(for: self, visitor: visitor)
+                return
+            }
+            if let modifier = view.anyModifier as? _FrameLayout {
                 modifier.modify(for: self, visitor: visitor)
                 return
             }
