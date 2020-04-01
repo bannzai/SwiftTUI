@@ -23,6 +23,12 @@ import Foundation
     internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
+extension _FrameLayout: ViewContentAcceptable {
+    func accept(visitor: ViewContentVisitor) {
+        // NOTE: escape to reach ViewModifier.Body is Never
+    }
+}
+
 extension View {
     @inlinable public func frame(width: PhysicalDistance? = nil, height: PhysicalDistance? = nil, alignment: Alignment = .center) -> some View {
         modifier(
