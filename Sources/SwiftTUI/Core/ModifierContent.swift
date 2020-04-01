@@ -57,7 +57,7 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         let contengGraph = visitor.visit(content)
         graph.setModifier(contengGraph)
         if let modifier = modifier as? _FrameLayout {
-            modifier.alignment.map { contengGraph.alignment = $0 }
+            contengGraph.alignment = modifier.alignment
         }
         return graph
     }

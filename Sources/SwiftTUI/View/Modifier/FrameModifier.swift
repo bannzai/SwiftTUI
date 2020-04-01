@@ -10,7 +10,7 @@ import Foundation
 @frozen public struct _FrameLayout: ViewModifier {
     internal let width: PhysicalDistance?
     internal let height: PhysicalDistance?
-    internal let alignment: Alignment?
+    internal let alignment: Alignment
     public typealias Body = Swift.Never
     
     @usableFromInline
