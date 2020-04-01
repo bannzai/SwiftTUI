@@ -17,6 +17,7 @@ internal final class ViewSetRectVisitor: Visitor {
     
     internal var proposedSize: Size = mainScreen.bounds.size
     internal var currentContainerGraph: ViewGraph?
+    internal var alignment: Alignment = .default
 
     internal func visit<T: View>(_ content: T) -> VisitResult {
         debugLogger.debug()

@@ -8,5 +8,5 @@
 import Foundation
 
 internal protocol AlignmentConfigurator {
-    func configureAlignment(graph: ViewGraph)
+    func configureAlignment(visitor: ViewSetRectVisitor)
 }
