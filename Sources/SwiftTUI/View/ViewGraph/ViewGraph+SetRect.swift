@@ -173,8 +173,8 @@ extension Text: HasIntrinsicContentSize {
         }
         let width = maxWidthString.width
         if width > proposedWidth {
-            let lineBreakCount = width / proposedWidth
-            return Size(width: width, height: baseHeight + lineBreakCount)
+            let lineBreakCount = PhysicalDistance(roundf(Float(width) / Float(proposedWidth)))
+            return Size(width: proposedWidth, height: lineBreakCount)
         }
         return Size(width: width, height: baseHeight)
     }

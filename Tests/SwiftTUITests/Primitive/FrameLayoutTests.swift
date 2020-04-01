@@ -15,6 +15,27 @@ class FrameLayoutTests: XCTestCase {
         mainScreen = DummyScreen.init()
     }
     
+    func test_playground() {
+        func prepare<T: View>(view: T) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            return graph
+        }
+        XCTContext.runActivity(named: "when frame with `width` and `width` < textGraph.rect.size.width") { (_) in
+            let width = PhysicalDistance(1)
+            let view = Text("123").frame(width: width)
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            XCTAssertEqual(graph.rect.size, Size(width: width, height: "123".width))
+            
+            let textGraph = graph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            XCTAssertEqual(textGraph.rect.size, Size(width: width, height: "123".width / width))
+        }
+    }
+    
     func testSize() throws {
         func prepare<T: View>(view: T) -> ViewGraph {
             let graphVisitor = ViewGraphSetVisitor()
@@ -64,7 +85,7 @@ class FrameLayoutTests: XCTestCase {
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
-            XCTAssertEqual(graph.rect.size, Size(width: width, height: "123".height))
+            XCTAssertEqual(graph.rect.size, Size(width: width, height: "123".width))
             
             let textGraph = graph.children[0]
             XCTAssertTrue(textGraph.anyView is Text)
@@ -73,14 +94,14 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when call frame(width:height:).frame(width:height:)") { (_) in
             let view = Text("123").frame(width: 10, height: 10).frame(width: 20, height: 20)
             
-            let frameGraph10 = prepare(view: view)
+            let frameGraph20 = prepare(view: view)
             let visitor = ViewSetRectVisitor()
-            frameGraph10.accept(visitor: visitor)
-            XCTAssertEqual(frameGraph10.rect.size, Size(width: 10, height: 10))
-            
-            let frameGraph20 = frameGraph10.children[0]
-            XCTAssertTrue(frameGraph20.anyView is ModifiedContent<Text, _FrameLayout>)
+            frameGraph20.accept(visitor: visitor)
             XCTAssertEqual(frameGraph20.rect.size, Size(width: 20, height: 20))
+
+            let frameGraph10 = frameGraph20.children[0]
+            XCTAssertTrue(frameGraph10.anyView is ModifiedContent<Text, _FrameLayout>)
+            XCTAssertEqual(frameGraph10.rect.size, Size(width: 10, height: 10))
         }
     }
     
