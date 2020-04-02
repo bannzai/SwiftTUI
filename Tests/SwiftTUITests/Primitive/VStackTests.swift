@@ -618,6 +618,69 @@ extension VStackTests {
             }
         }
     }
+    func testChildrenPositionWithFrameLayout() {
+        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            graph.listType = viewListOption
+            
+            return graph
+        }
+        
+        XCTContext.runActivity(named: "when VStack contains TupleView<_PaddingLayout<Text>, Text, Text> and specify leading alignment") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                    .frame(width: 10, height: 3)
+                Text(",")
+                Text("World")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+            
+            XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
+                first: do {
+                    let modifierGraph = graph.children[0].children[0]
+                    let hasModifier = modifierGraph.anyView as! HasAnyModifier
+                    XCTAssertTrue(hasModifier.anyModifier is _FrameLayout)
+                    
+                    let textGraph = modifierGraph.children[0]
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "Hello")
+                    XCTAssertEqual(textGraph.rect.origin.x, 3)
+                    XCTAssertEqual(textGraph.rect.origin.y, 1)
+                    XCTAssertEqual(modifierGraph.rect.origin.x, 0)
+                    XCTAssertEqual(modifierGraph.rect.origin.y, 0)
+                }
+                second: do {
+                    let textGraph = graph.children[0].children[1]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, ",")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height + defaultPadding * 2)
+                }
+                third: do {
+                    let textGraph = graph.children[0].children[2]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "World")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height + ",".height + defaultPadding * 2)
+                }
+            }
+        }
+    }
     func testChildrenPositionWithPaddingLayout() {
         func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
             let graphVisitor = ViewGraphSetVisitor()
