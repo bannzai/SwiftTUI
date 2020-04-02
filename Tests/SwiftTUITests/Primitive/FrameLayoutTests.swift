@@ -15,25 +15,6 @@ class FrameLayoutTests: XCTestCase {
         mainScreen = DummyScreen.init()
     }
     
-    func test_playground() {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
-        XCTContext.runActivity(named: "when frame() with width and height and alignment is center") { (_) in
-            let view = Text("1234").frame(width: 10, height: 3)
-            
-            let graph = prepare(view: view)
-            let visitor = ViewSetRectVisitor()
-            graph.accept(visitor: visitor)
-            
-            let textGraph = graph.children[0]
-            XCTAssertTrue(textGraph.anyView is Text)
-            XCTAssertEqual(textGraph.rect.origin, Point(x: 3, y: 1))
-        }
-    }
-    
     func testSize() throws {
         func prepare<T: View>(view: T) -> ViewGraph {
             let graphVisitor = ViewGraphSetVisitor()
