@@ -21,18 +21,16 @@ class FrameLayoutTests: XCTestCase {
             let graph = graphVisitor.visit(view)
             return graph
         }
-        XCTContext.runActivity(named: "when frame with `width` and `width` < textGraph.rect.size.width") { (_) in
-            let width = PhysicalDistance(1)
-            let view = Text("123").frame(width: width)
+        XCTContext.runActivity(named: "when frame() with width and height and alignment is center") { (_) in
+            let view = Text("1234").frame(width: 10, height: 3)
             
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
-            XCTAssertEqual(graph.rect.size, Size(width: width, height: "123".width))
             
             let textGraph = graph.children[0]
             XCTAssertTrue(textGraph.anyView is Text)
-            XCTAssertEqual(textGraph.rect.size, Size(width: width, height: "123".width / width))
+            XCTAssertEqual(textGraph.rect.origin, Point(x: 3, y: 1))
         }
     }
     
