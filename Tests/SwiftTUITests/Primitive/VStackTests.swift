@@ -689,7 +689,7 @@ extension VStackTests {
             
             return graph
         }
-
+        
         XCTContext.runActivity(named: "when VStack contains TupleView<_PaddingLayout<Text>, Text, Text> and specify leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("Hello")
@@ -741,7 +741,7 @@ extension VStackTests {
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
                     XCTAssertEqual(textGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height + ",".height + defaultPadding * 2)
                 }
+            }
         }
-    }
     }
 }
