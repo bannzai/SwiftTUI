@@ -113,6 +113,17 @@ class FrameLayoutTests: XCTestCase {
             XCTAssertTrue(textGraph.anyView is Text)
             XCTAssertEqual(textGraph.rect.origin, Point(x: 3, y: 1))
         }
+        XCTContext.runActivity(named: "when frame() with width and height and alignment is leading") { (_) in
+            let view = Text("1234").frame(width: 10, height: 3, alignment: .leading)
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let textGraph = graph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            XCTAssertEqual(textGraph.rect.origin, Point(x: 0, y: 1))
+        }
     }
     
     func testContent() {
