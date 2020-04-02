@@ -744,4 +744,56 @@ extension VStackTests {
             }
         }
     }
+    
+    func testChildrenPositionForComplexPattern() {
+        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            graph.listType = viewListOption
+            return graph
+        }
+
+        let view = VStack(alignment: .leading) {
+            Text("Hello")
+            VStack(alignment: .trailing) {
+                Text("World")
+            }
+        }
+        
+        let graph = prepare(view: view)
+        let visitor = ViewSetRectVisitor()
+        graph.accept(visitor: visitor)
+        
+        XCTAssertEqual(graph.rect.origin.x, 0)
+        XCTAssertEqual(graph.rect.origin.y, 0)
+        
+        XCTContext.runActivity(named: "Child graph confirm position") { (_) in
+            first: do {
+                let textGraph = graph.children[0].children[0]
+                XCTAssertTrue(textGraph.anyView is Text)
+                let text = textGraph.anyView as! Text
+                
+                XCTAssertEqual(text.content, "Hello")
+                XCTAssertEqual(textGraph.rect.origin.x, 0)
+                XCTAssertEqual(textGraph.rect.origin.y, 0)
+            }
+            second: do {
+                let vstackGraph = graph.children[0].children[1]
+                
+                XCTAssertTrue(vstackGraph.anyView is VStack<Text>)
+                XCTAssertEqual(vstackGraph.rect.origin.x, 0)
+                XCTAssertEqual(vstackGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height)
+                
+                children: do {
+                    let textGraph = vstackGraph.children[0]
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "Hello")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                }
+            }
+        }
+    }
 }
