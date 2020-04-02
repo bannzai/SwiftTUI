@@ -50,30 +50,51 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
 }
 
 extension ViewGraph {
+    private static func extractAlignmentXValue(graph: ViewGraph) -> PhysicalDistance {
+        switch graph.dimensions[explicit: graph.alignment.horizontal] {
+        case nil:
+            return graph.alignment.horizontal.id.defaultValue(in: graph.dimensions)
+        case .some(let explicitValue):
+            return explicitValue
+        }
+    }
+    private static func extractAlignmentYValue(graph: ViewGraph) -> PhysicalDistance {
+        switch graph.dimensions[explicit: graph.alignment.vertical] {
+        case nil:
+            return graph.alignment.vertical.id.defaultValue(in: graph.dimensions)
+        case .some(let explicitValue):
+            return explicitValue
+        }
+    }
     private func acceptSetPosition(visitor: ViewSetRectVisitor) {
         if children.isEmpty {
             return
         }
         
         children.forEach { $0.acceptSetPosition(visitor: visitor) }
-        
-        if let view = anyView as? HasAnyModifier, view.anyModifier is _PaddingLayout {
-            // NOTE: already set x,y
-            return
+    
+        if isModifiedContent {
+            guard let view = anyView as? HasAnyModifier else {
+                fatalError("isModifiedContent is true but it has not anyModifier \(self)")
+            }
+            if view.anyModifier is _PaddingLayout {
+                // NOTE: already set x,y
+                return
+            }
+            if view.anyModifier is _FrameLayout {
+                let child = rendableChildren[0]
+                child.rect.origin.x = ViewGraph.extractAlignmentXValue(graph: self)
+                child.rect.origin.y = ViewGraph.extractAlignmentYValue(graph: self)
+                return
+            }
         }
         
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
+
             rendableChildren.enumerated().forEach { (offset, child) in
-                let x: PhysicalDistance
-                switch child.dimensions[explicit: child.alignment.horizontal] {
-                case nil:
-                    x = alignment.horizontal.id.defaultValue(in: child.dimensions)
-                case .some(let explicitValue):
-                    x = explicitValue
-                }
-                
+                let x = ViewGraph.extractAlignmentXValue(graph: child)
                 switch x {
                 case let x where x < 0:
                     child.rect.origin.x = maxX + abs(x)
