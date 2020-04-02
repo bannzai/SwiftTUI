@@ -78,31 +78,31 @@ extension ViewGraph {
         }
         
         children.forEach { $0.acceptSetPosition(visitor: visitor) }
-        
-        guard let container = visitor.currentContainerGraph else {
-            return
-        }
-    
+
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")
             }
             if view.anyModifier is _PaddingLayout {
-                // NOTE: already set x,y
                 return
             }
             if view.anyModifier is _FrameLayout {
-                let child = rendableChildren[0]
-                child.rect.origin.x = ViewGraph.extractAlignmentXValue(graph: self)
-                child.rect.origin.y = ViewGraph.extractAlignmentYValue(graph: self)
+                rendableChildren.forEach { child in
+                    let containerX = ViewGraph.extractAlignmentXValue(graph: self)
+                    let x = ViewGraph.extractAlignmentXValue(graph: child)
+                    child.rect.origin.x = containerX - x
+                    
+                    let containerY = ViewGraph.extractAlignmentYValue(graph: self)
+                    let y = ViewGraph.extractAlignmentYValue(graph: child)
+                    child.rect.origin.y = containerY - y
+                }
                 return
             }
         }
-        
+
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
-
             rendableChildren.enumerated().forEach { (offset, child) in
                 let x = ViewGraph.extractAlignmentXValue(graph: child)
                 switch x {

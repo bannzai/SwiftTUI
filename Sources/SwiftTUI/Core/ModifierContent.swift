@@ -47,6 +47,7 @@ extension ModifiedContent: View {
 }
 
 extension ModifiedContent: Rendable where Modifier: Rendable { }
+extension ModifiedContent: ContainerViewType where Modifier: ContainerViewType { }
 extension ModifiedContent: ViewGraphSetAttributeAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)

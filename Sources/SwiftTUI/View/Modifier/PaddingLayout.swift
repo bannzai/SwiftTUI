@@ -79,7 +79,7 @@ internal extension _PaddingLayout {
 
         paddingGraph.rect.size.width = baseGraph.rect.size.width + horizontalLength
         paddingGraph.rect.size.height = baseGraph.rect.size.height + verticalLength
-
+        
         if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultPadding) }
         if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
     }

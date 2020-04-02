@@ -33,11 +33,11 @@ internal extension _FrameLayout {
         
         graph.rect.size.width = width ?? baseGraph.rect.size.width
         graph.rect.size.height = height ?? baseGraph.rect.size.height
-        
     }
 }
 
 extension _FrameLayout: Rendable { }
+extension _FrameLayout: ContainerViewType { }
 extension _FrameLayout: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         // NOTE: escape to reach ViewModifier.Body is Never
