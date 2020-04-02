@@ -67,11 +67,21 @@ extension ViewGraph {
         }
     }
     private func acceptSetPosition(visitor: ViewSetRectVisitor) {
+        let keepCurrentContainer = visitor.currentContainerGraph
+        defer { visitor.currentContainerGraph = keepCurrentContainer }
+        if anyView is ContainerViewType {
+            visitor.currentContainerGraph = self
+        }
+        
         if children.isEmpty {
             return
         }
         
         children.forEach { $0.acceptSetPosition(visitor: visitor) }
+        
+        guard let container = visitor.currentContainerGraph else {
+            return
+        }
     
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
