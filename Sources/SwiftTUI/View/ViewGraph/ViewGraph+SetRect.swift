@@ -18,8 +18,15 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
         }
         
         if isModifiedContent {
-            if let view = anyView as? HasAnyModifier, let modifier = view.anyModifier as? _PaddingLayout {
-                modifier.sideEffect(for: self, visitor: visitor)
+            guard let view = anyView as? HasAnyModifier else {
+                fatalError("isModifiedContent is true but it has not anyModifier \(self)")
+            }
+            if let modifier = view.anyModifier as? _PaddingLayout {
+                modifier.modify(for: self, visitor: visitor)
+                return
+            }
+            if let modifier = view.anyModifier as? _FrameLayout {
+                modifier.modify(for: self, visitor: visitor)
                 return
             }
         }
@@ -43,25 +50,62 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
 }
 
 extension ViewGraph {
+    private static func extractAlignmentXValue(graph: ViewGraph, alignment: HorizontalAlignment) -> PhysicalDistance {
+        switch graph.dimensions[explicit: alignment] {
+        case nil:
+            return alignment.id.defaultValue(in: graph.dimensions)
+        case .some(let explicitValue):
+            return explicitValue
+        }
+    }
+    private static func extractAlignmentYValue(graph: ViewGraph, alignment: VerticalAlignment) -> PhysicalDistance {
+        switch graph.dimensions[explicit: alignment] {
+        case nil:
+            return alignment.id.defaultValue(in: graph.dimensions)
+        case .some(let explicitValue):
+            return explicitValue
+        }
+    }
     private func acceptSetPosition(visitor: ViewSetRectVisitor) {
+        let keepCurrentContainer = visitor.currentContainerGraph
+        defer { visitor.currentContainerGraph = keepCurrentContainer }
+        if anyView is ContainerViewType {
+            visitor.currentContainerGraph = self
+        }
+        
         if children.isEmpty {
             return
         }
         
         children.forEach { $0.acceptSetPosition(visitor: visitor) }
-        
+
+        if isModifiedContent {
+            guard let view = anyView as? HasAnyModifier else {
+                fatalError("isModifiedContent is true but it has not anyModifier \(self)")
+            }
+            if view.anyModifier is _PaddingLayout {
+                return
+            }
+            if view.anyModifier is _FrameLayout {
+                rendableChildren.forEach { child in
+                    let containerX = ViewGraph.extractAlignmentXValue(graph: self, alignment: child.alignment.horizontal)
+                    let x = ViewGraph.extractAlignmentXValue(graph: child, alignment: child.alignment.horizontal)
+                    child.rect.origin.x = containerX - x
+                    
+                    let containerY = ViewGraph.extractAlignmentYValue(graph: self, alignment: child.alignment.vertical)
+                    let y = ViewGraph.extractAlignmentYValue(graph: child, alignment: child.alignment.vertical)
+                    child.rect.origin.y = containerY - y
+                }
+                return
+            }
+        }
+
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
             rendableChildren.enumerated().forEach { (offset, child) in
-                let x: PhysicalDistance
-                switch child.dimensions[explicit: child.alignment.horizontal] {
-                case nil:
-                    x = alignment.horizontal.id.defaultValue(in: child.dimensions)
-                case .some(let explicitValue):
-                    x = explicitValue
-                }
-                
+                let x = ViewGraph.extractAlignmentXValue(graph: child, alignment: alignment.horizontal)
+                debugLogger.debug(userInfo: "self type \(type(of: self)) child type \(type(of: child)), self.alignment.horizontal: \(alignment.horizontal), x: \(x)")
                 switch x {
                 case let x where x < 0:
                     child.rect.origin.x = maxX + abs(x)
@@ -166,8 +210,8 @@ extension Text: HasIntrinsicContentSize {
         }
         let width = maxWidthString.width
         if width > proposedWidth {
-            let lineBreakCount = width / proposedWidth
-            return Size(width: width, height: baseHeight + lineBreakCount)
+            let lineBreakCount = PhysicalDistance(roundf(Float(width) / Float(proposedWidth)))
+            return Size(width: proposedWidth, height: lineBreakCount)
         }
         return Size(width: width, height: baseHeight)
     }

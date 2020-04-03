@@ -18,6 +18,7 @@ import Foundation
     public typealias Body = Swift.Never
 }
 
+extension VStack: Rendable { }
 extension VStack: ViewGraphSetAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)

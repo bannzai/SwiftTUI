@@ -66,7 +66,7 @@ internal let defaultPadding = 1
 }
 
 internal extension _PaddingLayout {
-     func sideEffect(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
+     func modify(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
         let horizontalLength = self.horizontalLength()
         let verticalLength = self.verticalLength()
         
@@ -79,7 +79,7 @@ internal extension _PaddingLayout {
 
         paddingGraph.rect.size.width = baseGraph.rect.size.width + horizontalLength
         paddingGraph.rect.size.height = baseGraph.rect.size.height + verticalLength
-
+        
         if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultPadding) }
         if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
     }
@@ -97,6 +97,7 @@ internal extension _PaddingLayout {
     }
 }
 
+extension _PaddingLayout: Rendable { }
 extension _PaddingLayout: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         // NOTE: escape to reach ViewModifier.Body is Never

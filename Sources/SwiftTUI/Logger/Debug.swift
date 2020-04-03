@@ -58,8 +58,10 @@ internal struct Debug {
             guard let stream = OutputStream(toFileAtPath: loggerPath.absoluteString, append: true) else {
                 fatalError("could not open debug logger file stream. path: \(loggerPath)")
             }
-            guard let data = buildContent().data(using: .utf8) else {
-                fatalError("could not convert to byte strings for \(buildContent())")
+            let content = buildContent()
+//            debugPrint(content)
+            guard let data = content.data(using: .utf8) else {
+                fatalError("could not convert to byte strings for \(content)")
             }
             
             stream.open()

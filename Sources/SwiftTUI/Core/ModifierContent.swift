@@ -46,7 +46,8 @@ extension ModifiedContent: View {
     public typealias Body = Swift.Never
 }
 
-extension ModifiedContent: Rendable where Modifier == _PaddingLayout { }
+extension ModifiedContent: Rendable where Modifier: Rendable { }
+extension ModifiedContent: ContainerViewType where Modifier: ContainerViewType { }
 extension ModifiedContent: ViewGraphSetAttributeAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)
@@ -54,7 +55,11 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
-        graph.setModifier(visitor.visit(content))
+        let contengGraph = visitor.visit(content)
+        graph.setModifier(contengGraph)
+        if let modifier = modifier as? _FrameLayout {
+            contengGraph.alignment = modifier.alignment
+        }
         return graph
     }
 }
