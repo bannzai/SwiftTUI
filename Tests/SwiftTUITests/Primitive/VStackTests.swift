@@ -789,7 +789,7 @@ extension VStackTests {
                     XCTAssertTrue(textGraph.anyView is Text)
                     let text = textGraph.anyView as! Text
                     
-                    XCTAssertEqual(text.content, "Hello")
+                    XCTAssertEqual(text.content, "World")
                     XCTAssertEqual(textGraph.rect.origin.x, 0)
                     XCTAssertEqual(textGraph.rect.origin.y, 0)
                 }
