@@ -59,7 +59,7 @@ internal struct Debug {
                 fatalError("could not open debug logger file stream. path: \(loggerPath)")
             }
             let content = buildContent()
-            debugPrint(content)
+//            debugPrint(content)
             guard let data = content.data(using: .utf8) else {
                 fatalError("could not convert to byte strings for \(content)")
             }
