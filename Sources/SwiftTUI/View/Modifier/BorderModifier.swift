@@ -7,7 +7,6 @@
 
 import Foundation
 
-public let defaultBorderWidth: PhysicalDistance = 1
 public struct Border {
     internal var color: Color
     internal var width: PhysicalDistance
@@ -43,7 +42,7 @@ extension _BorderModifier: Swift.Equatable where Target: Swift.Equatable {
     }
 }
 extension View {
-    @inlinable public func border<S>(color: Color, width: PhysicalDistance = defaultBorderWidth, direction: Border.DirectionType = .default) -> some View {
+    @inlinable public func border<S>(color: Color, width: PhysicalDistance = 1, direction: Border.DirectionType = .default) -> some View {
         modifier(_BorderModifier(target: self, border: Border(color: color, width: width, directionType: direction)))
     }
 }
