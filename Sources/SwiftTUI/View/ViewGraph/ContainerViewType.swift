@@ -12,5 +12,3 @@ internal protocol ContainerViewType {
     
 }
 
-extension VStack: ContainerViewType { }
-extension HStack: ContainerViewType { }

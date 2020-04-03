@@ -18,6 +18,7 @@ import Foundation
     public typealias Body = Swift.Never
 }
 
+extension VStack: ContainerViewType { }
 extension VStack: Rendable { }
 extension VStack: ViewGraphSetAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
