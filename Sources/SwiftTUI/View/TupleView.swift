@@ -9,8 +9,6 @@ import Foundation
 
 /// A View created from a swift tuple of View values.
 @frozen public struct TupleView<T> {
-    internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
-    
     public var value: T
 
     @inlinable public init(_ value: T) {

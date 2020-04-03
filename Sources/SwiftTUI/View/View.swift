@@ -26,14 +26,6 @@ public struct Border {
         public static let `default`: DirectionType = .all
     }
 }
-public class _ViewBaseProperties {
-    public init() { }
-    internal var rect: Rect = Rect(origin: .zero, size: .zero)
-
-    internal var backgroundColor: Color = Style.Color.background.color
-    
-    internal var border: Border? = nil
-}
 
 public protocol _View {
     var _wrappedViewForBuildGraph: _WrappedViewForBuildGraph { get }

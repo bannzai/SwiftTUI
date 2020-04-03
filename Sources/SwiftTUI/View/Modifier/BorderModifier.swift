@@ -15,8 +15,6 @@ import Foundation
         self.border = border
     }
     public typealias Body = Swift.Never
-    
-    internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
 extension _BorderModifier: Swift.Equatable where Target: Swift.Equatable {

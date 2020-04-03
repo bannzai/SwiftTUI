@@ -19,8 +19,6 @@ import Foundation
         self.height = height
         self.alignment = alignment
     }
-    
-    internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
 internal extension _FrameLayout {
