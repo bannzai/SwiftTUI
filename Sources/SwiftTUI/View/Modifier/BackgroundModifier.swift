@@ -13,7 +13,6 @@ import Foundation
         self.background = background
     }
     public typealias Body = Swift.Never
-    internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
 extension _BackgroundModifier : Swift.Equatable where Background : Swift.Equatable {

@@ -18,6 +18,7 @@ import Foundation
     public typealias Body = Swift.Never
 }
 
+extension HStack: ContainerViewType { }
 @frozen public struct _HStackLayout {
   public var alignment: VerticalAlignment
   public var spacing: PhysicalDistance?

@@ -7,6 +7,26 @@
 
 import Foundation
 
+public let defaultBorderWidth: PhysicalDistance = 1
+public struct Border {
+    internal var color: Color
+    internal var width: PhysicalDistance
+    internal var directionType: DirectionType
+    
+    public init(color: Color, width: PhysicalDistance, directionType: DirectionType) {
+        self.color = color
+        self.width = width
+        self.directionType = directionType
+    }
+    
+    public enum DirectionType: Int8 {
+        case top, left, right, bottom
+        case all
+        
+        public static let `default`: DirectionType = .all
+    }
+}
+
 @frozen public struct _BorderModifier<Target>: ViewModifier where Target: View {
     public let target: Target
     public let border: Border
@@ -15,8 +35,6 @@ import Foundation
         self.border = border
     }
     public typealias Body = Swift.Never
-    
-    internal var _baseProperty: _ViewBaseProperties = _ViewBaseProperties()
 }
 
 extension _BorderModifier: Swift.Equatable where Target: Swift.Equatable {

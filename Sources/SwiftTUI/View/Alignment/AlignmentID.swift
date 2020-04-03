@@ -10,8 +10,3 @@ import Foundation
 public protocol AlignmentID {
     static func defaultValue(in context: ViewDimensions) -> PhysicalDistance
 }
-
-extension AlignmentID {
-    
-}
-

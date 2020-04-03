@@ -7,15 +7,14 @@
 
 import Foundation
 
-public final class _TextBaseProperty: _ViewBaseProperties {
+public final class _TextBaseProperty {
     internal var foregroundColor: Color? = nil
 }
 
 /// A view that displays one or more lines of read-only text.
 public struct Text {
     let content: String
-    internal var _baseProperty: _ViewBaseProperties = _TextBaseProperty()
-    internal var _textProperty: _TextBaseProperty { _baseProperty as! _TextBaseProperty }
+    internal var _textProperty: _TextBaseProperty = .init()
     /// Creates an instance that displays `content` verbatim.
     @inlinable public init(verbatim content: String) {
         self.init(content)
