@@ -826,7 +826,7 @@ extension VStackTests {
                 second: do {
                     let vstackGraph = graph.children[0].children[1]
                     
-                    XCTAssertTrue(vstackGraph.anyView is VStack<Text>)
+                    XCTAssertTrue(vstackGraph.anyView is VStack<TupleView<(Text, Text)>>)
                     XCTAssertEqual(vstackGraph.rect.origin.x, 0)
                     XCTAssertEqual(vstackGraph.rect.origin.y, ViewVisitorListOption.default.defaultSpace + "Hello".height)
                     
