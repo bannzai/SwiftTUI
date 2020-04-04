@@ -1,5 +1,5 @@
 //
-//  BorderTests.swift
+//  BorderModifierTests.swift
 //  SwiftTUITests
 //
 //  Created by Yudai.Hirose on 2020/04/04.
@@ -9,7 +9,7 @@ import XCTest
 @testable import SwiftTUI
 
 fileprivate let defaultBorderWidth = 1
-class BorderTests: XCTestCase {
+class BorderModifierTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
@@ -46,10 +46,13 @@ class BorderTests: XCTestCase {
             let view = Text("123").border()
             
             let graph = prepare(view: view)
-            let visitor = ViewContentVisitor(driver: Driver())
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
             
-            // Keep test for check not call fatalError
+            let content = driver.content()
+            
+            XCTAssertTrue(content.contains(Edge.Set.leadingTop.defaultDelimiter))
         }
     }
 }
