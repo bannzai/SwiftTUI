@@ -47,6 +47,7 @@ extension Edge.Set {
 }
 
 extension _BorderModifier: Rendable { }
+fileprivate let defaultBorderWidth: PhysicalDistance = 1
 internal extension _BorderModifier {
     func modify(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
         let horizontalLength = self.horizontalLength()
@@ -62,18 +63,18 @@ internal extension _BorderModifier {
         graph.rect.size.width = baseGraph.rect.size.width + horizontalLength
         graph.rect.size.height = baseGraph.rect.size.height + verticalLength
         
-        if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultPadding) }
-        if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
+        if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultBorderWidth) }
+        if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultBorderWidth) }
     }
     private func verticalLength() -> PhysicalDistance {
         var length = 0
-        if edges.contains(.top) { length = length + (insets?.top ?? defaultPadding) }
-        if edges.contains(.bottom) { length = length + (insets?.bottom ?? defaultPadding) }
+        if edges.contains(.top) { length = length + (insets?.top ?? defaultBorderWidth) }
+        if edges.contains(.bottom) { length = length + (insets?.bottom ?? defaultBorderWidth) }
         return length
     }
     private func horizontalLength() -> PhysicalDistance {
         var length = 0
-        if edges.contains(.leading) { length = length + (insets?.leading ?? defaultPadding) }
+        if edges.contains(.leading) { length = length + (insets?.leading ?? defaultBorderWidth) }
         if edges.contains(.trailing) { length = length + (insets?.trailing ?? defaultPadding) }
         return length
     }
