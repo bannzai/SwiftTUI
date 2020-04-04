@@ -39,12 +39,10 @@ extension Edge.Set {
 @frozen public struct _BorderModifier: ViewModifier {
     public let color: Color
     public let edges: Edge.Set
-    public let insets: EdgeInsets?
 
-    public init(color: Color?, edges: Edge.Set = .all, insets: EdgeInsets?) {
+    public init(color: Color?, edges: Edge.Set = .all) {
         self.color = color ?? Style.Color.border.color
         self.edges = edges
-        self.insets = insets
     }
     
     public typealias Body = Swift.Never
@@ -67,19 +65,19 @@ internal extension _BorderModifier {
         graph.rect.size.width = baseGraph.rect.size.width + horizontalLength
         graph.rect.size.height = baseGraph.rect.size.height + verticalLength
         
-        if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultBorderWidth) }
-        if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultBorderWidth) }
+        if edges.contains(.leading) { baseGraph.rect.origin.x = defaultBorderWidth }
+        if edges.contains(.top) { baseGraph.rect.origin.y = defaultBorderWidth }
     }
     private func verticalLength() -> PhysicalDistance {
         var length = 0
-        if edges.contains(.top) { length = length + (insets?.top ?? defaultBorderWidth) }
-        if edges.contains(.bottom) { length = length + (insets?.bottom ?? defaultBorderWidth) }
+        if edges.contains(.top) { length = length + defaultBorderWidth }
+        if edges.contains(.bottom) { length = length + defaultBorderWidth }
         return length
     }
     private func horizontalLength() -> PhysicalDistance {
         var length = 0
-        if edges.contains(.leading) { length = length + (insets?.leading ?? defaultBorderWidth) }
-        if edges.contains(.trailing) { length = length + (insets?.trailing ?? defaultPadding) }
+        if edges.contains(.leading) { length = length + defaultBorderWidth }
+        if edges.contains(.trailing) { length = length + defaultPadding }
         return length
     }
 }
@@ -127,10 +125,7 @@ extension _BorderModifier: ViewContentAcceptable {
 }
 
 extension View {
-    @inlinable public func border(color: Color? = nil, insets: EdgeInsets) -> some View {
-        modifier(_BorderModifier(color: color, edges: .all, insets: insets))
-    }
     @inlinable public func border(color: Color? = nil, edges: Edge.Set = .all) -> some View {
-        modifier(_BorderModifier(color: color, edges: edges, insets: nil))
+        modifier(_BorderModifier(color: color, edges: edges))
     }
 }
