@@ -156,9 +156,7 @@ extension ViewGraph: ViewContentAcceptable {
             return
         }
         alreadyRender = true
-        
-        children.forEach { $0.accept(visitor: visitor) }
-        
+
         if let render: ViewGraph = extractRendableChlid(), render.isRendableType {
             sharedCursor.moveTo(point: render.positionToWindow())
             render.accept(visitor: visitor)
@@ -168,5 +166,7 @@ extension ViewGraph: ViewContentAcceptable {
         if let content = anyView as? ViewContentAcceptable {
             content.accept(visitor: visitor)
         }
+        
+        children.forEach { $0.accept(visitor: visitor) }
     }
 }
