@@ -9,6 +9,12 @@ import XCTest
 @testable import SwiftTUI
 
 class ViewGraphTests: XCTestCase {
+    override class func setUp() {
+        super.setUp()
+        
+        mainScreen = DummyScreen.init()
+    }
+    
     func testPositionToWindow() {
         XCTContext.runActivity(named: "simply tests") { _ in
             let parentGraph = ViewGraphImpl(view: EmptyView())
