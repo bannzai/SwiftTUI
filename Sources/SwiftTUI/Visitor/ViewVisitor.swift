@@ -34,6 +34,8 @@ internal protocol ContainerViewContentAcceptable {
 internal final class ViewContentVisitor: Visitor {
     internal typealias VisitResult = Void
     internal var driver: DrawableDriver
+    internal var current: ViewGraph?
+    
     internal init(driver: DrawableDriver) {
         self.driver = driver
     }

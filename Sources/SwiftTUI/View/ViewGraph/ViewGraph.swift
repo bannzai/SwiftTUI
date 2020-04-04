@@ -145,6 +145,9 @@ internal final class ViewGraphSetVisitor: Visitor {
 
 extension ViewGraph: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
+        let keepCurrent = visitor.current
+        visitor.current = self
+        defer { visitor.current = keepCurrent }
         defer { visitor.driver.restoreBackgroundColor() }
         switch anyView {
         case is ContainerViewContentAcceptable:
