@@ -19,13 +19,17 @@ extension Edge.Set {
         case .vertical:
             return "|"
         case .leadingTop:
-            return "┌"
+            return "+"
+//            return "┌" // TODO: Using wide char
         case .trailingTop:
-            return "┐"
+            return "+"
+//            return "┐" // TODO: Using wide char
         case .leadingBottom:
-            return "└"
+            return "+"
+//            return "└" // TODO: Using wide char
         case .trailingBottom:
-            return "┘"
+            return "+"
+//            return "┘" // TODO: Using wide char
         case _:
             fatalError("unexpected pattern default delimiter type for \(self)")
         }
