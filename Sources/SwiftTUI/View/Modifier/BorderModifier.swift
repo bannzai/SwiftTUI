@@ -9,8 +9,8 @@ import Foundation
 
 extension Edge.Set {
     internal static let leadingTop: Edge.Set = [.leading, .top]
-    internal static let trailingTop: Edge.Set = [.trailing, .bottom]
-    internal static let leadingBottom: Edge.Set = [.leading, .top]
+    internal static let trailingTop: Edge.Set = [.trailing, .top]
+    internal static let leadingBottom: Edge.Set = [.leading, .bottom]
     internal static let trailingBottom: Edge.Set = [.trailing, .bottom]
     internal var defaultDelimiter: String {
         switch self {
