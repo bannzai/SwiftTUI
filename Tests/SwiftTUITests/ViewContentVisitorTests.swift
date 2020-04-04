@@ -147,8 +147,8 @@ class ViewContentVisitorTests: XCTestCase {
             
             XCTAssertEqual("1", result)
 
-            XCTAssertEqual(driver.storedBackgroundColors[0..<2], [.blue, .red])
-            XCTAssertEqual(driver.storedBackgroundColors[2], Style.Color.background.color)
+            XCTAssertAmbiguouseOrder(driver.storedBackgroundColors, [.blue, .red])
+            XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
         }
         XCTContext.runActivity(named: "when Original Modifier") { (_) in
             struct Modifier: ViewModifier {
