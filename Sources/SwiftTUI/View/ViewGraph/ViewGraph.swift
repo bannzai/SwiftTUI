@@ -21,8 +21,10 @@ public class ViewGraph: SwiftTUI.View {
     internal var alignment: Alignment = .default
     internal lazy var spacing: PhysicalDistance = listType.defaultSpace
     internal lazy var dimensions: ViewDimensions = ViewDimensions(graph: self)
-
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
+    
+    // MARK: - Dirty property for visitor flags
+    internal var alreadyRender: Bool = false
     
     internal func inheritProperties(to child: ViewGraph) {
         child.alignment = alignment
@@ -150,23 +152,21 @@ extension ViewGraph: ViewContentAcceptable {
         defer { visitor.current = keepCurrent }
         defer { visitor.driver.restoreBackgroundColor() }
         
-        switch anyView {
-        case is ContainerViewContentAcceptable:
-            children.forEach { child in
-                switch listType {
-                case .vertical:
-                    let render: ViewGraph = child.extractRendableChlid() ?? child
-                    sharedCursor.moveTo(point: render.positionToWindow())
-                case .horizontal:
-                    break
-                }
-                child.accept(visitor: visitor)
-            }
-        case let content as ViewContentAcceptable:
+        if alreadyRender {
+            return
+        }
+        alreadyRender = true
+        
+        children.forEach { $0.accept(visitor: visitor) }
+        
+        if let render: ViewGraph = extractRendableChlid(), render.isRendableType {
+            sharedCursor.moveTo(point: render.positionToWindow())
+            render.accept(visitor: visitor)
+        } else {
+            sharedCursor.moveTo(point: positionToWindow())
+        }
+        if let content = anyView as? ViewContentAcceptable {
             content.accept(visitor: visitor)
-            children.forEach { $0.accept(visitor: visitor) }
-        case _:
-            children.forEach { $0.accept(visitor: visitor) }
         }
     }
 }
