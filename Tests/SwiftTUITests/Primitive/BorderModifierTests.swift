@@ -33,7 +33,38 @@ class BorderModifierTests: XCTestCase {
         }
     }
     
-    
+    func testChildrenPosition() throws {
+        func prepare<T: View>(view: T) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            return graph
+        }
+        XCTContext.runActivity(named: "when call border()") { (_) in
+            let view = Text("123").border()
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let textGraph = graph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            
+            XCTAssertEqual(textGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
+        }
+//        XCTContext.runActivity(named: "when padding layout specify vector and length via border(edges: .leading)") { (_) in
+//            let view = Text("123").border(edges: .leading)
+//
+//            let graph = prepare(view: view)
+//            let visitor = ViewSetRectVisitor()
+//            graph.accept(visitor: visitor)
+//
+//            let textGraph = graph.children[0]
+//            XCTAssertTrue(textGraph.anyView is Text)
+//
+//            XCTAssertEqual(textGraph.rect.origin, Point(x: 10, y: 0))
+//        }
+    }
+
     func testContent() {
         func prepare<T: View>(view: T) -> ViewGraph {
             let graphVisitor = ViewGraphSetVisitor()
