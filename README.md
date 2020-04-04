@@ -28,6 +28,14 @@ struct Main: View {
 Great helpful stackoverflow exists. reference from https://stackoverflow.com/questions/56251835/swift-package-manager-unable-to-compile-ncurses-installed-through-homebrew.
 This section is quoted above stackoverflow links.
 
+#### ncurses version
+Required ncurses version is over 6.1. See also [HOW TO INSTALL ncurses on MacOSX](https://gist.github.com/cnruby/960344)
+
+#### Environment
+- DEBUG_LOGGER_PATH: SwiftTUI debug log path. e.g) ~/development/SwiftTUI/debug.log.d
+- PKG_CONFIG_PATH: your ncurses package config file path. e.g) "/usr/local/opt/ncurses/lib/pkgconfig"
+
+
 #### Quoted
 If you want to generate a Xcode project, use the following command:
 
