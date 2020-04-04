@@ -160,7 +160,12 @@ extension ViewGraph: ViewContentAcceptable {
         }
         alreadyRender = true
 
-        sharedCursor.moveTo(point: positionToWindow())
+        if let render: ViewGraph = extractRendableChlid(), render.isRendableType {
+            sharedCursor.moveTo(point: render.positionToWindow())
+            render.accept(visitor: visitor)
+        } else {
+            sharedCursor.moveTo(point: positionToWindow())
+        }
         if let content = anyView as? ViewContentAcceptable {
             content.accept(visitor: visitor)
         }
