@@ -149,6 +149,7 @@ extension ViewGraph: ViewContentAcceptable {
         visitor.current = self
         defer { visitor.current = keepCurrent }
         defer { visitor.driver.restoreBackgroundColor() }
+        
         switch anyView {
         case is ContainerViewContentAcceptable:
             children.forEach { child in
@@ -164,6 +165,7 @@ extension ViewGraph: ViewContentAcceptable {
             }
         case let content as ViewContentAcceptable:
             content.accept(visitor: visitor)
+            children.forEach { $0.accept(visitor: visitor) }
         case _:
             children.forEach { $0.accept(visitor: visitor) }
         }
