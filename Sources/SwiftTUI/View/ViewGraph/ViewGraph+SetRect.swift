@@ -87,7 +87,12 @@ extension ViewGraph {
             guard let view = anyView as? HasAnyModifier else {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")
             }
+            if view.anyModifier is _BorderModifier {
+                // NOTE: it is already set position vai _BorderModifier.modify(graph:visitor:)
+                return
+            }
             if view.anyModifier is _PaddingLayout {
+                // NOTE: it is already set position vai _PaddingLayout.modify(graph:visitor:)
                 return
             }
             if view.anyModifier is _FrameLayout {
