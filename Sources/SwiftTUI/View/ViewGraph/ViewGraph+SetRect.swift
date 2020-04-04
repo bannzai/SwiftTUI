@@ -25,6 +25,10 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
                 modifier.modify(for: self, visitor: visitor)
                 return
             }
+            if let modifier = view.anyModifier as? _BorderModifier {
+                modifier.modify(for: self, visitor: visitor)
+                return
+            }
             if let modifier = view.anyModifier as? _FrameLayout {
                 modifier.modify(for: self, visitor: visitor)
                 return
