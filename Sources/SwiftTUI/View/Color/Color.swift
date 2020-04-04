@@ -51,11 +51,14 @@ public enum Style {
     public enum Color {
         case background
         case foreground
+        case border
         case text
         
-        var color: SwiftTUI.Color {
+        internal var color: SwiftTUI.Color {
             switch self {
             case .background:
+                return .black
+            case .border:
                 return .black
             case .foreground, .text:
                 return .white
