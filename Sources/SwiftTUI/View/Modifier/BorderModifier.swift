@@ -89,18 +89,22 @@ extension _BorderModifier: ViewContentAcceptable {
         topBorder: do {
             sharedCursor.moveTo(point: position)
             visitor.driver.add(string: Edge.Set.leadingTop.defaultDelimiter)
-            stride(from: position.x + 1, to: position.x + 1 + graph.rect.size.width, by: Edge.Set.horizontal.defaultDelimiter.width).forEach { _ in
+            let leading = position.x + 1
+            let trailing = leading + graph.rect.size.width - 1
+            stride(from: leading, to: trailing, by: Edge.Set.horizontal.defaultDelimiter.width).forEach { _ in
                 visitor.driver.add(string: Edge.Set.horizontal.defaultDelimiter)
             }
             visitor.driver.add(string: Edge.Set.trailingTop.defaultDelimiter)
         }
 
         sideBorder: do {
-            stride(from: position.y + 1, to: position.y + 1 + graph.rect.size.height - 1, by: Edge.Set.vertical.defaultDelimiter.height).forEach { offset in
-                sharedCursor.moveTo(x: position.x, y: position.y + 1 + offset)
+            let top = position.y + 1
+            let bottom = top + graph.rect.size.height - 1
+            stride(from: top, to: bottom, by: Edge.Set.vertical.defaultDelimiter.height).forEach { offset in
+                sharedCursor.moveTo(x: position.x, y: top + (offset - 1))
                 visitor.driver.add(string: Edge.Set.vertical.defaultDelimiter)
                 
-                sharedCursor.moveTo(x: position.x + graph.rect.size.width, y: position.y + 1 + offset)
+                sharedCursor.moveTo(x: position.x + graph.rect.size.width, y: top + (offset - 1))
                 visitor.driver.add(string: Edge.Set.vertical.defaultDelimiter)
             }
         }
@@ -108,7 +112,9 @@ extension _BorderModifier: ViewContentAcceptable {
         bottomBorder: do {
             sharedCursor.moveTo(x: position.x, y: position.y + graph.rect.size.height)
             visitor.driver.add(string: Edge.Set.leadingBottom.defaultDelimiter)
-            stride(from: position.x + 1, to: position.x + 1 + graph.rect.size.width, by: Edge.Set.horizontal.defaultDelimiter.width).forEach { _ in
+            let leading = position.x + 1
+            let trailing = leading + graph.rect.size.width - 1
+            stride(from: leading, to: trailing, by: Edge.Set.horizontal.defaultDelimiter.width).forEach { _ in
                 visitor.driver.add(string: Edge.Set.horizontal.defaultDelimiter)
             }
             visitor.driver.add(string: Edge.Set.trailingBottom.defaultDelimiter)
