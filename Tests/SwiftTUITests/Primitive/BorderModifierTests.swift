@@ -51,18 +51,18 @@ class BorderModifierTests: XCTestCase {
             
             XCTAssertEqual(textGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
         }
-//        XCTContext.runActivity(named: "when padding layout specify vector and length via border(edges: .leading)") { (_) in
-//            let view = Text("123").border(edges: .leading)
-//
-//            let graph = prepare(view: view)
-//            let visitor = ViewSetRectVisitor()
-//            graph.accept(visitor: visitor)
-//
-//            let textGraph = graph.children[0]
-//            XCTAssertTrue(textGraph.anyView is Text)
-//
-//            XCTAssertEqual(textGraph.rect.origin, Point(x: 10, y: 0))
-//        }
+        XCTContext.runActivity(named: "when padding layout specify vector and length via border(edges: .leading)") { (_) in
+            let view = Text("123").border(edges: .leading)
+
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+
+            let textGraph = graph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+
+            XCTAssertEqual(textGraph.rect.origin, Point(x: 1, y: 0))
+        }
     }
 
     func testContent() {
