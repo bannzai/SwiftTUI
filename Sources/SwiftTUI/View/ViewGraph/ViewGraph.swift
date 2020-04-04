@@ -149,8 +149,11 @@ extension ViewGraph: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         let keepCurrent = visitor.current
         visitor.current = self
-        defer { visitor.current = keepCurrent }
-        defer { visitor.driver.restoreBackgroundColor() }
+        defer {
+            children.forEach { $0.accept(visitor: visitor) }
+            visitor.current = keepCurrent
+            visitor.driver.restoreBackgroundColor()
+        }
         
         if alreadyRender {
             return
@@ -166,7 +169,5 @@ extension ViewGraph: ViewContentAcceptable {
         if let content = anyView as? ViewContentAcceptable {
             content.accept(visitor: visitor)
         }
-        
-        children.forEach { $0.accept(visitor: visitor) }
     }
 }
