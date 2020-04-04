@@ -119,10 +119,6 @@ extension View {
     @inlinable public func border(color: Color? = nil, insets: EdgeInsets) -> some View {
         modifier(_BorderModifier(color: color, edges: .all, insets: insets))
     }
-    @inlinable public func border(color: Color? = nil, edges: Edge.Set = .all, width: PhysicalDistance? = nil) -> some View {
-        let insets = width.map { EdgeInsets(_all: $0) }
-        return modifier(_BorderModifier(color: color, edges: edges, insets: insets))
-    }
     @inlinable public func border(color: Color? = nil, edges: Edge.Set = .all) -> some View {
         modifier(_BorderModifier(color: color, edges: edges, insets: nil))
     }
