@@ -53,6 +53,12 @@ class BorderModifierTests: XCTestCase {
             let content = driver.content()
             
             XCTAssertTrue(content.contains(Edge.Set.leadingTop.defaultDelimiter))
+            XCTAssertTrue(content.contains(Edge.Set.trailingTop.defaultDelimiter))
+            XCTAssertTrue(content.contains(Edge.Set.leadingBottom.defaultDelimiter))
+            XCTAssertTrue(content.contains(Edge.Set.trailingBottom.defaultDelimiter))
+            XCTAssertTrue(content.contains(Edge.Set.vertical.defaultDelimiter))
+            XCTAssertTrue(content.contains(Edge.Set.horizontal.defaultDelimiter))
+            XCTAssertTrue(content.contains("123"))
         }
     }
 }

@@ -8,10 +8,10 @@
 import Foundation
 
 extension Edge.Set {
-    fileprivate static let leadingTop: Edge.Set = [.leading, .top]
-    fileprivate static let trailingTop: Edge.Set = [.trailing, .bottom]
-    fileprivate static let leadingBottom: Edge.Set = [.leading, .top]
-    fileprivate static let trailingBottom: Edge.Set = [.trailing, .bottom]
+    internal static let leadingTop: Edge.Set = [.leading, .top]
+    internal static let trailingTop: Edge.Set = [.trailing, .bottom]
+    internal static let leadingBottom: Edge.Set = [.leading, .top]
+    internal static let trailingBottom: Edge.Set = [.trailing, .bottom]
     internal var defaultDelimiter: String {
         switch self {
         case .horizontal:
