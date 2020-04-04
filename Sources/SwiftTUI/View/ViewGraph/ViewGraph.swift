@@ -153,7 +153,6 @@ extension ViewGraph: ViewContentAcceptable {
         switch anyView {
         case is ContainerViewContentAcceptable:
             children.forEach { child in
-                debugLogger.debug(userInfo: "view type is \(child.anyView.self), child.positionToWindow(): \(child.positionToWindow()), actualy origin \(child.rect.origin)")
                 switch listType {
                 case .vertical:
                     let render: ViewGraph = child.extractRendableChlid() ?? child
