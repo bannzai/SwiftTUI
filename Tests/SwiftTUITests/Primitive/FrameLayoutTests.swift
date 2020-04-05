@@ -160,17 +160,10 @@ class FrameLayoutTests: XCTestCase {
     }
     
     func testContentForIllegalCase() {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            let setRectVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: setRectVisitor)
-            return graph
-        }
         XCTContext.runActivity(named: "for illegal pattern about to proposedSize is zero") { (_) in
             let view = Text("123").frame(width: 0, height: 0)
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
