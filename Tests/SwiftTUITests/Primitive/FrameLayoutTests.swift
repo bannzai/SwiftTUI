@@ -68,7 +68,7 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when call frame(width:height:).frame(width:height:)") { (_) in
             let view = Text("123").frame(width: 10, height: 10).frame(width: 20, height: 20)
             
-            let frameGraph20 = prepare(view: view)
+            let frameGraph20 = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             frameGraph20.accept(visitor: visitor)
             XCTAssertEqual(frameGraph20.rect.size, Size(width: 20, height: 20))
