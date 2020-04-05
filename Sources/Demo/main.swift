@@ -5,7 +5,21 @@ import Runtime
 
 struct ContentView: View {
     var body: some View {
-        Text("123").frame(width: 0, height: 0)
+        VStack(alignment: .leading) {
+            Text("Hello")
+            Text(",")
+                .border(Color.yellow)
+                .padding(1)
+                .border(Color.red)
+                .frame(width: 7, height: 7)
+                .border(Color.blue)
+            VStack(alignment: .trailing) {
+                Text("World")
+                    .frame(width: 4, height: 3)
+            }
+        }
+        .border(.red)
+        .border(.yellow)
     }
 }
 let view = ContentView()

@@ -76,7 +76,7 @@ extension ViewGraph {
         if anyView is ContainerViewType {
             visitor.currentContainerGraph = self
         }
-
+        
         if children.isEmpty {
             return
         }
@@ -174,7 +174,6 @@ extension ViewGraph {
 
 extension ViewGraph {
     private func acceptSetContainerSize(visitor: ViewSetRectVisitor) {
-
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
