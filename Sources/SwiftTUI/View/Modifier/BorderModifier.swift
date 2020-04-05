@@ -106,7 +106,7 @@ extension _BorderModifier: ViewContentAcceptable {
             let top = position.y + 1
             let bottom = position.y + graph.rect.size.height - 2
             let setter: (Int) -> Void = { offset in
-                sharedCursor.moveTo(x: position.x, y: top)
+                sharedCursor.moveTo(x: position.x, y: top + offset)
                 visitor.driver.add(string: Edge.Set.vertical.defaultDelimiter)
                 
                 sharedCursor.moveTo(x: position.x + graph.rect.size.width - 1, y: top + offset)
@@ -116,8 +116,8 @@ extension _BorderModifier: ViewContentAcceptable {
             case true:
                 setter(0)
             case false:
-                stride(from: top, to: bottom, by: Edge.Set.vertical.defaultDelimiter.height).forEach { offset in
-                    setter(offset)
+                stride(from: top, to: bottom + 1, by: Edge.Set.vertical.defaultDelimiter.height).forEach { offset in
+                    setter(offset - 1)
                 }
             }
         }
