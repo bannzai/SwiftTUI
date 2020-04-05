@@ -21,8 +21,10 @@ public class ViewGraph: SwiftTUI.View {
     internal var alignment: Alignment = .default
     internal lazy var spacing: PhysicalDistance = listType.defaultSpace
     internal lazy var dimensions: ViewDimensions = ViewDimensions(graph: self)
-
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
+    
+    // MARK: - Dirty property for visitor flags
+    internal var alreadyRender: Bool = false
     
     internal func inheritProperties(to child: ViewGraph) {
         child.alignment = alignment
@@ -145,24 +147,22 @@ internal final class ViewGraphSetVisitor: Visitor {
 
 extension ViewGraph: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
-        defer { visitor.driver.restoreBackgroundColor() }
-        switch anyView {
-        case is ContainerViewContentAcceptable:
-            children.forEach { child in
-                debugLogger.debug(userInfo: "view type is \(child.anyView.self), child.positionToWindow(): \(child.positionToWindow()), actualy origin \(child.rect.origin)")
-                switch listType {
-                case .vertical:
-                    let render: ViewGraph = child.extractRendableChlid() ?? child
-                    sharedCursor.moveTo(point: render.positionToWindow())
-                case .horizontal:
-                    break
-                }
-                child.accept(visitor: visitor)
-            }
-        case let content as ViewContentAcceptable:
-            content.accept(visitor: visitor)
-        case _:
+        let keepCurrent = visitor.current
+        visitor.current = self
+        defer {
             children.forEach { $0.accept(visitor: visitor) }
+            visitor.current = keepCurrent
+            visitor.driver.restoreBackgroundColor()
+        }
+        
+        if alreadyRender {
+            return
+        }
+        alreadyRender = true
+
+        sharedCursor.moveTo(point: positionToWindow())
+        if let content = anyView as? ViewContentAcceptable {
+            content.accept(visitor: visitor)
         }
     }
 }

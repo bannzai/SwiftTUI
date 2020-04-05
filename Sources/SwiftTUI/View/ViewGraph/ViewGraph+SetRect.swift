@@ -25,6 +25,10 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
                 modifier.modify(for: self, visitor: visitor)
                 return
             }
+            if let modifier = view.anyModifier as? _BorderModifier {
+                modifier.modify(for: self, visitor: visitor)
+                return
+            }
             if let modifier = view.anyModifier as? _FrameLayout {
                 modifier.modify(for: self, visitor: visitor)
                 return
@@ -83,7 +87,12 @@ extension ViewGraph {
             guard let view = anyView as? HasAnyModifier else {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")
             }
+            if view.anyModifier is _BorderModifier {
+                // NOTE: it is already set position vai _BorderModifier.modify(graph:visitor:)
+                return
+            }
             if view.anyModifier is _PaddingLayout {
+                // NOTE: it is already set position vai _PaddingLayout.modify(graph:visitor:)
                 return
             }
             if view.anyModifier is _FrameLayout {

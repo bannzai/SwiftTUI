@@ -24,6 +24,8 @@ struct ContentView: View {
                     .alignmentGuide(.trailing, computeValue: { d in d[explicit: .leading]! + 2 })
             }
         }
+        .border(.red)
+        .border(.yellow)
     }
 }
 let view = ContentView()

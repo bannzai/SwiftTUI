@@ -55,9 +55,8 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("123"))
-            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains("456"))
-            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "123".height)
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "123".height])
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack {
@@ -71,11 +70,9 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("1"))
-            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains("2"))
-            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "1".height)
             XCTAssertTrue(result.contains("3"))
-            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "1".height + "123".height, ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height])
         }
         XCTContext.runActivity(named: "when CustomView has VStack<CustomView<Text>>") { (_) in
             let view = CustomView(body: VStack { CustomView(body: Text("123")) } )
@@ -128,11 +125,11 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             
             XCTAssertTrue(result.contains("1"))
-            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains("2"))
-            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "1".height)
             XCTAssertTrue(result.contains("3"))
-            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "1".height + "2".height)
+
+            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [0, 0, 0])
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "1".height, ViewVisitorListOption.vertical.defaultSpace + "1".height + "23".height])
 
             XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
             XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
@@ -150,8 +147,8 @@ class ViewContentVisitorTests: XCTestCase {
             
             XCTAssertEqual("1", result)
 
-            XCTAssertEqual(driver.storedBackgroundColors[0..<2], [.blue, .red])
-            XCTAssertEqual(driver.storedBackgroundColors[2], Style.Color.background.color)
+            XCTAssertAmbiguouseOrder(driver.storedBackgroundColors, [.blue, .red])
+            XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
         }
         XCTContext.runActivity(named: "when Original Modifier") { (_) in
             struct Modifier: ViewModifier {
@@ -185,14 +182,10 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             
             XCTAssertTrue(result.contains("1"))
-            XCTAssertEqual(testSharedCursor.xHistory[0], 2)
-            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains("23"))
-            XCTAssertEqual(testSharedCursor.xHistory[1], 1)
-            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "1".height)
             XCTAssertTrue(result.contains("456"))
-            XCTAssertEqual(testSharedCursor.xHistory[2], 0)
-            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "1".height + "23".height)
+            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [2, 1, 0])
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "1".height, ViewVisitorListOption.vertical.defaultSpace + "1".height + "23".height])
         }
         XCTContext.runActivity(named: "when VStack(alignment: .trailing) contains TupleView<_AlignmentWritingModifier<Text>, Text, Text>") { (_) in
             let view = VStack(alignment: .trailing) {
@@ -208,15 +201,11 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             
             XCTAssertTrue(result.contains("Hello"))
-            XCTAssertEqual(testSharedCursor.xHistory[0], 3)
-            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains(","))
-            XCTAssertEqual(testSharedCursor.xHistory[1], 4)
-            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "Hello".height)
             XCTAssertTrue(result.contains("World"))
-            XCTAssertEqual(testSharedCursor.xHistory[2], 0)
-            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height)
-            
+            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [3, 4, 0])
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "Hello".height, ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height])
+
             XCTAssertEqual(graph.rect.size.width, 8)
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<_AlignmentWritingModifier<Text>, Text, Text> when .leading alignment and specity negative value") { (_) in
@@ -232,17 +221,14 @@ class ViewContentVisitorTests: XCTestCase {
             visitor.visit(graph)
             
             let result = driver.content()
-            
+
+            XCTAssertEqual(driver.storedString, "Hello,World")
             XCTAssertTrue(result.contains("Hello"))
-            XCTAssertEqual(testSharedCursor.xHistory[0], 1)
-            XCTAssertEqual(testSharedCursor.yHistory[0], 0)
             XCTAssertTrue(result.contains(","))
-            XCTAssertEqual(testSharedCursor.xHistory[1], 0)
-            XCTAssertEqual(testSharedCursor.yHistory[1], ViewVisitorListOption.vertical.defaultSpace + "Hello".height)
             XCTAssertTrue(result.contains("World"))
-            XCTAssertEqual(testSharedCursor.xHistory[2], 0)
-            XCTAssertEqual(testSharedCursor.yHistory[2], ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height)
-            
+            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [1, 0, 0])
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "Hello".height, ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height])
+
             XCTAssertEqual(graph.rect.size.width, 6)
         }
     }

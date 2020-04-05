@@ -1,9 +1,2 @@
-#include "include/ncurses.h"
-#include <wchar.h>
-
-typedef struct
-{
-  int         attr;
-  wchar_t     chars[5];
-} m_cchar_t;
-
+// #include "include/ncurses.h"
+#include "include/ncursesw/ncurses.h"

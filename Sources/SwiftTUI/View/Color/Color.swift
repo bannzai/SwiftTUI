@@ -53,7 +53,7 @@ public enum Style {
         case foreground
         case text
         
-        var color: SwiftTUI.Color {
+        internal var color: SwiftTUI.Color {
             switch self {
             case .background:
                 return .black

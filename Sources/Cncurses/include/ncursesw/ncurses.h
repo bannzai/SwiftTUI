@@ -57,7 +57,7 @@
 /*
  * Definitions to facilitate DLL's.
  */
-#include "ncursesw/ncurses_dll.h"
+#include "ncurses_dll.h"
 
 #if 1
 #include <stdint.h>
@@ -2073,7 +2073,7 @@ extern NCURSES_EXPORT(const char *) _nc_visbuf (const char *);
 #define OPTIMIZE_ALL		0xff	/* enable all optimizations (dflt) */
 #endif
 
-#include "ncursesw/unctrl.h"
+#include "unctrl.h"
 
 #ifdef __cplusplus
 
