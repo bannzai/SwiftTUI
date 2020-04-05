@@ -31,6 +31,15 @@ class BorderModifierTests: XCTestCase {
             
             XCTAssertEqual(graph.rect.size, Size(width: "123".width + defaultBorderWidth * 2, height: "123".height + defaultBorderWidth * 2))
         }
+        XCTContext.runActivity(named: "border(.blue).border(.red)") { (_) in
+            let view = Text("123").border(.blue).border(.red)
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.size, Size(width: "123".width + (defaultBorderWidth * 2) * 2, height: "123".height + (defaultBorderWidth * 2) * 2))
+        }
     }
     
     func testChildrenPosition() throws {
