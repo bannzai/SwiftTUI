@@ -83,7 +83,7 @@ class BorderModifierTests: XCTestCase {
         XCTContext.runActivity(named: "when call border(.blue)") { (_) in
             let view = Text("123").border(.blue)
             
-            let graph = prepareViewGraph(view: view)
+            let graph = prepareSizedGraph(view: view)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
