@@ -22,6 +22,7 @@ public class ViewGraph: SwiftTUI.View {
     internal lazy var spacing: PhysicalDistance = listType.defaultSpace
     internal lazy var dimensions: ViewDimensions = ViewDimensions(graph: self)
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
+    internal var proposedSize: Size = .zero
     
     // MARK: - Dirty property for visitor flags
     internal var alreadyRender: Bool = false
