@@ -225,6 +225,9 @@ extension Text: HasIntrinsicContentSize {
         return Size(width: width, height: baseHeight)
     }
     func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
+        if visitor.proposedSize.width == 0 {
+            return .zero
+        }
         let size = calcTextSize(proposedWidth: visitor.proposedSize.width)
         return size
     }
