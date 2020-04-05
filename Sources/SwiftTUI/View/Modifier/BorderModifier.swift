@@ -112,13 +112,8 @@ extension _BorderModifier: ViewContentAcceptable {
                 sharedCursor.moveTo(x: position.x + graph.rect.size.width - 1, y: top + offset)
                 visitor.driver.add(string: Edge.Set.vertical.defaultDelimiter)
             }
-            switch top == bottom {
-            case true:
-                setter(0)
-            case false:
-                stride(from: top, to: bottom + 1, by: Edge.Set.vertical.defaultDelimiter.height).forEach { offset in
-                    setter(offset - 1)
-                }
+            stride(from: top, through: bottom, by: Edge.Set.vertical.defaultDelimiter.height).forEach { offset in
+                setter(offset - top)
             }
         }
         
