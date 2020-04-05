@@ -153,4 +153,16 @@ public func XCTAssertAmbiguouseOrder<T>(_ expression1: @autoclosure () -> [T], _
     }
 }
 
-
+func prepareSizedGraph<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
+    (sharedCursor as? TestCursor)?.reset()
+    
+    let graphVisitor = ViewGraphSetVisitor()
+    let graph = graphVisitor.visit(view)
+    graph.listType = viewListOption
+    
+    // FIXME: Remove Size Visitor??
+    let sizeVisitor = ViewSetRectVisitor()
+    _ = sizeVisitor.visit(graph)
+    
+    return graph
+}
