@@ -12,6 +12,7 @@ struct ContentView: View {
                 .background(Color.red)
             Text(",")
                 .border(.red)
+                .border(.yellow)
                 .background(Color.blue)
             Text("World")
                 .padding(2)
