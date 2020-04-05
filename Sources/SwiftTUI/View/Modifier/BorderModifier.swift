@@ -88,6 +88,9 @@ extension _BorderModifier: ViewContentAcceptable {
         }
         let position = graph.positionToWindow()
         
+        visitor.driver.setForegroundColor(color)
+        defer { visitor.driver.restoreForegroundColor() }
+        
         topBorder: do {
             sharedCursor.moveTo(point: position)
             visitor.driver.add(string: Edge.Set.leadingTop.defaultDelimiter)

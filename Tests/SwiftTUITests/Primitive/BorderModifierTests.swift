@@ -83,6 +83,8 @@ class BorderModifierTests: XCTestCase {
             
             let content = driver.content()
             
+            XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
+            XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
             XCTAssertTrue(content.contains(Edge.Set.leadingTop.defaultDelimiter))
             XCTAssertTrue(content.contains(Edge.Set.trailingTop.defaultDelimiter))
             XCTAssertTrue(content.contains(Edge.Set.leadingBottom.defaultDelimiter))
