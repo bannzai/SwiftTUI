@@ -154,5 +154,16 @@ class FrameLayoutTests: XCTestCase {
             
             // Keep test for check not call fatalError
         }
+        
+        XCTContext.runActivity(named: "check about divide of zero pattern") { (_) in
+            let view = Text("123").padding(2).frame(width: 4, height: 3)
+            
+            let graph = prepare(view: view)
+            let visitor = ViewContentVisitor(driver: Driver())
+            graph.accept(visitor: visitor)
+            
+            // Keep test for check divide of zero
+        }
+
     }
 }
