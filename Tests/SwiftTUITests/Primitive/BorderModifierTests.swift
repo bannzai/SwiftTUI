@@ -51,7 +51,7 @@ class BorderModifierTests: XCTestCase {
             
             XCTAssertEqual(textGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
         }
-        XCTContext.runActivity(named: "when padding layout specify vector and length via border(color: .blue, edges: .leading)") { (_) in
+        XCTContext.runActivity(named: "when layout specify vector via border(color: .blue, edges: .leading)") { (_) in
             let view = Text("123").border(.blue, .leading)
 
             let graph = prepare(view: view)
@@ -63,6 +63,21 @@ class BorderModifierTests: XCTestCase {
 
             XCTAssertEqual(textGraph.rect.origin, Point(x: 1, y: 0))
         }
+        XCTContext.runActivity(named: "when border via border(color: .blue).border(color: .red)") { (_) in
+            let view = Text("123").border(.blue).border(.red)
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+
+            let blueBorderGraph = graph.children[0]
+            XCTAssertTrue(blueBorderGraph.anyView is ModifiedContent<Text, _BorderModifier>)
+            XCTAssertEqual(blueBorderGraph.rect.origin, Point(x: 1, y: 1))
+            
+            let textGraph = blueBorderGraph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            XCTAssertEqual(textGraph.rect.origin, Point(x: 1, y: 1))
+        }
     }
 
     func testContent() {
@@ -73,7 +88,7 @@ class BorderModifierTests: XCTestCase {
             graph.accept(visitor: setRectVisitor)
             return graph
         }
-        XCTContext.runActivity(named: "when call padding(.blue)") { (_) in
+        XCTContext.runActivity(named: "when call border(.blue)") { (_) in
             let view = Text("123").border(.blue)
             
             let graph = prepare(view: view)
