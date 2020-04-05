@@ -22,8 +22,8 @@ class BorderModifierTests: XCTestCase {
             let graph = graphVisitor.visit(view)
             return graph
         }
-        XCTContext.runActivity(named: "when call border()") { (_) in
-            let view = Text("123").border()
+        XCTContext.runActivity(named: "when call border(.blue)") { (_) in
+            let view = Text("123").border(.blue)
             
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
@@ -39,8 +39,8 @@ class BorderModifierTests: XCTestCase {
             let graph = graphVisitor.visit(view)
             return graph
         }
-        XCTContext.runActivity(named: "when call border()") { (_) in
-            let view = Text("123").border()
+        XCTContext.runActivity(named: "when call border(.blue)") { (_) in
+            let view = Text("123").border(.blue)
             
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
@@ -51,8 +51,8 @@ class BorderModifierTests: XCTestCase {
             
             XCTAssertEqual(textGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
         }
-        XCTContext.runActivity(named: "when padding layout specify vector and length via border(edges: .leading)") { (_) in
-            let view = Text("123").border(edges: .leading)
+        XCTContext.runActivity(named: "when padding layout specify vector and length via border(color: .blue, edges: .leading)") { (_) in
+            let view = Text("123").border(.blue, .leading)
 
             let graph = prepare(view: view)
             let visitor = ViewSetRectVisitor()
@@ -73,8 +73,8 @@ class BorderModifierTests: XCTestCase {
             graph.accept(visitor: setRectVisitor)
             return graph
         }
-        XCTContext.runActivity(named: "when call padding()") { (_) in
-            let view = Text("123").border()
+        XCTContext.runActivity(named: "when call padding(.blue)") { (_) in
+            let view = Text("123").border(.blue)
             
             let graph = prepare(view: view)
             let driver = Driver()

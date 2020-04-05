@@ -40,8 +40,8 @@ extension Edge.Set {
     public let color: Color
     public let edges: Edge.Set
 
-    public init(color: Color?, edges: Edge.Set = .all) {
-        self.color = color ?? Style.Color.border.color
+    public init(color: Color, edges: Edge.Set = .all) {
+        self.color = color 
         self.edges = edges
     }
     
@@ -133,7 +133,7 @@ extension _BorderModifier: ViewContentAcceptable {
 }
 
 extension View {
-    @inlinable public func border(color: Color? = nil, edges: Edge.Set = .all) -> some View {
+    @inlinable public func border(_ color: Color, _ edges: Edge.Set = .all) -> some View {
         modifier(_BorderModifier(color: color, edges: edges))
     }
 }

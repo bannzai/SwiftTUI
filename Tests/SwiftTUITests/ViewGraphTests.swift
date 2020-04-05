@@ -29,8 +29,8 @@ class ViewGraphTests: XCTestCase {
             
             XCTAssertEqual(graph.positionToWindow(), Point(x: 20, y: 30))
         }
-        XCTContext.runActivity(named: "when Text.border()") { _ in
-            let view = Text("123").border()
+        XCTContext.runActivity(named: "when Text.border(.blue)") { _ in
+            let view = Text("123").border(.blue)
             let graph = ViewGraphSetVisitor().visit(view)
             graph.accept(visitor: .init())
             

@@ -867,7 +867,7 @@ extension VStackTests {
         XCTContext.runActivity(named: "when VStack contains TupleView<_BorderModifier<Text>, Text, Text> and specify leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("Hello")
-                    .border()
+                    .border(.blue)
                 Text(",")
                 Text("World")
             }
