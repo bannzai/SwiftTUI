@@ -17,6 +17,13 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
             }
         }
         
+        if isRoot {
+            setProposedSizeIfFirst(mainScreen.bounds.size)
+        }
+        parent.map {
+            setProposedSizeIfFirst($0.proposedSize)
+        }
+
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")
@@ -174,6 +181,11 @@ extension ViewGraph {
 
 extension ViewGraph {
     private func acceptSetContainerSize(visitor: ViewSetRectVisitor) {
+        let keepCurrentContainer = visitor.currentContainerGraph
+        defer { visitor.currentContainerGraph = keepCurrentContainer }
+        if isContainerType {
+            visitor.currentContainerGraph = self
+        }
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
@@ -225,10 +237,10 @@ extension Text: HasIntrinsicContentSize {
         return Size(width: width, height: baseHeight)
     }
     func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
-        if visitor.proposedSize.width == 0 {
+        if viewGraph.proposedSize.width == 0 {
             return .zero
         }
-        let size = calcTextSize(proposedWidth: visitor.proposedSize.width)
+        let size = calcTextSize(proposedWidth: viewGraph.proposedSize.width)
         return size
     }
 }
@@ -241,29 +253,27 @@ extension TupleView: HasContainerContentSize {
     func containerContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
         switch viewGraph.listType {
         case .vertical:
-            var allocableHeight: PhysicalDistance = visitor.proposedSize.height - (viewGraph.rendableChildren.count - 1) * viewGraph.spacing
+            var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (viewGraph.rendableChildren.count - 1) * viewGraph.spacing
             var maxElementWidth: PhysicalDistance = 0
             viewGraph.rendableChildren.enumerated().forEach { (offset, element) in
                 let provisionalElementHeight: PhysicalDistance = allocableHeight / (viewGraph.rendableChildren.count - offset)
-                let elementProposedSize = Size(width: visitor.proposedSize.width, height: max(provisionalElementHeight, 0))
-                let keepProposedSize = visitor.proposedSize
-                defer { visitor.proposedSize = keepProposedSize }
-                visitor.proposedSize = elementProposedSize
+                let elementProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
+                element.proposedSize = elementProposedSize
                 element.accept(visitor: visitor)
                 
                 maxElementWidth = max(maxElementWidth, element.rect.size.width + element.rect.origin.x)
                 allocableHeight -= element.rect.size.height
             }
             
-            maxElementWidth = min(maxElementWidth, visitor.proposedSize.width)
+            maxElementWidth = min(maxElementWidth, viewGraph.proposedSize.width)
             
             switch allocableHeight {
             case let allocableHeight where allocableHeight < 0:
-                return Size(width: maxElementWidth, height: visitor.proposedSize.height + abs(allocableHeight))
+                return Size(width: maxElementWidth, height: viewGraph.proposedSize.height + abs(allocableHeight))
             case let allocableHeight where allocableHeight > 0:
-                return Size(width: maxElementWidth, height: visitor.proposedSize.height - allocableHeight)
+                return Size(width: maxElementWidth, height: viewGraph.proposedSize.height - allocableHeight)
             case _:
-                return Size(width: maxElementWidth, height: visitor.proposedSize.height)
+                return Size(width: maxElementWidth, height: viewGraph.proposedSize.height)
             }
         case .horizontal:
             fatalError()

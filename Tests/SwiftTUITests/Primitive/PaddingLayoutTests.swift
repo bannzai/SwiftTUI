@@ -16,15 +16,10 @@ class PaddingLayoutTests: XCTestCase {
     }
     
     func testSize() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when call padding()") { (_) in
             let view = Text("123").padding()
 
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
 
@@ -33,7 +28,7 @@ class PaddingLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when padding layout specify vector and length via .padding(.leading, 10)") { (_) in
             let view = Text("123").padding(.leading, 10)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -42,7 +37,7 @@ class PaddingLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when padding layout specify vector and length via .padding(.all, 10)") { (_) in
             let view = Text("123").padding(.all, 10)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -51,7 +46,7 @@ class PaddingLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when call padding().padding()") { (_) in
             let view = Text("123").padding().padding()
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -60,15 +55,10 @@ class PaddingLayoutTests: XCTestCase {
     }
     
     func testChildrenPosition() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when call padding()") { (_) in
             let view = Text("123").padding()
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -80,7 +70,7 @@ class PaddingLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when padding layout specify vector and length via .padding(.leading, 10)") { (_) in
             let view = Text("123").padding(.leading, 10)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -92,7 +82,7 @@ class PaddingLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when padding layout specify vector and length via .padding(.all, 10)") { (_) in
             let view = Text("123").padding(.all, 10)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -104,7 +94,7 @@ class PaddingLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when call padding().padding()") { (_) in
             let view = Text("123").padding().padding()
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -119,17 +109,10 @@ class PaddingLayoutTests: XCTestCase {
     }
     
     func testContent() {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            let setRectVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: setRectVisitor)
-            return graph
-        }
         XCTContext.runActivity(named: "when call padding()") { (_) in
             let view = Text("123").padding()
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let visitor = ViewContentVisitor(driver: Driver())
             graph.accept(visitor: visitor)
             

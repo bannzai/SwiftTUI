@@ -69,12 +69,10 @@ internal extension _PaddingLayout {
      func modify(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
         let horizontalLength = self.horizontalLength()
         let verticalLength = self.verticalLength()
-        
-        visitor.proposedSize.width -= horizontalLength
-        visitor.proposedSize.height -= verticalLength
 
         assert(paddingGraph.extractRendableChlid() != nil, "it is necessary about rendable view")
         let baseGraph = paddingGraph.extractRendableChlid()!
+        baseGraph.setProposedSizeIfFirst(Size(width: paddingGraph.proposedSize.width - horizontalLength, height: paddingGraph.proposedSize.height - verticalLength))
         baseGraph.accept(visitor: visitor)
 
         paddingGraph.rect.size.width = baseGraph.rect.size.width + horizontalLength

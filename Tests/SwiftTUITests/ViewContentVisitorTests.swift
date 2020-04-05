@@ -20,20 +20,6 @@ class ViewContentVisitorTests: XCTestCase {
         override var rows: PhysicalDistance { 100 }
     }
     
-    private func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-        testSharedCursor.reset()
-
-        let graphVisitor = ViewGraphSetVisitor()
-        let graph = graphVisitor.visit(view)
-        graph.listType = viewListOption
-        
-        // FIXME: Remove Size Visitor??
-        let sizeVisitor = ViewSetRectVisitor()
-        _ = sizeVisitor.visit(graph)
-
-        return graph
-    }
-    
     override func setUp() {
         super.setUp()
         
@@ -51,7 +37,7 @@ class ViewContentVisitorTests: XCTestCase {
             })
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("123"))
@@ -66,7 +52,7 @@ class ViewContentVisitorTests: XCTestCase {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("1"))
@@ -78,7 +64,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = CustomView(body: VStack { CustomView(body: Text("123")) } )
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual(result, "123")
@@ -87,7 +73,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = CustomView(body: EmptyView())
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual(result, "")
@@ -96,7 +82,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = CustomView(body: VStack { Text("123") } )
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual(result, "123")
@@ -105,7 +91,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = Text("hoge")
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual("hoge", result)
@@ -120,7 +106,7 @@ class ViewContentVisitorTests: XCTestCase {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             
@@ -141,7 +127,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = Text("1").background(Color.red).background(Color.blue)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             
@@ -160,7 +146,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = Text("1").modifier(Modifier())
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             
@@ -168,68 +154,6 @@ class ViewContentVisitorTests: XCTestCase {
 
             XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
             XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
-        }
-        XCTContext.runActivity(named: "when VStack(alignment: .trailing) contains TupleView<Text, Text, Text>") { (_) in
-            let view = VStack(alignment: .trailing) {
-                Text("1")
-                Text("23")
-                Text("456")
-            }
-            let driver = Driver()
-            let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
-            visitor.visit(graph)
-            let result = driver.content()
-            
-            XCTAssertTrue(result.contains("1"))
-            XCTAssertTrue(result.contains("23"))
-            XCTAssertTrue(result.contains("456"))
-            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [2, 1, 0])
-            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "1".height, ViewVisitorListOption.vertical.defaultSpace + "1".height + "23".height])
-        }
-        XCTContext.runActivity(named: "when VStack(alignment: .trailing) contains TupleView<_AlignmentWritingModifier<Text>, Text, Text>") { (_) in
-            let view = VStack(alignment: .trailing) {
-                Text("Hello")
-                    .alignmentGuide(.trailing, computeValue: { _ in return 2 })
-                Text(",")
-                Text("World")
-            }
-            let driver = Driver()
-            let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
-            visitor.visit(graph)
-            let result = driver.content()
-            
-            XCTAssertTrue(result.contains("Hello"))
-            XCTAssertTrue(result.contains(","))
-            XCTAssertTrue(result.contains("World"))
-            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [3, 4, 0])
-            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "Hello".height, ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height])
-
-            XCTAssertEqual(graph.rect.size.width, 8)
-        }
-        XCTContext.runActivity(named: "when VStack contains TupleView<_AlignmentWritingModifier<Text>, Text, Text> when .leading alignment and specity negative value") { (_) in
-            let view = VStack(alignment: .leading) {
-                Text("Hello")
-                    .alignmentGuide(.leading, computeValue: { _ in return -1 })
-                Text(",")
-                Text("World")
-            }
-            let driver = Driver()
-            let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
-            visitor.visit(graph)
-            
-            let result = driver.content()
-
-            XCTAssertEqual(driver.storedString, "Hello,World")
-            XCTAssertTrue(result.contains("Hello"))
-            XCTAssertTrue(result.contains(","))
-            XCTAssertTrue(result.contains("World"))
-            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [1, 0, 0])
-            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "Hello".height, ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height])
-
-            XCTAssertEqual(graph.rect.size.width, 6)
         }
     }
 }

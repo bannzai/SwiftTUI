@@ -16,15 +16,10 @@ class BackgroundModifierTests: XCTestCase {
     }
     
     func testSize() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when Text with Modifier for _BackgroundModifier<Text>. _BackgroundModifier is not modifed size") { (_) in
             let view = Text("123").background(Color.red)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let sizeVisitor = ViewSetRectVisitor()
             graph.accept(visitor: sizeVisitor)
             

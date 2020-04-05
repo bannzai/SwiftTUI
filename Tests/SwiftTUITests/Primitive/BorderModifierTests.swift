@@ -17,15 +17,10 @@ class BorderModifierTests: XCTestCase {
     }
     
     func testSize() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when call border(.blue)") { (_) in
             let view = Text("123").border(.blue)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -34,7 +29,7 @@ class BorderModifierTests: XCTestCase {
         XCTContext.runActivity(named: "border(.blue).border(.red)") { (_) in
             let view = Text("123").border(.blue).border(.red)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -43,15 +38,10 @@ class BorderModifierTests: XCTestCase {
     }
     
     func testChildrenPosition() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when call border(.blue)") { (_) in
             let view = Text("123").border(.blue)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -63,7 +53,7 @@ class BorderModifierTests: XCTestCase {
         XCTContext.runActivity(named: "when layout specify vector with[ border(color: .blue, edges: .leading)") { (_) in
             let view = Text("123").border(.blue, .leading)
 
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
 
@@ -75,7 +65,7 @@ class BorderModifierTests: XCTestCase {
         XCTContext.runActivity(named: "when border(color: .blue).border(color: .red)") { (_) in
             let view = Text("123").border(.blue).border(.red)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
 
@@ -90,17 +80,10 @@ class BorderModifierTests: XCTestCase {
     }
 
     func testContent() {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            let setRectVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: setRectVisitor)
-            return graph
-        }
         XCTContext.runActivity(named: "when call border(.blue)") { (_) in
             let view = Text("123").border(.blue)
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
@@ -122,7 +105,7 @@ class BorderModifierTests: XCTestCase {
         XCTContext.runActivity(named: "when call border(.blue).border(.red)") { (_) in
             let view = Text("123").border(.blue).border(.red)
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
@@ -152,7 +135,7 @@ class BorderModifierTests: XCTestCase {
                 Text("World")
             }
 
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)

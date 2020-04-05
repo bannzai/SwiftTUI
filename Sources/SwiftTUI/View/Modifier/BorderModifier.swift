@@ -55,11 +55,11 @@ internal extension _BorderModifier {
         let horizontalLength = self.horizontalLength()
         let verticalLength = self.verticalLength()
         
-        visitor.proposedSize.width -= horizontalLength
-        visitor.proposedSize.height -= verticalLength
-        
         assert(graph.extractRendableChlid() != nil, "it is necessary about rendable view")
         let baseGraph = graph.extractRendableChlid()!
+        baseGraph.proposedSize.width = graph.proposedSize.width - horizontalLength
+        baseGraph.proposedSize.height = graph.proposedSize.height - verticalLength
+
         baseGraph.accept(visitor: visitor)
         
         graph.rect.size.width = baseGraph.rect.size.width + horizontalLength

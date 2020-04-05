@@ -13,22 +13,18 @@ class VStackTests: XCTestCase {
         super.setUp()
         
         mainScreen = DummyScreen.init()
+        sharedCursor = TestCursor()
     }
     
+    var testSharedCursor: TestCursor { sharedCursor as! TestCursor }
+    
     func testSize() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains Text") { (_) in
             let view = VStack {
                 Text("123")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -41,7 +37,7 @@ class VStackTests: XCTestCase {
                 Text("456")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -58,7 +54,7 @@ class VStackTests: XCTestCase {
                     .alignmentGuide(.trailing, computeValue: { _ in return 1 })
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
 
@@ -75,7 +71,7 @@ class VStackTests: XCTestCase {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
 
@@ -92,7 +88,7 @@ class VStackTests: XCTestCase {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -105,24 +101,16 @@ class VStackTests: XCTestCase {
 }
 
 
-// MARK: - Children
+// MARK: - Children Position
 extension VStackTests {
     func testChildrenPositionWithoutModifier() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text> when .leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("1")
                 Text("23")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -159,7 +147,7 @@ extension VStackTests {
                 Text("456")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -206,7 +194,7 @@ extension VStackTests {
                 Text("456")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -253,7 +241,7 @@ extension VStackTests {
                 Text("1")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -295,13 +283,6 @@ extension VStackTests {
         }
     }
     func testChildrenPositionWithAlignmentGuide() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>> when .leading alignment. And configure alignmentGuide") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("1")
@@ -310,7 +291,7 @@ extension VStackTests {
                     .alignmentGuide(.leading, computeValue: { _ in return 2 })
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -361,7 +342,7 @@ extension VStackTests {
                     .alignmentGuide(.trailing, computeValue: { _ in return 2 })
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -412,7 +393,7 @@ extension VStackTests {
                 Text("1")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -465,7 +446,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -517,7 +498,7 @@ extension VStackTests {
                     .alignmentGuide(.leading, computeValue: { _ in return -2 })
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -572,7 +553,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -619,14 +600,6 @@ extension VStackTests {
         }
     }
     func testChildrenPositionWithFrameLayout() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains TupleView<_PaddingLayout<Text>, Text, Text> and specify leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("Hello")
@@ -635,7 +608,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -682,14 +655,6 @@ extension VStackTests {
         }
     }
     func testChildrenPositionWithPaddingLayout() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains TupleView<_PaddingLayout<Text>, Text, Text> and specify leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("Hello")
@@ -698,7 +663,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -746,13 +711,6 @@ extension VStackTests {
     }
     
     func testChildrenPositionForComplexPattern() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            return graph
-        }
-
         XCTContext.runActivity(named: "VStack<TupleView<Text, VStack<Text>>") { _ in
             let view = VStack(alignment: .leading) {
                 Text("Hello")
@@ -761,7 +719,7 @@ extension VStackTests {
                 }
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -806,7 +764,7 @@ extension VStackTests {
                 }
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -856,14 +814,6 @@ extension VStackTests {
     }
     
     func testChildrenPositionWithBorderModifier() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains TupleView<_BorderModifier<Text>, Text, Text> and specify leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("Hello")
@@ -872,7 +822,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -926,7 +876,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -976,6 +926,95 @@ extension VStackTests {
                     XCTAssertEqual(textGraph.rect.origin.y, 6)
                 }
             }
+        }
+    }
+}
+
+// MARK: - Children Content
+
+extension VStackTests {
+    func testChildrenContent() {
+        XCTContext.runActivity(named: "when VStack(alignment: .trailing) contains TupleView<Text, Text, Text>") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("1")
+                Text("23")
+                Text("456")
+            }
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepareSizedGraph(view: view)
+            visitor.visit(graph)
+            let result = driver.content()
+            
+            XCTAssertTrue(result.contains("1"))
+            XCTAssertTrue(result.contains("23"))
+            XCTAssertTrue(result.contains("456"))
+            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [2, 1, 0])
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "1".height, ViewVisitorListOption.vertical.defaultSpace + "1".height + "23".height])
+        }
+        XCTContext.runActivity(named: "when VStack(alignment: .trailing) contains TupleView<_AlignmentWritingModifier<Text>, Text, Text>") { (_) in
+            let view = VStack(alignment: .trailing) {
+                Text("Hello")
+                    .alignmentGuide(.trailing, computeValue: { _ in return 2 })
+                Text(",")
+                Text("World")
+            }
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepareSizedGraph(view: view)
+            visitor.visit(graph)
+            let result = driver.content()
+            
+            XCTAssertTrue(result.contains("Hello"))
+            XCTAssertTrue(result.contains(","))
+            XCTAssertTrue(result.contains("World"))
+            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [3, 4, 0])
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "Hello".height, ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height])
+            
+            XCTAssertEqual(graph.rect.size.width, 8)
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<_AlignmentWritingModifier<Text>, Text, Text> when .leading alignment and specity negative value") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                    .alignmentGuide(.leading, computeValue: { _ in return -1 })
+                Text(",")
+                Text("World")
+            }
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepareSizedGraph(view: view)
+            visitor.visit(graph)
+            
+            let result = driver.content()
+            
+            XCTAssertEqual(driver.storedString, "Hello,World")
+            XCTAssertTrue(result.contains("Hello"))
+            XCTAssertTrue(result.contains(","))
+            XCTAssertTrue(result.contains("World"))
+            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [1, 0, 0])
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "Hello".height, ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height])
+            
+            XCTAssertEqual(graph.rect.size.width, 6)
+        }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModfiiedContent<Text, _FrameLayout>> when .leading alignment and specity value small than text content") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                Text(",")
+                Text("World")
+                    .frame(width: 4, height: 3)
+            }
+            
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepareSizedGraph(view: view)
+            visitor.visit(graph)
+            
+            XCTAssertEqual(driver.storedString, "Hello,Worl")
+            XCTAssertAmbiguouseOrder(testSharedCursor.xHistory, [0, 0, 0])
+            XCTAssertAmbiguouseOrder(testSharedCursor.yHistory, [0, ViewVisitorListOption.vertical.defaultSpace + "Hello".height, ViewVisitorListOption.vertical.defaultSpace + "Hello".height + ",".height])
+            
+            XCTAssertEqual(graph.rect.size.width, 5)
+            XCTAssertEqual(graph.rect.size.height, 5)
         }
     }
 }
