@@ -987,19 +987,6 @@ extension VStackTests {
 
 extension VStackTests {
     func testChildrenContent() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            testSharedCursor.reset()
-            
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            // FIXME: Remove Size Visitor??
-            let sizeVisitor = ViewSetRectVisitor()
-            _ = sizeVisitor.visit(graph)
-            
-            return graph
-        }
         XCTContext.runActivity(named: "when VStack(alignment: .trailing) contains TupleView<Text, Text, Text>") { (_) in
             let view = VStack(alignment: .trailing) {
                 Text("1")
@@ -1008,7 +995,7 @@ extension VStackTests {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             
@@ -1027,7 +1014,7 @@ extension VStackTests {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             
@@ -1048,7 +1035,7 @@ extension VStackTests {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             
             let result = driver.content()
@@ -1072,7 +1059,7 @@ extension VStackTests {
 
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             
             XCTAssertEqual(driver.storedString, "Hello,Worl")

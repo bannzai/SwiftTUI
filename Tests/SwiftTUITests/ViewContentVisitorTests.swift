@@ -20,20 +20,6 @@ class ViewContentVisitorTests: XCTestCase {
         override var rows: PhysicalDistance { 100 }
     }
     
-    private func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-        testSharedCursor.reset()
-
-        let graphVisitor = ViewGraphSetVisitor()
-        let graph = graphVisitor.visit(view)
-        graph.listType = viewListOption
-        
-        // FIXME: Remove Size Visitor??
-        let sizeVisitor = ViewSetRectVisitor()
-        _ = sizeVisitor.visit(graph)
-
-        return graph
-    }
-    
     override func setUp() {
         super.setUp()
         
@@ -51,7 +37,7 @@ class ViewContentVisitorTests: XCTestCase {
             })
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("123"))
@@ -66,7 +52,7 @@ class ViewContentVisitorTests: XCTestCase {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertTrue(result.contains("1"))
@@ -78,7 +64,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = CustomView(body: VStack { CustomView(body: Text("123")) } )
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual(result, "123")
@@ -87,7 +73,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = CustomView(body: EmptyView())
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual(result, "")
@@ -96,7 +82,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = CustomView(body: VStack { Text("123") } )
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual(result, "123")
@@ -105,7 +91,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = Text("hoge")
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             XCTAssertEqual("hoge", result)
@@ -120,7 +106,7 @@ class ViewContentVisitorTests: XCTestCase {
             }
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             
@@ -141,7 +127,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = Text("1").background(Color.red).background(Color.blue)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             
@@ -160,7 +146,7 @@ class ViewContentVisitorTests: XCTestCase {
             let view = Text("1").modifier(Modifier())
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             visitor.visit(graph)
             let result = driver.content()
             
