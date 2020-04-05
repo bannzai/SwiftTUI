@@ -16,13 +16,6 @@ class TupleViewTests: XCTestCase {
     }
     
     func testSize() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when TupleView<Text, Text, Text>") { (_) in
             let view = TupleView((
                 Text("1"),

@@ -19,13 +19,6 @@ class VStackTests: XCTestCase {
     var testSharedCursor: TestCursor { sharedCursor as! TestCursor }
     
     func testSize() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains Text") { (_) in
             let view = VStack {
                 Text("123")
@@ -111,14 +104,6 @@ class VStackTests: XCTestCase {
 // MARK: - Children Position
 extension VStackTests {
     func testChildrenPositionWithoutModifier() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text> when .leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("1")
@@ -298,13 +283,6 @@ extension VStackTests {
         }
     }
     func testChildrenPositionWithAlignmentGuide() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModifiedContent<Text, _AlignmentWritingModifier>> when .leading alignment. And configure alignmentGuide") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("1")
@@ -622,14 +600,6 @@ extension VStackTests {
         }
     }
     func testChildrenPositionWithFrameLayout() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains TupleView<_PaddingLayout<Text>, Text, Text> and specify leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("Hello")
@@ -685,14 +655,6 @@ extension VStackTests {
         }
     }
     func testChildrenPositionWithPaddingLayout() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains TupleView<_PaddingLayout<Text>, Text, Text> and specify leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("Hello")
@@ -749,13 +711,6 @@ extension VStackTests {
     }
     
     func testChildrenPositionForComplexPattern() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            return graph
-        }
-
         XCTContext.runActivity(named: "VStack<TupleView<Text, VStack<Text>>") { _ in
             let view = VStack(alignment: .leading) {
                 Text("Hello")
@@ -859,14 +814,6 @@ extension VStackTests {
     }
     
     func testChildrenPositionWithBorderModifier() {
-        func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            graph.listType = viewListOption
-            
-            return graph
-        }
-        
         XCTContext.runActivity(named: "when VStack contains TupleView<_BorderModifier<Text>, Text, Text> and specify leading alignment") { (_) in
             let view = VStack(alignment: .leading) {
                 Text("Hello")

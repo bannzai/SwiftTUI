@@ -16,11 +16,6 @@ class FrameLayoutTests: XCTestCase {
     }
     
     func testSize() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when call frame()") { (_) in
             let view = Text("123").frame()
             
@@ -85,11 +80,6 @@ class FrameLayoutTests: XCTestCase {
     }
     
     func testChildrenPosition() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when call frame()") { (_) in
             let view = Text("123").frame()
             

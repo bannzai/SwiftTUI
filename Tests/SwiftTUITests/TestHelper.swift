@@ -166,3 +166,9 @@ func prepareSizedGraph<T: View>(view: T, viewListOption: ViewVisitorListOption =
     
     return graph
 }
+
+func prepareViewGraph<T: View>(view: T) -> ViewGraph {
+    let graphVisitor = ViewGraphSetVisitor()
+    let graph = graphVisitor.visit(view)
+    return graph
+}

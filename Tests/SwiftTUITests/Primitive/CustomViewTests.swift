@@ -19,11 +19,6 @@ class CustomViewTests: XCTestCase {
     }
     
     func testSize() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when using _BackgroundModifier via CustomView") { (_) in
             struct Modifier: ViewModifier {
                 func body(content: Content) -> some View {

@@ -17,11 +17,6 @@ class BorderModifierTests: XCTestCase {
     }
     
     func testSize() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when call border(.blue)") { (_) in
             let view = Text("123").border(.blue)
             
@@ -43,11 +38,6 @@ class BorderModifierTests: XCTestCase {
     }
     
     func testChildrenPosition() throws {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            return graph
-        }
         XCTContext.runActivity(named: "when call border(.blue)") { (_) in
             let view = Text("123").border(.blue)
             
