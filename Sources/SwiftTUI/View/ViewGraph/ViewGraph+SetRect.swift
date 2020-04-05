@@ -18,9 +18,11 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
         }
         
         if isRoot {
-            proposedSize = mainScreen.bounds.size
+            setProposedSizeIfFirst(mainScreen.bounds.size)
         }
-        parent.map { proposedSize = $0.proposedSize }
+        parent.map {
+            setProposedSizeIfFirst($0.proposedSize)
+        }
 
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {

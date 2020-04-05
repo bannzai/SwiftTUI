@@ -23,9 +23,18 @@ public class ViewGraph: SwiftTUI.View {
     internal lazy var dimensions: ViewDimensions = ViewDimensions(graph: self)
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     internal var proposedSize: Size = .zero
-    
+
     // MARK: - Dirty property for visitor flags
     internal var alreadyRender: Bool = false
+    fileprivate var alreadyFirstSetProposedSize: Bool = false
+    
+    internal func setProposedSizeIfFirst(_ size: Size) {
+        if alreadyFirstSetProposedSize {
+            return
+        }
+        alreadyFirstSetProposedSize = true
+        proposedSize = size
+    }
     
     internal func inheritProperties(to child: ViewGraph) {
         child.alignment = alignment

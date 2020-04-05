@@ -998,12 +998,12 @@ extension VStackTests {
         }
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, Text, ModfiiedContent<Text, _FrameLayout>> when .leading alignment and specity value small than text content") { (_) in
             let view = VStack(alignment: .leading) {
-                    Text("Hello")
-                    Text(",")
-                    Text("World")
-                        .frame(width: 4, height: 3)
+                Text("Hello")
+                Text(",")
+                Text("World")
+                    .frame(width: 4, height: 3)
             }
-
+            
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             let graph = prepareSizedGraph(view: view)

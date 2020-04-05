@@ -14,7 +14,7 @@ class FrameLayoutTests: XCTestCase {
         
         mainScreen = DummyScreen.init()
     }
-    
+
     func testSize() throws {
         XCTContext.runActivity(named: "when call frame()") { (_) in
             let view = Text("123").frame()

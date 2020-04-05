@@ -72,8 +72,7 @@ internal extension _PaddingLayout {
 
         assert(paddingGraph.extractRendableChlid() != nil, "it is necessary about rendable view")
         let baseGraph = paddingGraph.extractRendableChlid()!
-        baseGraph.proposedSize.width = paddingGraph.proposedSize.width - horizontalLength
-        baseGraph.proposedSize.height = paddingGraph.proposedSize.height - verticalLength
+        baseGraph.setProposedSizeIfFirst(Size(width: paddingGraph.proposedSize.width - horizontalLength, height: paddingGraph.proposedSize.height - verticalLength))
         baseGraph.accept(visitor: visitor)
 
         paddingGraph.rect.size.width = baseGraph.rect.size.width + horizontalLength

@@ -25,8 +25,7 @@ internal extension _FrameLayout {
     func modify(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
         assert(graph.extractRendableChlid() != nil, "it is necessary about rendable view")
         let baseGraph = graph.extractRendableChlid()!
-        baseGraph.proposedSize.width = width ?? graph.proposedSize.width
-        baseGraph.proposedSize.height = height ?? graph.proposedSize.height
+        baseGraph.setProposedSizeIfFirst(Size(width: width ?? graph.proposedSize.width, height: height ?? graph.proposedSize.height))
         baseGraph.accept(visitor: visitor)
         
         graph.rect.size.width = width ?? baseGraph.rect.size.width
