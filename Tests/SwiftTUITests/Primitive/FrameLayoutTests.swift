@@ -138,17 +138,10 @@ class FrameLayoutTests: XCTestCase {
     }
     
     func testContent() {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            let setRectVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: setRectVisitor)
-            return graph
-        }
         XCTContext.runActivity(named: "when call frame") { (_) in
             let view = Text("123").frame()
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let visitor = ViewContentVisitor(driver: Driver())
             graph.accept(visitor: visitor)
             
@@ -158,7 +151,7 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "check about divide of zero pattern") { (_) in
             let view = Text("123").padding(2).frame(width: 4, height: 3)
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let visitor = ViewContentVisitor(driver: Driver())
             graph.accept(visitor: visitor)
             
