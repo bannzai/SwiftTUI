@@ -24,7 +24,7 @@ class VStackTests: XCTestCase {
                 Text("123")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -37,7 +37,7 @@ class VStackTests: XCTestCase {
                 Text("456")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -54,7 +54,7 @@ class VStackTests: XCTestCase {
                     .alignmentGuide(.trailing, computeValue: { _ in return 1 })
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
 
@@ -71,7 +71,7 @@ class VStackTests: XCTestCase {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
 
@@ -88,7 +88,7 @@ class VStackTests: XCTestCase {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -110,7 +110,7 @@ extension VStackTests {
                 Text("23")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -147,7 +147,7 @@ extension VStackTests {
                 Text("456")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -194,7 +194,7 @@ extension VStackTests {
                 Text("456")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -241,7 +241,7 @@ extension VStackTests {
                 Text("1")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -291,7 +291,7 @@ extension VStackTests {
                     .alignmentGuide(.leading, computeValue: { _ in return 2 })
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -342,7 +342,7 @@ extension VStackTests {
                     .alignmentGuide(.trailing, computeValue: { _ in return 2 })
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -393,7 +393,7 @@ extension VStackTests {
                 Text("1")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -446,7 +446,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -498,7 +498,7 @@ extension VStackTests {
                     .alignmentGuide(.leading, computeValue: { _ in return -2 })
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -553,7 +553,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -608,7 +608,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -663,7 +663,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -719,7 +719,7 @@ extension VStackTests {
                 }
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -764,7 +764,7 @@ extension VStackTests {
                 }
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -822,7 +822,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -876,7 +876,7 @@ extension VStackTests {
                 Text("World")
             }
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             

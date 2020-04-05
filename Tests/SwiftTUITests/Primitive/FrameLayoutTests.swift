@@ -19,7 +19,7 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when call frame()") { (_) in
             let view = Text("123").frame()
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: "123".height))
@@ -31,7 +31,7 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when frame with `width` and `width` > textGraph.rect.size.width") { (_) in
             let view = Text("123").frame(width: 10)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             XCTAssertEqual(graph.rect.size, Size(width: 10, height: "123".height))
@@ -43,7 +43,7 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when frame with `height` and `height` > textGraph.rect.size.height") { (_) in
             let view = Text("123").frame(height: 10)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             XCTAssertEqual(graph.rect.size, Size(width: "123".width, height: 10))
@@ -56,7 +56,7 @@ class FrameLayoutTests: XCTestCase {
             let width = PhysicalDistance(1)
             let view = Text("123").frame(width: width)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             XCTAssertEqual(graph.rect.size, Size(width: width, height: "123".width))
@@ -83,7 +83,7 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when call frame()") { (_) in
             let view = Text("123").frame()
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -95,7 +95,7 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when frame() with width and height and alignment is center") { (_) in
             let view = Text("1234").frame(width: 10, height: 3)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -106,7 +106,7 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when frame() with width and height and alignment is leading") { (_) in
             let view = Text("1234").frame(width: 10, height: 3, alignment: .leading)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
@@ -117,7 +117,7 @@ class FrameLayoutTests: XCTestCase {
         XCTContext.runActivity(named: "when frame() with width and height and alignment is trailing") { (_) in
             let view = Text("1234").frame(width: 10, height: 3, alignment: .trailing)
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             

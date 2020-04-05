@@ -23,7 +23,7 @@ class TupleViewTests: XCTestCase {
                 Text("456")
             ))
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             

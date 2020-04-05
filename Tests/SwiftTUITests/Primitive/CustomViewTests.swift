@@ -28,7 +28,7 @@ class CustomViewTests: XCTestCase {
             
             let view = Text("1").modifier(Modifier())
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let sizeVisitor = ViewSetRectVisitor()
             graph.accept(visitor: sizeVisitor)
             
@@ -37,7 +37,7 @@ class CustomViewTests: XCTestCase {
         XCTContext.runActivity(named: "when CustomView has VStack<Text>") { (_) in
             let view = CustomView(body: VStack { Text("123") })
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let sizeVisitor = ViewSetRectVisitor()
             graph.accept(visitor: sizeVisitor)
             
@@ -49,7 +49,7 @@ class CustomViewTests: XCTestCase {
                 CustomView(body: Text("456"))
             })
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let sizeVisitor = ViewSetRectVisitor()
             graph.accept(visitor: sizeVisitor)
 
@@ -65,7 +65,7 @@ class CustomViewTests: XCTestCase {
                 Text("789")
             })
             
-            let graph = prepare(view: view)
+            let graph = prepareViewGraph(view: view)
             let sizeVisitor = ViewSetRectVisitor()
             graph.accept(visitor: sizeVisitor)
 
