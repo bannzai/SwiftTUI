@@ -56,5 +56,75 @@ class TextTests: XCTestCase {
             XCTAssertEqual(graph.rect.origin.y, 0)
         }
     }
+    
+    func testContent() {
+        func prepare<T: View>(view: T) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            let setRectVisitor = ViewSetRectVisitor()
+            graph.accept(visitor: setRectVisitor)
+            return graph
+        }
+        XCTContext.runActivity(named: "when Text contains text") { (_) in
+            let view = Text("text")
+            
+            let graph = prepare(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            graph.accept(visitor: visitor)
+            
+            let content = driver.content()
 
+            XCTAssertEqual(content, "text")
+        }
+        XCTContext.runActivity(named: "when Text with content with linebreak code") { (_) in
+            let view = Text("text\ntext")
+            
+            let graph = prepare(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(driver.storedString, "texttext")
+        }
+    }
+    
+    func testContentWithSmallScreen() {
+        func prepare<T: View>(view: T) -> ViewGraph {
+            let graphVisitor = ViewGraphSetVisitor()
+            let graph = graphVisitor.visit(view)
+            let setRectVisitor = ViewSetRectVisitor()
+            graph.accept(visitor: setRectVisitor)
+            return graph
+        }
+        class SmallScreen: Screen {
+            override var width: PhysicalDistance { return 1 }
+            override var height: PhysicalDistance { return 1 }
+        }
+        mainScreen = SmallScreen()
+        
+        XCTContext.runActivity(named: "when Text contains text") { (_) in
+            let view = Text("text")
+            
+            let graph = prepare(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            graph.accept(visitor: visitor)
+            
+            let content = driver.content()
+            
+            XCTAssertEqual(content, "t")
+        }
+
+        XCTContext.runActivity(named: "when Text with content with linebreak code") { (_) in
+            let view = Text("text\ntext")
+            
+            let graph = prepare(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(driver.storedString, "tt")
+        }
+    }
 }
