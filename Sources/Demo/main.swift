@@ -11,9 +11,6 @@ struct ContentView: View {
                 .alignmentGuide(.leading, computeValue: { d in d[explicit: .leading]! + 2 })
                 .background(Color.red)
             Text(",")
-                .border(.red)
-                .border(.yellow)
-                .background(Color.blue)
             Text("World")
                 .padding(2)
             
@@ -27,6 +24,8 @@ struct ContentView: View {
                     .alignmentGuide(.trailing, computeValue: { d in d[explicit: .leading]! + 2 })
             }
         }
+        .border(.red)
+        .border(.yellow)
     }
 }
 let view = ContentView()
