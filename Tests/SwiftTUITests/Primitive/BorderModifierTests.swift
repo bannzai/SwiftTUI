@@ -90,13 +90,6 @@ class BorderModifierTests: XCTestCase {
     }
 
     func testContent() {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            let setRectVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: setRectVisitor)
-            return graph
-        }
         XCTContext.runActivity(named: "when call border(.blue)") { (_) in
             let view = Text("123").border(.blue)
             
@@ -122,7 +115,7 @@ class BorderModifierTests: XCTestCase {
         XCTContext.runActivity(named: "when call border(.blue).border(.red)") { (_) in
             let view = Text("123").border(.blue).border(.red)
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
@@ -152,7 +145,7 @@ class BorderModifierTests: XCTestCase {
                 Text("World")
             }
 
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
