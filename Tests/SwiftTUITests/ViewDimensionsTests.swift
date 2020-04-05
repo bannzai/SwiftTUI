@@ -9,18 +9,6 @@ import XCTest
 @testable import SwiftTUI
 
 class ViewDimensionsTests: XCTestCase {
-    private func prepare<T: View>(view: T, viewListOption: ViewVisitorListOption = .vertical) -> ViewGraph {
-        let graphVisitor = ViewGraphSetVisitor()
-        let graph = graphVisitor.visit(view)
-        graph.listType = viewListOption
-        
-        // FIXME: Remove Size Visitor??
-        let sizeVisitor = ViewSetRectVisitor()
-        _ = sizeVisitor.visit(graph)
-        
-        return graph
-    }
-
     override func setUp() {
         super.setUp()
         
@@ -30,7 +18,7 @@ class ViewDimensionsTests: XCTestCase {
     func testVisit() {
         XCTContext.runActivity(named: "when Text with content") { (_) in
             let view = Text("hoge")
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
 
             XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(graph.dimensions[explicit: VerticalAlignment.default])
@@ -57,7 +45,7 @@ class ViewDimensionsTests: XCTestCase {
                 Text("456")
             ))
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
 
             XCTAssertNil(graph.dimensions[explicit: HorizontalAlignment.default])
             XCTAssertNil(graph.dimensions[explicit: VerticalAlignment.default])
@@ -88,7 +76,7 @@ class ViewDimensionsTests: XCTestCase {
         XCTContext.runActivity(named: "when Text with alignmentGuide") { (_) in
             let view = Text("hoge").alignmentGuide(.bottom) { _ in 20000 }
 
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
 
             XCTAssertNil(graph.dimensions[explicit: .bottom])
         }
@@ -100,7 +88,7 @@ class ViewDimensionsTests: XCTestCase {
                 Text("456")
             }
 
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
 
             let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ModifiedContent<Text, _AlignmentWritingModifier>})!
             XCTAssertTrue(firstModifier.anyView is ModifiedContent<Text, _AlignmentWritingModifier>)
@@ -115,7 +103,7 @@ class ViewDimensionsTests: XCTestCase {
                 Text("456")
             }
 
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
 
             let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ModifiedContent<Text, _AlignmentWritingModifier>})!
             XCTAssertTrue(firstModifier.anyView is ModifiedContent<Text, _AlignmentWritingModifier>)
@@ -136,7 +124,7 @@ class ViewDimensionsTests: XCTestCase {
                 Text("456")
             }
 
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
 
             typealias ViewType = ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>
             let firstModifier = graph.children.first!.children.first(where: { $0.anyView is ViewType })!
@@ -154,7 +142,7 @@ class ViewDimensionsTests: XCTestCase {
                 Text("456")
             }
 
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
 
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
 
@@ -174,7 +162,7 @@ class ViewDimensionsTests: XCTestCase {
                 Text("456")
             }
 
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             XCTAssertEqual(graph.alignment.horizontal, .trailing)
             
             typealias ViewType = ModifiedContent<ModifiedContent<ModifiedContent<Text, _AlignmentWritingModifier>, _AlignmentWritingModifier>, _AlignmentWritingModifier>
