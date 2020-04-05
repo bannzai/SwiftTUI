@@ -104,17 +104,43 @@ class BorderModifierTests: XCTestCase {
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
-            
             let content = driver.content()
+            let subject: (String) -> Int = { (delimiter: String) in
+                content.filter { String($0) == delimiter }.count
+            }
+            
+            assert(Edge.Set.leadingTop.defaultDelimiter == Edge.Set.trailingTop.defaultDelimiter && Edge.Set.trailingTop.defaultDelimiter == Edge.Set.trailingBottom.defaultDelimiter && Edge.Set.trailingBottom.defaultDelimiter == Edge.Set.leadingBottom.defaultDelimiter, "this test case need the same corner defaultDelimiter")
+            let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
             
             XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
-            XCTAssertTrue(content.contains(Edge.Set.leadingTop.defaultDelimiter))
-            XCTAssertTrue(content.contains(Edge.Set.trailingTop.defaultDelimiter))
-            XCTAssertTrue(content.contains(Edge.Set.leadingBottom.defaultDelimiter))
-            XCTAssertTrue(content.contains(Edge.Set.trailingBottom.defaultDelimiter))
-            XCTAssertTrue(content.contains(Edge.Set.vertical.defaultDelimiter))
-            XCTAssertTrue(content.contains(Edge.Set.horizontal.defaultDelimiter))
+            XCTAssertEqual(subject(cornerDelimiter), 1 * 4)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 1 * 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 3 * 2)
+            XCTAssertTrue(content.contains("123"))
+        }
+        XCTContext.runActivity(named: "when call border(.blue).border(.red)") { (_) in
+            let view = Text("123").border(.blue).border(.red)
+            
+            let graph = prepare(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            graph.accept(visitor: visitor)
+            
+            let content = driver.content()
+            let subject: (String) -> Int = { (delimiter: String) in
+                content.filter { String($0) == delimiter }.count
+            }
+            
+            assert(Edge.Set.leadingTop.defaultDelimiter == Edge.Set.trailingTop.defaultDelimiter && Edge.Set.trailingTop.defaultDelimiter == Edge.Set.trailingBottom.defaultDelimiter && Edge.Set.trailingBottom.defaultDelimiter == Edge.Set.leadingBottom.defaultDelimiter, "this test case need the same corner defaultDelimiter")
+            let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
+
+            XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
+            XCTAssertTrue(driver.storedForegroundColors.contains(.red))
+            XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
+            XCTAssertEqual(subject(cornerDelimiter), 1 * 4 * 2)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 1 * 2 + 3 * 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 3 * 2 + 5 * 2)
             XCTAssertTrue(content.contains("123"))
         }
     }
