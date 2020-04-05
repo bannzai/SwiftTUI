@@ -143,5 +143,37 @@ class BorderModifierTests: XCTestCase {
             XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 3 * 2 + 5 * 2)
             XCTAssertTrue(content.contains("123"))
         }
+        XCTContext.runActivity(named: "when call border(.blue).border(.red) and contained for VStack") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                Text(",")
+                    .border(.red)
+                    .border(.blue)
+                Text("World")
+            }
+
+            let graph = prepare(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            graph.accept(visitor: visitor)
+            
+            let content = driver.content()
+            let subject: (String) -> Int = { (delimiter: String) in
+                content.filter { String($0) == delimiter }.count
+            }
+            
+            assert(Edge.Set.leadingTop.defaultDelimiter == Edge.Set.trailingTop.defaultDelimiter && Edge.Set.trailingTop.defaultDelimiter == Edge.Set.trailingBottom.defaultDelimiter && Edge.Set.trailingBottom.defaultDelimiter == Edge.Set.leadingBottom.defaultDelimiter, "this test case need the same corner defaultDelimiter")
+            let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
+            
+            XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
+            XCTAssertTrue(driver.storedForegroundColors.contains(.red))
+            XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
+            XCTAssertEqual(subject(cornerDelimiter), 1 * 4 * 2)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 1 * 2 + 3 * 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 1 * 2 + 3 * 2)
+            XCTAssertTrue(content.contains("Hello"))
+            XCTAssertTrue(content.contains(","))
+            XCTAssertTrue(content.contains("World"))
+        }
     }
 }
