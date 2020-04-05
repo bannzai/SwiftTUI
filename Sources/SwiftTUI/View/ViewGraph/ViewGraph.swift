@@ -150,8 +150,8 @@ extension ViewGraph: ViewContentAcceptable {
         let keepCurrent = visitor.current
         visitor.current = self
         defer {
-            children.forEach { $0.accept(visitor: visitor) }
             visitor.current = keepCurrent
+            children.forEach { $0.accept(visitor: visitor) }
             visitor.driver.restoreBackgroundColor()
         }
         
