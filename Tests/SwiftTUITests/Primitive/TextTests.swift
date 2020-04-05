@@ -58,17 +58,10 @@ class TextTests: XCTestCase {
     }
     
     func testContent() {
-        func prepare<T: View>(view: T) -> ViewGraph {
-            let graphVisitor = ViewGraphSetVisitor()
-            let graph = graphVisitor.visit(view)
-            let setRectVisitor = ViewSetRectVisitor()
-            graph.accept(visitor: setRectVisitor)
-            return graph
-        }
         XCTContext.runActivity(named: "when Text contains text") { (_) in
             let view = Text("text")
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
@@ -80,7 +73,7 @@ class TextTests: XCTestCase {
         XCTContext.runActivity(named: "when Text with content with linebreak code") { (_) in
             let view = Text("text\ntext")
             
-            let graph = prepare(view: view)
+            let graph = prepareSizedGraph(view: view)
             let driver = Driver()
             let visitor = ViewContentVisitor(driver: driver)
             graph.accept(visitor: visitor)
