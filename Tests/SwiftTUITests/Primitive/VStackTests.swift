@@ -917,5 +917,65 @@ extension VStackTests {
                 }
             }
         }
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, ModifiedContent<ModifiedContent<Text, _BackgroundModifier> _BackgroundModifier>, Text> and alignment with leading") { (_) in
+            let view = VStack(alignment: .leading) {
+                Text("Hello")
+                    .border(.red)
+                    .border(.blue)
+                Text(",")
+                Text("World")
+            }
+            
+            let graph = prepare(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+            
+            XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
+                first: do {
+                    let blueBorderGraph = graph.children[0].children[0]
+                    let blueBorderModifier = blueBorderGraph.anyView as! HasAnyModifier
+                    XCTAssertTrue(blueBorderModifier.anyModifier is _BorderModifier)
+                    
+                    let redBorderGraph = blueBorderGraph.children[0]
+                    let redBorderModifier = redBorderGraph.anyView as! HasAnyModifier
+                    XCTAssertTrue(redBorderModifier.anyModifier is _BorderModifier)
+                    
+                    let textGraph = redBorderGraph.children[0]
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "Hello")
+                    XCTAssertEqual(textGraph.rect.origin.x, 1)
+                    XCTAssertEqual(textGraph.rect.origin.y, 1)
+                    XCTAssertEqual(redBorderGraph.rect.origin.x, 1)
+                    XCTAssertEqual(redBorderGraph.rect.origin.y, 1)
+                    XCTAssertEqual(blueBorderGraph.rect.origin.x, 0)
+                    XCTAssertEqual(blueBorderGraph.rect.origin.y, 0)
+                }
+                second: do {
+                    let textGraph = graph.children[0].children[1]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, ",")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 5)
+                }
+                third: do {
+                    let textGraph = graph.children[0].children[2]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "World")
+                    XCTAssertEqual(textGraph.rect.origin.x, 0)
+                    XCTAssertEqual(textGraph.rect.origin.y, 6)
+                }
+            }
+        }
     }
 }
