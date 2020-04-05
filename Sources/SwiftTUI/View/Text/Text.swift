@@ -53,9 +53,18 @@ extension Text: View {
 extension Text: ViewContentAcceptable {
     internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
         debugLogger.debug()
+        guard let graph = visitor.current, graph.anyView is Text else {
+            fatalError("visitor.current should set ViewGraph \(String(describing: visitor.current))")
+        }
         _textProperty.foregroundColor.map(visitor.driver.setForegroundColor)
         defer { visitor.driver.restoreForegroundColor() }
-        visitor.driver.add(string: content)
+        content.components(separatedBy: "\n").enumerated().forEach { (offset, content) in
+            if offset + 1 > graph.rect.size.height {
+                return
+            }
+            let substring = content[content.startIndex..<content.index(content.startIndex, offsetBy: graph.rect.size.width)]
+            visitor.driver.add(string: String(substring))
+        }
     }
 }
 
