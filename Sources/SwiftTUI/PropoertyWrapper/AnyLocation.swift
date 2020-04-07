@@ -82,6 +82,6 @@ internal final class ConstantLocation<Value>: AnyLocation<Value>, _InnerLocation
     
     override var value: Value {
         get { _value }
-        set { fatalError("can not set value for ConstantLocation \(newValue)") }
+        set {  }
     }
 }
