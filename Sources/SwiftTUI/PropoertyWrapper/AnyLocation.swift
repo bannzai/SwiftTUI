@@ -23,13 +23,13 @@ internal class AnyLocation<Value>: AnyLocationBase {
     var value: Value
 }
 
-internal protocol _InnerLocation {
+internal protocol _InnerLocationProperty: AnyObject {
     associatedtype Value
     var value: Value { get set }
 }
 
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers
-internal final class StoredLocation<Value>: AnyLocation<Value>, _InnerLocation {
+internal final class StoredLocation<Value>: AnyLocation<Value>, _InnerLocationProperty {
     var _value: Value!
     
     convenience init(value: Value) {
@@ -44,7 +44,7 @@ internal final class StoredLocation<Value>: AnyLocation<Value>, _InnerLocation {
 }
 
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers
-internal final class LocationBox<I: AnyLocationBase & _InnerLocation>: AnyLocation<I.Value> {
+internal final class LocationBox<I: AnyLocationBase & _InnerLocationProperty>: AnyLocation<I.Value>, _InnerLocationProperty {
     typealias Value = I.Value
     var location: I
     
@@ -60,7 +60,7 @@ internal final class LocationBox<I: AnyLocationBase & _InnerLocation>: AnyLocati
 }
 
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers
-internal final class FunctionalLocation<Value>: AnyLocation<Value>, _InnerLocation {
+internal final class FunctionalLocation<Value>: AnyLocation<Value>, _InnerLocationProperty {
     var getter: (() -> Value)!
     var setter: ((Value) -> Void)!
     
@@ -77,7 +77,7 @@ internal final class FunctionalLocation<Value>: AnyLocation<Value>, _InnerLocati
 }
 
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers
-internal final class ConstantLocation<Value>: AnyLocation<Value>, _InnerLocation {
+internal final class ConstantLocation<Value>: AnyLocation<Value>, _InnerLocationProperty {
     var _value: Value!
     
     convenience init(value: Value) {
