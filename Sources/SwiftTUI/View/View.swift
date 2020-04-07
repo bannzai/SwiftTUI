@@ -60,7 +60,15 @@ public struct _WrappedViewForBuildGraph: View, ViewGraphSetAcceptable {
             defer { visitor.current = keepCurrent }
             visitor.current = graph
             graph.setCustomize(visitor.visit(view.body))
+            injectToDynamicProperty(graph: graph)
             return graph
+        }
+        
+        private func injectToDynamicProperty(graph: ViewGraph) {
+            Mirror(reflecting: view)
+                .children
+                .compactMap { $0 as? DynamicProperty }
+                .forEach { $0._inject(viewGraph: graph) }
         }
     }
     

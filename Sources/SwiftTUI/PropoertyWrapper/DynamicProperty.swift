@@ -8,11 +8,12 @@
 import Foundation
 
 public protocol DynamicProperty {
+    func _inject(viewGraph: ViewGraph)
     mutating func update()
 }
 
 extension DynamicProperty {
-    mutating public func update() {
+    func _inject(viewGraph: ViewGraph) {
         
     }
 }

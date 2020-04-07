@@ -30,12 +30,15 @@ import Foundation
     }
 }
 
-// TODO: Unknown usecases
 extension Binding: DynamicProperty {
+    public func _inject(viewGraph: ViewGraph) {
+        location.viewGraph = viewGraph
+    }
     mutating public func update() {
         _value = wrappedValue
     }
 }
+// TODO: Unknown usecases
 //
 //extension Binding {
 //    public init<V>(_ base: Binding<V>) where Value == V?

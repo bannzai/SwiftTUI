@@ -9,8 +9,13 @@ import Foundation
 
 @_hasMissingDesignatedInitializers @usableFromInline
 internal class AnyLocationBase {
-    convenience init() { self.init(void: ()) }
-    init(void: Void) { }
+    var viewGraph: ViewGraph!
+    convenience init() {
+        self.init(viewGraph: nil)
+    }
+    init(viewGraph: ViewGraph?) {
+        self.viewGraph = viewGraph
+    }
 }
 
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @usableFromInline
