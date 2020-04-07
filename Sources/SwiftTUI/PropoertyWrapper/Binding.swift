@@ -31,11 +31,11 @@ import Foundation
 }
 
 // TODO: Unknown usecases
-//extension Binding: DynamicProperty {
-//    mutating public func update() {
-//
-//    }
-//}
+extension Binding: DynamicProperty {
+    mutating public func update() {
+        _value = wrappedValue
+    }
+}
 //
 //extension Binding {
 //    public init<V>(_ base: Binding<V>) where Value == V?
