@@ -20,6 +20,7 @@ internal class AnyLocationBase {
 
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @usableFromInline
 internal class AnyLocation<Value>: AnyLocationBase {
+    // XXX: Escaping Segmentation fault: 11 error
     var value: Value {
         get { fatalError() }
         set { fatalError() }
