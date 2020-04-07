@@ -20,7 +20,10 @@ internal class AnyLocationBase {
 
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @usableFromInline
 internal class AnyLocation<Value>: AnyLocationBase {
-    var value: Value
+    var value: Value {
+        get { fatalError() }
+        set { fatalError() }
+    }
 }
 
 internal protocol _InnerLocationProperty: AnyObject {
