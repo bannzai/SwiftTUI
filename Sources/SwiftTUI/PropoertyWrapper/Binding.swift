@@ -26,7 +26,7 @@ import Foundation
     }
     public var projectedValue: Binding<Value> { self }
     public subscript<Subject>(dynamicMember keyPath: Swift.WritableKeyPath<Value, Subject>) -> Binding<Subject> {
-        Binding<Subject>.constant(location.value[keyPath: keyPath])
+        return Binding<Subject>.init(location: StoredLocation.init(value: location.value[keyPath: keyPath]))
     }
 }
 
