@@ -24,7 +24,7 @@ import Foundation
         get { return location.value }
         nonmutating set { location.value = newValue }
     }
-    public var projectedValue: Binding<Value> { self }
+    public var projectedValue: Binding<Value> { Binding<Value>.init(location: StoredLocation.init(value: location.value)) }
     public subscript<Subject>(dynamicMember keyPath: Swift.WritableKeyPath<Value, Subject>) -> Binding<Subject> {
         return Binding<Subject>.init(location: StoredLocation.init(value: location.value[keyPath: keyPath]))
     }
