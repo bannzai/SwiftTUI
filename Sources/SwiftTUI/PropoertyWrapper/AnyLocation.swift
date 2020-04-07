@@ -32,7 +32,6 @@ internal protocol _InnerLocationProperty: AnyObject {
     var value: Value { get set }
 }
 
-@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers
 internal final class StoredLocation<Value>: AnyLocation<Value>, _InnerLocationProperty {
     var _value: Value!
     
@@ -47,10 +46,9 @@ internal final class StoredLocation<Value>: AnyLocation<Value>, _InnerLocationPr
     }
 }
 
-@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers
 internal final class LocationBox<I: AnyLocationBase & _InnerLocationProperty>: AnyLocation<I.Value>, _InnerLocationProperty {
     typealias Value = I.Value
-    var location: I
+    var location: I!
     
     convenience init(_ location: I) {
         self.init()
@@ -63,7 +61,6 @@ internal final class LocationBox<I: AnyLocationBase & _InnerLocationProperty>: A
     }
 }
 
-@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers
 internal final class FunctionalLocation<Value>: AnyLocation<Value>, _InnerLocationProperty {
     var getter: (() -> Value)!
     var setter: ((Value) -> Void)!
@@ -80,7 +77,6 @@ internal final class FunctionalLocation<Value>: AnyLocation<Value>, _InnerLocati
     }
 }
 
-@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers
 internal final class ConstantLocation<Value>: AnyLocation<Value>, _InnerLocationProperty {
     var _value: Value!
     
