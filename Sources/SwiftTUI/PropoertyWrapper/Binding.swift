@@ -30,11 +30,14 @@ import Foundation
     }
 }
 
-extension Binding: DynamicProperty {
+extension Binding: DynamicProperty where Value: Equatable {
     public func _inject(viewGraph: ViewGraph) {
         location.viewGraph = viewGraph
     }
     mutating public func update() {
+        if _value == wrappedValue {
+            return
+        }
         _value = wrappedValue
     }
 }
