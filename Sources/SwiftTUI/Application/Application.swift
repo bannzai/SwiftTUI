@@ -9,14 +9,14 @@ import Foundation
 import cncurses
 
 // Application is management SwiftTUI process
-public final class Application<Root: View> {
-    internal let viewController: HostViewController<Root>
-    public init(viewController: HostViewController<Root>) {
-        self.viewController = viewController
-    }
+public final class Application {
+    internal var viewController: HostViewController!
+    public static let shared = Application()
+    private init() { }
     
     internal var isAlreadyRun = false
-    public func run() {
+    public func run(hostViewController: HostViewController) {
+        self.viewController = hostViewController
         if isAlreadyRun {
             fatalError("Unexpected call this function of #Application.run")
         }

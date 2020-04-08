@@ -13,10 +13,11 @@ internal protocol Drawable: class {
     func draw()
 }
 
-public final class HostViewController<Root: View> {
-    internal let root: Root
-    public init(root: Root) {
-        self.root = root
+public final class HostViewController {
+    internal let root: ViewGraph
+    public init<Root: View>(root: Root) {
+        let graphVisitor = ViewGraphSetVisitor()
+        self.root = graphVisitor.visit(root)
     }
 
     internal weak var window: Window!
@@ -119,16 +120,13 @@ extension HostViewController: Drawable, DrawableDriver {
     
     func draw() {
         resetContent()
-        
-        let graphVisitor = ViewGraphSetVisitor()
-        let graph = graphVisitor.visit(root)
 
         let sizeVisitor = ViewSetRectVisitor()
-        _ = sizeVisitor.visit(graph)
+        _ = sizeVisitor.visit(root)
         
         configureView: do {
             let visitor = ViewContentVisitor(driver: self)
-            visitor.visit(graph)
+            visitor.visit(root)
             debugLogger.debug(userInfo: drawnContent)
         }
         cncurses.refresh()
