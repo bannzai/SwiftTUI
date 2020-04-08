@@ -107,6 +107,8 @@ internal extension ViewGraph {
 }
 
 public final class ViewGraphImpl<View: SwiftTUI.View>: ViewGraph {
+    internal typealias ViewType = View
+    
     internal let view: View
     internal init(view: View) {
         self.view = view
