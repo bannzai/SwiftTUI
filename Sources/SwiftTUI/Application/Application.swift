@@ -8,15 +8,17 @@
 import Foundation
 import cncurses
 
+internal var sharedDrawer: Drawable!
 // Application is management SwiftTUI process
-public final class Application {
-    internal var viewController: HostViewController!
-    public static let shared = Application()
-    private init() { }
+public final class Application<Root: View> {
+    internal var viewController: HostViewController<Root>
+    public init(hostViewController: HostViewController<Root>) {
+        self.viewController = hostViewController
+        sharedDrawer = hostViewController
+    }
     
     internal var isAlreadyRun = false
-    public func run(hostViewController: HostViewController) {
-        self.viewController = hostViewController
+    public func run() {
         if isAlreadyRun {
             fatalError("Unexpected call this function of #Application.run")
         }
@@ -28,7 +30,8 @@ public final class Application {
         }
         setupInputHandler()
         viewController.window = keyWindow
-        viewController.draw(graph: viewController.root)
+
+        viewController.draw()
 
         RunLoop.main.run()
     }
