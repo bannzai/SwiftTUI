@@ -10,7 +10,7 @@ import cncurses
 
 public typealias Rune = UInt32
 internal protocol Drawable: class {
-    func draw()
+    func draw(graph: ViewGraph)
 }
 
 public final class HostViewController {
@@ -118,15 +118,15 @@ extension HostViewController: Drawable, DrawableDriver {
         drawnContent = []
     }
     
-    func draw() {
+    func draw(graph: ViewGraph) {
         resetContent()
 
         let sizeVisitor = ViewSetRectVisitor()
-        _ = sizeVisitor.visit(root)
+        _ = sizeVisitor.visit(graph)
         
         configureView: do {
             let visitor = ViewContentVisitor(driver: self)
-            visitor.visit(root)
+            visitor.visit(graph)
             debugLogger.debug(userInfo: drawnContent)
         }
         cncurses.refresh()

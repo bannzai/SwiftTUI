@@ -28,7 +28,7 @@ public final class Application {
         }
         setupInputHandler()
         viewController.window = keyWindow
-        viewController.draw()
+        viewController.draw(graph: viewController.root)
 
         RunLoop.main.run()
     }
@@ -39,7 +39,7 @@ public final class Application {
     internal var keyWindow: Window { windows.first(where: { $0.window == stdscr })! }
 }
 
-private extension Application {
+extension Application {
     func setup() {
         if !windows.isEmpty {
             assertionFailure("duplicated call setup functions")
