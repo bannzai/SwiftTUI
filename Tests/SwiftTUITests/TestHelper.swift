@@ -172,3 +172,14 @@ func prepareViewGraph<T: View>(view: T) -> ViewGraph {
     let graph = graphVisitor.visit(view)
     return graph
 }
+
+
+final class TestDrawer: Drawable {
+    var _draw: () -> Void
+    init(draw: @escaping () -> Void) {
+        self._draw = draw
+    }
+    func draw() {
+        _draw()
+    }
+}

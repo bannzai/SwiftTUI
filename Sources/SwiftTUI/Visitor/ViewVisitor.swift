@@ -41,6 +41,10 @@ internal final class ViewContentVisitor: Visitor {
     }
     
     internal func visit<T: View>(_ content: T) -> VisitResult {
+        debugLogger.debug(userInfo: "begin content visitor: \(type(of: content))")
+        defer {
+            debugLogger.debug(userInfo: "end content visitor: \(type(of: content))")
+        }
         switch content {
         case let viewAcceptable as ViewContentAcceptable:
             return viewAcceptable.accept(visitor: self)

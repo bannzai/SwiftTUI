@@ -18,7 +18,10 @@ internal final class ViewSetRectVisitor: Visitor {
     internal var currentContainerGraph: ViewGraph?
 
     internal func visit<T: View>(_ content: T) -> VisitResult {
-        debugLogger.debug()
+        debugLogger.debug(userInfo: "begin set rect visitor: \(type(of: content))")
+        defer {
+            debugLogger.debug(userInfo: "end set rect visitor: \(type(of: content))")
+        }
         switch content {
         case let acceptable as ViewSetRectVisitorAcceptable:
             return acceptable.accept(visitor: self)

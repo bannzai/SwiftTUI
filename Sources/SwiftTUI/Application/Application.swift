@@ -8,11 +8,13 @@
 import Foundation
 import cncurses
 
+internal var sharedDrawer: Drawable!
 // Application is management SwiftTUI process
 public final class Application<Root: View> {
-    internal let viewController: HostViewController<Root>
-    public init(viewController: HostViewController<Root>) {
-        self.viewController = viewController
+    internal var viewController: HostViewController<Root>
+    public init(hostViewController: HostViewController<Root>) {
+        self.viewController = hostViewController
+        sharedDrawer = hostViewController
     }
     
     internal var isAlreadyRun = false
@@ -28,6 +30,7 @@ public final class Application<Root: View> {
         }
         setupInputHandler()
         viewController.window = keyWindow
+
         viewController.draw()
 
         RunLoop.main.run()
@@ -39,7 +42,7 @@ public final class Application<Root: View> {
     internal var keyWindow: Window { windows.first(where: { $0.window == stdscr })! }
 }
 
-private extension Application {
+extension Application {
     func setup() {
         if !windows.isEmpty {
             assertionFailure("duplicated call setup functions")
