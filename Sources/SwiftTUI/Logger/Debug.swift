@@ -7,7 +7,6 @@
 
 import Foundation
 
-// NOTE: prevent infite loop
 internal struct Debug {
     internal struct Logger: SwiftTUI.Logger {
         static let prefix = "DEBUG: "

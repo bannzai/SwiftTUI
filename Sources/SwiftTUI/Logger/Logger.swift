@@ -13,6 +13,7 @@ internal protocol Logger {
     var path: URL { get }
 }
 
+// NOTE: prevent infite loop
 fileprivate var limit = 20000
 fileprivate var calledCount = 0
 extension Logger {
