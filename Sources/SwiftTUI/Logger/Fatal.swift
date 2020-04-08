@@ -15,7 +15,7 @@ internal struct Fatal {
             function: String = #function,
             file: String = #file,
             line: Int = #line,
-            userInfo: CustomDebugStringConvertible? = nil
+            _ userInfo: String
         ) {
             log(function: function, file: file, line: line, userInfo: userInfo)
             fatalError(buildContent(function: function, file: file, line: line, userInfo: userInfo))
