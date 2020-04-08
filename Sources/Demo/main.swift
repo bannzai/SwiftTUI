@@ -37,9 +37,12 @@ struct ContentView: View {
         .border(.yellow)
     }
 }
-let view = ContentView(x: Binding.constant(false))
-let hostViewController = HostViewController(root: view)
-Application(viewController: hostViewController).run()
-
+var binding = Binding<Bool>.constant(false)
+let view = ContentView(x: binding)
+DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+    binding.wrappedValue = true
+    binding.update()
+}
+Application(hostViewController: HostViewController(root: view)).run()
 
 //foo(view)
