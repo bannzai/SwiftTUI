@@ -11,9 +11,3 @@ public protocol DynamicProperty {
     func _inject(viewGraph: ViewGraph)
     mutating func update()
 }
-
-extension DynamicProperty {
-    func _inject(viewGraph: ViewGraph) {
-        
-    }
-}
