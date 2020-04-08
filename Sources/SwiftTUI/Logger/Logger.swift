@@ -32,7 +32,21 @@ extension Logger {
         return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("swifttui.logger.d").appendingPathComponent(Self.filename)
     }
     
-    internal func log(
+    func buildContent(
+        function: String,
+        file: String,
+        line: Int,
+        userInfo: CustomDebugStringConvertible?
+    ) -> String {
+        switch userInfo {
+        case nil:
+            return "\(Self.prefix) function: \(function), file: \(file), line: \(line)\n"
+        case let userInfo?:
+            return "\(Self.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)\n"
+        }
+    }
+    
+    func log(
         function: String = #function,
         file: String = #file,
         line: Int = #line,
@@ -40,21 +54,11 @@ extension Logger {
     ) {
         callStopper()
         
-        func buildContent() -> String {
-            switch userInfo {
-            case nil:
-                return "\(Self.prefix) function: \(function), file: \(file), line: \(line)\n"
-            case let userInfo?:
-                return "\(Self.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)\n"
-            }
-        }
-        
         createFileIfNotExists(path: path.absoluteString)
         guard let stream = OutputStream(toFileAtPath: path.absoluteString, append: true) else {
             fatalError("could not open debug logger file stream. path: \(path)")
         }
-        let content = buildContent()
-        //            debugPrint(content)
+        let content = buildContent(function: function, file: file, line: line, userInfo: userInfo)
         guard let data = content.data(using: .utf8) else {
             fatalError("could not convert to byte strings for \(content)")
         }
