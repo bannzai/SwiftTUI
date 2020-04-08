@@ -52,7 +52,7 @@ extension Text: View {
 
 extension Text: ViewContentAcceptable {
     internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
-        debugLogger.debug()
+        debugLogger.log()
         guard let graph = visitor.current, graph.anyView is Text else {
             fatalError("visitor.current should set ViewGraph \(String(describing: visitor.current))")
         }
