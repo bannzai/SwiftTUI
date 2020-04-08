@@ -139,6 +139,10 @@ internal final class ViewGraphSetVisitor: Visitor {
     internal init() { }
     
     internal func visit<T: View>(_ view: T) -> ViewGraph {
+        debugLogger.debug(userInfo: "begin accept \(type(of: view))")
+        defer {
+            debugLogger.debug(userInfo: "end accept \(type(of: view))")
+        }
         switch view {
         case let tuple as ContainerViewGraphSetAcceptable:
             return tuple.accept(visitor: self)
