@@ -8,7 +8,7 @@
 import XCTest
 @testable import SwiftTUI
 
-class ConditionContentTests: XCTestCase {
+class ConditionalContentTests: XCTestCase {
     func testContent() {
         XCTContext.runActivity(named: "when true pattern") { (_) in
             let flag = true
