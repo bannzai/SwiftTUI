@@ -9,20 +9,28 @@ import Foundation
 
 internal protocol Logger {
     static var prefix: String { get }
-    var loggerPath: URL { get }
+    static var filename: String { get }
+    var path: URL { get }
 }
 
 fileprivate var limit = 20000
 fileprivate var calledCount = 0
 extension Logger {
     // NOTE: This project sometimes happen infinite loop.
-    // Since DebugLogger is often used, we put in a process to stop the infinite loop.
+    // Since Logger is often used, we put in a process to stop the infinite loop.
     private func callStopper() {
         calledCount += 1
         if limit < calledCount {
             fatalError("Limited logger count")
         }
     }
+    var path: URL {
+        if let path = ProcessInfo.processInfo.environment["LOGGER_PATH"].flatMap({ URL(string: $0) }) {
+            return path
+        }
+        return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("swifttui.logger.d").appendingPathComponent(Self.filename)
+    }
+    
     internal func log(
         function: String = #function,
         file: String = #file,
@@ -34,15 +42,15 @@ extension Logger {
         func buildContent() -> String {
             switch userInfo {
             case nil:
-                return "\(Debug.Logger.prefix) function: \(function), file: \(file), line: \(line)\n"
+                return "\(Self.prefix) function: \(function), file: \(file), line: \(line)\n"
             case let userInfo?:
-                return "\(Debug.Logger.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)\n"
+                return "\(Self.prefix) function: \(function), file: \(file), line: \(line), userInfo: \(userInfo)\n"
             }
         }
         
-        createFileIfNotExists(path: loggerPath.absoluteString)
-        guard let stream = OutputStream(toFileAtPath: loggerPath.absoluteString, append: true) else {
-            fatalError("could not open debug logger file stream. path: \(loggerPath)")
+        createFileIfNotExists(path: path.absoluteString)
+        guard let stream = OutputStream(toFileAtPath: path.absoluteString, append: true) else {
+            fatalError("could not open debug logger file stream. path: \(path)")
         }
         let content = buildContent()
         //            debugPrint(content)

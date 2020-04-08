@@ -11,13 +11,7 @@ import Foundation
 internal struct Debug {
     internal struct Logger: SwiftTUI.Logger {
         static let prefix = "DEBUG: "
-
-        var loggerPath: URL {
-            if let path = ProcessInfo.processInfo.environment["DEBUG_LOGGER_PATH"].flatMap({ URL(string: $0) }) {
-                return path
-            }
-            return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("swifttui.logger.d").appendingPathComponent("swifttui.debug.log")
-        }
+        static let filename: String = "swifttui.debug.log"
 
         internal func debug(
             function: String = #function,
