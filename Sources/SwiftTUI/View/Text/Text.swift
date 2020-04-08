@@ -54,7 +54,7 @@ extension Text: ViewContentAcceptable {
     internal func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult {
         debugLogger.log()
         guard let graph = visitor.current, graph.anyView is Text else {
-            fatalError("visitor.current should set ViewGraph \(String(describing: visitor.current))")
+            fatalLogger.fatal("visitor.current should set ViewGraph \(String(describing: visitor.current))")
         }
         _textProperty.foregroundColor.map(visitor.driver.setForegroundColor)
         defer { visitor.driver.restoreForegroundColor() }

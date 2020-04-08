@@ -31,7 +31,7 @@ extension Edge.Set {
             return "+"
 //            return "┘" // TODO: Using wide char
         case _:
-            fatalError("unexpected pattern default delimiter type for \(self)")
+            fatalLogger.fatal("unexpected pattern default delimiter type for \(self)")
         }
     }
 }
@@ -84,7 +84,7 @@ internal extension _BorderModifier {
 extension _BorderModifier: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         guard let graph = visitor.current, let modifier = graph.anyView as? HasAnyModifier, modifier.anyModifier is _BorderModifier else {
-            fatalError("visitor.current should _BorderModifier type but actually type of \(type(of: visitor.current))")
+            fatalLogger.fatal("visitor.current should _BorderModifier type but actually type of \(type(of: visitor.current))")
         }
         let position = graph.positionToWindow()
         

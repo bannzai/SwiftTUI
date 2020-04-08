@@ -26,7 +26,7 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
 
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
-                fatalError("isModifiedContent is true but it has not anyModifier \(self)")
+                fatalLogger.fatal("isModifiedContent is true but it has not anyModifier \(self)")
             }
             if let modifier = view.anyModifier as? _PaddingLayout {
                 modifier.modify(for: self, visitor: visitor)
@@ -56,7 +56,7 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
             rect.size = size
             return
         }
-        fatalError("unexpected pattern \(self)")
+        fatalLogger.fatal("unexpected pattern \(self)")
     }
 }
 
@@ -92,7 +92,7 @@ extension ViewGraph {
 
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
-                fatalError("isModifiedContent is true but it has not anyModifier \(self)")
+                fatalLogger.fatal("isModifiedContent is true but it has not anyModifier \(self)")
             }
             if view.anyModifier is _BorderModifier {
                 // NOTE: it is already set position vai _BorderModifier.modify(graph:visitor:)
@@ -134,7 +134,7 @@ extension ViewGraph {
                     }
                     maxX = max(x, maxX)
                 case _:
-                    fatalError()
+                    fatalLogger.fatal("TODO: Implement")
                 }
             }
             
@@ -276,7 +276,7 @@ extension TupleView: HasContainerContentSize {
                 return Size(width: maxElementWidth, height: viewGraph.proposedSize.height)
             }
         case .horizontal:
-            fatalError()
+            fatalLogger.fatal("TODO: Implement")
         }
     }
 }

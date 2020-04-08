@@ -15,10 +15,10 @@ internal struct Fatal {
             function: String = #function,
             file: String = #file,
             line: Int = #line,
-            _ userInfo: String
-        ) {
-            log(function: function, file: file, line: line, userInfo: userInfo)
-            fatalError(buildContent(function: function, file: file, line: line, userInfo: userInfo))
+            _ message: String
+        ) -> Never {
+            log(function: function, file: file, line: line, userInfo: message)
+            return fatalError(buildContent(function: function, file: file, line: line, userInfo: message))
         }
         
     }

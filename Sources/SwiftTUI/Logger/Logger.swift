@@ -22,7 +22,7 @@ extension Logger {
     private func callStopper() {
         calledCount += 1
         if limit < calledCount {
-            fatalError("Limited logger count")
+            fatalLogger.fatal("Limited logger count")
         }
     }
     var path: URL {
@@ -56,11 +56,11 @@ extension Logger {
         
         createFileIfNotExists(path: path.absoluteString)
         guard let stream = OutputStream(toFileAtPath: path.absoluteString, append: true) else {
-            fatalError("could not open debug logger file stream. path: \(path)")
+            fatalLogger.fatal("could not open debug logger file stream. path: \(path)")
         }
         let content = buildContent(function: function, file: file, line: line, userInfo: userInfo)
         guard let data = content.data(using: .utf8) else {
-            fatalError("could not convert to byte strings for \(content)")
+            fatalLogger.fatal("could not convert to byte strings for \(content)")
         }
         
         stream.open()
