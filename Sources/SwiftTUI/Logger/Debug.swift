@@ -13,10 +13,6 @@ internal struct Debug {
         static let prefix = "DEBUG: "
         static let filename: String = "swifttui.debug.log"
     }
-    
-    internal struct EnvironmentVariables {
-        static var isRunOnXcode: Bool { ProcessInfo.processInfo.environment["DEBUG_ON_XCODE"] == "true" }
-    }
 }
 
 
