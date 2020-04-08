@@ -39,6 +39,11 @@ extension Binding: DynamicProperty where Value: Equatable {
             return
         }
         _value = wrappedValue
+        
+        renderMarker.reset()
+        proposedSizeMarker.reset()
+        
+        sharedDrawer.draw()
     }
 }
 // TODO: Unknown usecases
