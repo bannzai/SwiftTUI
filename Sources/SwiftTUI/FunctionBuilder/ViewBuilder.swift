@@ -50,12 +50,6 @@ extension ViewBuilder {
     public static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> _ConditionalContent<TrueContent, FalseContent> where TrueContent : View, FalseContent : View { _ConditionalContent<TrueContent, FalseContent>(storage: .falsy(second)) }
 }
 
-extension ViewBuilder._ConditionalContent: ViewContentAcceptable {
-    internal func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
-        visitor.visit(storage.body)
-    }
-}
-
 extension ViewBuilder {
     public static func buildBlock<Content>(_ content: Content) -> Content where Content : View { content }
     public static func buildBlock<C0, C1>(_ c0: C0, _ c1: C1) -> TupleView<(C0, C1)> where C0 : View, C1 : View { TupleView((c0, c1)) }
