@@ -43,6 +43,7 @@ extension Binding: DynamicProperty where Value: Equatable {
         renderMarker.reset()
         proposedSizeMarker.reset()
         
+        // TODO: Implement specify graph
         sharedDrawer.draw()
     }
 }
