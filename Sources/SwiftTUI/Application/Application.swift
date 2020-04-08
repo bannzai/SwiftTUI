@@ -18,7 +18,7 @@ public final class Application<Root: View> {
     internal var isAlreadyRun = false
     public func run() {
         if isAlreadyRun {
-            fatalLogger.fatal("Unexpected call this function of #Application.run")
+            fatalError("Unexpected call this function of #Application.run")
         }
         isAlreadyRun = true
 

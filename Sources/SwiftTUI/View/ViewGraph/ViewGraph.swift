@@ -66,7 +66,7 @@ public class ViewGraph: SwiftTUI.View {
     }
     
     internal var anyView: Any {
-        fatalLogger.fatal("could not call anonymouse ViewGraph.anyView")
+        fatalError()
     }
     
     private func _extractRendableChlid(root: ViewGraph) -> ViewGraph? {

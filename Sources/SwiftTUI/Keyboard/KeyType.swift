@@ -67,7 +67,7 @@ public enum KeyType {
             return
         }
 
-        fatalLogger.fatal("unexpected KeyType of \(keyname.pointee), special key value for \(specialKey)")
+        fatalError("unexpected KeyType of \(keyname.pointee), special key value for \(specialKey)")
     }
 }
 

@@ -48,7 +48,7 @@ extension ContainerViewGraphSetAcceptable where Self: View, Self: Primitive {
             case let _view as _View:
                 graph.addChild(visitor.visit(_view._wrappedViewForBuildGraph))
             case _:
-                fatalLogger.fatal("Unexpected type value \(type(of: element.value))")
+                fatalError("Unexpected type value \(type(of: element.value))")
             }
         }
         return graph

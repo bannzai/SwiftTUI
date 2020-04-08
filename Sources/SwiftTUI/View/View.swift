@@ -37,7 +37,7 @@ internal extension View {
 
 extension View where Self.Body == Never {
     public var body: Self.Body {
-        fatalLogger.fatal("Body is never. dump view: \(self)")
+        fatalError("Body is never. dump view: \(self)")
     }
 }
 

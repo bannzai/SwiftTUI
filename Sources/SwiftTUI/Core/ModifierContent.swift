@@ -36,7 +36,7 @@ extension ModifiedContent: ViewContentAcceptable {
             return
         }
 
-        fatalLogger.fatal("Unexpected ModifiedContent of \(type(of: self)), and modifier type \(type(of: modifier)), and content type \(type(of: content))")
+        fatalError("Unexpected ModifiedContent of \(type(of: self)), and modifier type \(type(of: modifier)), and content type \(type(of: content))")
     }
 }
 

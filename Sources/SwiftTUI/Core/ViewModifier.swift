@@ -19,6 +19,6 @@ public protocol ViewModifier {
 
 extension ViewModifier where Body == Never {
     public func body(content: Self.Content) -> Self.Body {
-        fatalLogger.fatal("body is never. received argument \(content)")
+        fatalError("body is never. received argument \(content)")
     }
 }

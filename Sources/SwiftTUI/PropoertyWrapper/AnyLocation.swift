@@ -22,8 +22,8 @@ internal class AnyLocationBase {
 internal class AnyLocation<Value>: AnyLocationBase {
     // XXX: Escaping Segmentation fault: 11 error
     var value: Value {
-        get { fatalLogger.fatal("XXX: Escaping Segmentation fault: 11 error") }
-        set { fatalLogger.fatal("XXX: Escaping Segmentation fault: 11 error") }
+        get { fatalError() }
+        set { fatalError() }
     }
 }
 
