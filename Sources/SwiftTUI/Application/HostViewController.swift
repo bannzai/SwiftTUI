@@ -40,9 +40,9 @@ extension ContentSetter {
     }
     
     func add(string: String) {
-        debugLogger.log(userInfo: "start string: \(string)")
+        debugLogger.debug(userInfo: "start string: \(string)")
         string.forEach(add(character:))
-        debugLogger.log(userInfo: "end string: \(string)")
+        debugLogger.debug(userInfo: "end string: \(string)")
     }
 }
 
@@ -79,21 +79,21 @@ fileprivate var pairNumber: Int32 = 2
 // MARK: - Draw on console
 extension HostViewController: Drawable, DrawableDriver {
     func add(rune: Rune) {
-        debugLogger.log(userInfo: "start rune: \(rune)")
+        debugLogger.debug(userInfo: "start rune: \(rune)")
 
         cncurses.addch(rune)
         drawnContent.append(rune)
 
         let point = drawPoint()
-        debugLogger.log(userInfo: "point is \(point)")
-        debugLogger.log(userInfo: "window size is \(window.frame.size)")
+        debugLogger.debug(userInfo: "point is \(point)")
+        debugLogger.debug(userInfo: "window size is \(window.frame.size)")
         switch point.x < window.frame.size.width {
         case true:
             sharedCursor.moveTo(x: point.x + 1, y: point.y)
         case false:
             sharedCursor.moveTo(x: 0, y: point.y + 1)
         }
-        debugLogger.log(userInfo: "end rune: \(rune)")
+        debugLogger.debug(userInfo: "end rune: \(rune)")
     }
     
     func setBackgroundColor(_ color: Color) {
@@ -108,7 +108,7 @@ extension HostViewController: Drawable, DrawableDriver {
         keepForegroundColor = color
         let backgroundColor = keepBackgroundColor ?? Style.Color.background.color
         let result = init_pair(Int16(pairNumber), color.value, backgroundColor.value)
-        debugLogger.log(userInfo: "color: \(color), result: \(result)")
+        debugLogger.debug(userInfo: "color: \(color), result: \(result)")
         attrset(COLOR_PAIR(pairNumber))
         pairNumber += 1
     }
@@ -129,7 +129,7 @@ extension HostViewController: Drawable, DrawableDriver {
         configureView: do {
             let visitor = ViewContentVisitor(driver: self)
             visitor.visit(graph)
-            debugLogger.log(userInfo: drawnContent)
+            debugLogger.debug(userInfo: drawnContent)
         }
         cncurses.refresh()
     }

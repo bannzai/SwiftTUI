@@ -58,11 +58,11 @@ private extension Application {
     func setupInputHandler() {
         FileHandle.standardInput.readabilityHandler = { _ in
             let value: Int32 = cncurses.getch()
-            debugLogger.log(userInfo: "key typed value is \(value)")
+            debugLogger.debug(userInfo: "key typed value is \(value)")
             let keyType = KeyType(keyname: keyname(value))
             switch keyType {
             case .ctrl(let ctrlKey):
-                debugLogger.log(userInfo: "combination key of ctrl is \(ctrlKey.combinationKey)")
+                debugLogger.debug(userInfo: "combination key of ctrl is \(ctrlKey.combinationKey)")
             case .alphameric(let alphameric):
                 switch alphameric {
                 case .a:

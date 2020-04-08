@@ -121,7 +121,7 @@ extension ViewGraph {
             var maxX = PhysicalDistance(0)
             rendableChildren.enumerated().forEach { (offset, child) in
                 let x = ViewGraph.extractAlignmentXValue(graph: child, alignment: alignment.horizontal)
-                debugLogger.log(userInfo: "self type \(type(of: self)) child type \(type(of: child)), self.alignment.horizontal: \(alignment.horizontal), x: \(x)")
+                debugLogger.debug(userInfo: "self type \(type(of: self)) child type \(type(of: child)), self.alignment.horizontal: \(alignment.horizontal), x: \(x)")
                 switch x {
                 case let x where x < 0:
                     child.rect.origin.x = maxX + abs(x)
