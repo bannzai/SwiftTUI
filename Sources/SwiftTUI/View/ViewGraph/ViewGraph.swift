@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 public class ViewGraph: SwiftTUI.View {
     internal lazy private(set) var identifier: ObjectIdentifier = .init(self)
     
@@ -24,15 +25,11 @@ public class ViewGraph: SwiftTUI.View {
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     internal var proposedSize: Size = .zero
 
-    // MARK: - Dirty property for visitor flags
-    internal var alreadyRender: Bool = false
-    fileprivate var alreadyFirstSetProposedSize: Bool = false
-
     internal func setProposedSizeIfFirst(_ size: Size) {
-        if alreadyFirstSetProposedSize {
+        if proposedSizeMarker.isMarked(graph: self) {
             return
         }
-        alreadyFirstSetProposedSize = true
+        proposedSizeMarker.mark(graph: self)
         proposedSize = size
     }
     
@@ -169,10 +166,10 @@ extension ViewGraph: ViewContentAcceptable {
             visitor.driver.restoreBackgroundColor()
         }
         
-        if alreadyRender {
+        if renderMarker.isMarked(graph: self) {
             return
         }
-        alreadyRender = true
+        renderMarker.mark(graph: self)
 
         sharedCursor.moveTo(point: positionToWindow())
         if let content = anyView as? ViewContentAcceptable {
