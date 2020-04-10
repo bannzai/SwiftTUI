@@ -9,5 +9,5 @@ import Foundation
 
 public protocol DynamicProperty {
     func _inject(viewGraph: ViewGraph)
-    mutating func update()
+    func update()
 }

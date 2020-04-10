@@ -8,17 +8,16 @@
 import Foundation
 
 @propertyWrapper public struct State<Value> {
-    @usableFromInline
-    internal var _value: Value
+    private var valueContainer: PropertyWrapperValueContainer<Value>
     // NOTE: SwiftUI actually have optional location. but not have any idea immutable set _location
     @usableFromInline
     internal var _location: AnyLocation<Value>
     public init(wrappedValue value: Value) {
-        self._value = value
+        self.valueContainer = PropertyWrapperValueContainer(value: value)
         _location = StoredLocation(value: value)
     }
     public init(initialValue value: Value) {
-        _value = value
+        self.valueContainer = PropertyWrapperValueContainer(value: value)
         _location = StoredLocation(value: value)
     }
     public var wrappedValue: Value {
@@ -35,11 +34,11 @@ extension State: DynamicProperty where Value: Equatable {
         _location.viewGraph = viewGraph
     }
     
-    mutating public func update() {
-        if _value == wrappedValue {
+    public func update() {
+        if valueContainer.value == wrappedValue {
             return
         }
-        _value = wrappedValue
+        valueContainer.value = wrappedValue
         
         renderMarker.reset()
         proposedSizeMarker.reset()
