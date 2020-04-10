@@ -99,6 +99,10 @@ final class Driver: DrawableDriver {
             .reduce("", +)
     }
     
+    func clear() {
+        storedRunes.removeAll()
+    }
+    
 }
 
 public func XCTAssertAmbiguouseOrder<T>(_ expression1: @autoclosure () -> [T], _ expression2: @autoclosure () -> [T], _ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) where T : Equatable {

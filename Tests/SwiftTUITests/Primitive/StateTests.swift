@@ -35,6 +35,8 @@ class StateTests: XCTestCase {
                 
                 let graph: ViewGraphImpl<BooleanStatableView> = prepareSizedGraph(view: view) as! ViewGraphImpl<BooleanStatableView>
                 initial: do {
+                    driver.clear()
+                    
                     let visitor = ViewContentVisitor(driver: driver)
                     visitor.visit(graph)
                     
@@ -42,6 +44,8 @@ class StateTests: XCTestCase {
                     XCTAssertTrue(content.contains("true"))
                 }
                 updated: do {
+                    driver.clear()
+                    
                     view.state = false
                     graph.callDynamicPropertyUpdate()
                     
@@ -49,6 +53,8 @@ class StateTests: XCTestCase {
                     XCTAssertTrue(content.contains("false"))
                 }
                 more: do {
+                    driver.clear()
+                    
                     view.state = true
                     graph.callDynamicPropertyUpdate()
 

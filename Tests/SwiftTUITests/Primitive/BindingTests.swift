@@ -37,6 +37,8 @@ class BindingTests: XCTestCase {
 
                 let graph = prepareSizedGraph(view: view) as! ViewGraphImpl<BooleanBindableView>
                 initial: do {
+                    driver.clear()
+                    
                     let visitor = ViewContentVisitor(driver: driver)
                     visitor.visit(graph)
                     
@@ -44,6 +46,8 @@ class BindingTests: XCTestCase {
                     XCTAssertTrue(content.contains("true"))
                 }
                 updated: do {
+                    driver.clear()
+                    
                     binding.wrappedValue = false
                     graph.callDynamicPropertyUpdate()
                     
@@ -51,6 +55,8 @@ class BindingTests: XCTestCase {
                     XCTAssertTrue(content.contains("false"))
                 }
                 more: do {
+                    driver.clear()
+                    
                     binding.wrappedValue = true
                     graph.callDynamicPropertyUpdate()
 
