@@ -31,7 +31,7 @@ class BindingTests: XCTestCase {
             }
             XCTContext.runActivity(named: "binding content to update") { (_) in
                 let location = StoredLocation(value: true)
-                var binding = Binding(location: location)
+                let binding = Binding(location: location)
                 let view = CustomView(x: binding)
                 let driver = Driver()
                 sharedDrawer = TestDrawer.init(draw: {
