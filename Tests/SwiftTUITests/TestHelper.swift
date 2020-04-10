@@ -183,3 +183,30 @@ final class TestDrawer: Drawable {
         _draw()
     }
 }
+
+
+struct BooleanStatableView: View {
+    @State var state: Bool
+    var body: some View {
+        VStack {
+            if state {
+                Text("true")
+            } else {
+                Text("false")
+            }
+        }
+    }
+}
+
+struct BooleanBindableView: View {
+    @Binding var binding: Bool
+    var body: some View {
+        VStack {
+            if binding {
+                Text("true")
+            } else {
+                Text("false")
+            }
+        }
+    }
+}

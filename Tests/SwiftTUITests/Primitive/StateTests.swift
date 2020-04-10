@@ -17,20 +17,8 @@ class StateTests: XCTestCase {
     
     func testUpdate() {
         XCTContext.runActivity(named: "using CustomView has boolean binding") { (_) in
-            struct CustomView: View {
-                @State var x: Bool
-                var body: some View {
-                    VStack {
-                        if x {
-                            Text("true")
-                        } else {
-                            Text("false")
-                        }
-                    }
-                }
-            }
             XCTContext.runActivity(named: "content has state and update") { (_) in
-                let view = CustomView(x: true)
+                let view = BooleanStatableView(state: true)
                 let driver = Driver()
                 sharedDrawer = TestDrawer.init(draw: {
                     let graphVisitor = ViewGraphSetVisitor()
@@ -45,7 +33,7 @@ class StateTests: XCTestCase {
                     }
                 })
                 
-                let graph: ViewGraphImpl<CustomView> = prepareSizedGraph(view: view) as! ViewGraphImpl<CustomView>
+                let graph: ViewGraphImpl<BooleanStatableView> = prepareSizedGraph(view: view) as! ViewGraphImpl<BooleanStatableView>
                 initial: do {
                     let visitor = ViewContentVisitor(driver: driver)
                     visitor.visit(graph)
@@ -54,14 +42,14 @@ class StateTests: XCTestCase {
                     XCTAssertTrue(content.contains("true"))
                 }
                 updated: do {
-                    view.x = false
+                    view.state = false
                     graph.callDynamicPropertyUpdate()
                     
                     let content = driver.content()
                     XCTAssertTrue(content.contains("false"))
                 }
                 more: do {
-                    view.x = true
+                    view.state = true
                     graph.callDynamicPropertyUpdate()
 
                     let content = driver.content()
@@ -71,6 +59,5 @@ class StateTests: XCTestCase {
             }
         }
     }
-    
 }
 

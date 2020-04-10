@@ -17,22 +17,10 @@ class BindingTests: XCTestCase {
     
     func testUpdate() {
         XCTContext.runActivity(named: "using CustomView has boolean binding") { (_) in
-            struct CustomView: View {
-                @Binding var x: Bool
-                var body: some View {
-                    VStack {
-                        if x {
-                            Text("true")
-                        } else {
-                            Text("false")
-                        }
-                    }
-                }
-            }
             XCTContext.runActivity(named: "binding content to update") { (_) in
                 let location = StoredLocation(value: true)
                 let binding = Binding(location: location)
-                let view = CustomView(x: binding)
+                let view = BooleanBindableView(binding: binding)
                 let driver = Driver()
                 sharedDrawer = TestDrawer.init(draw: {
                     let graphVisitor = ViewGraphSetVisitor()
@@ -47,7 +35,7 @@ class BindingTests: XCTestCase {
                     }
                 })
 
-                let graph = prepareSizedGraph(view: view) as! ViewGraphImpl<CustomView>
+                let graph = prepareSizedGraph(view: view) as! ViewGraphImpl<BooleanBindableView>
                 initial: do {
                     let visitor = ViewContentVisitor(driver: driver)
                     visitor.visit(graph)
