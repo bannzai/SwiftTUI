@@ -25,7 +25,7 @@ import Foundation
         nonmutating set { _location.value = newValue }
     }
     public var projectedValue: Binding<Value> {
-        Binding<Value>(location: StoredLocation(value: wrappedValue))
+        Binding<Value>(location: _location)
     }
 }
 
