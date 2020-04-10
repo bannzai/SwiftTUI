@@ -23,3 +23,18 @@ public final class ViewGraphImpl<View: SwiftTUI.View>: ViewGraph {
         view
     }
 }
+
+// MARK: - For Dynamic Property
+internal extension ViewGraphImpl {
+    func eachDynamicProperty() -> [DynamicProperty] {
+        Mirror(reflecting: view)
+            .children
+            .compactMap { $0.value as? DynamicProperty }
+    }
+    
+    func callDynamicPropertyUpdate() {
+        eachDynamicProperty().forEach {
+            $0.update()
+        }
+    }
+}

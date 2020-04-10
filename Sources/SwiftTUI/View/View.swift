@@ -64,11 +64,10 @@ public struct _WrappedViewForBuildGraph: View, ViewGraphSetAcceptable {
             return graph
         }
         
-        private func injectToDynamicProperty(graph: ViewGraph) {
-            Mirror(reflecting: view)
-                .children
-                .compactMap { $0.value as? DynamicProperty }
-                .forEach { $0._inject(viewGraph: graph) }
+        private func injectToDynamicProperty(graph: ViewGraphImpl<T>) {
+            graph.eachDynamicProperty().forEach {
+                $0._inject(viewGraph: graph)
+            }
         }
     }
     
