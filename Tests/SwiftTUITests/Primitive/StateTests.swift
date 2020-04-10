@@ -16,7 +16,7 @@ class StateTests: XCTestCase {
     }
     
     func testUpdate() {
-        XCTContext.runActivity(named: "using CustomView has boolean binding") { (_) in
+        XCTContext.runActivity(named: "using CustomView has boolean state") { (_) in
             XCTContext.runActivity(named: "content has state and update") { (_) in
                 let view = BooleanStatableView(state: true)
                 let driver = Driver()
