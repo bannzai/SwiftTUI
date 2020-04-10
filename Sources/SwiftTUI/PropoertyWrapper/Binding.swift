@@ -7,7 +7,7 @@
 
 import Foundation
 
-@frozen @propertyWrapper @dynamicMemberLookup public struct Binding<Value> {
+@propertyWrapper @dynamicMemberLookup public struct Binding<Value> {
     internal var location: AnyLocation<Value>
     fileprivate var _value: Value
     internal init(location: AnyLocation<Value>) {

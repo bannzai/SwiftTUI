@@ -7,7 +7,7 @@
 
 import Foundation
 
-@frozen @propertyWrapper public struct State<Value> {
+@propertyWrapper public struct State<Value> {
     @usableFromInline
     internal var _value: Value
     // NOTE: SwiftUI actually have optional location. but not have any idea immutable set _location
