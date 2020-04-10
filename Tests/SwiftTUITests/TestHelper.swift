@@ -189,6 +189,13 @@ final class TestDrawer: Drawable {
 }
 
 
+struct BooleanStatableViewHasBindableView: View {
+    @State var state: Bool
+    var body: some View {
+        BooleanBindableView(binding: $state)
+    }
+}
+
 struct BooleanStatableView: View {
     @State var state: Bool
     var body: some View {
