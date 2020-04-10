@@ -4,10 +4,13 @@ import cncurses
 import Runtime
 
 struct ContentView: View {
-    @Binding var x: Bool
+    var x: State<Bool>
+    init(state: State<Bool>) {
+        self.x = state
+    }
     var body: some View {
         VStack(alignment: .leading) {
-            if x {
+            if x.wrappedValue {
                 Text("Hello")
                 Text(",")
                     .border(Color.yellow)
@@ -37,11 +40,11 @@ struct ContentView: View {
         .border(.yellow)
     }
 }
-var binding = Binding<Bool>.constant(false)
-let view = ContentView(x: binding)
+var state = State(initialValue: false)
+let view = ContentView(state: state)
 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-    binding.wrappedValue = true
-    binding.update()
+    state.wrappedValue = true
+    state.update()
 }
 Application(hostViewController: HostViewController(root: view)).run()
 
