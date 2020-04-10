@@ -91,6 +91,11 @@ public class ViewGraph: SwiftTUI.View {
         }
         return parent.nearContainerParent
     }
+    
+    // MARK: - Abstract function
+    func update() {
+        fatalError("should override ViewGraphImpl.update")
+    }
 }
 
 // MARK: - Utility
@@ -104,7 +109,9 @@ internal extension ViewGraph {
             return Point(x: rect.origin.x, y: rect.origin.y)
         }
     }
+    
 }
+
 
 extension ViewGraph: Hashable {
     public func hash(into hasher: inout Hasher) {
@@ -115,3 +122,4 @@ extension ViewGraph: Hashable {
         lhs.identifier == rhs.identifier
     }
 }
+
