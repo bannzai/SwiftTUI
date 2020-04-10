@@ -17,22 +17,10 @@ class BindingTests: XCTestCase {
     
     func testUpdate() {
         XCTContext.runActivity(named: "using CustomView has boolean binding") { (_) in
-            struct CustomView: View {
-                @Binding var x: Bool
-                var body: some View {
-                    VStack {
-                        if x {
-                            Text("true")
-                        } else {
-                            Text("false")
-                        }
-                    }
-                }
-            }
             XCTContext.runActivity(named: "binding content to update") { (_) in
                 let location = StoredLocation(value: true)
-                var binding = Binding(location: location)
-                let view = CustomView(x: binding)
+                let binding = Binding(location: location)
+                let view = BooleanBindableView(binding: binding)
                 let driver = Driver()
                 sharedDrawer = TestDrawer.init(draw: {
                     let graphVisitor = ViewGraphSetVisitor()
@@ -47,8 +35,10 @@ class BindingTests: XCTestCase {
                     }
                 })
 
+                let graph = prepareSizedGraph(view: view) as! ViewGraphImpl<BooleanBindableView>
                 initial: do {
-                    let graph = prepareSizedGraph(view: view)
+                    driver.clear()
+                    
                     let visitor = ViewContentVisitor(driver: driver)
                     visitor.visit(graph)
                     
@@ -56,16 +46,20 @@ class BindingTests: XCTestCase {
                     XCTAssertTrue(content.contains("true"))
                 }
                 updated: do {
+                    driver.clear()
+                    
                     binding.wrappedValue = false
-                    binding.update()
+                    graph.callDynamicPropertyUpdate()
                     
                     let content = driver.content()
                     XCTAssertTrue(content.contains("false"))
                 }
                 more: do {
-                    binding.wrappedValue = true
-                    binding.update()
+                    driver.clear()
                     
+                    binding.wrappedValue = true
+                    graph.callDynamicPropertyUpdate()
+
                     let content = driver.content()
                     XCTAssertTrue(content.contains("true"))
                 }

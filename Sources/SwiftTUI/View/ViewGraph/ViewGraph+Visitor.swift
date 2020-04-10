@@ -281,3 +281,25 @@ extension TupleView: HasContainerContentSize {
     }
 }
 
+extension ViewGraph: ViewContentAcceptable {
+    func accept(visitor: ViewContentVisitor) {
+        let keepCurrent = visitor.current
+        visitor.current = self
+        defer {
+            visitor.current = keepCurrent
+            children.forEach { $0.accept(visitor: visitor) }
+            visitor.driver.restoreBackgroundColor()
+        }
+        
+        if renderMarker.isMarked(graph: self) {
+            return
+        }
+        renderMarker.mark(graph: self)
+        
+        sharedCursor.moveTo(point: positionToWindow())
+        if let content = anyView as? ViewContentAcceptable {
+            content.accept(visitor: visitor)
+        }
+    }
+}
+

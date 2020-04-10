@@ -7,12 +7,12 @@
 
 import Foundation
 
-@frozen @propertyWrapper @dynamicMemberLookup public struct Binding<Value> {
+@propertyWrapper @dynamicMemberLookup public struct Binding<Value> {
+    private var valueContainer: PropertyWrapperValueContainer<Value>
     internal var location: AnyLocation<Value>
-    fileprivate var _value: Value
     internal init(location: AnyLocation<Value>) {
         self.location = location
-        _value = location.value
+        self.valueContainer = PropertyWrapperValueContainer(value: location.value)
     }
     public init(get: @escaping () -> Value, set: @escaping (Value) -> Swift.Void) {
         self.init(location: LocationBox(FunctionalLocation.init(get: get, set: set)))
@@ -34,15 +34,16 @@ extension Binding: DynamicProperty where Value: Equatable {
     public func _inject(viewGraph: ViewGraph) {
         location.viewGraph = viewGraph
     }
-    mutating public func update() {
-        if _value == wrappedValue {
+    public func update() {
+        if valueContainer.value == wrappedValue {
             return
         }
-        _value = wrappedValue
+        valueContainer.value = wrappedValue
         
         renderMarker.reset()
         proposedSizeMarker.reset()
         
+        // TODO: Implement specify graph
         sharedDrawer.draw()
     }
 }
