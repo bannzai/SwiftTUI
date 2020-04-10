@@ -47,8 +47,8 @@ class BindingTests: XCTestCase {
                     }
                 })
 
+                let graph = prepareSizedGraph(view: view) as! ViewGraphImpl<CustomView>
                 initial: do {
-                    let graph = prepareSizedGraph(view: view)
                     let visitor = ViewContentVisitor(driver: driver)
                     visitor.visit(graph)
                     
@@ -57,15 +57,15 @@ class BindingTests: XCTestCase {
                 }
                 updated: do {
                     binding.wrappedValue = false
-                    binding.update()
+                    graph.callDynamicPropertyUpdate()
                     
                     let content = driver.content()
                     XCTAssertTrue(content.contains("false"))
                 }
                 more: do {
                     binding.wrappedValue = true
-                    binding.update()
-                    
+                    graph.callDynamicPropertyUpdate()
+
                     let content = driver.content()
                     XCTAssertTrue(content.contains("true"))
                 }

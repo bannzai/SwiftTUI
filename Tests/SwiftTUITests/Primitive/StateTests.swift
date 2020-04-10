@@ -55,14 +55,14 @@ class StateTests: XCTestCase {
                 }
                 updated: do {
                     view.x = false
-                    graph.eachDynamicProperty().first!.update()
+                    graph.callDynamicPropertyUpdate()
                     
                     let content = driver.content()
                     XCTAssertTrue(content.contains("false"))
                 }
                 more: do {
                     view.x = true
-                    graph.eachDynamicProperty().first!.update()
+                    graph.callDynamicPropertyUpdate()
 
                     let content = driver.content()
                     XCTAssertTrue(content.contains("true"))
