@@ -9,20 +9,6 @@ import Foundation
 import XCTest
 @testable import SwiftTUI
 
-struct DebuggerView: View, ViewContentAcceptable {
-    let closure: () -> Void
-    
-    var body: some View {
-        EmptyView()
-    }
-    
-    func accept<V>(visitor: V) -> ViewContentVisitor.VisitResult where V : ViewContentVisitor {
-        closure()
-        return visitor.visit(body)
-    }
-}
-
-
 class TestCursor: Cursor {
     internal var x: PhysicalDistance = 0 {
         didSet { xHistory.append(x) }
