@@ -29,7 +29,7 @@ class StateTests: XCTestCase {
                     }
                 }
             }
-            XCTContext.runActivity(named: "binding content to update") { (_) in
+            XCTContext.runActivity(named: "content has state and update") { (_) in
                 let view = CustomView(x: true)
                 let driver = Driver()
                 sharedDrawer = TestDrawer.init(draw: {
