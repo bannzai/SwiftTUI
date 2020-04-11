@@ -84,7 +84,7 @@ internal extension _BorderModifier {
 extension _BorderModifier: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         guard let graph = visitor.current, let modifier = graph.anyView as? HasAnyModifier, modifier.anyModifier is _BorderModifier else {
-            fatalError("visitor.current should _BorderModifier type but actually type of \(type(of: visitor.current))")
+            fatalError("visitor.current should _BorderModifier type but actually current is \(String(describing: visitor.current))")
         }
         let position = graph.positionToWindow()
         
