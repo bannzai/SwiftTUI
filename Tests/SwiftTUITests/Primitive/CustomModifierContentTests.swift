@@ -61,6 +61,30 @@ class CustomModifierContentTests: XCTestCase {
         }
     }
     
+    func testChlidrenPosition() throws {
+        XCTContext.runActivity(named: "with border modifier") { _ in
+            let view = Text("123").modifier(SingleBorderModifier())
+            
+            let graph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            XCTAssertTrue(graph.anyView is ModifiedContent<Text, SingleBorderModifier>)
+            XCTAssertEqual(graph.rect.origin, .zero)
+
+            let modifierGraph = graph.children[0]
+            XCTAssertTrue(modifierGraph.anyView is ModifiedContent<_ViewModifier_Content<SingleBorderModifier>, _BorderModifier>)
+            XCTAssertEqual(modifierGraph.rect.origin, .zero)
+            
+            let modifierContentGraph = modifierGraph.children[0]
+            XCTAssertTrue(modifierContentGraph.anyView is _ViewModifier_Content<SingleBorderModifier>)
+            XCTAssertEqual(modifierContentGraph.rect.origin, .zero)
+            
+            let textGraph = modifierContentGraph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            XCTAssertEqual(textGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
+        }
+    }
+    
     func testContent() throws {
         XCTContext.runActivity(named: "with border modifier") { _ in
             let view = Text("text").modifier(SingleBorderModifier())

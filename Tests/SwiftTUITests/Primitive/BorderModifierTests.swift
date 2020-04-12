@@ -8,7 +8,7 @@
 import XCTest
 @testable import SwiftTUI
 
-fileprivate let defaultBorderWidth = 1
+internal let defaultBorderWidth = 1
 class BorderModifierTests: XCTestCase {
     override func setUp() {
         super.setUp()
