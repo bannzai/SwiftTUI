@@ -60,11 +60,11 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         if isUserDefinedModifier {
             let bodyGraph = visitor.visit(modifier.body(content: _ViewModifier_Content()))
             graph.setModifier(bodyGraph)
-            bodyGraph.putModifier(contentGraph)
+            bodyGraph.children[0].addChild(contentGraph)
             return graph
-        } else {
-            graph.setModifier(contentGraph)
         }
+        
+        graph.setModifier(contentGraph)
         if let modifier = modifier as? _FrameLayout {
             contentGraph.alignment = modifier.alignment
         }
