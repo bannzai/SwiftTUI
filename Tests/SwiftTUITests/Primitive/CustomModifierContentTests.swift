@@ -8,6 +8,11 @@
 import XCTest
 @testable import SwiftTUI
 
+fileprivate struct SingleBorderModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content.border(.red)
+    }
+}
 class CustomModifierContentTests: XCTestCase {
     override func setUp() {
         super.setUp()
@@ -17,20 +22,15 @@ class CustomModifierContentTests: XCTestCase {
 
     func testSize() throws {
         XCTContext.runActivity(named: "with border modifier") { _ in
-            struct Modifier: ViewModifier {
-                func body(content: Content) -> some View {
-                    content.border(.red)
-                }
-            }
-            let view = Text("text").modifier(Modifier())
+            let view = Text("text").modifier(SingleBorderModifier())
             
             let graph = prepareViewGraph(view: view)
             graph.accept(visitor: ViewSetRectVisitor())
-            XCTAssertTrue(graph.anyView is ModifiedContent<Text, Modifier>)
+            XCTAssertTrue(graph.anyView is ModifiedContent<Text, SingleBorderModifier>)
             XCTAssertEqual(graph.rect.size, Size(width: "text".width + 2, height: "text".height + 2))
             
             let wrappedModifier = graph.children[0]
-            XCTAssertTrue(wrappedModifier.anyView is ModifiedContent<_ViewModifier_Content<Modifier>, _BorderModifier>)
+            XCTAssertTrue(wrappedModifier.anyView is ModifiedContent<_ViewModifier_Content<SingleBorderModifier>, _BorderModifier>)
             XCTAssertEqual(wrappedModifier.rect.size, Size(width: "text".width + 2, height: "text".height + 2))
         }
         
@@ -63,12 +63,7 @@ class CustomModifierContentTests: XCTestCase {
     
     func testContent() throws {
         XCTContext.runActivity(named: "with border modifier") { _ in
-            struct Modifier: ViewModifier {
-                func body(content: Content) -> some View {
-                    content.border(.red)
-                }
-            }
-            let view = Text("text").modifier(Modifier())
+            let view = Text("text").modifier(SingleBorderModifier())
             
             let graph = prepareSizedGraph(view: view)
             let driver = Driver()
