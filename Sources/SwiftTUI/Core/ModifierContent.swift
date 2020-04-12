@@ -49,6 +49,9 @@ extension ModifiedContent: View {
 extension ModifiedContent: Rendable where Modifier: Rendable { }
 extension ModifiedContent: ContainerViewType where Modifier: ContainerViewType { }
 extension ModifiedContent: ViewGraphSetAttributeAcceptable {
+    private var isUserDefinedModifier: Bool {
+        return !(modifier is Primitive)
+    }
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)
         visitor.current?.addChild(graph)
@@ -56,10 +59,10 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         defer { visitor.current = keepCurrent }
         visitor.current = graph
         let contentGraph = visitor.visit(content)
-        if graph.isUserDefinedModifier {
+        if isUserDefinedModifier {
             let bodyGraph = visitor.visit(modifier.body(content: _ViewModifier_Content()))
             graph.setModifier(bodyGraph)
-            bodyGraph.children[0].addChild(contentGraph)
+            bodyGraph.extractUserDefinedModifierContentChild()!.addChild(contentGraph)
             return graph
         }
         
