@@ -83,6 +83,35 @@ class CustomModifierContentTests: XCTestCase {
             XCTAssertTrue(textGraph.anyView is Text)
             XCTAssertEqual(textGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
         }
+        XCTContext.runActivity(named: "with border.border.border modifier") { _ in
+            let view = Text("123").modifier(ThreeBorderModifier())
+            
+            let graph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            XCTAssertTrue(graph.anyView is ModifiedContent<Text, ThreeBorderModifier>)
+            XCTAssertEqual(graph.rect.origin, .zero)
+            
+            let blue = graph.children[0]
+            XCTAssertTrue(blue.anyView is ModifiedContent<ModifiedContent<ModifiedContent<_ViewModifier_Content<ThreeBorderModifier>, _BorderModifier>, _BorderModifier>, _BorderModifier>)
+            XCTAssertEqual(blue.rect.origin, .zero)
+
+            let yellow = blue.children[0]
+            XCTAssertTrue(yellow.anyView is ModifiedContent<ModifiedContent<_ViewModifier_Content<ThreeBorderModifier>, _BorderModifier>, _BorderModifier>)
+            XCTAssertEqual(yellow.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
+
+            let red = yellow.children[0]
+            XCTAssertTrue(red.anyView is ModifiedContent<_ViewModifier_Content<ThreeBorderModifier>, _BorderModifier>)
+            XCTAssertEqual(red.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
+
+            let modifierContentGraph = red.children[0]
+            XCTAssertTrue(modifierContentGraph.anyView is _ViewModifier_Content<ThreeBorderModifier>)
+            XCTAssertEqual(modifierContentGraph.rect.origin, .zero)
+            
+            let textGraph = modifierContentGraph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            XCTAssertEqual(textGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
+        }
     }
     
     func testContent() throws {
