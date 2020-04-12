@@ -35,8 +35,8 @@ struct ChildView: View {
                 }
             }
         }
-        .border(.red)
-        .border(.yellow)
+        .border(.cyan)
+        .border(.green)
     }
 }
 
