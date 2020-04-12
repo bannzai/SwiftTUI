@@ -159,4 +159,36 @@ class BorderModifierTests: XCTestCase {
             XCTAssertTrue(content.contains("World"))
         }
     }
+    
+    func testModifiers() {
+        struct Modifier: ViewModifier {
+            func body(content: Content) -> some View {
+                content.border(.red)
+            }
+        }
+        XCTContext.runActivity(named: "via custom ViewModifier") { (_) in
+            let view = Text("Hello").modifier(Modifier())
+
+            let graph = prepareSizedGraph(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            graph.accept(visitor: visitor)
+            
+            let content = driver.content()
+            let subject: (String) -> Int = { (delimiter: String) in
+                content.filter { String($0) == delimiter }.count
+            }
+            
+            assert(Edge.Set.leadingTop.defaultDelimiter == Edge.Set.trailingTop.defaultDelimiter && Edge.Set.trailingTop.defaultDelimiter == Edge.Set.trailingBottom.defaultDelimiter && Edge.Set.trailingBottom.defaultDelimiter == Edge.Set.leadingBottom.defaultDelimiter, "this test case need the same corner defaultDelimiter")
+            let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
+            
+            XCTAssertTrue(driver.storedForegroundColors.contains(.red))
+            XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
+            XCTAssertEqual(subject(cornerDelimiter), 1 * 4)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 1 * 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 5 * 2)
+            XCTAssertTrue(content.contains("Hello"))
+        }
+
+    }
 }
