@@ -34,3 +34,5 @@ extension _AlignmentWritingModifier: ViewContentAcceptable {
         
     }
 }
+
+extension _AlignmentWritingModifier: Primitive { }

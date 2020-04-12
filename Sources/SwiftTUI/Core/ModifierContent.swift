@@ -30,12 +30,14 @@ extension ModifiedContent: ViewContentAcceptable {
             return
         }
 
-        let body = modifier.body(content: _ViewModifier_Content())
-        if let acceptable = body as? ViewContentAcceptable {
-            acceptable.accept(visitor: visitor)
+        if content is UserDefinedViewModifierContent {
+            assert(visitor.current?.children.count == 0)
+            visitor.current?.children.forEach(visitor.visit)
             return
         }
-
+        if !(modifier is Primitive) {
+            return
+        }
         fatalError("Unexpected ModifiedContent of \(type(of: self)), and modifier type \(type(of: modifier)), and content type \(type(of: content))")
     }
 }
@@ -47,16 +49,26 @@ extension ModifiedContent: View {
 extension ModifiedContent: Rendable where Modifier: Rendable { }
 extension ModifiedContent: ContainerViewType where Modifier: ContainerViewType { }
 extension ModifiedContent: ViewGraphSetAttributeAcceptable {
+    private var isUserDefinedModifier: Bool {
+        return !(modifier is Primitive)
+    }
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         let graph = ViewGraphImpl(view: self)
         visitor.current?.addChild(graph)
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
-        let contengGraph = visitor.visit(content)
-        graph.setModifier(contengGraph)
+        let contentGraph = visitor.visit(content)
+        if isUserDefinedModifier {
+            let bodyGraph = visitor.visit(modifier.body(content: _ViewModifier_Content()))
+            graph.setModifier(bodyGraph)
+            bodyGraph.extractUserDefinedModifierContentChild()!.addChild(contentGraph)
+            return graph
+        }
+        
+        graph.setModifier(contentGraph)
         if let modifier = modifier as? _FrameLayout {
-            contengGraph.alignment = modifier.alignment
+            contentGraph.alignment = modifier.alignment
         }
         return graph
     }

@@ -9,6 +9,9 @@ import Foundation
 
 extension ViewGraph: ViewSetRectVisitorAcceptable {
     func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = self
         defer {
             if isRoot {
                 acceptSetDimensions(visitor: visitor)
@@ -20,10 +23,16 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
         if isRoot {
             setProposedSizeIfFirst(mainScreen.bounds.size)
         }
-        parent.map {
-            setProposedSizeIfFirst($0.proposedSize)
+        
+        var next = self.parent
+        while let parent = next {
+            next = parent.parent
+            if !parent.alreadyMarkedProposedSize() {
+                continue
+            }
+            setProposedSizeIfFirst(parent.proposedSize)
         }
-
+        
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")
@@ -41,7 +50,7 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
                 return
             }
         }
-        
+
         if !children.isEmpty {
             children.forEach { $0.accept(visitor: visitor) }
             let size = children
@@ -56,6 +65,7 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
             rect.size = size
             return
         }
+
         fatalError("unexpected pattern \(self)")
     }
 }
@@ -87,8 +97,12 @@ extension ViewGraph {
         if children.isEmpty {
             return
         }
-        
+
         children.forEach { $0.acceptSetPosition(visitor: visitor) }
+        
+        if isUserDefinedModifierContent {
+            return
+        }
 
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {

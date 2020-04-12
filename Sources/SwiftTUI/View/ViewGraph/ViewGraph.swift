@@ -17,6 +17,7 @@ public class ViewGraph: SwiftTUI.View {
     internal var isModifiedContent: Bool = false
     internal var isContainerType: Bool { anyView is ContainerViewType }
     internal var isRendableType: Bool { anyView is Rendable }
+    internal var isUserDefinedModifierContent: Bool { anyView is UserDefinedViewModifierContent }
     
     internal var listType: ViewVisitorListOption = .default
     internal var alignment: Alignment = .default
@@ -25,6 +26,21 @@ public class ViewGraph: SwiftTUI.View {
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     internal var proposedSize: Size = .zero
 
+    func _extractUserDefinedModifierContentChild(root: ViewGraph) -> ViewGraph? {
+        if isUserDefinedModifierContent && root !== self {
+            return self
+        }
+        if children.isEmpty {
+            return nil
+        }
+        return children.compactMap { $0._extractUserDefinedModifierContentChild(root: root) }.first
+    }
+    internal func extractUserDefinedModifierContentChild() -> ViewGraph? {
+        _extractUserDefinedModifierContentChild(root: self)
+    }
+    internal func alreadyMarkedProposedSize() -> Bool {
+        return proposedSizeMarker.isMarked(graph: self)
+    }
     internal func setProposedSizeIfFirst(_ size: Size) {
         if proposedSizeMarker.isMarked(graph: self) {
             return

@@ -96,6 +96,7 @@ internal extension _PaddingLayout {
 }
 
 extension _PaddingLayout: Rendable { }
+extension _PaddingLayout: Primitive { }
 extension _PaddingLayout: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         // NOTE: escape to reach ViewModifier.Body is Never

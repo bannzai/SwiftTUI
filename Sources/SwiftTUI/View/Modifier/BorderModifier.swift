@@ -49,6 +49,7 @@ extension Edge.Set {
 }
 
 extension _BorderModifier: Rendable { }
+extension _BorderModifier: Primitive { }
 fileprivate let defaultBorderWidth: PhysicalDistance = 1
 internal extension _BorderModifier {
     func modify(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
@@ -83,8 +84,8 @@ internal extension _BorderModifier {
 }
 extension _BorderModifier: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
-        guard let graph = visitor.current, let modifier = graph.anyView as? HasAnyModifier, modifier.anyModifier is _BorderModifier else {
-            fatalError("visitor.current should _BorderModifier type but actually type of \(type(of: visitor.current))")
+        guard let graph = visitor.current else {
+            fatalError("visitor.current necessary but it is nil")
         }
         let position = graph.positionToWindow()
         

@@ -34,6 +34,7 @@ internal extension _FrameLayout {
 }
 
 extension _FrameLayout: Rendable { }
+extension _FrameLayout: Primitive { }
 extension _FrameLayout: ContainerViewType { }
 extension _FrameLayout: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {

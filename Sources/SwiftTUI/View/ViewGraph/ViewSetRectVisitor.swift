@@ -15,6 +15,7 @@ internal final class ViewSetRectVisitor: Visitor {
     internal typealias VisitResult = Void
     internal init() { }
     
+    internal var current: ViewGraph?
     internal var currentContainerGraph: ViewGraph?
 
     internal func visit<T: View>(_ content: T) -> VisitResult {
