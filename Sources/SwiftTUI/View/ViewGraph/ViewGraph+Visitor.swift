@@ -9,6 +9,9 @@ import Foundation
 
 extension ViewGraph: ViewSetRectVisitorAcceptable {
     func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = self
         defer {
             if isRoot {
                 acceptSetDimensions(visitor: visitor)
@@ -41,7 +44,7 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
                 return
             }
         }
-        
+
         if !children.isEmpty {
             children.forEach { $0.accept(visitor: visitor) }
             let size = children
@@ -56,6 +59,11 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
             rect.size = size
             return
         }
+        
+        if anyView is ViewSetRectVisitorSkip {
+            return
+        }
+        
         fatalError("unexpected pattern \(self)")
     }
 }
