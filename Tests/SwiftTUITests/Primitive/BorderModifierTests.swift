@@ -16,6 +16,11 @@ class BorderModifierTests: XCTestCase {
         mainScreen = DummyScreen.init()
     }
     
+    func testTODO() {
+        // NOTE: keep assertion when resolved TODO
+        assert(Edge.Set.leadingTop.defaultDelimiter == Edge.Set.trailingTop.defaultDelimiter && Edge.Set.trailingTop.defaultDelimiter == Edge.Set.trailingBottom.defaultDelimiter && Edge.Set.trailingBottom.defaultDelimiter == Edge.Set.leadingBottom.defaultDelimiter, "this test case need the same corner defaultDelimiter")
+    }
+    
     func testSize() throws {
         XCTContext.runActivity(named: "when call border(.blue)") { (_) in
             let view = Text("123").border(.blue)
@@ -145,7 +150,6 @@ class BorderModifierTests: XCTestCase {
                 content.filter { String($0) == delimiter }.count
             }
             
-            assert(Edge.Set.leadingTop.defaultDelimiter == Edge.Set.trailingTop.defaultDelimiter && Edge.Set.trailingTop.defaultDelimiter == Edge.Set.trailingBottom.defaultDelimiter && Edge.Set.trailingBottom.defaultDelimiter == Edge.Set.leadingBottom.defaultDelimiter, "this test case need the same corner defaultDelimiter")
             let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
             
             XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
@@ -179,7 +183,6 @@ class BorderModifierTests: XCTestCase {
                 content.filter { String($0) == delimiter }.count
             }
             
-            assert(Edge.Set.leadingTop.defaultDelimiter == Edge.Set.trailingTop.defaultDelimiter && Edge.Set.trailingTop.defaultDelimiter == Edge.Set.trailingBottom.defaultDelimiter && Edge.Set.trailingBottom.defaultDelimiter == Edge.Set.leadingBottom.defaultDelimiter, "this test case need the same corner defaultDelimiter")
             let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
             
             XCTAssertTrue(driver.storedForegroundColors.contains(.red))
