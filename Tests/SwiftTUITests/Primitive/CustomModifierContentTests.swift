@@ -34,9 +34,6 @@ class CustomModifierContentTests: XCTestCase {
             XCTAssertEqual(wrappedModifier.rect.size, Size(width: "text".width + 2, height: "text".height + 2))
         }
         
-    }
-    
-    func test_playground() {
         XCTContext.runActivity(named: "with border.border.border modifier") { _ in
             struct Modifier: ViewModifier {
                 func body(content: Content) -> some View {
