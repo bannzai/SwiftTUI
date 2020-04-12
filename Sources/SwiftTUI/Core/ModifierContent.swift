@@ -56,18 +56,16 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
+        let contentGraph = visitor.visit(content)
         if isUserDefinedModifier {
             let bodyGraph = visitor.visit(modifier.body(content: _ViewModifier_Content()))
             graph.setModifier(bodyGraph)
-            
-            let contengGraph = visitor.visit(content)
-            bodyGraph.setModifier(contengGraph)
+            bodyGraph.setModifier(contentGraph)
         } else {
-            let contengGraph = visitor.visit(content)
-            graph.setModifier(contengGraph)
-            if let modifier = modifier as? _FrameLayout {
-                contengGraph.alignment = modifier.alignment
-            }
+            graph.setModifier(contentGraph)
+        }
+        if let modifier = modifier as? _FrameLayout {
+            contentGraph.alignment = modifier.alignment
         }
         return graph
     }
