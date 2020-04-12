@@ -17,22 +17,21 @@ class ModifierContentTests: XCTestCase {
 
     func testSize() throws {
         XCTContext.runActivity(named: "with border modifier") { _ in
-            struct BorderModifier: ViewModifier {
+            struct Modifier: ViewModifier {
                 func body(content: Content) -> some View {
                     content.border(.red)
                 }
             }
-            let view = Text("text").modifier(BorderModifier())
+            let view = Text("text").modifier(Modifier())
             
             let graph = prepareViewGraph(view: view)
             graph.accept(visitor: ViewSetRectVisitor())
+            XCTAssertTrue(graph.anyView is ModifiedContent<Text, Modifier>)
+            XCTAssertEqual(graph.rect.size, Size(width: "text".width + 2, height: "text".height + 2))
             
-
-            XCTAssertEqual(graph.rect.size, Size(width: "text".width + 2, height: "text".height + 1))
-            
-            let borderModifier = graph.children[0]
-            XCTAssertTrue(borderModifier.anyView is ModifiedContent<Text, _BorderModifier>)
-            XCTAssertEqual(borderModifier.rect.size, Size(width: "text".width + 2, height: "text".height + 2))
+            let wrappedModifier = graph.children[0]
+            XCTAssertTrue(wrappedModifier.anyView is ModifiedContent<_ViewModifier_Content<Modifier>, _BorderModifier>)
+            XCTAssertEqual(wrappedModifier.rect.size, Size(width: "text".width + 2, height: "text".height + 2))
         }
     }
 
