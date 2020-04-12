@@ -23,10 +23,16 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
         if isRoot {
             setProposedSizeIfFirst(mainScreen.bounds.size)
         }
-        parent.map {
-            setProposedSizeIfFirst($0.proposedSize)
+        
+        var next = self.parent
+        while let parent = next {
+            next = parent.parent
+            if !parent.alreadyMarkedProposedSize() {
+                continue
+            }
+            setProposedSizeIfFirst(parent.proposedSize)
         }
-
+        
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")

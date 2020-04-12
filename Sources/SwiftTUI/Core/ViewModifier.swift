@@ -33,3 +33,9 @@ extension _ViewModifier_Content: ViewGraphSetAcceptable {
         return graph
     }
 }
+
+
+internal protocol UserDefinedViewModifierContent {
+    
+}
+extension _ViewModifier_Content: UserDefinedViewModifierContent { }

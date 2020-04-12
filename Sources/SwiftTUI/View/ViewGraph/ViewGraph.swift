@@ -25,6 +25,9 @@ public class ViewGraph: SwiftTUI.View {
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     internal var proposedSize: Size = .zero
 
+    internal func alreadyMarkedProposedSize() -> Bool {
+        return proposedSizeMarker.isMarked(graph: self)
+    }
     internal func setProposedSizeIfFirst(_ size: Size) {
         if proposedSizeMarker.isMarked(graph: self) {
             return
