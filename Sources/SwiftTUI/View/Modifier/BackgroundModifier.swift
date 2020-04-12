@@ -37,3 +37,5 @@ extension _BackgroundModifier: ViewContentAcceptable {
         }
     }
 }
+
+extension _BackgroundModifier: Primitive { }
