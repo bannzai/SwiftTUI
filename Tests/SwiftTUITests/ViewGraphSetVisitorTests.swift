@@ -336,8 +336,9 @@ class ViewGraphSetVisitorTests: XCTestCase {
                         XCTAssertFalse(child.isUserDefinedView)
                         XCTAssertTrue(child.isModifiedContent)
                     }
+                    XCTAssertTrue(graph.children[0].children[0].anyView is _ViewModifier_Content<Modifier>)
                     XCTContext.runActivity(named: "And check children view of Text") { (_) in
-                        graph.children[0].children.forEach { child in
+                        graph.children[0].children[0].children.forEach { child in
                             XCTAssertTrue(child.anyView is Text)
                             XCTAssertTrue(child.children.isEmpty)
                             XCTAssertFalse(child.isRoot)
