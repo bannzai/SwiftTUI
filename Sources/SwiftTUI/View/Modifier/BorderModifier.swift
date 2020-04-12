@@ -49,6 +49,7 @@ extension Edge.Set {
 }
 
 extension _BorderModifier: Rendable { }
+extension _BorderModifier: Primitive { }
 fileprivate let defaultBorderWidth: PhysicalDistance = 1
 internal extension _BorderModifier {
     func modify(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
