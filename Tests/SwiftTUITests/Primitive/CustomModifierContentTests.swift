@@ -61,5 +61,60 @@ class CustomModifierContentTests: XCTestCase {
         }
     }
     
+    func testContent() throws {
+        XCTContext.runActivity(named: "with border modifier") { _ in
+            struct Modifier: ViewModifier {
+                func body(content: Content) -> some View {
+                    content.border(.red)
+                }
+            }
+            let view = Text("text").modifier(Modifier())
+            
+            let graph = prepareSizedGraph(view: view)
+            let driver = Driver()
+            graph.accept(visitor: ViewContentVisitor(driver: driver))
+            
+            let content = driver.content()
+            let subject: (String) -> Int = { (delimiter: String) in
+                content.filter { String($0) == delimiter }.count
+            }
+            
+            let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
+            
+            XCTAssertTrue(driver.storedForegroundColors.contains(.red))
+            XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
+            XCTAssertEqual(subject(cornerDelimiter), 4)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 1 * 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 4 * 2)
+            XCTAssertTrue(content.contains("text"))
+        }
+        
+        XCTContext.runActivity(named: "with border.border.border modifier") { _ in
+            struct Modifier: ViewModifier {
+                func body(content: Content) -> some View {
+                    content.border(.red).border(.yellow).border(.blue)
+                }
+            }
+            let view = Text("text").modifier(Modifier())
+            
+            let graph = prepareSizedGraph(view: view)
+            let driver = Driver()
+            graph.accept(visitor: ViewContentVisitor(driver: driver))
+            
+            let content = driver.content()
+            let subject: (String) -> Int = { (delimiter: String) in
+                content.filter { String($0) == delimiter }.count
+            }
+            
+            let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
+            
+            XCTAssertTrue(driver.storedForegroundColors.contains(.red))
+            XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
+            XCTAssertEqual(subject(cornerDelimiter), 4 * 3)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 1 * 2 + 3 * 2 + 5 * 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 4 * 2 + 6 * 2 + 8 * 2)
+            XCTAssertTrue(content.contains("text"))
+        }
+    }
 
 }
