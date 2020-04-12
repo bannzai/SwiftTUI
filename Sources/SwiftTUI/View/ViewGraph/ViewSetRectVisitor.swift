@@ -11,6 +11,8 @@ internal protocol ViewSetRectVisitorAcceptable {
     func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult
 }
 
+internal protocol ViewSetRectVisitorSkip { }
+
 internal final class ViewSetRectVisitor: Visitor {
     internal typealias VisitResult = Void
     internal init() { }
