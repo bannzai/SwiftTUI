@@ -27,7 +27,12 @@ class ModifierContentTests: XCTestCase {
             let graph = prepareViewGraph(view: view)
             graph.accept(visitor: ViewSetRectVisitor())
             
+
             XCTAssertEqual(graph.rect.size, Size(width: "text".width + 2, height: "text".height + 1))
+            
+            let borderModifier = graph.children[0]
+            XCTAssertTrue(borderModifier.anyView is ModifiedContent<Text, _BorderModifier>)
+            XCTAssertEqual(borderModifier.rect.size, Size(width: "text".width + 2, height: "text".height + 2))
         }
     }
 
