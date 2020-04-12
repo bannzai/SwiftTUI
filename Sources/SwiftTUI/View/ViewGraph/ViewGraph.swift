@@ -25,6 +25,12 @@ public class ViewGraph: SwiftTUI.View {
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     internal var proposedSize: Size = .zero
 
+    internal var isUserDefinedModifier: Bool {
+        guard let modifier = anyView as? HasAnyModifier else {
+            return false
+        }
+        return !(modifier.anyModifier is Primitive)
+    }
     internal func alreadyMarkedProposedSize() -> Bool {
         return proposedSizeMarker.isMarked(graph: self)
     }
