@@ -97,8 +97,12 @@ extension ViewGraph {
         if children.isEmpty {
             return
         }
-        
+
         children.forEach { $0.acceptSetPosition(visitor: visitor) }
+        
+        if isUserDefinedModifierContent {
+            return
+        }
 
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
