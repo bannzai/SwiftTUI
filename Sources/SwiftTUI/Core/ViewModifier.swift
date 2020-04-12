@@ -22,3 +22,15 @@ extension ViewModifier where Body == Never {
         fatalError("body is never. received argument \(content)")
     }
 }
+
+extension _ViewModifier_Content: ViewGraphSetAcceptable {
+    func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        let graph = ViewGraphImpl(view: self)
+        visitor.current?.addChild(graph)
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = graph
+        return graph
+    }
+}
+extension _ViewModifier_Content: ViewSetRectVisitorSkip { }
