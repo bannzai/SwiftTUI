@@ -60,7 +60,8 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         if isUserDefinedModifier {
             let bodyGraph = visitor.visit(modifier.body(content: _ViewModifier_Content()))
             graph.setModifier(bodyGraph)
-            bodyGraph.setModifier(contentGraph)
+            bodyGraph.putModifier(contentGraph)
+            return graph
         } else {
             graph.setModifier(contentGraph)
         }
