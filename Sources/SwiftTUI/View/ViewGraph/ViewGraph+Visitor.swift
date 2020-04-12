@@ -20,6 +20,9 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
             }
         }
         
+        if anyView is ViewSetRectVisitorSkip {
+            return
+        }
         if isRoot {
             setProposedSizeIfFirst(mainScreen.bounds.size)
         }
@@ -59,11 +62,7 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
             rect.size = size
             return
         }
-        
-        if anyView is ViewSetRectVisitorSkip {
-            return
-        }
-        
+
         fatalError("unexpected pattern \(self)")
     }
 }
