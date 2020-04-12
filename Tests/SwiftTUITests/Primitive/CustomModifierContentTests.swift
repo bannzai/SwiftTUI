@@ -1,5 +1,5 @@
 //
-//  ModifierContentTests.swift
+//  CustomModifierContentTests.swift
 //  SwiftTUITests
 //
 //  Created by Yudai.Hirose on 2020/04/12.
@@ -8,7 +8,7 @@
 import XCTest
 @testable import SwiftTUI
 
-class ModifierContentTests: XCTestCase {
+class CustomModifierContentTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
