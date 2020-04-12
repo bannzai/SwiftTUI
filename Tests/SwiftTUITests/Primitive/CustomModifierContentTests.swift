@@ -13,6 +13,11 @@ fileprivate struct SingleBorderModifier: ViewModifier {
         content.border(.red)
     }
 }
+fileprivate struct ThreeBorderModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content.border(.red).border(.yellow).border(.blue)
+    }
+}
 class CustomModifierContentTests: XCTestCase {
     override func setUp() {
         super.setUp()
@@ -35,28 +40,23 @@ class CustomModifierContentTests: XCTestCase {
         }
         
         XCTContext.runActivity(named: "with border.border.border modifier") { _ in
-            struct Modifier: ViewModifier {
-                func body(content: Content) -> some View {
-                    content.border(.red).border(.yellow).border(.blue)
-                }
-            }
-            let view = Text("text").modifier(Modifier())
+            let view = Text("text").modifier(ThreeBorderModifier())
 
             let graph = prepareViewGraph(view: view)
             graph.accept(visitor: ViewSetRectVisitor())
-            XCTAssertTrue(graph.anyView is ModifiedContent<Text, Modifier>)
+            XCTAssertTrue(graph.anyView is ModifiedContent<Text, ThreeBorderModifier>)
             XCTAssertEqual(graph.rect.size, Size(width: "text".width + 2 + 2 + 2, height: "text".height + 2 + 2 + 2))
 
             let blue = graph.children[0]
-            XCTAssertTrue(blue.anyView is ModifiedContent<ModifiedContent<ModifiedContent<_ViewModifier_Content<Modifier>, _BorderModifier>, _BorderModifier>, _BorderModifier>)
+            XCTAssertTrue(blue.anyView is ModifiedContent<ModifiedContent<ModifiedContent<_ViewModifier_Content<ThreeBorderModifier>, _BorderModifier>, _BorderModifier>, _BorderModifier>)
             XCTAssertEqual(blue.rect.size, Size(width: "text".width + 2 + 2 + 2, height: "text".height + 2 + 2 + 2))
             
             let yellow = blue.children[0]
-            XCTAssertTrue(yellow.anyView is ModifiedContent<ModifiedContent<_ViewModifier_Content<Modifier>, _BorderModifier>, _BorderModifier>)
+            XCTAssertTrue(yellow.anyView is ModifiedContent<ModifiedContent<_ViewModifier_Content<ThreeBorderModifier>, _BorderModifier>, _BorderModifier>)
             XCTAssertEqual(yellow.rect.size, Size(width: "text".width + 2 + 2, height: "text".height + 2 + 2))
             
             let red = yellow.children[0]
-            XCTAssertTrue(red.anyView is ModifiedContent<_ViewModifier_Content<Modifier>, _BorderModifier>)
+            XCTAssertTrue(red.anyView is ModifiedContent<_ViewModifier_Content<ThreeBorderModifier>, _BorderModifier>)
             XCTAssertEqual(red.rect.size, Size(width: "text".width + 2, height: "text".height + 2))
         }
     }
@@ -85,12 +85,7 @@ class CustomModifierContentTests: XCTestCase {
         }
         
         XCTContext.runActivity(named: "with border.border.border modifier") { _ in
-            struct Modifier: ViewModifier {
-                func body(content: Content) -> some View {
-                    content.border(.red).border(.yellow).border(.blue)
-                }
-            }
-            let view = Text("text").modifier(Modifier())
+            let view = Text("text").modifier(ThreeBorderModifier())
             
             let graph = prepareSizedGraph(view: view)
             let driver = Driver()
