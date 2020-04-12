@@ -11,8 +11,6 @@ internal protocol ViewSetRectVisitorAcceptable {
     func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult
 }
 
-internal protocol ViewSetRectVisitorSkip { }
-
 internal final class ViewSetRectVisitor: Visitor {
     internal typealias VisitResult = Void
     internal init() { }
@@ -28,8 +26,6 @@ internal final class ViewSetRectVisitor: Visitor {
         switch content {
         case let acceptable as ViewSetRectVisitorAcceptable:
             return acceptable.accept(visitor: self)
-        case is ViewSetRectVisitorSkip:
-            return
         case _:
             return visit(content.body)
         }

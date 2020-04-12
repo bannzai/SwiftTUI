@@ -20,9 +20,6 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
             }
         }
         
-        if anyView is ViewSetRectVisitorSkip {
-            return
-        }
         if isRoot {
             setProposedSizeIfFirst(mainScreen.bounds.size)
         }

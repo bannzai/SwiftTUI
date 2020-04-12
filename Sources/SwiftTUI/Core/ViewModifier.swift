@@ -33,4 +33,3 @@ extension _ViewModifier_Content: ViewGraphSetAcceptable {
         return graph
     }
 }
-extension _ViewModifier_Content: ViewSetRectVisitorSkip { }
