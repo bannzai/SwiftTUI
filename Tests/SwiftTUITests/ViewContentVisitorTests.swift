@@ -114,19 +114,6 @@ class ViewContentVisitorTests: XCTestCase {
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
         }
         
-        XCTContext.runActivity(named: "when Double _BackgroundModifier. _BackgroundModifier<_BackgroundModifier<Text>>") { (_) in
-            let view = Text("1").background(Color.red).background(Color.blue)
-            let driver = Driver()
-            let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepareSizedGraph(view: view)
-            visitor.visit(graph)
-            let result = driver.content()
-            
-            XCTAssertEqual("1", result)
-
-            XCTAssertAmbiguouseOrder(driver.storedBackgroundColors, [.blue, .red])
-            XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
-        }
         XCTContext.runActivity(named: "when Original Modifier") { (_) in
             struct Modifier: ViewModifier {
                 func body(content: Content) -> some View {

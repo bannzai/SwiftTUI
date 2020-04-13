@@ -28,4 +28,19 @@ class BackgroundModifierTests: XCTestCase {
     }
     
     
+    func testContent() {
+        XCTContext.runActivity(named: "when Double _BackgroundModifier. ModifierdContent<Text, _BackgroundModifier<_BackgroundModifier<Color>>") { (_) in
+            let view = Text("1").background(Color.red).background(Color.blue)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepareSizedGraph(view: view)
+            visitor.visit(graph)
+            let result = driver.content()
+            
+            XCTAssertEqual("1", result)
+            
+            XCTAssertAmbiguouseOrder(driver.storedBackgroundColors, [.blue, .red])
+            XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
+        }
+    }
 }
