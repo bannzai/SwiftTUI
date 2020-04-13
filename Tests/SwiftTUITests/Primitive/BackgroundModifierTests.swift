@@ -27,6 +27,21 @@ class BackgroundModifierTests: XCTestCase {
         }
     }
     
+    func testChildrenPosition() throws {
+        XCTContext.runActivity(named: "when ModifiedContent<Text, _BackgroundModifier>") { _ in
+            let view = Text("123").background(Color.blue)
+            
+            let graph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            let textGraph = graph.children[0]
+            XCTAssertTrue(textGraph.anyView is Text)
+            
+            XCTAssertEqual(textGraph.rect.origin, .zero)
+        }
+    }
+    
     
     func testContent() {
         XCTContext.runActivity(named: "when Double _BackgroundModifier. ModifierdContent<Text, _BackgroundModifier<_BackgroundModifier<Color>>") { (_) in
