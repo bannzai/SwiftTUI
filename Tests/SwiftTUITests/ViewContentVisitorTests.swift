@@ -87,15 +87,6 @@ class ViewContentVisitorTests: XCTestCase {
             let result = driver.content()
             XCTAssertEqual(result, "123")
         }
-        XCTContext.runActivity(named: "when Text with content") { (_) in
-            let view = Text("hoge")
-            let driver = Driver()
-            let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepareSizedGraph(view: view)
-            visitor.visit(graph)
-            let result = driver.content()
-            XCTAssertEqual("hoge", result)
-        }
         XCTContext.runActivity(named: "when VStack contains TupleView<_BackgroundModifier<Text>, Text, _BackgroundModifier<Text>>") { (_) in
             let view = VStack {
                 Text("1")
