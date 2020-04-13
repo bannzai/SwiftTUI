@@ -160,7 +160,7 @@ class FrameLayoutTests: XCTestCase {
             
             let content = driver.content()
             
-            XCTAssertFalse(content.contains("123"))
+            XCTAssertTrue(content.isEmpty)
         }
     }
 }

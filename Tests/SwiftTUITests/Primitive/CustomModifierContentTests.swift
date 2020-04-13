@@ -18,6 +18,12 @@ fileprivate struct ThreeBorderModifier: ViewModifier {
         content.border(.red).border(.yellow).border(.blue)
     }
 }
+fileprivate struct BackgroundModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content.background(Color.red)
+    }
+}
+
 class CustomModifierContentTests: XCTestCase {
     override func setUp() {
         super.setUp()
@@ -157,6 +163,20 @@ class CustomModifierContentTests: XCTestCase {
             XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 1 * 2 + 3 * 2 + 5 * 2)
             XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 4 * 2 + 6 * 2 + 8 * 2)
             XCTAssertTrue(content.contains("text"))
+        }
+        
+        XCTContext.runActivity(named: "with background modifier ") { (_) in
+            let view = Text("1").modifier(BackgroundModifier())
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepareSizedGraph(view: view)
+            visitor.visit(graph)
+            let result = driver.content()
+            
+            XCTAssertEqual("1", result)
+            
+            XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
+            XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
         }
     }
 
