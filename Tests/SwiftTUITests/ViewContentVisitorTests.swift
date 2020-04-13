@@ -113,25 +113,5 @@ class ViewContentVisitorTests: XCTestCase {
             XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
         }
-        
-        XCTContext.runActivity(named: "when Original Modifier") { (_) in
-            struct Modifier: ViewModifier {
-                func body(content: Content) -> some View {
-                    content.background(Color.red)
-                }
-            }
-            
-            let view = Text("1").modifier(Modifier())
-            let driver = Driver()
-            let visitor = ViewContentVisitor(driver: driver)
-            let graph = prepareSizedGraph(view: view)
-            visitor.visit(graph)
-            let result = driver.content()
-            
-            XCTAssertEqual("1", result)
-
-            XCTAssertTrue(driver.storedBackgroundColors.contains(.red))
-            XCTAssertEqual(driver.storedBackgroundColors.last, Style.Color.background.color)
-        }
     }
 }
