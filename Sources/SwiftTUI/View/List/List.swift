@@ -19,9 +19,8 @@ public struct List<SelectionValue, Content>: View where SelectionValue: Swift.Ha
         self.selection = selection
         self.content = content()
     }
-    public var body: some View {
-        return fatalError()
-    }
+    
+    // NOTE: Actually SwiftUI interface
 //    public typealias Body = @_opaqueReturnTypeOf("$s7SwiftUI4ListV4bodyQrvp", 0) 🦸<SelectionValue, Content>
 }
 extension List {
