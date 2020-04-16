@@ -34,3 +34,8 @@ extension ForEach where Data == Swift.Range<Swift.Int>, ID == Swift.Int, Content
     }
 }
 
+extension ForEach: ViewGraphSetAcceptable {
+    internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        _accept(visitor: visitor)
+    }
+}
