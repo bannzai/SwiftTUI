@@ -36,6 +36,14 @@ extension ForEach where Data == Swift.Range<Swift.Int>, ID == Swift.Int, Content
 
 extension ForEach: ViewGraphSetAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        _accept(visitor: visitor)
+        let graph = ViewGraphImpl(view: self)
+        graph.listType = .vertical
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = graph
+        data.forEach { d in
+            graph.addChild(visitor.visit(content(d)))
+        }
+        return graph
     }
 }
