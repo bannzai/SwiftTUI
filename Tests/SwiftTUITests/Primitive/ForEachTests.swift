@@ -111,7 +111,8 @@ class ForEachTests: XCTestCase {
     }
     
     func test_playground() {
-        XCTContext.runActivity(named: "when ForEach with identifier model with border modifier") { (_) in
+        XCTContext.runActivity(named: "when ForEach with identifier model with border modifier. But ForEach is not contained ParentView(In other words ForEach is RootView pattern)") { (_) in
+            // NOTE: See also https://github.com/bannzai/SwiftTUI/pull/14#issuecomment-615544848
             let view = ForEach((0..<2).map(Model.init(id:))) { element in
                 Text("\(element.id)")
             }
@@ -132,9 +133,9 @@ class ForEachTests: XCTestCase {
 
             XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
-            XCTAssertEqual(subject(cornerDelimiter), 1 * 4 * 2)
-            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 1 * 2 * 2)
-            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 3 * 2 * 2)
+            XCTAssertEqual(subject(cornerDelimiter), 1 * 4)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 2 * 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 1 * 2)
             XCTAssertTrue(content.contains("01"))
         }
     }
