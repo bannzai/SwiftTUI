@@ -47,3 +47,14 @@ extension ForEach: ViewGraphSetAcceptable {
         return graph
     }
 }
+
+internal protocol _ForEach {
+    func each(visitor: ViewGraphSetVisitor, closure: (ViewGraph) -> Void)
+}
+extension ForEach: _ForEach {
+    func each(visitor: ViewGraphSetVisitor, closure: (ViewGraph) -> Void) {
+        data.forEach { d in
+            closure(visitor.visit(content(d)))
+        }
+    }
+}
