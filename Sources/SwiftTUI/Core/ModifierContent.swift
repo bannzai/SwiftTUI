@@ -53,11 +53,19 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         return !(modifier is Primitive)
     }
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
+        if let forEach = content as? _ForEach, let container = visitor.current {
+            forEach.each(visitor: visitor) { (graph) in
+                container.addChild(graph)
+            }
+            return container
+        }
+        
         let graph = ViewGraphImpl(view: self)
         visitor.current?.addChild(graph)
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
+        
         let contentGraph = visitor.visit(content)
         if isUserDefinedModifier {
             let bodyGraph = visitor.visit(modifier.body(content: _ViewModifier_Content()))
