@@ -50,4 +50,21 @@ class ForEachTests: XCTestCase {
             }
         }
     }
+    
+    func testContent() {
+        XCTContext.runActivity(named: "when ForEach with ClosedRange<Int>") { (_) in
+            let view = ForEach((0..<2)) { (element: Int) in
+                Text("\(element)")
+            }
+
+            let graph = prepareSizedGraph(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            
+            graph.accept(visitor: visitor)
+            let content = driver.content()
+
+            XCTAssertEqual(content, "01")
+        }
+    }
 }
