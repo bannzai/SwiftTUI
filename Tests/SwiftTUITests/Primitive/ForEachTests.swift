@@ -26,9 +26,9 @@ class ForEachTests: XCTestCase {
             graph.accept(visitor: visitor)
             
             XCTAssertEqual(graph.children.count, 2)
-            graph.children.forEach { child in
+            graph.children.enumerated().forEach { (offset, child) in
                 XCTAssertTrue(child.anyView is Text)
-                XCTAssertEqual(child.rect.origin, .zero)
+                XCTAssertEqual(child.rect.origin, Point(x: 0, y: offset))
             }
         }
     }
