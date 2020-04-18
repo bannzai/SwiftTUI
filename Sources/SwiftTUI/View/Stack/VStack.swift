@@ -46,3 +46,30 @@ extension VStack: ViewGraphSetAcceptable {
 }
 
 extension _VStackLayout: VariadicView.Root { }
+
+extension VStack: HasContainerContentSize {
+    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
+        var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (viewGraph.rendableChildren.count - 1) * viewGraph.spacing
+        var maxElementWidth: PhysicalDistance = 0
+        viewGraph.rendableChildren.enumerated().forEach { (offset, element) in
+            let provisionalElementHeight: PhysicalDistance = allocableHeight / (viewGraph.rendableChildren.count - offset)
+            let elementProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
+            element.proposedSize = elementProposedSize
+            element.accept(visitor: visitor)
+            
+            maxElementWidth = max(maxElementWidth, element.rect.size.width + element.rect.origin.x)
+            allocableHeight -= element.rect.size.height
+        }
+        
+        maxElementWidth = min(maxElementWidth, viewGraph.proposedSize.width)
+        
+        switch allocableHeight {
+        case let allocableHeight where allocableHeight < 0:
+            return Size(width: maxElementWidth, height: viewGraph.proposedSize.height + abs(allocableHeight))
+        case let allocableHeight where allocableHeight > 0:
+            return Size(width: maxElementWidth, height: viewGraph.proposedSize.height - allocableHeight)
+        case _:
+            return Size(width: maxElementWidth, height: viewGraph.proposedSize.height)
+        }
+    }
+}
