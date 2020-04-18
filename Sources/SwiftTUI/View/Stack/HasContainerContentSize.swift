@@ -29,7 +29,7 @@ extension HasContainerContentSize {
                 let provisionalElementHeight: PhysicalDistance = allocableHeight / (rendableChildren.count - offset)
                 let elementProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
                 element.proposedSize = elementProposedSize
-                element.accept(visitor: visitor)
+                element.acceptSize(visitor: visitor)
                 
                 maxElementWidth = max(maxElementWidth, element.rect.size.width + element.rect.origin.x)
                 allocableHeight -= element.rect.size.height
