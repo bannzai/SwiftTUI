@@ -7,19 +7,13 @@
 
 import Foundation
 
-extension ViewGraph: ViewSetRectVisitorAcceptable {
-    func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
+extension ViewGraph: ViewSetRectVisitorAcceptable { }
+extension ViewGraph {
+    func acceptSize(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = self
-        defer {
-            if isRoot {
-                acceptSetDimensions(visitor: visitor)
-                acceptSetPosition(visitor: visitor)
-                acceptSetContainerSize(visitor: visitor)
-            }
-        }
-        
+
         if isRoot {
             setProposedSizeIfFirst(mainScreen.bounds.size)
         }
@@ -38,19 +32,19 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")
             }
             if let modifier = view.anyModifier as? _PaddingLayout {
-                modifier.modify(for: self, visitor: visitor)
+                modifier.modifySize(for: self, visitor: visitor)
                 return
             }
             if let modifier = view.anyModifier as? _BorderModifier {
-                modifier.modify(for: self, visitor: visitor)
+                modifier.modifySize(for: self, visitor: visitor)
                 return
             }
             if let modifier = view.anyModifier as? _FrameLayout {
-                modifier.modify(for: self, visitor: visitor)
+                modifier.modifySize(for: self, visitor: visitor)
                 return
             }
         }
-
+        
         if !children.isEmpty {
             children.forEach { $0.accept(visitor: visitor) }
             let size = children
@@ -166,14 +160,21 @@ extension ViewGraph {
 }
 
 extension ViewGraph {
-    private func acceptSetDimensions(visitor: ViewSetRectVisitor) {
+    func accept(visitor: ViewSetRectVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
         defer { visitor.currentContainerGraph = keepCurrentContainer }
         if anyView is ContainerViewType {
             visitor.currentContainerGraph = self
         }
+        defer {
+            if isRoot {
+                acceptSize(visitor: visitor)
+                acceptSetPosition(visitor: visitor)
+                acceptSetContainerSize(visitor: visitor)
+            }
+        }
         
-        children.forEach { $0.acceptSetDimensions(visitor: visitor) }
+        children.forEach { $0.accept(visitor: visitor) }
         
         guard let _ = visitor.currentContainerGraph else {
             return
