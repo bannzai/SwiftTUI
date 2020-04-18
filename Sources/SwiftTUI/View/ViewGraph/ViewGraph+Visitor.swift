@@ -129,7 +129,7 @@ extension ViewGraph {
                 return
             }
         }
-
+        
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
