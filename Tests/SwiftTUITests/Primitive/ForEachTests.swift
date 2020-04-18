@@ -16,7 +16,7 @@ class ForEachTests: XCTestCase {
     }
 
     func testChildrenPosition() throws {
-        XCTContext.runActivity(named: "when call border(.blue)") { (_) in
+        XCTContext.runActivity(named: "when ForEach has Text") { (_) in
             let view = ForEach((0..<2)) { (element: Int) in
                 Text("\(element)")
             }
