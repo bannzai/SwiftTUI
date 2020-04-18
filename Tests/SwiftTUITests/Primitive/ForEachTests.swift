@@ -44,7 +44,7 @@ class ForEachTests: XCTestCase {
         }
     }
 
-    func testChildrenPosition() throws {
+    func testChildrenRect() throws {
         XCTContext.runActivity(named: "when ForEach with ClosedRange<Int>") { (_) in
             let view = ForEach((0..<2)) { (element: Int) in
                 Text("\(element)")
@@ -58,6 +58,7 @@ class ForEachTests: XCTestCase {
             graph.children.enumerated().forEach { (offset, child) in
                 XCTAssertTrue(child.anyView is Text)
                 XCTAssertEqual(child.rect.origin, Point(x: 0, y: offset))
+                XCTAssertEqual(child.rect.size, Size(width: 1, height: 1))
             }
         }
         XCTContext.runActivity(named: "when ForEach with identifier model") { (_) in
@@ -73,6 +74,7 @@ class ForEachTests: XCTestCase {
             graph.children.enumerated().forEach { (offset, child) in
                 XCTAssertTrue(child.anyView is Text)
                 XCTAssertEqual(child.rect.origin, Point(x: 0, y: offset))
+                XCTAssertEqual(child.rect.size, Size(width: 1, height: 1))
             }
         }
     }
