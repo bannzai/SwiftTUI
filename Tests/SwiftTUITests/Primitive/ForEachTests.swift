@@ -18,6 +18,31 @@ class ForEachTests: XCTestCase {
         
         mainScreen = DummyScreen.init()
     }
+    
+    func testSize() throws {
+        XCTContext.runActivity(named: "when ForEach with ClosedRange<Int>") { (_) in
+            let view = ForEach((0..<2)) { (element: Int) in
+                Text("\(element)")
+            }
+
+            let graph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.size, Size(width: "01".width, height: "0".height + "1".height))
+        }
+        XCTContext.runActivity(named: "when ForEach with identifier model") { (_) in
+            let view = ForEach((0..<2).map(Model.init(id:))) { element in
+                Text("\(element.id)")
+            }
+
+            let graph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.size, Size(width: "01".width, height: "0".height + "1".height))
+        }
+    }
 
     func testChildrenPosition() throws {
         XCTContext.runActivity(named: "when ForEach with ClosedRange<Int>") { (_) in
