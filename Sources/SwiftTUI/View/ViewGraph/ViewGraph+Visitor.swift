@@ -258,10 +258,6 @@ extension Text: HasIntrinsicContentSize {
     }
 }
 
-protocol HasContainerContentSize {
-    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size
-}
-
 extension ViewGraph: ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) {
         let keepCurrent = visitor.current

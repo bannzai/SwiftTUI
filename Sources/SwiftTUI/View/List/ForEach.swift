@@ -60,3 +60,4 @@ extension ForEach: _ForEach {
         }
     }
 }
+extension ForEach: HasContainerContentSize { }
