@@ -46,7 +46,7 @@ extension ViewGraph {
         }
         
         if !children.isEmpty {
-            children.forEach { $0.accept(visitor: visitor) }
+            children.forEach { $0.acceptSize(visitor: visitor) }
             let size = children
                 .map { $0.rect.size }
                 .reduce(.zero) { Size(width: $0.width + $1.width, height: $0.height + $1.height) }
