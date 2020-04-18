@@ -11,7 +11,9 @@ public struct ForEach<Data, ID, Content> where Data: Swift.RandomAccessCollectio
     public var data: Data
     public var content: (Data.Element) -> Content
 }
+extension ForEach: ContainerViewType { }
 extension ForEach: Primitive { }
+extension ForEach: Rendable { }
 extension ForEach: View {
     public typealias Body = Swift.Never
 }
