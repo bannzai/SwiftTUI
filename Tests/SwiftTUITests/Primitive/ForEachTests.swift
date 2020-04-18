@@ -9,6 +9,10 @@ import XCTest
 @testable import SwiftTUI
 
 class ForEachTests: XCTestCase {
+    fileprivate struct Model: Identifiable {
+        let id: Int
+    }
+    
     override func setUp() {
         super.setUp()
         
@@ -32,9 +36,6 @@ class ForEachTests: XCTestCase {
             }
         }
         XCTContext.runActivity(named: "when ForEach with identifier model") { (_) in
-            struct Model: Identifiable {
-                let id: Int
-            }
             let view = ForEach((0..<2).map(Model.init(id:))) { element in
                 Text("\(element.id)")
             }
@@ -64,6 +65,20 @@ class ForEachTests: XCTestCase {
             graph.accept(visitor: visitor)
             let content = driver.content()
 
+            XCTAssertEqual(content, "01")
+        }
+        XCTContext.runActivity(named: "when ForEach with identifier model") { (_) in
+            let view = ForEach((0..<2).map(Model.init(id:))) { element in
+                Text("\(element.id)")
+            }
+
+            let graph = prepareSizedGraph(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            
+            graph.accept(visitor: visitor)
+            let content = driver.content()
+            
             XCTAssertEqual(content, "01")
         }
     }
