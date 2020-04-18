@@ -29,7 +29,7 @@ class ForEachTests: XCTestCase {
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
-            XCTAssertEqual(graph.rect.size, Size(width: "01".width, height: "0".height + "1".height))
+            XCTAssertEqual(graph.rect.size, Size(width: 1, height: "0".height + "1".height))
         }
         XCTContext.runActivity(named: "when ForEach with identifier model") { (_) in
             let view = ForEach((0..<2).map(Model.init(id:))) { element in
@@ -40,7 +40,7 @@ class ForEachTests: XCTestCase {
             let visitor = ViewSetRectVisitor()
             graph.accept(visitor: visitor)
             
-            XCTAssertEqual(graph.rect.size, Size(width: "01".width, height: "0".height + "1".height))
+            XCTAssertEqual(graph.rect.size, Size(width: "0".width, height: "0".height + "1".height))
         }
     }
 
