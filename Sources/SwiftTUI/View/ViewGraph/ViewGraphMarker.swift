@@ -21,4 +21,5 @@ internal class ViewGraphMarker {
 }
 
 internal let renderMarker = ViewGraphMarker()
+internal let positionMarker = ViewGraphMarker()
 internal let proposedSizeMarker = ViewGraphMarker()
