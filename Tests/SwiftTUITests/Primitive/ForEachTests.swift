@@ -130,7 +130,7 @@ class ForEachTests: XCTestCase {
             }
             
             let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
-
+            
             XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
             XCTAssertEqual(subject(cornerDelimiter), 1 * 4)
@@ -138,5 +138,36 @@ class ForEachTests: XCTestCase {
             XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 1 * 2)
             XCTAssertTrue(content.contains("01"))
         }
+        XCTContext.runActivity(named: "when ForEach with identifier model with border modifier. But ForEach is contained ParentView") { (_) in
+            let view = VStack {
+                ForEach((0..<2).map(Model.init(id:))) { element in
+                    Text("\(element.id)")
+                }
+                .border(Color.blue)
+            }
+            
+            let graph = prepareSizedGraph(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            
+            graph.accept(visitor: visitor)
+            let content = driver.content()
+            
+            let subject: (String) -> Int = { (delimiter: String) in
+                content.filter { String($0) == delimiter }.count
+            }
+            
+            let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
+            
+            XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
+            XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
+            XCTAssertEqual(subject(cornerDelimiter), 1 * 4 * 2)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 2 * 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 2 * 2)
+            XCTAssertTrue(content.contains("0"))
+            XCTAssertTrue(content.contains("1"))
+        }
+    }
+    func testExample() {
     }
 }

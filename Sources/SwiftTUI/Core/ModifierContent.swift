@@ -54,11 +54,11 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
     }
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
 
-        if let forEach = content as? _ForEach, let container = visitor.current {
+        if let forEach = content as? _ForEach, visitor.current?.anyView is ContainerViewType {
             forEach.each(visitor: visitor) { (child) in
                 let graph = ViewGraphImpl(view: self)
                 graph.setModifier(child)
-                container.addChild(graph)
+                visitor.current?.addChild(graph)
             }
             return ViewGraphNone()
         }
