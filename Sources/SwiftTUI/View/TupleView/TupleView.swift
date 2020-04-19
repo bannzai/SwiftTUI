@@ -22,10 +22,12 @@ extension TupleView: View {
 
 extension TupleView: Primitive { }
 extension TupleView: Rendable { }
-extension TupleView: ContainerViewContentAcceptable { }
-
 extension TupleView: ContainerViewGraphSetAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         _accept(visitor: visitor, value: value)
     }
 }
+extension TupleView: ContainerViewType { }
+extension TupleView: HasContainerContentSize { }
+internal protocol _TupleView { }
+extension TupleView: _TupleView { }

@@ -29,7 +29,8 @@ extension VStack: ViewGraphSetAcceptable {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
-        graph.addChild(visitor.visit(tree.content))
+        let child = visitor.visit(tree.content)
+        graph.addChild(child)
         return graph
     }
 }
@@ -46,3 +47,4 @@ extension VStack: ViewGraphSetAcceptable {
 }
 
 extension _VStackLayout: VariadicView.Root { }
+extension VStack: HasContainerContentSize { }

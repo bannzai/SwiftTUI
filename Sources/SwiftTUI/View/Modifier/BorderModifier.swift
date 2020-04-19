@@ -52,7 +52,7 @@ extension _BorderModifier: Rendable { }
 extension _BorderModifier: Primitive { }
 fileprivate let defaultBorderWidth: PhysicalDistance = 1
 internal extension _BorderModifier {
-    func modify(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
+    func modifySize(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
         let horizontalLength = self.horizontalLength()
         let verticalLength = self.verticalLength()
         
@@ -61,8 +61,7 @@ internal extension _BorderModifier {
         baseGraph.proposedSize.width = graph.proposedSize.width - horizontalLength
         baseGraph.proposedSize.height = graph.proposedSize.height - verticalLength
 
-        baseGraph.accept(visitor: visitor)
-        
+        baseGraph.acceptSize(visitor: visitor)
         graph.rect.size.width = baseGraph.rect.size.width + horizontalLength
         graph.rect.size.height = baseGraph.rect.size.height + verticalLength
         

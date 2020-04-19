@@ -56,7 +56,11 @@ public class ViewGraph: SwiftTUI.View {
     }
     
     internal func addChild(_ node: ViewGraph) {
+        assert(self !== node)
         if children.contains(where: { $0 === node }) {
+            return
+        }
+        if node is ViewGraphNone {
             return
         }
         children.append(node)

@@ -7,19 +7,13 @@
 
 import Foundation
 
-extension ViewGraph: ViewSetRectVisitorAcceptable {
-    func accept(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
+extension ViewGraph: ViewSetRectVisitorAcceptable { }
+extension ViewGraph {
+    func acceptSize(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = self
-        defer {
-            if isRoot {
-                acceptSetDimensions(visitor: visitor)
-                acceptSetPosition(visitor: visitor)
-                acceptSetContainerSize(visitor: visitor)
-            }
-        }
-        
+
         if isRoot {
             setProposedSizeIfFirst(mainScreen.bounds.size)
         }
@@ -38,21 +32,26 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")
             }
             if let modifier = view.anyModifier as? _PaddingLayout {
-                modifier.modify(for: self, visitor: visitor)
+                modifier.modifySize(for: self, visitor: visitor)
                 return
             }
             if let modifier = view.anyModifier as? _BorderModifier {
-                modifier.modify(for: self, visitor: visitor)
+                modifier.modifySize(for: self, visitor: visitor)
                 return
             }
             if let modifier = view.anyModifier as? _FrameLayout {
-                modifier.modify(for: self, visitor: visitor)
+                modifier.modifySize(for: self, visitor: visitor)
                 return
             }
         }
-
+        
+        if isContainerType {
+            children.forEach { $0.acceptSize(visitor: visitor) }
+            acceptSetContainerSize(visitor: visitor)
+            return
+        }
         if !children.isEmpty {
-            children.forEach { $0.accept(visitor: visitor) }
+            children.forEach { $0.acceptSize(visitor: visitor) }
             let size = children
                 .map { $0.rect.size }
                 .reduce(.zero) { Size(width: $0.width + $1.width, height: $0.height + $1.height) }
@@ -63,6 +62,10 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
         if let view = anyView as? HasIntrinsicContentSize {
             let size = view.intrinsicContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
+            return
+        }
+        
+        if self is ViewGraphNone {
             return
         }
 
@@ -129,7 +132,7 @@ extension ViewGraph {
                 return
             }
         }
-
+        
         switch listType {
         case .vertical:
             var maxX = PhysicalDistance(0)
@@ -166,14 +169,21 @@ extension ViewGraph {
 }
 
 extension ViewGraph {
-    private func acceptSetDimensions(visitor: ViewSetRectVisitor) {
+    func accept(visitor: ViewSetRectVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
         defer { visitor.currentContainerGraph = keepCurrentContainer }
         if anyView is ContainerViewType {
             visitor.currentContainerGraph = self
         }
+        defer {
+            if isRoot {
+                acceptSize(visitor: visitor)
+                acceptSetPosition(visitor: visitor)
+                acceptSetContainerSize(visitor: visitor)
+            }
+        }
         
-        children.forEach { $0.acceptSetDimensions(visitor: visitor) }
+        children.forEach { $0.accept(visitor: visitor) }
         
         guard let _ = visitor.currentContainerGraph else {
             return
@@ -203,18 +213,15 @@ extension ViewGraph {
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
-            // NOTE: Maybe VStack or HStack
-            parent?.rect.size = rect.size
             return
         }
-        
-        children.forEach { $0.acceptSetContainerSize(visitor: visitor) }
         
         if children.isEmpty {
             return
         }
-        
-        if !isUserDefinedView {
+        children.forEach { $0.acceptSize(visitor: visitor) }
+
+        if !(isUserDefinedView || isUserDefinedModifierContent) {
             return
         }
         
@@ -256,42 +263,6 @@ extension Text: HasIntrinsicContentSize {
         }
         let size = calcTextSize(proposedWidth: viewGraph.proposedSize.width)
         return size
-    }
-}
-
-protocol HasContainerContentSize {
-    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size
-}
-
-extension TupleView: HasContainerContentSize {
-    func containerContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
-        switch viewGraph.listType {
-        case .vertical:
-            var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (viewGraph.rendableChildren.count - 1) * viewGraph.spacing
-            var maxElementWidth: PhysicalDistance = 0
-            viewGraph.rendableChildren.enumerated().forEach { (offset, element) in
-                let provisionalElementHeight: PhysicalDistance = allocableHeight / (viewGraph.rendableChildren.count - offset)
-                let elementProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
-                element.proposedSize = elementProposedSize
-                element.accept(visitor: visitor)
-                
-                maxElementWidth = max(maxElementWidth, element.rect.size.width + element.rect.origin.x)
-                allocableHeight -= element.rect.size.height
-            }
-            
-            maxElementWidth = min(maxElementWidth, viewGraph.proposedSize.width)
-            
-            switch allocableHeight {
-            case let allocableHeight where allocableHeight < 0:
-                return Size(width: maxElementWidth, height: viewGraph.proposedSize.height + abs(allocableHeight))
-            case let allocableHeight where allocableHeight > 0:
-                return Size(width: maxElementWidth, height: viewGraph.proposedSize.height - allocableHeight)
-            case _:
-                return Size(width: maxElementWidth, height: viewGraph.proposedSize.height)
-            }
-        case .horizontal:
-            fatalError()
-        }
     }
 }
 

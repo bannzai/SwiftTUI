@@ -22,11 +22,11 @@ import Foundation
 }
 
 internal extension _FrameLayout {
-    func modify(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
+    func modifySize(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
         assert(graph.extractRendableChlid() != nil, "it is necessary about rendable view")
         let baseGraph = graph.extractRendableChlid()!
         baseGraph.setProposedSizeIfFirst(Size(width: width ?? graph.proposedSize.width, height: height ?? graph.proposedSize.height))
-        baseGraph.accept(visitor: visitor)
+        baseGraph.acceptSize(visitor: visitor)
         
         graph.rect.size.width = width ?? baseGraph.rect.size.width
         graph.rect.size.height = height ?? baseGraph.rect.size.height
