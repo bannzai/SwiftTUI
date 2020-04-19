@@ -171,7 +171,7 @@ extension ViewGraph {
 
 // MARK: - Dimensions
 extension ViewGraph {
-    func accept(visitor: ViewSetRectVisitor) {
+    func acceptForSetDimensions(visitor: ViewSetRectVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
         defer { visitor.currentContainerGraph = keepCurrentContainer }
         if anyView is ContainerViewType {
