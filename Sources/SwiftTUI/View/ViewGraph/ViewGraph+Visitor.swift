@@ -206,7 +206,6 @@ extension ViewGraph {
             visitor.currentContainerGraph = self
         }
         if let view = anyView as? HasContainerContentSize {
-            // NOTE: Maybe VStack or HStack
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
             return
