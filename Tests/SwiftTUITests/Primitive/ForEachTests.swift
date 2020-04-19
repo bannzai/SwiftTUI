@@ -42,6 +42,32 @@ class ForEachTests: XCTestCase {
             
             XCTAssertEqual(graph.rect.size, Size(width: "0".width, height: "0".height + "1".height))
         }
+        XCTContext.runActivity(named: "when VStack<ForEach<TupleView<(Text, Text)>>> with ClosedRange<Int>") { (_) in
+            let view = VStack {
+                ForEach((0..<2)) { (element: Int) in
+                    Text("\(element)")
+                    Text("X")
+                }
+            }
+            
+            let graph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.size, Size(width: 1, height: (1 + "X".height) * 2))
+        }
+        XCTContext.runActivity(named: "when ForEach<TupleView<(Text, Text)>> with ClosedRange<Int>") { (_) in
+            let view = ForEach((0..<2)) { (element: Int) in
+                Text("\(element)")
+                Text("X")
+            }
+            
+            let graph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.size, Size(width: 1, height: (1 + "X".height) * 2))
+        }
     }
 
     func testChildrenRect() throws {
