@@ -96,23 +96,6 @@ class ForEachTests: XCTestCase {
                 XCTAssertEqual(child.rect.size, Size(width: 1, height: 1))
             }
         }
-        XCTContext.runActivity(named: "when ForEach<TupleView<(Text, Text)>> with ClosedRange<Int>") { (_) in
-            let view = ForEach((0..<2)) { (element: Int) in
-                Text("\(element)")
-                Text("X")
-            }
-            
-            let graph = prepareViewGraph(view: view)
-            let visitor = ViewSetRectVisitor()
-            graph.accept(visitor: visitor)
-            XCTAssertEqual(graph.children.count, 2)
-            
-            graph.children.enumerated().forEach { (offset, child) in
-                XCTAssertTrue(child.anyView is TupleView<(Text, Text)>)
-                XCTAssertEqual(child.rect.origin, Point(x: 0, y: offset * 2))
-                XCTAssertEqual(child.rect.size, Size(width: 1, height: 2))
-            }
-        }
     }
     
     func testContent() {
@@ -143,6 +126,49 @@ class ForEachTests: XCTestCase {
             let content = driver.content()
             
             XCTAssertEqual(content, "01")
+        }
+        XCTContext.runActivity(named: "when ForEach<TupleView<(Text, Text)>> with ClosedRange<Int>") { (_) in
+            let view = ForEach((0..<2)) { (element: Int) in
+                Text("\(element)")
+                Text("X")
+            }
+            
+            let graph = prepareSizedGraph(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            
+            graph.accept(visitor: visitor)
+            let content = driver.content()
+            
+            XCTAssertEqual(content.filter { $0 == "0" }.count, 1)
+            XCTAssertEqual(content.filter { $0 == "1" }.count, 1)
+            XCTAssertEqual(content.filter { $0 == "X" }.count, 2)
+        }
+    }
+    
+    func testExample() {
+        XCTContext.runActivity(named: "when ForEach<TupleView<(Text, Text)>> with ClosedRange<Int>") { (_) in
+            let view = ForEach((0..<2)) { (element: Int) in
+                Text("\(element)")
+                Text("X")
+            }
+            
+            let graph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            XCTAssertEqual(graph.children.count, 2)
+            
+            graph.children.enumerated().forEach { (offset, child) in
+                XCTAssertTrue(child.anyView is TupleView<(Text, Text)>)
+                XCTAssertEqual(child.rect.origin, Point(x: 0, y: offset * 2))
+                XCTAssertEqual(child.rect.size, Size(width: 1, height: 2))
+                
+                child.children.enumerated().forEach { (offset, child) in
+                    XCTAssertTrue(child.anyView is Text)
+                    XCTAssertEqual(child.rect.origin, Point(x: 0, y: offset))
+                    XCTAssertEqual(child.rect.size, Size(width: 1, height: 1))
+                }
+            }
         }
     }
     
