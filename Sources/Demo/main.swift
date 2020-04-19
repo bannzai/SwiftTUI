@@ -18,21 +18,15 @@ struct ChildView: View {
     var body: some View {
         VStack {
             if binding {
-                Text("Hello")
-                Text(",")
-                    .modifier(Modifier())
-                VStack(alignment: .trailing) {
-                    Text("World")
-                        .frame(width: 4, height: 3)
-                }
-            } else {
-                Text("World")
-                Text(",")
-                    .modifier(Modifier())
-                VStack(alignment: .trailing) {
+                ForEach(0..<3) { _ in
                     Text("Hello")
-                        .frame(width: 4, height: 3)
                 }
+                .border(Color.red)
+            } else {
+                ForEach(0..<3) { _ in
+                    Text("World")
+                }
+                .border(Color.blue)
             }
         }
         .border(.cyan)

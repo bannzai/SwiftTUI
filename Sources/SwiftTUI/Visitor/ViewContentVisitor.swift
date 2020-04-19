@@ -27,10 +27,6 @@ internal protocol ViewContentAcceptable {
     func accept(visitor: ViewContentVisitor) -> ViewContentVisitor.VisitResult
 }
 
-internal protocol ContainerViewContentAcceptable {
-    
-}
-
 internal final class ViewContentVisitor: Visitor {
     internal typealias VisitResult = Void
     internal var driver: DrawableDriver

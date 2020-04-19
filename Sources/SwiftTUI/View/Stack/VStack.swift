@@ -46,3 +46,4 @@ extension VStack: ViewGraphSetAcceptable {
 }
 
 extension _VStackLayout: VariadicView.Root { }
+extension VStack: HasContainerContentSize { }
