@@ -63,6 +63,10 @@ extension ViewGraph {
             rect.size = size
             return
         }
+        
+        if self is ViewGraphNone {
+            return
+        }
 
         fatalError("unexpected pattern \(self)")
     }
