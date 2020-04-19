@@ -11,6 +11,9 @@ extension ViewGraph: ViewSetRectVisitorAcceptable {
     func accept(visitor: ViewSetRectVisitor) {
         children.forEach { $0.accept(visitor: visitor) }
         acceptForSetDimensions(visitor: visitor)
+        if isRoot {
+            acceptSize(visitor: visitor)
+        }
         acceptSetPosition(visitor: visitor)
         acceptSetContainerSize(visitor: visitor)
     }
@@ -182,12 +185,7 @@ extension ViewGraph {
         if anyView is ContainerViewType {
             visitor.currentContainerGraph = self
         }
-        defer {
-            if isRoot {
-                acceptSize(visitor: visitor)
-            }
-        }
-        
+
         children.forEach { $0.accept(visitor: visitor) }
         
         guard let _ = visitor.currentContainerGraph else {
