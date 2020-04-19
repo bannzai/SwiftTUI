@@ -9,36 +9,46 @@ import Foundation
 
 extension ViewGraph: ViewSetRectVisitorAcceptable {
     func accept(visitor: ViewSetRectVisitor) {
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = self
+        
         children.forEach { $0.accept(visitor: visitor) }
+        
         acceptForSetDimensions(visitor: visitor)
         if isRoot {
             acceptSize(visitor: visitor)
         }
         acceptSetPosition(visitor: visitor)
-        acceptSetContainerSize(visitor: visitor)
+        if !children.isEmpty {
+            acceptSetContainerSize(visitor: visitor)
+        }
     }
 }
 
 
 // MARK: - Size
 extension ViewGraph {
-    func acceptSize(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
-        let keepCurrent = visitor.current
-        defer { visitor.current = keepCurrent }
-        visitor.current = self
-
-        if isRoot {
+    private func configureProopsedSize(visitor: ViewSetRectVisitor) {
+        if visitor.current.isRoot {
             setProposedSizeIfFirst(mainScreen.bounds.size)
         }
         
-        var next = self.parent
+        var next = visitor.current.parent
         while let parent = next {
             next = parent.parent
             if !parent.alreadyMarkedProposedSize() {
                 continue
             }
-            setProposedSizeIfFirst(parent.proposedSize)
+            visitor.current.setProposedSizeIfFirst(parent.proposedSize)
         }
+    }
+    func acceptSize(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = self
+
+        configureProopsedSize(visitor: visitor)
         
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
