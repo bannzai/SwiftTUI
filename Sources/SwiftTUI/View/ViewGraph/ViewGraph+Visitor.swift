@@ -212,6 +212,9 @@ extension ViewGraph {
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
+            children.filter { $0.anyView is _TupleView }.forEach {
+                $0.rect.size = size
+            }
             return
         }
         

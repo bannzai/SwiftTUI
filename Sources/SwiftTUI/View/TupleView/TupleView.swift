@@ -27,5 +27,6 @@ extension TupleView: ContainerViewGraphSetAcceptable {
         _accept(visitor: visitor, value: value)
     }
 }
+extension TupleView: HasContainerContentSize { }
 internal protocol _TupleView { }
 extension TupleView: _TupleView { }
