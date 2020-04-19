@@ -27,11 +27,5 @@ extension TupleView: ContainerViewGraphSetAcceptable {
         _accept(visitor: visitor, value: value)
     }
 }
-internal protocol _TupleView {
-    func each(visitor: ViewGraphSetVisitor, closure: (ViewGraph) -> Void)
-}
-extension TupleView: _TupleView {
-    func each(visitor: ViewGraphSetVisitor, closure: (ViewGraph) -> Void) {
-        closure(_accept(visitor: visitor, value: value))
-    }
-}
+internal protocol _TupleView { }
+extension TupleView: _TupleView { }
