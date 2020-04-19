@@ -7,7 +7,12 @@
 
 import Foundation
 
-extension ViewGraph: ViewSetRectVisitorAcceptable { }
+extension ViewGraph: ViewSetRectVisitorAcceptable {
+    
+}
+
+
+// MARK: - Size
 extension ViewGraph {
     func acceptSize(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
         let keepCurrent = visitor.current
@@ -68,6 +73,7 @@ extension ViewGraph {
     }
 }
 
+// MARK: - Position
 extension ViewGraph {
     private static func extractAlignmentXValue(graph: ViewGraph, alignment: HorizontalAlignment) -> PhysicalDistance {
         switch graph.dimensions[explicit: alignment] {
@@ -163,6 +169,7 @@ extension ViewGraph {
     }
 }
 
+// MARK: - Dimensions
 extension ViewGraph {
     func accept(visitor: ViewSetRectVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
@@ -198,6 +205,7 @@ extension ViewGraph {
     }
 }
 
+// MARK: - Container Size
 extension ViewGraph {
     private func acceptSetContainerSize(visitor: ViewSetRectVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
@@ -230,34 +238,6 @@ extension ViewGraph {
             let maxY = rendableChildren.map { $0.rect.size.height }.max()!
             rect.size.height = maxY - minY
         }
-    }
-}
-
-// e.g) Text, Padding
-internal protocol HasIntrinsicContentSize {
-    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size
-}
-
-extension Text: HasIntrinsicContentSize {
-    private func calcTextSize(proposedWidth: PhysicalDistance) -> Size {
-        let contents = content.split(separator: "\n").map { String($0) }
-        let baseHeight = contents.count
-        guard let maxWidthString = contents.max (by: { $0.width < $1.width }) else {
-            return Size(width: proposedWidth, height: baseHeight)
-        }
-        let width = maxWidthString.width
-        if width > proposedWidth {
-            let lineBreakCount = PhysicalDistance(roundf(Float(width) / Float(proposedWidth)))
-            return Size(width: proposedWidth, height: lineBreakCount)
-        }
-        return Size(width: width, height: baseHeight)
-    }
-    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
-        if viewGraph.proposedSize.width == 0 {
-            return .zero
-        }
-        let size = calcTextSize(proposedWidth: viewGraph.proposedSize.width)
-        return size
     }
 }
 
