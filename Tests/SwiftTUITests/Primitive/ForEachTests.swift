@@ -110,7 +110,7 @@ class ForEachTests: XCTestCase {
         }
     }
     
-    func test_playground() {
+    func testContentWithBorderModifier() {
         XCTContext.runActivity(named: "when ForEach with identifier model with border modifier. But ForEach is not contained ParentView(In other words ForEach is RootView pattern)") { (_) in
             // NOTE: See also https://github.com/bannzai/SwiftTUI/pull/14#issuecomment-615544848
             let view = ForEach((0..<2).map(Model.init(id:))) { element in
