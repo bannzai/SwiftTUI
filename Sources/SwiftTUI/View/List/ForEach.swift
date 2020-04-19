@@ -56,7 +56,12 @@ internal protocol _ForEach {
 extension ForEach: _ForEach {
     func each(visitor: ViewGraphSetVisitor, closure: (ViewGraph) -> Void) {
         data.forEach { d in
-            closure(visitor.visit(content(d)))
+            let child = visitor.visit(content(d))
+            if child.anyView is _TupleView {
+                child.children.forEach(closure)
+                return
+            }
+            closure(child)
         }
     }
 }
