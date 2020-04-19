@@ -30,9 +30,7 @@ extension VStack: ViewGraphSetAcceptable {
         defer { visitor.current = keepCurrent }
         visitor.current = graph
         let child = visitor.visit(tree.content)
-        if !(child.anyView is _ForEach) {
-            graph.addChild(child)
-        }
+        graph.addChild(child)
         return graph
     }
 }

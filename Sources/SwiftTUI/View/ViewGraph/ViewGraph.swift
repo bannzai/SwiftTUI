@@ -60,6 +60,9 @@ public class ViewGraph: SwiftTUI.View {
         if children.contains(where: { $0 === node }) {
             return
         }
+        if node is ViewGraphNone {
+            return
+        }
         children.append(node)
         node.parent = self
         inheritProperties(to: node)

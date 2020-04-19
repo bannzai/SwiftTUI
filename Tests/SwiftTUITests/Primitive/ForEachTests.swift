@@ -77,9 +77,6 @@ class ForEachTests: XCTestCase {
                 XCTAssertEqual(child.rect.size, Size(width: 1, height: 1))
             }
         }
-    }
-    
-    func testExample() {
         XCTContext.runActivity(named: "when VStack<ForEach<TupleView<(Text, Text)>>> with ClosedRange<Int>") { (_) in
             let view = VStack {
                 ForEach((0..<2)) { (element: Int) in
@@ -92,7 +89,7 @@ class ForEachTests: XCTestCase {
             let visitor = ViewSetRectVisitor()
             vstackGraph.accept(visitor: visitor)
             XCTAssertEqual(vstackGraph.children.count, 4)
-
+            
             vstackGraph.children.enumerated().forEach { (offset, child) in
                 XCTAssertTrue(child.anyView is Text)
                 XCTAssertEqual(child.rect.origin, Point(x: 0, y: offset))
@@ -100,6 +97,7 @@ class ForEachTests: XCTestCase {
             }
         }
     }
+    
     func testContent() {
         XCTContext.runActivity(named: "when ForEach with ClosedRange<Int>") { (_) in
             let view = ForEach((0..<2)) { (element: Int) in
@@ -157,7 +155,8 @@ class ForEachTests: XCTestCase {
             XCTAssertEqual(subject(cornerDelimiter), 1 * 4)
             XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 2 * 2)
             XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 1 * 2)
-            XCTAssertTrue(content.contains("01"))
+            XCTAssertTrue(content.contains("0"))
+            XCTAssertTrue(content.contains("1"))
         }
         XCTContext.runActivity(named: "when ForEach with identifier model with border modifier. But ForEach is contained ParentView") { (_) in
             let view = VStack {
