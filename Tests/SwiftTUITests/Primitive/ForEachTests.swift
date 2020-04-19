@@ -103,6 +103,24 @@ class ForEachTests: XCTestCase {
                 XCTAssertEqual(child.rect.size, Size(width: 1, height: 1))
             }
         }
+        XCTContext.runActivity(named: "when VStack<ForEach<Text>> with ClosedRange<Int>") { (_) in
+            let view = VStack {
+                ForEach((0..<2)) { (element: Int) in
+                    Text("\(element)")
+                }
+            }
+            
+            let vstackGraph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            vstackGraph.accept(visitor: visitor)
+            XCTAssertEqual(vstackGraph.children.count, 2)
+            
+            vstackGraph.children.enumerated().forEach { (offset, child) in
+                XCTAssertTrue(child.anyView is Text)
+                XCTAssertEqual(child.rect.origin, Point(x: 0, y: offset))
+                XCTAssertEqual(child.rect.size, Size(width: 1, height: 1))
+            }
+        }
         XCTContext.runActivity(named: "when VStack<ForEach<TupleView<(Text, Text)>>> with ClosedRange<Int>") { (_) in
             let view = VStack {
                 ForEach((0..<2)) { (element: Int) in
