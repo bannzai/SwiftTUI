@@ -45,6 +45,10 @@ extension ViewGraph {
             }
         }
         
+        if isContainerType {
+            acceptSetContainerSize(visitor: visitor)
+            return
+        }
         if !children.isEmpty {
             children.forEach { $0.acceptSize(visitor: visitor) }
             let size = children
@@ -214,7 +218,7 @@ extension ViewGraph {
             return
         }
         
-        if !isUserDefinedView {
+        if !(isUserDefinedView || isUserDefinedModifierContent) {
             return
         }
         
