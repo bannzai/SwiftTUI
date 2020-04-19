@@ -8,7 +8,9 @@
 import Foundation
 
 extension ViewGraph: ViewSetRectVisitorAcceptable {
-    
+    func accept(visitor: ViewSetRectVisitor) {
+        acceptForSetDimensions(visitor: visitor)
+    }
 }
 
 
