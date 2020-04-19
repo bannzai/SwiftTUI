@@ -13,13 +13,7 @@ internal protocol HasContainerContentSize {
 
 extension HasContainerContentSize {
     func containerContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
-        let rendableChildren: [ViewGraph]
-        switch viewGraph.children.first {
-        case .some(let view) where view.anyView is _TupleView:
-            rendableChildren = view.rendableChildren
-        case _:
-            rendableChildren = viewGraph.rendableChildren
-        }
+        let rendableChildren = viewGraph.rendableChildren
         
         switch viewGraph.listType {
         case .vertical:

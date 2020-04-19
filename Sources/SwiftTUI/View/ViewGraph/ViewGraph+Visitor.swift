@@ -213,16 +213,13 @@ extension ViewGraph {
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
-            children.filter { $0.anyView is _TupleView }.forEach {
-                $0.rect.size = size
-            }
             return
         }
         
         if children.isEmpty {
             return
         }
-        children.forEach { $0.acceptSetContainerSize(visitor: visitor) }
+        children.forEach { $0.acceptSize(visitor: visitor) }
 
         if !(isUserDefinedView || isUserDefinedModifierContent) {
             return

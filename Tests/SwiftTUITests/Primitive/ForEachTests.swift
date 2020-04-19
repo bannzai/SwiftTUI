@@ -69,7 +69,7 @@ class ForEachTests: XCTestCase {
             XCTAssertEqual(graph.rect.size, Size(width: 1, height: (1 + "X".height) * 2))
         }
     }
-
+    
     func testChildrenRect() throws {
         XCTContext.runActivity(named: "when ForEach with ClosedRange<Int>") { (_) in
             let view = ForEach((0..<2)) { (element: Int) in
