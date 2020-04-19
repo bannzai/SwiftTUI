@@ -79,6 +79,27 @@ class ForEachTests: XCTestCase {
         }
     }
     
+    func testExample() {
+        XCTContext.runActivity(named: "when VStack<ForEach<TupleView<(Text, Text)>>> with ClosedRange<Int>") { (_) in
+            let view = VStack {
+                ForEach((0..<2)) { (element: Int) in
+                    Text("\(element)")
+                    Text("X")
+                }
+            }
+            
+            let vstackGraph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            vstackGraph.accept(visitor: visitor)
+            XCTAssertEqual(vstackGraph.children.count, 4)
+
+            vstackGraph.children.enumerated().forEach { (offset, child) in
+                XCTAssertTrue(child.anyView is Text)
+                XCTAssertEqual(child.rect.origin, Point(x: 0, y: offset))
+                XCTAssertEqual(child.rect.size, Size(width: 1, height: 1))
+            }
+        }
+    }
     func testContent() {
         XCTContext.runActivity(named: "when ForEach with ClosedRange<Int>") { (_) in
             let view = ForEach((0..<2)) { (element: Int) in
@@ -167,7 +188,7 @@ class ForEachTests: XCTestCase {
             XCTAssertTrue(content.contains("0"))
             XCTAssertTrue(content.contains("1"))
         }
-        XCTContext.runActivity(named: "when ForEach<TupleView<Text, Text>> with identifier model with border modifier. But ForEach is contained ParentView. ") { (_) in
+        XCTContext.runActivity(named: "when ForEach<TupleView<(Text, Text)>> with identifier model with border modifier. But ForEach is contained ParentView. ") { (_) in
             let view = VStack {
                 ForEach((0..<2).map(Model.init(id:))) { element in
                     Text("\(element.id)")
@@ -198,7 +219,5 @@ class ForEachTests: XCTestCase {
             XCTAssertTrue(content.contains("1"))
             XCTAssertEqual(content.filter { $0 == "X" }.count, 2)
         }
-    }
-    func testExample() {
     }
 }
