@@ -194,6 +194,23 @@ class ForEachTests: XCTestCase {
             
             XCTAssertEqual(content, "01")
         }
+        XCTContext.runActivity(named: "when VStack<ForEach<Text>> with ClosedRange<Int>") { (_) in
+            let view = VStack {
+                ForEach((0..<2)) { (element: Int) in
+                    Text("\(element)")
+                }
+            }
+            
+            let graph = prepareSizedGraph(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            
+            graph.accept(visitor: visitor)
+            let content = driver.content()
+            
+            XCTAssertEqual(content.filter { $0 == "0" }.count, 1)
+            XCTAssertEqual(content.filter { $0 == "1" }.count, 1)
+        }
         XCTContext.runActivity(named: "when VStack<ForEach<TupleView<(Text, Text)>>> with ClosedRange<Int>") { (_) in
             let view = VStack {
                 ForEach((0..<2)) { (element: Int) in
