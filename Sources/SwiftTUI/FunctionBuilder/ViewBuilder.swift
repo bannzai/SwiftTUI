@@ -73,11 +73,8 @@ extension ViewBuilder._ConditionalContent: ViewGraphSetAcceptable {
         }
     }
     func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        let graph = ViewGraphImpl(view: self)
-        let keepCurrent = visitor.current
-        defer { visitor.current = keepCurrent }
-        visitor.current = graph
-        graph.addChild(contentViewGraph(visitor: visitor))
+        let graph = contentViewGraph(visitor: visitor)
+        visitor.current?.addChild(graph)
         return graph
     }
 }
