@@ -212,12 +212,11 @@ extension ViewGraph {
             return
         }
         
-        children.forEach { $0.acceptSetContainerSize(visitor: visitor) }
-        
         if children.isEmpty {
             return
         }
-        
+        children.forEach { $0.acceptSetContainerSize(visitor: visitor) }
+
         if !(isUserDefinedView || isUserDefinedModifierContent) {
             return
         }
