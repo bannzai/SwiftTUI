@@ -180,6 +180,11 @@ extension ViewGraph {
                 acceptSize(visitor: visitor)
                 acceptSetPosition(visitor: visitor)
                 acceptSetContainerSize(visitor: visitor)
+                
+                if children.count == 1 {
+                    let child = children[0]
+                    rect.origin = Point(x: (mainScreen.bounds.size.width - child.rect.size.width) / 2, y: (mainScreen.bounds.size.height - child.rect.size.height) / 2)
+                }
             }
         }
         
