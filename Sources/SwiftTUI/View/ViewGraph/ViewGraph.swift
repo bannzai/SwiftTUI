@@ -117,7 +117,7 @@ public class ViewGraph: SwiftTUI.View {
 }
 
 extension ViewGraph {
-    func buildDebugContent() {
+    func printTree() {
         print(buildRecursiveDebugContent(from: 0))
     }
     func buildRecursiveDebugContent(from level: Int) -> String {
@@ -126,12 +126,8 @@ extension ViewGraph {
         if children.isEmpty {
             return content
         }
-        var hyphens = ""
-        stride(from: 0, through: level, by: 1).forEach { offset in
-            hyphens += "-"
-        }
         for (_, child) in children.enumerated() {
-            content += space(level: level + 1) + "|" + hyphens + child.buildRecursiveDebugContent(from: level + 1)
+            content += space(level: level + 1) + "|" + child.buildRecursiveDebugContent(from: level + 1)
         }
         return content
     }
