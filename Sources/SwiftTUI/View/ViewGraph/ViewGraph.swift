@@ -96,10 +96,6 @@ public class ViewGraph: SwiftTUI.View {
         return children.compactMap { $0._extractRendableChlid(root: root) }.first
     }
     
-    internal func extractRendableChlid() -> ViewGraph? {
-        _extractRendableChlid(root: self)
-    }
-    
     internal var rendableChildren: [ViewGraph] {
         let rendableChildren = children.compactMap { $0._extractRendableChlid(root: self) }
         return rendableChildren
