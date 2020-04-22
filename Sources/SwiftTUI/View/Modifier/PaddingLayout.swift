@@ -70,16 +70,17 @@ internal extension _PaddingLayout {
         let horizontalLength = self.horizontalLength()
         let verticalLength = self.verticalLength()
 
-        assert(paddingGraph.extractRendableChlid() != nil, "it is necessary about rendable view")
-        let baseGraph = paddingGraph.extractRendableChlid()!
-        baseGraph.setProposedSizeIfFirst(Size(width: paddingGraph.proposedSize.width - horizontalLength, height: paddingGraph.proposedSize.height - verticalLength))
-        baseGraph.acceptSize(visitor: visitor)
+        assert(!paddingGraph.rendableChildren.isEmpty, "it is necessary about rendable view")
+        paddingGraph.rendableChildren.forEach { baseGraph in
+            baseGraph.setProposedSizeIfFirst(Size(width: paddingGraph.proposedSize.width - horizontalLength, height: paddingGraph.proposedSize.height - verticalLength))
+            baseGraph.acceptSize(visitor: visitor)
 
-        paddingGraph.rect.size.width = baseGraph.rect.size.width + horizontalLength
-        paddingGraph.rect.size.height = baseGraph.rect.size.height + verticalLength
-        
-        if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultPadding) }
-        if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
+            paddingGraph.rect.size.width = max(paddingGraph.rect.size.width, baseGraph.rect.size.width + horizontalLength)
+            paddingGraph.rect.size.height = max(paddingGraph.rect.size.height, baseGraph.rect.size.height + verticalLength)
+
+            if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultPadding) }
+            if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
+        }
     }
     private func verticalLength() -> PhysicalDistance {
         var length = 0
