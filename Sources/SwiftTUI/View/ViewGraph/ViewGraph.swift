@@ -105,6 +105,9 @@ public class ViewGraph: SwiftTUI.View {
         guard let parent = parent else {
             return nil
         }
+        if parent.isContainerType  {
+            return parent
+        }
         return parent.nearContainerParent
     }
 
