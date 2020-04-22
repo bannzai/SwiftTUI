@@ -26,8 +26,11 @@ public final class ViewGraphImpl<View: SwiftTUI.View>: ViewGraph {
     override func copy() -> Self {
         let copied = Self.init(view: view)
         inheritProperties(to: copied)
-        copied.parent = parent
-        copied.children = children.map { $0.copy() }
+        copied.children = children.map { child in
+            let copiedChild = child.copy()
+            copiedChild.parent = copied
+            return child
+        }
         return copied
     }
 }
