@@ -54,10 +54,32 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
     }
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         if let forEach = content as? _ForEach, visitor.current != nil {
+            var i = 0
             forEach.each(visitor: visitor) { (child) in
-                let graph = ViewGraphImpl(view: self)
-                graph.setModifier(child)
-                visitor.current?.addChild(graph)
+                if i == 0 {
+                    let graph = ViewGraphImpl(view: self)
+                    graph.setModifier(child)
+                    visitor.current?.addChild(graph)
+                    i += 1
+                    return
+                }
+
+                var parent = visitor.current?.parent
+                while let next = parent, !(next.anyView is HasAnyModifier) {
+                    parent = next.parent
+                }
+                if let view = parent?.copy() {
+                    var parentChild = view.children.first
+                    while let next = parentChild, !next.children.isEmpty {
+                        parentChild = next.children.first
+                    }
+                    if let p = parentChild?.parent {
+                        let graph = ViewGraphImpl(view: self)
+                        graph.setModifier(child)
+                        p.addChild(graph)
+                    }
+                }
+                i += 1
             }
             return ViewGraphNone()
         }
