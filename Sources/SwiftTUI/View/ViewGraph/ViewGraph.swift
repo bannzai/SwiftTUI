@@ -12,7 +12,7 @@ public class ViewGraph: SwiftTUI.View {
     internal lazy private(set) var identifier: ObjectIdentifier = .init(self)
     
     internal weak var parent: ViewGraph?
-    internal private(set) var children: [ViewGraph] = []
+    internal var children: [ViewGraph] = []
     internal var isUserDefinedView: Bool = false
     internal var isModifiedContent: Bool = false
     internal var isContainerType: Bool { anyView is ContainerViewType }
@@ -106,6 +106,10 @@ public class ViewGraph: SwiftTUI.View {
             return nil
         }
         return parent.nearContainerParent
+    }
+
+    internal func copy() -> Self {
+        fatalError()
     }
 }
 
