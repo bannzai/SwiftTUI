@@ -54,10 +54,32 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
     }
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
         if let forEach = content as? _ForEach, visitor.current != nil {
+            var isFirst = true
             forEach.each(visitor: visitor) { (child) in
                 let graph = ViewGraphImpl(view: self)
                 graph.setModifier(child)
-                visitor.current?.addChild(graph)
+
+                if isFirst {
+                    visitor.current?.addChild(child)
+                    isFirst = false
+                    return
+                }
+
+                if let nearContainer = visitor.current?.nearContainerParent {
+                    let endIndex = nearContainer.children.endIndex
+                    let lastChild = nearContainer.children[endIndex - 1]
+                    let copiedChild = lastChild.copy()
+                    nearContainer.addChild(copiedChild)
+
+                    var furthest = copiedChild.children.last
+                    while let next = furthest, !next.children.isEmpty {
+                        furthest = next.children.last
+                    }
+                    if let furthestParent = furthest?.parent {
+                        furthestParent.children.removeAll()
+                        furthestParent.addChild(graph)
+                    }
+                }
             }
             return ViewGraphNone()
         }
