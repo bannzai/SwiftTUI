@@ -341,13 +341,12 @@ class ForEachTests: XCTestCase {
     }
     
     func testWithComplexModifiers() {
-        XCTContext.runActivity(named: "when ForEach<Text> And ForEach is contained ParentView. And ForEach has .border.padding.border") { (_) in
+        XCTContext.runActivity(named: "when ForEach<Text> And ForEach is contained ParentView. And ForEach has .border.border") { (_) in
             let view = VStack {
                 ForEach((0..<2).map(Model.init(id:))) { element in
                     Text("\(element.id)")
                 }
                 .border(Color.blue)
-                .padding()
                 .border(Color.red)
             }
             
