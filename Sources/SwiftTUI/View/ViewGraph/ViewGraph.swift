@@ -116,6 +116,37 @@ public class ViewGraph: SwiftTUI.View {
     }
 }
 
+extension ViewGraph {
+    func buildDebugContent() {
+        print(buildRecursiveDebugContent(from: 0))
+    }
+    func buildRecursiveDebugContent(from level: Int) -> String {
+        var content = ""
+        content += "- " + debugContent(level: level) + "\n"
+        if children.isEmpty {
+            return content
+        }
+        var hyphens = ""
+        stride(from: 0, through: level, by: 1).forEach { offset in
+            hyphens += "-"
+        }
+        for (_, child) in children.enumerated() {
+            content += space(level: level + 1) + "|" + hyphens + child.buildRecursiveDebugContent(from: level + 1)
+        }
+        return content
+    }
+    private func space(level: Int) -> String {
+        var indent = ""
+        stride(from: 0, through: level, by: 1).forEach { i in
+            indent += " "
+        }
+        return indent
+    }
+    private func debugContent(level: Int) -> String {
+        return "\(type(of: self.anyView))"
+    }
+}
+
 // MARK: - Utility
 internal extension ViewGraph {
     func positionToWindow() -> Point {
