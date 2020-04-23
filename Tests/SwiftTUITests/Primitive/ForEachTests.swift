@@ -368,8 +368,8 @@ class ForEachTests: XCTestCase {
             XCTAssertTrue(driver.storedForegroundColors.contains(.red))
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
             XCTAssertEqual(subject(cornerDelimiter), (1 * 4 * elementCount) * 2)
-            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), (2 * 2 * elementCount) + (3 * 2 * elementCount))
-            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), (2 * 2 * elementCount) + (3 * 2 * elementCount))
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), (1 * 2 * elementCount) + (3 * 2 * elementCount))
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), (1 * 2 * elementCount) + (3 * 2 * elementCount))
             XCTAssertEqual(content.filter { $0 == "0" }.count, 1)
             XCTAssertEqual(content.filter { $0 == "1" }.count, 1)
         }
