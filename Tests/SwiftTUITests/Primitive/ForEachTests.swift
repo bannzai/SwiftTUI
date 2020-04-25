@@ -373,5 +373,39 @@ class ForEachTests: XCTestCase {
             XCTAssertEqual(content.filter { $0 == "0" }.count, 1)
             XCTAssertEqual(content.filter { $0 == "1" }.count, 1)
         }
+        XCTContext.runActivity(named: "when ForEach<TupleView<(Text, Text)>> And ForEach is contained ParentView. And ForEach has .border.border") { (_) in
+            let view = VStack {
+                ForEach((0..<2)) { element in
+                    Text("\(element)")
+                    Text("X")
+                }
+                .border(Color.blue)
+                .border(Color.red)
+            }
+            
+            let graph = prepareSizedGraph(view: view)
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            
+            graph.accept(visitor: visitor)
+            let content = driver.content()
+            
+            let subject: (String) -> Int = { (delimiter: String) in
+                content.filter { String($0) == delimiter }.count
+            }
+            
+            let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
+            let elementCount = 4
+            
+            XCTAssertTrue(driver.storedForegroundColors.contains(.blue))
+            XCTAssertTrue(driver.storedForegroundColors.contains(.red))
+            XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
+            XCTAssertEqual(subject(cornerDelimiter), (1 * 4 * elementCount) * 2)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), (1 * 2 * elementCount) + (3 * 2 * elementCount))
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), (1 * 2 * elementCount) + (3 * 2 * elementCount))
+            XCTAssertEqual(content.filter { $0 == "0" }.count, 1)
+            XCTAssertEqual(content.filter { $0 == "1" }.count, 1)
+            XCTAssertEqual(content.filter { $0 == "X" }.count, 2)
+        }
     }
 }
