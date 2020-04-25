@@ -9,6 +9,7 @@ import Foundation
 
 internal final class ViewGraphSetVisitor: Visitor {
     internal var current: ViewGraph? = nil
+
     internal init() { }
     
     internal func visit<T: View>(_ view: T) -> ViewGraph {
@@ -26,6 +27,6 @@ internal final class ViewGraphSetVisitor: Visitor {
         case let _view as _View:
             return _view._wrappedViewForBuildGraph.accept(visitor: self)
         }
-        
     }
+
 }

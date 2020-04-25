@@ -12,7 +12,7 @@ public class ViewGraph: SwiftTUI.View {
     internal lazy private(set) var identifier: ObjectIdentifier = .init(self)
     
     internal weak var parent: ViewGraph?
-    internal private(set) var children: [ViewGraph] = []
+    internal var children: [ViewGraph] = []
     internal var isUserDefinedView: Bool = false
     internal var isModifiedContent: Bool = false
     internal var isContainerType: Bool { anyView is ContainerViewType }
@@ -96,10 +96,6 @@ public class ViewGraph: SwiftTUI.View {
         return children.compactMap { $0._extractRendableChlid(root: root) }.first
     }
     
-    internal func extractRendableChlid() -> ViewGraph? {
-        _extractRendableChlid(root: self)
-    }
-    
     internal var rendableChildren: [ViewGraph] {
         let rendableChildren = children.compactMap { $0._extractRendableChlid(root: self) }
         return rendableChildren
@@ -109,7 +105,41 @@ public class ViewGraph: SwiftTUI.View {
         guard let parent = parent else {
             return nil
         }
+        if parent.isContainerType  {
+            return parent
+        }
         return parent.nearContainerParent
+    }
+
+    internal func copy() -> Self {
+        fatalError()
+    }
+}
+
+extension ViewGraph {
+    func printTree() {
+        print(buildRecursiveDebugContent(from: 0))
+    }
+    func buildRecursiveDebugContent(from level: Int) -> String {
+        var content = ""
+        content += "- " + debugContent(level: level) + "\n"
+        if children.isEmpty {
+            return content
+        }
+        for (_, child) in children.enumerated() {
+            content += space(level: level + 1) + "|" + child.buildRecursiveDebugContent(from: level + 1)
+        }
+        return content
+    }
+    private func space(level: Int) -> String {
+        var indent = ""
+        stride(from: 0, through: level, by: 1).forEach { i in
+            indent += " "
+        }
+        return indent
+    }
+    private func debugContent(level: Int) -> String {
+        return "\(type(of: self.anyView))"
     }
 }
 

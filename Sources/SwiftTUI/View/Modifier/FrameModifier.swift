@@ -23,13 +23,16 @@ import Foundation
 
 internal extension _FrameLayout {
     func modifySize(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
-        assert(graph.extractRendableChlid() != nil, "it is necessary about rendable view")
-        let baseGraph = graph.extractRendableChlid()!
-        baseGraph.setProposedSizeIfFirst(Size(width: width ?? graph.proposedSize.width, height: height ?? graph.proposedSize.height))
-        baseGraph.acceptSize(visitor: visitor)
-        
-        graph.rect.size.width = width ?? baseGraph.rect.size.width
-        graph.rect.size.height = height ?? baseGraph.rect.size.height
+        assert(!graph.rendableChildren.isEmpty, "it is necessary about rendable view")
+        graph.rendableChildren.forEach { baseGraph in
+            baseGraph.setProposedSizeIfFirst(Size(width: width ?? graph.proposedSize.width, height: height ?? graph.proposedSize.height))
+            baseGraph.acceptSize(visitor: visitor)
+
+            let _width = width ?? baseGraph.rect.size.width
+            let _height = height ?? baseGraph.rect.size.height
+            graph.rect.size.width = max(graph.rect.size.width, _width)
+            graph.rect.size.height = max(graph.rect.size.height, _height)
+        }
     }
 }
 

@@ -46,6 +46,18 @@ extension ModifiedContent: View {
     public typealias Body = Swift.Never
 }
 
+private protocol ForEachFindable {
+    func findForEach() -> _ForEach?
+}
+extension ModifiedContent: ForEachFindable {
+    func findForEach() -> _ForEach? {
+        if let modified = content as? ForEachFindable {
+            return modified.findForEach()
+        }
+        return content as? _ForEach
+    }
+}
+
 extension ModifiedContent: Rendable where Modifier: Rendable { }
 extension ModifiedContent: ContainerViewType where Modifier: ContainerViewType { }
 extension ModifiedContent: ViewGraphSetAttributeAcceptable {
@@ -53,13 +65,24 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         return !(modifier is Primitive)
     }
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        if let forEach = content as? _ForEach, visitor.current?.anyView is ContainerViewType {
-            forEach.each(visitor: visitor) { (child) in
-                let graph = ViewGraphImpl(view: self)
-                graph.setModifier(child)
-                visitor.current?.addChild(graph)
+        if let current = visitor.current, current.isContainerType {
+            if let forEach = findForEach() {
+                forEach.each(visitor: visitor) { (child) in
+                    // NOTE: escaping `if current = visitor.current, current.isContainerType` condition about ModifiedContent<ModifiedContent...> has ForEach
+                    visitor.current = ViewGraphNone()
+                    defer { visitor.current = current }
+                    let graph = visitor.visit(self)
+                    current.addChild(graph)
+
+                    var lastChild = graph
+                    while let next = lastChild.children.last {
+                        lastChild = next
+                    }
+                    lastChild.parent?.children.removeAll()
+                    lastChild.parent?.addChild(child)
+                }
+                return ViewGraphNone()
             }
-            return ViewGraphNone()
         }
 
         let graph = ViewGraphImpl(view: self)
@@ -67,7 +90,7 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = graph
-        
+
         let contentGraph = visitor.visit(content)
         if isUserDefinedModifier {
             let bodyGraph = visitor.visit(modifier.body(content: _ViewModifier_Content()))
@@ -75,7 +98,7 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
             bodyGraph.extractUserDefinedModifierContentChild()!.addChild(contentGraph)
             return graph
         }
-        
+
         graph.setModifier(contentGraph)
         if let modifier = modifier as? _FrameLayout {
             contentGraph.alignment = modifier.alignment
@@ -97,3 +120,6 @@ internal protocol HasAnyModifier {
 extension ModifiedContent: HasAnyModifier {
     var anyModifier: Any { modifier }
 }
+
+internal protocol _ModifiedContent { }
+extension ModifiedContent: _ModifiedContent { }

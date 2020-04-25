@@ -51,7 +51,12 @@ extension ForEach: ViewGraphSetAcceptable {
         visitor.current = graph
         
         data.forEach { d in
-            graph.addChild(visitor.visit(content(d)))
+            let child = visitor.visit(content(d))
+            if child.anyView is _TupleView {
+                child.children.forEach(graph.addChild)
+                return
+            }
+            graph.addChild(child)
         }
         return graph
     }

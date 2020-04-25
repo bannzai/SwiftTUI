@@ -197,8 +197,8 @@ extension ViewGraph {
                 parent.dimensions = dimensions
                 return
             }
-            
-            extractRendableChlid()?.dimensions = dimensions
+
+            rendableChildren.forEach { $0.dimensions = dimensions }
         }
     }
 }

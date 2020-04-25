@@ -56,17 +56,18 @@ internal extension _BorderModifier {
         let horizontalLength = self.horizontalLength()
         let verticalLength = self.verticalLength()
         
-        assert(graph.extractRendableChlid() != nil, "it is necessary about rendable view")
-        let baseGraph = graph.extractRendableChlid()!
-        baseGraph.proposedSize.width = graph.proposedSize.width - horizontalLength
-        baseGraph.proposedSize.height = graph.proposedSize.height - verticalLength
+        assert(!graph.rendableChildren.isEmpty, "it is necessary about rendable view")
+        graph.rendableChildren.forEach { baseGraph in
+            baseGraph.proposedSize.width = graph.proposedSize.width - horizontalLength
+            baseGraph.proposedSize.height = graph.proposedSize.height - verticalLength
 
-        baseGraph.acceptSize(visitor: visitor)
-        graph.rect.size.width = baseGraph.rect.size.width + horizontalLength
-        graph.rect.size.height = baseGraph.rect.size.height + verticalLength
-        
-        if edges.contains(.leading) { baseGraph.rect.origin.x = defaultBorderWidth }
-        if edges.contains(.top) { baseGraph.rect.origin.y = defaultBorderWidth }
+            baseGraph.acceptSize(visitor: visitor)
+            graph.rect.size.width = max(graph.rect.size.width, baseGraph.rect.size.width + horizontalLength)
+            graph.rect.size.height = max(graph.rect.size.height, baseGraph.rect.size.height + verticalLength)
+
+            if edges.contains(.leading) { baseGraph.rect.origin.x = defaultBorderWidth }
+            if edges.contains(.top) { baseGraph.rect.origin.y = defaultBorderWidth }
+        }
     }
     private func verticalLength() -> PhysicalDistance {
         var length = 0
