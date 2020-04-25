@@ -40,9 +40,9 @@ extension ContentSetter {
     }
     
     func add(string: String) {
-        debugLogger.debug(userInfo: "start string: \(string)")
+        debugLogger.debug(userInfo: "start add string: \(string)")
         string.forEach(add(character:))
-        debugLogger.debug(userInfo: "end string: \(string)")
+        debugLogger.debug(userInfo: "end add string: \(string)")
     }
 }
 
