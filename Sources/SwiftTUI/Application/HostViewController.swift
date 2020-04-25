@@ -92,13 +92,16 @@ extension HostViewController: Drawable, DrawableDriver {
         drawnContent.append(rune)
         debugLogger.debug(userInfo: "point is \(point)")
         debugLogger.debug(userInfo: "window size is \(window.frame.size)")
-        switch point.x < window.frame.size.width {
-        case true:
+        
+        switch (point.x < window.frame.size.width, point.y < window.frame.size.height) {
+        case (true, true):
             sharedCursor.moveTo(x: point.x + 1, y: point.y)
-        case false:
+        case (false, true):
             sharedCursor.moveTo(x: 0, y: point.y + 1)
+        case (true, false), (false, false):
+            break
         }
-        debugLogger.debug(userInfo: "end rune: \(rune)")
+        debugLogger.debug(userInfo: "end add rune: \(rune)")
     }
     
     func setBackgroundColor(_ color: Color) {
