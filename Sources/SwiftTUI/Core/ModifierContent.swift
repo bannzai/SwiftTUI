@@ -68,7 +68,7 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         if let current = visitor.current, current.isContainerType {
             if let forEach = findForEach() {
                 forEach.each(visitor: visitor) { (child) in
-                    // NOTE: escaping current `if` condition about ModifiedContent<ModifiedContent...> has ForEach
+                    // NOTE: escaping `if current = visitor.current, current.isContainerType` condition about ModifiedContent<ModifiedContent...> has ForEach
                     visitor.current = ViewGraphNone()
                     defer { visitor.current = current }
                     let graph = visitor.visit(self)
