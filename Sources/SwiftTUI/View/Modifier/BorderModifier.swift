@@ -107,11 +107,13 @@ extension _BorderModifier: ViewContentAcceptable {
             let top = position.y + 1
             let bottom = position.y + graph.rect.size.height - 2
             let setter: (Int) -> Void = { offset in
-                sharedCursor.moveTo(x: position.x, y: top + offset)
-                visitor.driver.add(string: Edge.Set.vertical.defaultDelimiter)
-                
-                sharedCursor.moveTo(x: position.x + graph.rect.size.width - 1, y: top + offset)
-                visitor.driver.add(string: Edge.Set.vertical.defaultDelimiter)
+                if top + offset < graph.proposedSize.height {
+                    sharedCursor.moveTo(x: position.x, y: top + offset)
+                    visitor.driver.add(string: Edge.Set.vertical.defaultDelimiter)
+                    
+                    sharedCursor.moveTo(x: position.x + graph.rect.size.width - 1, y: top + offset)
+                    visitor.driver.add(string: Edge.Set.vertical.defaultDelimiter)
+                }
             }
             stride(from: top, through: bottom, by: Edge.Set.vertical.defaultDelimiter.height).forEach { offset in
                 setter(offset - top)
