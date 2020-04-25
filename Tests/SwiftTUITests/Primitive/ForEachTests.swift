@@ -250,10 +250,10 @@ class ForEachTests: XCTestCase {
     }
     
     func testContentWithBorderModifier() {
-        XCTContext.runActivity(named: "when ForEach with identifier model with border modifier. But ForEach is not contained ParentView(In other words ForEach is RootView pattern)") { (_) in
+        XCTContext.runActivity(named: "when ForEach. But ForEach is not contained ParentView(In other words ForEach is RootView pattern)") { (_) in
             // NOTE: See also https://github.com/bannzai/SwiftTUI/pull/14#issuecomment-615544848
-            let view = ForEach((0..<2).map(Model.init(id:))) { element in
-                Text("\(element.id)")
+            let view = ForEach((0..<2)) { element in
+                Text("\(element)")
             }
             .border(Color.blue)
             
@@ -307,10 +307,10 @@ class ForEachTests: XCTestCase {
             XCTAssertTrue(content.contains("0"))
             XCTAssertTrue(content.contains("1"))
         }
-        XCTContext.runActivity(named: "when ForEach<TupleView<(Text, Text)>> with identifier model with border modifier. But ForEach is contained ParentView. ") { (_) in
+        XCTContext.runActivity(named: "when ForEach<TupleView<(Text, Text)>>. But ForEach is contained ParentView. ") { (_) in
             let view = VStack {
-                ForEach((0..<2).map(Model.init(id:))) { element in
-                    Text("\(element.id)")
+                ForEach((0..<2)) { element in
+                    Text("\(element)")
                     Text("X")
                 }
                 .border(Color.blue)
@@ -343,8 +343,8 @@ class ForEachTests: XCTestCase {
     func testWithComplexModifiers() {
         XCTContext.runActivity(named: "when ForEach<Text> And ForEach is contained ParentView. And ForEach has .border.border") { (_) in
             let view = VStack {
-                ForEach((0..<2).map(Model.init(id:))) { element in
-                    Text("\(element.id)")
+                ForEach((0..<2)) { element in
+                    Text("\(element)")
                 }
                 .border(Color.blue)
                 .border(Color.red)
