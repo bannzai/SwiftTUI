@@ -67,8 +67,8 @@ internal let defaultPadding = 1
 
 internal extension _PaddingLayout {
      func modifySize(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
-        let horizontalLength = self.horizontalLength()
-        let verticalLength = self.verticalLength()
+        let horizontalLength = self.horizontalLength(graph: paddingGraph)
+        let verticalLength = self.verticalLength(graph: paddingGraph)
 
         assert(!paddingGraph.rendableChildren.isEmpty, "it is necessary about rendable view")
         paddingGraph.rendableChildren.forEach { baseGraph in
@@ -82,16 +82,18 @@ internal extension _PaddingLayout {
             if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
         }
     }
-    private func verticalLength() -> PhysicalDistance {
+    private func verticalLength(graph: ViewGraph) -> PhysicalDistance {
         var length = 0
-        if edges.contains(.top) { length = length + (insets?.top ?? defaultPadding) }
-        if edges.contains(.bottom) { length = length + (insets?.bottom ?? defaultPadding) }
+        let maxHeight = graph.proposedSize.height / 2
+        if edges.contains(.top) { length = length + min((insets?.top ?? defaultPadding), maxHeight) }
+        if edges.contains(.bottom) { length = length + min((insets?.bottom ?? defaultPadding), maxHeight) }
         return length
     }
-    private func horizontalLength() -> PhysicalDistance {
+    private func horizontalLength(graph: ViewGraph) -> PhysicalDistance {
         var length = 0
-        if edges.contains(.leading) { length = length + (insets?.leading ?? defaultPadding) }
-        if edges.contains(.trailing) { length = length + (insets?.trailing ?? defaultPadding) }
+        let maxWidth = graph.proposedSize.width / 2
+        if edges.contains(.leading) { length = length + min((insets?.leading ?? defaultPadding), maxWidth) }
+        if edges.contains(.trailing) { length = length + min((insets?.trailing ?? defaultPadding), maxWidth) }
         return length
     }
 }
