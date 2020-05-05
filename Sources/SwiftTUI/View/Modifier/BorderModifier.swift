@@ -78,7 +78,7 @@ internal extension _BorderModifier {
     private func horizontalLength() -> PhysicalDistance {
         var length = 0
         if edges.contains(.leading) { length = length + defaultBorderWidth }
-        if edges.contains(.trailing) { length = length + defaultPadding }
+        if edges.contains(.trailing) { length = length + defaultBorderWidth }
         return length
     }
 }
