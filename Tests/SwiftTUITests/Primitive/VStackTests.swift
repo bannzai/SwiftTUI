@@ -928,6 +928,66 @@ extension VStackTests {
             }
         }
     }
+    func test_playground() {
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, ModifiedContent<ModifiedContent<Text, _PaddingLayout> _BackgroundModifier>, Text>") { (_) in
+            let view = VStack {
+                Text("Hello")
+                Text(",").padding(110).border(Color.blue)
+                Text("World")
+            }
+
+            let graph = prepareViewGraph(view: view)
+            let visitor = ViewSetRectVisitor()
+            graph.accept(visitor: visitor)
+            
+            XCTAssertEqual(graph.rect.origin.x, 0)
+            XCTAssertEqual(graph.rect.origin.y, 0)
+            
+            XCTContext.runActivity(named: "Child graph confirm to trailing position") { (_) in
+                first: do {
+                    let textGraph = graph.children[0].children[0]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "Hello")
+                    XCTAssertEqual(textGraph.rect.origin.x, 48)
+                    XCTAssertEqual(textGraph.rect.origin.y, 0)
+                }
+                second: do {
+                    let blueBorderGraph = graph.children[0].children[1]
+                    let blueBorderModifier = blueBorderGraph.anyView as! HasAnyModifier
+                    XCTAssertTrue(blueBorderModifier.anyModifier is _BorderModifier)
+                    
+                    let paddingGraph = blueBorderGraph.children[0]
+                    let paddingModifier = paddingGraph.anyView as! HasAnyModifier
+                    XCTAssertTrue(paddingModifier.anyModifier is _PaddingLayout)
+                    
+                    let textGraph = paddingGraph.children[0]
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, ",")
+                    XCTAssertEqual(textGraph.rect.origin.x, 49)
+                    XCTAssertEqual(textGraph.rect.origin.y, 49)
+                    XCTAssertEqual(paddingGraph.rect.origin.x, 1)
+                    XCTAssertEqual(paddingGraph.rect.origin.y, 1)
+                    XCTAssertEqual(blueBorderGraph.rect.origin.x, 0)
+                    XCTAssertEqual(blueBorderGraph.rect.origin.y, 1)
+                }
+                third: do {
+                    let textGraph = graph.children[0].children[2]
+                    
+                    XCTAssertTrue(textGraph.anyView is Text)
+                    let text = textGraph.anyView as! Text
+                    
+                    XCTAssertEqual(text.content, "World")
+                    XCTAssertEqual(textGraph.rect.origin.x, 48)
+                    XCTAssertEqual(textGraph.rect.origin.y, 101)
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Children Content
