@@ -66,17 +66,17 @@ internal let defaultPadding = 1
 }
 
 internal extension _PaddingLayout {
-     func modifySize(for paddingGraph: ViewGraph, visitor: ViewSetRectVisitor) {
-        let horizontalLength = self.horizontalLength(graph: paddingGraph)
-        let verticalLength = self.verticalLength(graph: paddingGraph)
+     func modifySize(for graph: ViewGraph, visitor: ViewSetRectVisitor) {
+        let horizontalLength = self.horizontalLength(graph: graph)
+        let verticalLength = self.verticalLength(graph: graph)
 
-        assert(!paddingGraph.rendableChildren.isEmpty, "it is necessary about rendable view")
-        paddingGraph.rendableChildren.forEach { baseGraph in
-            baseGraph.setProposedSizeIfFirst(Size(width: paddingGraph.proposedSize.width - horizontalLength, height: paddingGraph.proposedSize.height - verticalLength))
+        assert(!graph.rendableChildren.isEmpty, "it is necessary about rendable view")
+        graph.rendableChildren.forEach { baseGraph in
+            baseGraph.setProposedSizeIfFirst(Size(width: graph.proposedSize.width - horizontalLength, height: graph.proposedSize.height - verticalLength))
             baseGraph.acceptSize(visitor: visitor)
 
-            paddingGraph.rect.size.width = max(paddingGraph.rect.size.width, baseGraph.rect.size.width + horizontalLength)
-            paddingGraph.rect.size.height = max(paddingGraph.rect.size.height, baseGraph.rect.size.height + verticalLength)
+            graph.rect.size.width = max(graph.rect.size.width, baseGraph.rect.size.width + horizontalLength)
+            graph.rect.size.height = max(graph.rect.size.height, baseGraph.rect.size.height + verticalLength)
 
             if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultPadding) }
             if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
