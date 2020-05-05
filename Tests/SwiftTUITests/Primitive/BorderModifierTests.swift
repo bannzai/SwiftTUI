@@ -181,11 +181,11 @@ class BorderModifierTests: XCTestCase {
             XCTAssertTrue(driver.storedForegroundColors.contains(.red))
             XCTAssertEqual(driver.storedForegroundColors.last, Style.Color.foreground.color)
             XCTAssertEqual(subject(cornerDelimiter), 1 * 4)
-            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 99 * 2)
-            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 99 * 2)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 98 * 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 98 * 2)
         }
     }
-    
+
     func testModifiers() {
         struct Modifier: ViewModifier {
             func body(content: Content) -> some View {
@@ -214,6 +214,5 @@ class BorderModifierTests: XCTestCase {
             XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 5 * 2)
             XCTAssertTrue(content.contains("Hello"))
         }
-
     }
 }
