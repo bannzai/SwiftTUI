@@ -58,10 +58,9 @@ internal extension _BorderModifier {
         
         assert(!graph.rendableChildren.isEmpty, "it is necessary about rendable view")
         graph.rendableChildren.forEach { baseGraph in
-            baseGraph.proposedSize.width = graph.proposedSize.width - horizontalLength
-            baseGraph.proposedSize.height = graph.proposedSize.height - verticalLength
-
+            baseGraph.setProposedSizeIfFirst(Size(width: graph.proposedSize.width - horizontalLength, height: graph.proposedSize.height - verticalLength))
             baseGraph.acceptSize(visitor: visitor)
+            
             graph.rect.size.width = max(graph.rect.size.width, baseGraph.rect.size.width + horizontalLength)
             graph.rect.size.height = max(graph.rect.size.height, baseGraph.rect.size.height + verticalLength)
 
