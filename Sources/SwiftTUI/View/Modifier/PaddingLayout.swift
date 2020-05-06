@@ -78,8 +78,8 @@ internal extension _PaddingLayout {
             graph.rect.size.width = max(graph.rect.size.width, baseGraph.rect.size.width + horizontalLength)
             graph.rect.size.height = max(graph.rect.size.height, baseGraph.rect.size.height + verticalLength)
 
-            if edges.contains(.leading) { baseGraph.rect.origin.x = (insets?.leading ?? defaultPadding) }
-            if edges.contains(.top) { baseGraph.rect.origin.y = (insets?.top ?? defaultPadding) }
+            if edges.contains(.leading) { baseGraph.rect.origin.x = min(graph.proposedSize.width / 2, (insets?.leading ?? defaultPadding)) }
+            if edges.contains(.top) { baseGraph.rect.origin.y = min(graph.proposedSize.height / 2, (insets?.top ?? defaultPadding)) }
         }
     }
     private func verticalLength(graph: ViewGraph) -> PhysicalDistance {
