@@ -970,8 +970,12 @@ extension VStackTests {
                     XCTAssertEqual(textGraph.rect.origin.y, 49)
                     XCTAssertEqual(paddingGraph.rect.origin.x, 1)
                     XCTAssertEqual(paddingGraph.rect.origin.y, 1)
+                    XCTAssertEqual(paddingGraph.rect.size.width, 98)
+                    XCTAssertEqual(paddingGraph.rect.size.height, 98)
                     XCTAssertEqual(blueBorderGraph.rect.origin.x, 0)
                     XCTAssertEqual(blueBorderGraph.rect.origin.y, 1)
+                    XCTAssertEqual(blueBorderGraph.rect.size.width, 100)
+                    XCTAssertEqual(blueBorderGraph.rect.size.height, 100)
                 }
                 third: do {
                     let textGraph = graph.children[0].children[2]
