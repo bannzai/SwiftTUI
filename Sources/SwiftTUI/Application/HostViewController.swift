@@ -61,10 +61,12 @@ internal protocol AttributeRestorer {
 
 extension AttributeRestorer where Self: AttributeSetter {
     func restoreForegroundColor() {
+        debugLogger.debug()
         setForegroundColor(Style.Color.foreground.color)
         keepForegroundColor = nil
     }
     func restoreBackgroundColor() {
+        debugLogger.debug()
         setBackgroundColor(Style.Color.background.color)
         keepBackgroundColor = nil
     }
@@ -80,28 +82,21 @@ fileprivate var pairNumber: Int32 = 2
 extension HostViewController: Drawable, DrawableDriver {
     func add(rune: Rune) {
         let point = drawPoint()
-        if point.x > window.frame.size.width {
-            return
-        }
-        if point.y > window.frame.size.height {
-            return
-        }
-        
-        debugLogger.debug(userInfo: "start add rune: \(rune)")
-        cncurses.addch(rune)
-        drawnContent.append(rune)
-        debugLogger.debug(userInfo: "point is \(point)")
-        debugLogger.debug(userInfo: "window size is \(window.frame.size)")
-        
+        debugLogger.debug(userInfo: "start add rune: \(rune), point is \(point), window size is \(window.frame.size)")
+        defer { debugLogger.debug(userInfo: "end add rune: \(rune)") }
+
         switch (point.x < window.frame.size.width, point.y < window.frame.size.height) {
         case (true, true):
             sharedCursor.moveTo(x: point.x + 1, y: point.y)
         case (false, true):
             sharedCursor.moveTo(x: 0, y: point.y + 1)
         case (true, false), (false, false):
-            break
+            debugLogger.debug(userInfo: "Out of range \(rune)")
+            return
         }
-        debugLogger.debug(userInfo: "end add rune: \(rune)")
+        
+        cncurses.addch(rune)
+        drawnContent.append(rune)
     }
     
     func setBackgroundColor(_ color: Color) {
