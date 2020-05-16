@@ -26,12 +26,14 @@ extension ModifiedContent: ViewContentAcceptable {
     internal func accept<V: ViewContentVisitor>(visitor: V) -> V.VisitResult {
         debugLogger.debug()
         if let modifier = modifier as? ViewContentAcceptable {
+            debugLogger.debug()
             modifier.accept(visitor: visitor)
             return
         }
 
         if content is UserDefinedViewModifierContent {
             assert(visitor.current?.children.count == 0)
+            debugLogger.debug()
             visitor.current?.children.forEach(visitor.visit)
             return
         }

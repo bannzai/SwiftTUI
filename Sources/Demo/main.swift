@@ -22,11 +22,15 @@ struct ChildView: View {
                     Text("Hello")
                 }
                 .border(Color.red)
+                .padding(20)
+                .border(Color.red)
             } else {
                 ForEach(0..<3) { _ in
                     Text("World")
                 }
                 .border(Color.blue)
+                .padding(20)
+                .border(Color.red)
             }
         }
         .border(.cyan)

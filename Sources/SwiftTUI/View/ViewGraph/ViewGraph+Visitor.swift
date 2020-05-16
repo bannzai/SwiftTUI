@@ -46,7 +46,6 @@ extension ViewGraph {
         }
         
         if isContainerType {
-            children.forEach { $0.acceptSize(visitor: visitor) }
             acceptSetContainerSize(visitor: visitor)
             return
         }

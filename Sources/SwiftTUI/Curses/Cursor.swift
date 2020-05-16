@@ -29,6 +29,7 @@ extension CursorImpl: Cursor {
         moveTo(x: point.x, y: point.y)
     }
     mutating func moveTo(x: PhysicalDistance, y: PhysicalDistance) {
+        debugLogger.debug(userInfo: "x: \(x), y: \(y)")
         self.x = x
         self.y = y
         cncurses.move(Int32(y), Int32(x))

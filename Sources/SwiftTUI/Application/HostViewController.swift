@@ -40,9 +40,9 @@ extension ContentSetter {
     }
     
     func add(string: String) {
-        debugLogger.debug(userInfo: "start string: \(string)")
+        debugLogger.debug(userInfo: "start add string: \(string)")
         string.forEach(add(character:))
-        debugLogger.debug(userInfo: "end string: \(string)")
+        debugLogger.debug(userInfo: "end add string: \(string)")
     }
 }
 
@@ -61,10 +61,12 @@ internal protocol AttributeRestorer {
 
 extension AttributeRestorer where Self: AttributeSetter {
     func restoreForegroundColor() {
+        debugLogger.debug()
         setForegroundColor(Style.Color.foreground.color)
         keepForegroundColor = nil
     }
     func restoreBackgroundColor() {
+        debugLogger.debug()
         setBackgroundColor(Style.Color.background.color)
         keepBackgroundColor = nil
     }
@@ -79,21 +81,22 @@ fileprivate var pairNumber: Int32 = 2
 // MARK: - Draw on console
 extension HostViewController: Drawable, DrawableDriver {
     func add(rune: Rune) {
-        debugLogger.debug(userInfo: "start rune: \(rune)")
+        let point = drawPoint()
+        debugLogger.debug(userInfo: "start add rune: \(rune), point is \(point), window size is \(window.frame.size)")
+        defer { debugLogger.debug(userInfo: "end add rune: \(rune)") }
 
+        switch (point.x < window.frame.size.width, point.y < window.frame.size.height) {
+        case (true, true):
+            sharedCursor.moveTo(x: point.x + 1, y: point.y)
+        case (false, true):
+            sharedCursor.moveTo(x: 0, y: point.y + 1)
+        case (true, false), (false, false):
+            debugLogger.debug(userInfo: "Out of range \(rune)")
+            return
+        }
+        
         cncurses.addch(rune)
         drawnContent.append(rune)
-
-        let point = drawPoint()
-        debugLogger.debug(userInfo: "point is \(point)")
-        debugLogger.debug(userInfo: "window size is \(window.frame.size)")
-        switch point.x < window.frame.size.width {
-        case true:
-            sharedCursor.moveTo(x: point.x + 1, y: point.y)
-        case false:
-            sharedCursor.moveTo(x: 0, y: point.y + 1)
-        }
-        debugLogger.debug(userInfo: "end rune: \(rune)")
     }
     
     func setBackgroundColor(_ color: Color) {
