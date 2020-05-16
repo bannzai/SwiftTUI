@@ -68,6 +68,17 @@ extension Text: ViewContentAcceptable {
     }
 }
 
+extension Text: ViewSetContentSizeVisitorAcceptable {
+    func accept(visitor: ViewSetContentSizeVisitor) {
+        let contents = content.split(separator: "\n").map { String($0) }
+        guard let maxWidthString = contents.max (by: { $0.width < $1.width }) else {
+            visitor.current?.contentSize = .zero
+            return
+        }
+        visitor.current?.contentSize = Size(width: maxWidthString.width, height: contents.count)
+    }
+}
+
 // TODO: Implement
 // Mark: - Text interfaces
 extension Text {
