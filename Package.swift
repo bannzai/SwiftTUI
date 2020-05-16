@@ -21,14 +21,18 @@ let package = Package(
         .systemLibrary(name: "cncurses", pkgConfig: "ncurses"),
         .target(
             name: "Demo",
-            dependencies: ["SwiftTUI"]
+            dependencies: ["SwiftTUI"],
+            cSettings:[.define("__NCURSES_H", .when(configuration: .debug))]
         ),
         .target(
             name: "SwiftTUI",
-            dependencies: ["Runtime", "cncurses"]
+            dependencies: ["Runtime", "cncurses"],
+            cSettings:[.define("__NCURSES_H", .when(configuration: .debug))]
         ),
         .testTarget(
             name: "SwiftTUITests",
-            dependencies: ["SwiftTUI", "Runtime", "cncurses"]),
+            dependencies: ["SwiftTUI", "Runtime", "cncurses"],
+            cSettings:[.define("__NCURSES_H", .when(configuration: .debug))]
+        )
     ]
 )
