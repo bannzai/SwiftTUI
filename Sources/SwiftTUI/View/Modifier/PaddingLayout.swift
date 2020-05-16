@@ -98,6 +98,36 @@ internal extension _PaddingLayout {
     }
 }
 
+extension _PaddingLayout: ViewSetContentSizeVisitorAcceptable {
+    private func verticalLength() -> PhysicalDistance {
+        var length = 0
+        if edges.contains(.top) { length = length + (insets?.top ?? defaultPadding) }
+        if edges.contains(.bottom) { length = length + (insets?.bottom ?? defaultPadding) }
+        return length
+    }
+    private func horizontalLength() -> PhysicalDistance {
+        var length = 0
+        if edges.contains(.leading) { length = length + (insets?.leading ?? defaultPadding) }
+        if edges.contains(.trailing) { length = length + (insets?.trailing ?? defaultPadding) }
+        return length
+    }
+    func accept(visitor: ViewSetContentSizeVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        visitor.visit(child)
+        
+        let horizontalLength = self.horizontalLength()
+        let verticalLength = self.verticalLength()
+        graph.contentSize = Size(
+            width: child.rect.size.width + horizontalLength,
+            height: child.rect.size.height + verticalLength
+        )
+        if edges.contains(.leading) { child.rect.origin.x = (insets?.leading ?? defaultPadding) }
+        if edges.contains(.top) { child.rect.origin.y = (insets?.top ?? defaultPadding) }
+    }
+}
+
 extension _PaddingLayout: Rendable { }
 extension _PaddingLayout: Primitive { }
 extension _PaddingLayout: ViewContentAcceptable {
