@@ -72,7 +72,7 @@ public class ViewGraph: SwiftTUI.View {
         inheritProperties(to: node)
     }
 
-    internal func setModifier(_ modifierNode: ViewGraph) {
+    internal func setModifierContent(_ modifierNode: ViewGraph) {
         isModifiedContent = true
         addChild(modifierNode)
     }

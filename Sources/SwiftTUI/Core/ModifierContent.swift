@@ -96,12 +96,12 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         let contentGraph = visitor.visit(content)
         if isUserDefinedModifier {
             let bodyGraph = visitor.visit(modifier.body(content: _ViewModifier_Content()))
-            graph.setModifier(bodyGraph)
+            graph.setModifierContent(bodyGraph)
             bodyGraph.extractUserDefinedModifierContentChild()!.addChild(contentGraph)
             return graph
         }
 
-        graph.setModifier(contentGraph)
+        graph.setModifierContent(contentGraph)
         if let modifier = modifier as? _FrameLayout {
             contentGraph.alignment = modifier.alignment
         }
