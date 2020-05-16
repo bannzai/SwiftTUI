@@ -137,11 +137,9 @@ extension _BorderModifier: ViewSetContentSizeVisitorAcceptable {
         let child = graph.children[0]
         visitor.visit(child)
 
-        let horizontalLength = self.horizontalLength()
-        let verticalLength = self.verticalLength()
         graph.contentSize = Size(
-            width: child.rect.size.width + horizontalLength,
-            height: child.rect.size.height + verticalLength
+            width: child.rect.size.width + horizontalLength(),
+            height: child.rect.size.height + verticalLength()
         )
         if edges.contains(.leading) { child.rect.origin.x = defaultBorderWidth }
         if edges.contains(.top) { child.rect.origin.y = defaultBorderWidth }
