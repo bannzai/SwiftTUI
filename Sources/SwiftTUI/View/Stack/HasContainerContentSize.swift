@@ -18,10 +18,6 @@ extension HasContainerContentSize {
         switch viewGraph.listType {
         case .vertical:
             var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (rendableChildren.count - 1) * viewGraph.spacing
-            let sumHeight = rendableChildren.map(\.rect.size.height).reduce(0, +)
-            if sumHeight > allocableHeight {
-                rendableChildren.forEach
-            }
             var maxElementWidth: PhysicalDistance = 0
             rendableChildren.enumerated().forEach { (offset, element) in
                 let provisionalElementHeight: PhysicalDistance = allocableHeight / (rendableChildren.count - offset)

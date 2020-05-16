@@ -48,11 +48,7 @@ struct ParentView: View {
     }
 }
 var state = State(initialValue: false)
-let view = VStack {
-    Text("Hello")
-    Text(",").padding(40).border(Color.red)
-    Text("World")
-}
+let view = ParentView(state: state)
 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
     state.wrappedValue = true
     state.update()

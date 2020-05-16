@@ -87,7 +87,6 @@ extension _BorderModifier: ViewContentAcceptable {
             fatalError("visitor.current necessary but it is nil")
         }
         let position = graph.positionToWindow()
-        debugLogger.debug(userInfo: "position: \(position), graph.rect.size: \(graph.rect.size)")
         
         visitor.driver.setForegroundColor(color)
         defer { visitor.driver.restoreForegroundColor() }
@@ -107,7 +106,6 @@ extension _BorderModifier: ViewContentAcceptable {
             let top = position.y + 1
             let bottom = position.y + graph.rect.size.height - 2
             let setter: (Int) -> Void = { offset in
-                debugLogger.debug(userInfo: "condition: \(top + offset < graph.proposedSize.height), top: \(top), offset: \(offset), proposedSize: \(graph.proposedSize.height)")
                 if top + offset < graph.proposedSize.height {
                     sharedCursor.moveTo(x: position.x, y: top + offset)
                     visitor.driver.add(string: Edge.Set.vertical.defaultDelimiter)
