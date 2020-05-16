@@ -25,6 +25,10 @@ public class ViewGraph: SwiftTUI.View {
     internal lazy var dimensions: ViewDimensions = ViewDimensions(graph: self)
     internal var rect: Rect = Rect(origin: .zero, size: .zero)
     internal var proposedSize: Size = .zero
+    
+    internal static let undefinedContentSizeDistance: PhysicalDistance = -1
+    internal static let undefinedContentSize = Size(width: undefinedContentSizeDistance, height: undefinedContentSizeDistance)
+    internal var contentSize: Size = ViewGraph.undefinedContentSize
 
     func _extractUserDefinedModifierContentChild(root: ViewGraph) -> ViewGraph? {
         if isUserDefinedModifierContent && root !== self {
