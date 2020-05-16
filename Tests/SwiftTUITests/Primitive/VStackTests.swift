@@ -927,6 +927,7 @@ extension VStackTests {
                 }
             }
         }
+        
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, ModifiedContent<ModifiedContent<Text, _PaddingLayout> _BackgroundModifier>, Text>") { (_) in
             let view = VStack {
                 Text("Hello")
@@ -1077,6 +1078,30 @@ extension VStackTests {
             
             XCTAssertEqual(graph.rect.size.width, 5)
             XCTAssertEqual(graph.rect.size.height, 5)
+        }
+    }
+    func testChildContentWithBorder() {
+        XCTContext.runActivity(named: "when VStack contains TupleView<Text, ModifiedContent<ModifiedContent<Text, _PaddingLayout> _BackgroundModifier>, Text>") { (_) in
+            let view = VStack {
+                Text("Hello")
+                Text(",").padding(110).border(Color.blue)
+                Text("World")
+            }
+            
+            let driver = Driver()
+            let visitor = ViewContentVisitor(driver: driver)
+            let graph = prepareSizedGraph(view: view)
+            visitor.visit(graph)
+            
+            let content = driver.content()
+            let subject: (String) -> Int = { (delimiter: String) in
+                content.filter { String($0) == delimiter }.count
+            }
+            
+            let cornerDelimiter = Edge.Set.leadingTop.defaultDelimiter
+            XCTAssertEqual(subject(cornerDelimiter), 1 * 4)
+            XCTAssertEqual(subject(Edge.Set.vertical.defaultDelimiter), 98 * 2 - 2)
+            XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 98 * 2)
         }
     }
 }
