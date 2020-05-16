@@ -45,6 +45,19 @@ extension _FrameLayout: ViewContentAcceptable {
     }
 }
 
+extension _FrameLayout: ViewSetContentSizeVisitorAcceptable {
+    func accept(visitor: ViewSetContentSizeVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        visitor.visit(child)
+        
+        let _width = width ?? child.contentSize.width
+        let _height = height ?? child.contentSize.height
+        graph.rect.size = Size(width: _width, height: _height)
+    }
+}
+
 extension View {
     @inlinable public func frame(width: PhysicalDistance? = nil, height: PhysicalDistance? = nil, alignment: Alignment = .center) -> some View {
         modifier(
