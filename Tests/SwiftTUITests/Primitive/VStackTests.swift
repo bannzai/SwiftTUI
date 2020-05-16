@@ -927,6 +927,8 @@ extension VStackTests {
                 }
             }
         }
+    }
+    func test_playground() {
         XCTContext.runActivity(named: "when VStack contains TupleView<Text, ModifiedContent<ModifiedContent<Text, _PaddingLayout> _BackgroundModifier>, Text>") { (_) in
             let view = VStack {
                 Text("Hello")
