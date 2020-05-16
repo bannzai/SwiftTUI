@@ -42,9 +42,6 @@ If you want to generate a Xcode project, use the following command:
 ```shell
 swift package generate-xcodeproj
 ```
-- select the project node
-- in Build settings enter Preprocessor in the search field in the upper right
-- under Apple Clang - Preprocessing / Preprocess Macros add __NCURSES_H=1 for Debug and Release
 
 
 ## LICENSE
