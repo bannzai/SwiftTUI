@@ -22,16 +22,17 @@ let package = Package(
         .target(
             name: "Demo",
             dependencies: ["SwiftTUI"],
-            swiftSettings: [.define("DEBUG_GEDATSU")]
+            cSettings:[.define("__NCURSES_H", .when(configuration: .debug))]
         ),
         .target(
             name: "SwiftTUI",
             dependencies: ["Runtime", "cncurses"],
-            swiftSettings: [.define("DEBUG_GEDATSU")]
+            cSettings:[.define("__NCURSES_H", .when(configuration: .debug))]
         ),
         .testTarget(
             name: "SwiftTUITests",
-            dependencies: ["SwiftTUI", "Runtime", "cncurses"]),
-            swiftSettings: [.define("DEBUG_GEDATSU")]
+            dependencies: ["SwiftTUI", "Runtime", "cncurses"],
+            cSettings:[.define("__NCURSES_H", .when(configuration: .debug))]
+        )
     ]
 )
