@@ -14,7 +14,7 @@ internal protocol ViewSetContentSizeVisitorAcceptable {
 internal final class ViewSetContentSizeVisitor: Visitor {
     internal init() { }
     
-    internal var current: ViewGraph?
+    internal var current: ViewGraph!
     internal func visit<T: View>(_ content: T) {
         debugLogger.debug(userInfo: "begin set content size visitor: \(type(of: content))")
         defer {
