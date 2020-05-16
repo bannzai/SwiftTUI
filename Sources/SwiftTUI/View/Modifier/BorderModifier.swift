@@ -138,8 +138,8 @@ extension _BorderModifier: ViewSetContentSizeVisitorAcceptable {
         visitor.visit(child)
 
         graph.contentSize = Size(
-            width: child.rect.size.width + horizontalLength(),
-            height: child.rect.size.height + verticalLength()
+            width: child.contentSize.width + horizontalLength(),
+            height: child.contentSize.height + verticalLength()
         )
         if edges.contains(.leading) { child.rect.origin.x = defaultBorderWidth }
         if edges.contains(.top) { child.rect.origin.y = defaultBorderWidth }

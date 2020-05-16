@@ -118,8 +118,8 @@ extension _PaddingLayout: ViewSetContentSizeVisitorAcceptable {
         visitor.visit(child)
         
         graph.contentSize = Size(
-            width: child.rect.size.width + horizontalLength(),
-            height: child.rect.size.height + verticalLength()
+            width: child.contentSize.width + horizontalLength(),
+            height: child.contentSize.height + verticalLength()
         )
         if edges.contains(.leading) { child.rect.origin.x = (insets?.leading ?? defaultPadding) }
         if edges.contains(.top) { child.rect.origin.y = (insets?.top ?? defaultPadding) }

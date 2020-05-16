@@ -54,7 +54,7 @@ extension _FrameLayout: ViewSetContentSizeVisitorAcceptable {
         
         let _width = width ?? child.contentSize.width
         let _height = height ?? child.contentSize.height
-        graph.rect.size = Size(width: _width, height: _height)
+        graph.contentSize = Size(width: _width, height: _height)
     }
 }
 
