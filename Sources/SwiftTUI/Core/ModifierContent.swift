@@ -125,3 +125,13 @@ extension ModifiedContent: HasAnyModifier {
 
 internal protocol _ModifiedContent { }
 extension ModifiedContent: _ModifiedContent { }
+
+extension ModifiedContent: ViewSetContentSizeVisitorAcceptable {
+    func accept(visitor: ViewSetContentSizeVisitor) {
+        let graph = visitor.current!
+        graph.contentSize = graph.children.reduce(into: Size.zero) { (result, element) in
+            result.width += element.contentSize.width
+            result.height += element.contentSize.height
+        }
+    }
+}
