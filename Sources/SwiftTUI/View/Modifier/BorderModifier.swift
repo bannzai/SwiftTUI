@@ -135,7 +135,7 @@ extension _BorderModifier: ViewSetContentSizeVisitorAcceptable {
         let graph = visitor.current!
         assert(graph.children.count == 1, "it should want one child")
         let child = graph.children[0]
-        visitor.visit(child)
+//        visitor.visit(child)
 
         graph.contentSize = Size(
             width: child.contentSize.width + horizontalLength(),

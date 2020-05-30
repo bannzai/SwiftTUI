@@ -50,7 +50,7 @@ extension _FrameLayout: ViewSetContentSizeVisitorAcceptable {
         let graph = visitor.current!
         assert(graph.children.count == 1, "it should want one child")
         let child = graph.children[0]
-        visitor.visit(child)
+//        visitor.visit(child)
         
         let _width = width ?? child.contentSize.width
         let _height = height ?? child.contentSize.height
