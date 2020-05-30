@@ -9,6 +9,8 @@ import Foundation
 
 extension ViewGraph {
     func acceptContentSize(visitor: ViewSetContentSizeVisitor) {
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
         visitor.current = self
         children.forEach {
             $0.acceptContentSize(visitor: visitor)
