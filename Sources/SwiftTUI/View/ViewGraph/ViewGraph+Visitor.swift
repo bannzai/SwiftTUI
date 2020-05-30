@@ -84,23 +84,23 @@ extension ViewGraph {
     }
 }
 
+internal func extractAlignmentXValue(graph: ViewGraph, alignment: HorizontalAlignment) -> PhysicalDistance {
+    switch graph.dimensions[explicit: alignment] {
+    case nil:
+        return alignment.id.defaultValue(in: graph.dimensions)
+    case .some(let explicitValue):
+        return explicitValue
+    }
+}
+internal func extractAlignmentYValue(graph: ViewGraph, alignment: VerticalAlignment) -> PhysicalDistance {
+    switch graph.dimensions[explicit: alignment] {
+    case nil:
+        return alignment.id.defaultValue(in: graph.dimensions)
+    case .some(let explicitValue):
+        return explicitValue
+    }
+}
 extension ViewGraph {
-    private static func extractAlignmentXValue(graph: ViewGraph, alignment: HorizontalAlignment) -> PhysicalDistance {
-        switch graph.dimensions[explicit: alignment] {
-        case nil:
-            return alignment.id.defaultValue(in: graph.dimensions)
-        case .some(let explicitValue):
-            return explicitValue
-        }
-    }
-    private static func extractAlignmentYValue(graph: ViewGraph, alignment: VerticalAlignment) -> PhysicalDistance {
-        switch graph.dimensions[explicit: alignment] {
-        case nil:
-            return alignment.id.defaultValue(in: graph.dimensions)
-        case .some(let explicitValue):
-            return explicitValue
-        }
-    }
     private func acceptSetPosition(visitor: ViewSetRectVisitor) {
         if children.isEmpty {
             return
@@ -122,12 +122,12 @@ extension ViewGraph {
             }
             if view.anyModifier is _FrameLayout {
                 rendableChildren.forEach { child in
-                    let containerX = ViewGraph.extractAlignmentXValue(graph: self, alignment: child.alignment.horizontal)
-                    let x = ViewGraph.extractAlignmentXValue(graph: child, alignment: child.alignment.horizontal)
+                    let containerX = extractAlignmentXValue(graph: self, alignment: child.alignment.horizontal)
+                    let x = extractAlignmentXValue(graph: child, alignment: child.alignment.horizontal)
                     child.rect.origin.x = containerX - x
                     
-                    let containerY = ViewGraph.extractAlignmentYValue(graph: self, alignment: child.alignment.vertical)
-                    let y = ViewGraph.extractAlignmentYValue(graph: child, alignment: child.alignment.vertical)
+                    let containerY = extractAlignmentYValue(graph: self, alignment: child.alignment.vertical)
+                    let y = extractAlignmentYValue(graph: child, alignment: child.alignment.vertical)
                     child.rect.origin.y = containerY - y
                 }
                 return
@@ -138,7 +138,7 @@ extension ViewGraph {
         case .vertical:
             var maxX = PhysicalDistance(0)
             rendableChildren.enumerated().forEach { (offset, child) in
-                let x = ViewGraph.extractAlignmentXValue(graph: child, alignment: alignment.horizontal)
+                let x = extractAlignmentXValue(graph: child, alignment: alignment.horizontal)
                 debugLogger.debug(userInfo: "self type \(type(of: self)) child type \(type(of: child)), self.alignment.horizontal: \(alignment.horizontal), x: \(x)")
                 switch x {
                 case let x where x < 0:
