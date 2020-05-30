@@ -102,12 +102,6 @@ extension ViewGraph {
         }
     }
     private func acceptSetPosition(visitor: ViewSetRectVisitor) {
-        let keepCurrentContainer = visitor.currentContainerGraph
-        defer { visitor.currentContainerGraph = keepCurrentContainer }
-        if anyView is ContainerViewType {
-            visitor.currentContainerGraph = self
-        }
-        
         if children.isEmpty {
             return
         }
@@ -192,7 +186,7 @@ extension ViewGraph {
         
         children.forEach { $0.accept(visitor: visitor) }
         
-        guard let _ = visitor.currentContainerGraph else {
+        if visitor.currentContainerGraph == nil {
             return
         }
         
@@ -212,11 +206,6 @@ extension ViewGraph {
 
 extension ViewGraph {
     private func acceptSetContainerSize(visitor: ViewSetRectVisitor) {
-        let keepCurrentContainer = visitor.currentContainerGraph
-        defer { visitor.currentContainerGraph = keepCurrentContainer }
-        if isContainerType {
-            visitor.currentContainerGraph = self
-        }
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
