@@ -7,6 +7,15 @@
 
 import Foundation
 
+extension ViewGraph {
+    func acceptContentSize(visitor: ViewSetContentSizeVisitor) {
+        children.forEach {
+            $0.acceptContentSize(visitor: visitor)
+        }
+        visitor.visit(self)
+    }
+}
+
 extension ViewGraph: ViewSetRectVisitorAcceptable { }
 extension ViewGraph {
     func acceptSize(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
