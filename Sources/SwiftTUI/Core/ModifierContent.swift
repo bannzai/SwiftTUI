@@ -31,12 +31,6 @@ extension ModifiedContent: ViewContentAcceptable {
             return
         }
 
-        if content is UserDefinedViewModifierContent {
-            assert(visitor.current?.children.count == 0)
-            debugLogger.debug()
-            visitor.current?.children.forEach(visitor.visit)
-            return
-        }
         if !(modifier is Primitive) {
             return
         }

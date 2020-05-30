@@ -114,10 +114,6 @@ extension ViewGraph {
 
         children.forEach { $0.acceptSetPosition(visitor: visitor) }
         
-        if isUserDefinedModifierContent {
-            return
-        }
-
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")
@@ -232,7 +228,7 @@ extension ViewGraph {
         }
         children.forEach { $0.acceptSize(visitor: visitor) }
 
-        if !(isUserDefinedView || isUserDefinedModifierContent) {
+        if !(isUserDefinedView) {
             return
         }
         
