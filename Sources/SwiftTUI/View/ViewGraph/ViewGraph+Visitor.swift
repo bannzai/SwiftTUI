@@ -30,6 +30,21 @@ extension ViewGraph {
     }
 }
 
+extension ViewGraph {
+    func acceptSetSize(visitor: ViewSetSizeVisitor) {
+        if isRoot {
+            proposedSize = mainScreen.bounds.size
+        }
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = self
+        children.forEach {
+            $0.acceptSetSize(visitor: visitor)
+        }
+        visitor.visit(self)
+    }
+}
+
 extension ViewGraph: ViewSetRectVisitorAcceptable { }
 extension ViewGraph {
     func acceptSize(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
