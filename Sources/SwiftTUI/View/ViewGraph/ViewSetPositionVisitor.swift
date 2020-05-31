@@ -21,6 +21,9 @@ internal final class ViewSetPositionVisitor: Visitor {
             debugLogger.debug(userInfo: "end set positon visitor: \(type(of: content))")
         }
         if let graph = content as? ViewGraph, let acceptable = graph.anyView as? ViewSetPositionVisitorAcceptable {
+            let keepCurrent = current
+            defer { current = keepCurrent }
+            current = graph
             return acceptable.accept(visitor: self)
         }
         if let graph = content as? ViewGraph {

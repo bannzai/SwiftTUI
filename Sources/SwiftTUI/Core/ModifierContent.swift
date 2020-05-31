@@ -131,8 +131,14 @@ extension ModifiedContent: ViewSetContentSizeVisitorAcceptable {
     }
 }
 
-extension ModifiedContent: ViewSetPositionVisitorAcceptable {
+extension ModifiedContent: ViewSetPositionVisitorAcceptable where Modifier: ViewSetPositionVisitorAcceptable {
     func accept(visitor: ViewSetPositionVisitor) {
-        
+        modifier.accept(visitor: visitor)
+    }
+}
+
+extension ModifiedContent: ViewSetSizeVisitorAcceptable where Modifier: ViewSetSizeVisitorAcceptable {
+    func accept(visitor: ViewSetSizeVisitor) {
+        modifier.accept(visitor: visitor)
     }
 }

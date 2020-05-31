@@ -203,7 +203,7 @@ extension ViewGraph {
         acceptSetContentSize(visitor: .init())
         acceptSetDimensions(visitor: .init())
         acceptSetPosition(visitor: .init())
-        acceptSetContainerSize(visitor: .init())
+        acceptSetSize(visitor: .init())
     }
 }
 

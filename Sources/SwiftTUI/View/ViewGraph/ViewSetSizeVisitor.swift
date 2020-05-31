@@ -20,11 +20,15 @@ internal final class ViewSetSizeVisitor: Visitor {
         defer {
             debugLogger.debug(userInfo: "end set size visitor: \(type(of: content))")
         }
-        switch content {
-        case let acceptable as ViewSetSizeVisitorAcceptable:
+        if let graph = content as? ViewGraph, let acceptable = graph.anyView as? ViewSetSizeVisitorAcceptable {
+            let keepCurrent = current
+            defer { current = keepCurrent }
+            current = graph
             return acceptable.accept(visitor: self)
-        case _:
-            return visit(content.body)
         }
+        if let graph = content as? ViewGraph {
+            return graph.children.forEach(visit)
+        }
+        return visit(content.body)
     }
 }
