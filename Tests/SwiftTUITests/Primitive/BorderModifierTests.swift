@@ -185,7 +185,7 @@ class BorderModifierTests: XCTestCase {
             XCTAssertEqual(subject(Edge.Set.horizontal.defaultDelimiter), 98 * 2)
         }
     }
-
+    
     func testModifiers() {
         struct Modifier: ViewModifier {
             func body(content: Content) -> some View {
