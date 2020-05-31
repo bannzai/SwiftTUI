@@ -34,3 +34,19 @@ extension EmptyView: HasIntrinsicContentSize {
         return .zero
     }
 }
+
+extension EmptyView: ViewSetContentSizeVisitorAcceptable {
+    func accept(visitor: ViewSetContentSizeVisitor) {
+        visitor.current!.contentSize = .zero
+    }
+}
+extension EmptyView: ViewSetPositionVisitorAcceptable {
+    func accept(visitor: ViewSetPositionVisitor) {
+        visitor.current!.rect.origin = .zero
+    }
+}
+extension EmptyView: ViewSetSizeVisitorAcceptable {
+    func accept(visitor: ViewSetSizeVisitor) {
+        visitor.current!.rect.size = .zero
+    }
+}

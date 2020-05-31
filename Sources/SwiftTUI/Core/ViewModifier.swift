@@ -39,6 +39,11 @@ internal protocol UserDefinedViewModifierContent {
     
 }
 extension _ViewModifier_Content: UserDefinedViewModifierContent { }
+extension _ViewModifier_Content: ViewSetPositionVisitorAcceptable {
+    func accept(visitor: ViewSetPositionVisitor) {
+        
+    }
+}
 extension _ViewModifier_Content: ViewSetSizeVisitorAcceptable {
     func accept(visitor: ViewSetSizeVisitor) {
         let graph = visitor.current!

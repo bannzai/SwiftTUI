@@ -77,3 +77,9 @@ extension TupleView: ViewSetSizeVisitorAcceptable {
         }
     }
 }
+
+extension TupleView: ViewSetPositionVisitorAcceptable {
+    func accept(visitor: ViewSetPositionVisitor) {
+        
+    }
+}

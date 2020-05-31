@@ -26,8 +26,11 @@ internal final class ViewSetSizeVisitor: Visitor {
             current = graph
             return acceptable.accept(visitor: self)
         }
-        if let graph = content as? ViewGraph {
-            return graph.children.forEach(visit)
+        if let graph = content as? ViewGraph, graph.isUserDefinedView {
+            assert(graph.children.count == 1, "it should want one child")
+            let child = graph.children[0]
+            graph.rect.size = child.rect.size
+            return
         }
         return visit(content.body)
     }

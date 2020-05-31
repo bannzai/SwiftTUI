@@ -89,3 +89,9 @@ extension ForEach: ViewSetSizeVisitorAcceptable {
         }
     }
 }
+
+extension ForEach: ViewSetPositionVisitorAcceptable {
+    func accept(visitor: ViewSetPositionVisitor) {
+        
+    }
+}
