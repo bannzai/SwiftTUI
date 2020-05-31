@@ -146,8 +146,6 @@ extension _BorderModifier: ViewSetContentSizeVisitorAcceptable {
             width: child.contentSize.width + horizontalLength(),
             height: child.contentSize.height + verticalLength()
         )
-        if edges.contains(.leading) { child.rect.origin.x = defaultBorderWidth }
-        if edges.contains(.top) { child.rect.origin.y = defaultBorderWidth }
     }
 }
 

@@ -120,8 +120,6 @@ extension _PaddingLayout: ViewSetContentSizeVisitorAcceptable {
             width: child.contentSize.width + horizontalLength(),
             height: child.contentSize.height + verticalLength()
         )
-        if edges.contains(.leading) { child.rect.origin.x = (insets?.leading ?? defaultPadding) }
-        if edges.contains(.top) { child.rect.origin.y = (insets?.top ?? defaultPadding) }
     }
 }
 
