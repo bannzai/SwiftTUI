@@ -73,6 +73,28 @@ extension _FrameLayout: ViewSetPositionVisitorAcceptable {
     }
 }
 
+extension _FrameLayout: ViewSetSizeVisitorAcceptable {
+    func accept(visitor: ViewSetSizeVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        
+        let _width = width ?? child.rect.size.width
+        let _height = height ?? child.rect.size.height
+        graph.rect.size = Size(width: _width, height: _height)
+    }
+}
+
+extension _FrameLayout: ViewSetProposedSizeVisitorAcceptable {
+    func accept(visitor: ViewSetProposedSizeVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        
+        child.proposedSize = graph.contentSize
+    }
+}
+
 extension View {
     @inlinable public func frame(width: PhysicalDistance? = nil, height: PhysicalDistance? = nil, alignment: Alignment = .center) -> some View {
         modifier(
