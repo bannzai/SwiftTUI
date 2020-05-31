@@ -134,6 +134,17 @@ extension _PaddingLayout: ViewSetPositionVisitorAcceptable {
     }
 }
 
+extension _PaddingLayout: ViewSetSizeVisitorAcceptable {
+    func accept(visitor: ViewSetSizeVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        
+        graph.rect.size.width = child.rect.size.width + horizontalLength()
+        graph.rect.size.height = child.rect.size.height + verticalLength()
+    }
+}
+
 extension _PaddingLayout: Rendable { }
 extension _PaddingLayout: Primitive { }
 extension _PaddingLayout: ViewContentAcceptable {
