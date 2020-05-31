@@ -39,3 +39,11 @@ internal protocol UserDefinedViewModifierContent {
     
 }
 extension _ViewModifier_Content: UserDefinedViewModifierContent { }
+extension _ViewModifier_Content: ViewSetSizeVisitorAcceptable {
+    func accept(visitor: ViewSetSizeVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        graph.rect.size = child.rect.size
+    }
+}

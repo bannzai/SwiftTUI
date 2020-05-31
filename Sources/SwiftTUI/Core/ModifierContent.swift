@@ -163,10 +163,6 @@ extension ModifiedContent: ViewSetSizeVisitorAcceptable {
             content.accept(visitor: visitor)
             return
         }
-        if content is UserDefinedViewModifierContent {
-            // TODO:
-            return
-        }
         fatalError("Unexpected \(type(of: self)) does not exits ViewSetSizeVisitorAcceptable")
     }
 }

@@ -66,7 +66,7 @@ class CustomModifierContentTests: XCTestCase {
             XCTAssertEqual(red.rect.size, Size(width: "text".width + 2, height: "text".height + 2))
         }
     }
-    
+
     func testChlidrenPosition() throws {
         XCTContext.runActivity(named: "with border modifier") { _ in
             let view = Text("123").modifier(SingleBorderModifier())
