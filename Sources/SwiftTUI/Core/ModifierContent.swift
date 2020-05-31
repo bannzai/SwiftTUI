@@ -123,6 +123,10 @@ extension ModifiedContent: _ModifiedContent { }
 
 extension ModifiedContent: ViewSetContentSizeVisitorAcceptable {
     func accept(visitor: ViewSetContentSizeVisitor) {
+        if let modifier = modifier as? ViewSetContentSizeVisitorAcceptable {
+            modifier.accept(visitor: visitor)
+            return
+        }
         let graph = visitor.current!
         graph.contentSize = graph.children.reduce(into: Size.zero) { (result, element) in
             result.width += element.contentSize.width
