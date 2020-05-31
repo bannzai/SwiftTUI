@@ -38,12 +38,13 @@ extension ForEach where Data == Swift.Range<Swift.Int>, ID == Swift.Int, Content
 
 extension ForEach: ViewGraphSetAcceptable {
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        if visitor.current?.anyView is ContainerViewType {
-            each(visitor: visitor) { (child) in
-                visitor.current?.addChild(child)
-            }
-            return ViewGraphNone()
-        }
+        // TODO: Confirm truth
+//        if visitor.current?.anyView is ContainerViewType {
+//            each(visitor: visitor) { (child) in
+//                visitor.current?.addChild(child)
+//            }
+//            return ViewGraphNone()
+//        }
 
         let graph = ViewGraphImpl(view: self)
         let keepCurrent = visitor.current

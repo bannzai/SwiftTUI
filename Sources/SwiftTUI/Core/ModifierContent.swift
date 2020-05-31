@@ -61,25 +61,26 @@ extension ModifiedContent: ViewGraphSetAttributeAcceptable {
         return !(modifier is Primitive)
     }
     internal func accept(visitor: ViewGraphSetVisitor) -> ViewGraph {
-        if let current = visitor.current, current.isContainerType {
-            if let forEach = findForEach() {
-                forEach.each(visitor: visitor) { (child) in
-                    // NOTE: escaping `if current = visitor.current, current.isContainerType` condition about ModifiedContent<ModifiedContent...> has ForEach
-                    visitor.current = ViewGraphNone()
-                    defer { visitor.current = current }
-                    let graph = visitor.visit(self)
-                    current.addChild(graph)
-
-                    var lastChild = graph
-                    while let next = lastChild.children.last {
-                        lastChild = next
-                    }
-                    lastChild.parent?.children.removeAll()
-                    lastChild.parent?.addChild(child)
-                }
-                return ViewGraphNone()
-            }
-        }
+        // TODO: Confirm truth
+//        if let current = visitor.current, current.isContainerType {
+//            if let forEach = findForEach() {
+//                forEach.each(visitor: visitor) { (child) in
+//                    // NOTE: escaping `if current = visitor.current, current.isContainerType` condition about ModifiedContent<ModifiedContent...> has ForEach
+//                    visitor.current = ViewGraphNone()
+//                    defer { visitor.current = current }
+//                    let graph = visitor.visit(self)
+//                    current.addChild(graph)
+//
+//                    var lastChild = graph
+//                    while let next = lastChild.children.last {
+//                        lastChild = next
+//                    }
+//                    lastChild.parent?.children.removeAll()
+//                    lastChild.parent?.addChild(child)
+//                }
+//                return ViewGraphNone()
+//            }
+//        }
 
         let graph = ViewGraphImpl(view: self)
         visitor.current?.addChild(graph)
