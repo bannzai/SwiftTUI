@@ -8,12 +8,12 @@
 import Foundation
 
 extension ViewGraph {
-    func acceptContentSize(visitor: ViewSetContentSizeVisitor) {
+    func acceptSetContentSize(visitor: ViewSetContentSizeVisitor) {
         let keepCurrent = visitor.current
         defer { visitor.current = keepCurrent }
         visitor.current = self
         children.forEach {
-            $0.acceptContentSize(visitor: visitor)
+            $0.acceptSetContentSize(visitor: visitor)
         }
         visitor.visit(self)
     }
@@ -130,12 +130,12 @@ internal func extractAlignmentYValue(graph: ViewGraph, alignment: VerticalAlignm
     }
 }
 extension ViewGraph {
-    private func acceptSetPosition(visitor: ViewSetRectVisitor) {
+    private func _acceptSetPosition(visitor: ViewSetRectVisitor) {
         if children.isEmpty {
             return
         }
 
-        children.forEach { $0.acceptSetPosition(visitor: visitor) }
+        children.forEach { $0._acceptSetPosition(visitor: visitor) }
         
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
@@ -200,21 +200,20 @@ extension ViewGraph {
 
 extension ViewGraph {
     func accept(visitor: ViewSetRectVisitor) {
+        acceptSetContentSize(visitor: .init())
+        acceptSetDimensions(visitor: .init())
+        acceptSetPosition(visitor: .init())
+        acceptSetContainerSize(visitor: .init())
+    }
+}
+
+extension ViewGraph {
+    func acceptSetDimensions(visitor: ViewSetDimensionsVisitor) {
         let keepCurrentContainer = visitor.currentContainerGraph
         defer { visitor.currentContainerGraph = keepCurrentContainer }
         if anyView is ContainerViewType {
             visitor.currentContainerGraph = self
         }
-        defer {
-            if isRoot {
-                acceptSize(visitor: visitor)
-                acceptSetPosition(visitor: visitor)
-                acceptSetContainerSize(visitor: visitor)
-            }
-        }
-        
-        children.forEach { $0.accept(visitor: visitor) }
-        
         if visitor.currentContainerGraph == nil {
             return
         }
@@ -227,7 +226,7 @@ extension ViewGraph {
                 parent.dimensions = dimensions
                 return
             }
-
+            
             rendableChildren.forEach { $0.dimensions = dimensions }
         }
     }

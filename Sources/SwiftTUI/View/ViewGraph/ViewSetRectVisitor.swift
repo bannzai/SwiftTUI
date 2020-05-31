@@ -16,7 +16,6 @@ internal final class ViewSetRectVisitor: Visitor {
     internal init() { }
     
     internal var current: ViewGraph?
-    internal var currentContainerGraph: ViewGraph?
 
     internal func visit<T: View>(_ content: T) -> VisitResult {
         debugLogger.debug(userInfo: "begin set rect visitor: \(type(of: content))")
