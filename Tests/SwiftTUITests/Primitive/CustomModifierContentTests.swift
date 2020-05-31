@@ -83,11 +83,11 @@ class CustomModifierContentTests: XCTestCase {
             
             let modifierContentGraph = modifierGraph.children[0]
             XCTAssertTrue(modifierContentGraph.anyView is _ViewModifier_Content<SingleBorderModifier>)
-            XCTAssertEqual(modifierContentGraph.rect.origin, .zero)
-            
+            XCTAssertEqual(modifierContentGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
+
             let textGraph = modifierContentGraph.children[0]
             XCTAssertTrue(textGraph.anyView is Text)
-            XCTAssertEqual(textGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
+            XCTAssertEqual(textGraph.rect.origin, .zero)
         }
         XCTContext.runActivity(named: "with border.border.border modifier") { _ in
             let view = Text("123").modifier(ThreeBorderModifier())
@@ -112,11 +112,11 @@ class CustomModifierContentTests: XCTestCase {
 
             let modifierContentGraph = red.children[0]
             XCTAssertTrue(modifierContentGraph.anyView is _ViewModifier_Content<ThreeBorderModifier>)
-            XCTAssertEqual(modifierContentGraph.rect.origin, .zero)
-            
+            XCTAssertEqual(modifierContentGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
+
             let textGraph = modifierContentGraph.children[0]
             XCTAssertTrue(textGraph.anyView is Text)
-            XCTAssertEqual(textGraph.rect.origin, Point(x: defaultBorderWidth, y: defaultBorderWidth))
+            XCTAssertEqual(textGraph.rect.origin, .zero)
         }
     }
     
