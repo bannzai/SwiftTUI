@@ -131,14 +131,38 @@ extension ModifiedContent: ViewSetContentSizeVisitorAcceptable {
     }
 }
 
-extension ModifiedContent: ViewSetPositionVisitorAcceptable where Modifier: ViewSetPositionVisitorAcceptable {
+extension ModifiedContent: ViewSetPositionVisitorAcceptable {
     func accept(visitor: ViewSetPositionVisitor) {
-        modifier.accept(visitor: visitor)
+        if let modifier = modifier as? ViewSetPositionVisitorAcceptable {
+            modifier.accept(visitor: visitor)
+            return
+        }
+        if let content = content as? ViewSetPositionVisitorAcceptable {
+            content.accept(visitor: visitor)
+            return
+        }
+        if content is UserDefinedViewModifierContent {
+            // TODO:
+            return
+        }
+        fatalError("Unexpected \(type(of: self)) does not exits ViewSetPositionVisitorAcceptable")
     }
 }
 
-extension ModifiedContent: ViewSetSizeVisitorAcceptable where Modifier: ViewSetSizeVisitorAcceptable {
+extension ModifiedContent: ViewSetSizeVisitorAcceptable {
     func accept(visitor: ViewSetSizeVisitor) {
-        modifier.accept(visitor: visitor)
+        if let modifier = modifier as? ViewSetSizeVisitorAcceptable {
+            modifier.accept(visitor: visitor)
+            return
+        }
+        if let content = content as? ViewSetSizeVisitorAcceptable {
+            content.accept(visitor: visitor)
+            return
+        }
+        if content is UserDefinedViewModifierContent {
+            // TODO:
+            return
+        }
+        fatalError("Unexpected \(type(of: self)) does not exits ViewSetSizeVisitorAcceptable")
     }
 }

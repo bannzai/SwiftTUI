@@ -79,3 +79,13 @@ extension ForEach: _ForEach {
     }
 }
 extension ForEach: HasContainerContentSize { }
+
+extension ForEach: ViewSetSizeVisitorAcceptable {
+    func accept(visitor: ViewSetSizeVisitor) {
+        let graph = visitor.current!
+        graph.rect.size = graph.children.reduce(into: Size.zero) { (result, element) in
+            result.width += element.rect.size.width
+            result.height += element.rect.size.height
+        }
+    }
+}

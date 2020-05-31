@@ -54,9 +54,3 @@ extension _BackgroundModifier: ViewSetPositionVisitorAcceptable {
         
     }
 }
-
-extension _BackgroundModifier: ViewSetSizeVisitorAcceptable {
-    func accept(visitor: ViewSetSizeVisitor) {
-        
-    }
-}
