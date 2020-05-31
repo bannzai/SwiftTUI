@@ -140,8 +140,10 @@ extension _PaddingLayout: ViewSetSizeVisitorAcceptable {
         assert(graph.children.count == 1, "it should want one child")
         let child = graph.children[0]
         
-        graph.rect.size.width = child.rect.size.width + horizontalLength()
-        graph.rect.size.height = child.rect.size.height + verticalLength()
+        let maxWidth = graph.proposedSize.width
+        let maxHeight = graph.proposedSize.height
+        graph.rect.size.width = min(child.rect.size.width + horizontalLength(), maxWidth)
+        graph.rect.size.height = min(child.rect.size.height + verticalLength(), maxHeight)
     }
 }
 
