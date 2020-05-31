@@ -59,7 +59,17 @@ extension _FrameLayout: ViewSetContentSizeVisitorAcceptable {
 
 extension _FrameLayout: ViewSetPositionVisitorAcceptable {
     func accept(visitor: ViewSetPositionVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
         
+        let containerX = extractAlignmentXValue(graph: graph, alignment: child.alignment.horizontal)
+        let x = extractAlignmentXValue(graph: child, alignment: child.alignment.horizontal)
+        child.rect.origin.x = containerX - x
+        
+        let containerY = extractAlignmentYValue(graph: graph, alignment: child.alignment.vertical)
+        let y = extractAlignmentYValue(graph: child, alignment: child.alignment.vertical)
+        child.rect.origin.y = containerY - y
     }
 }
 
