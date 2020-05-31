@@ -115,14 +115,24 @@ extension _PaddingLayout: ViewSetContentSizeVisitorAcceptable {
         let graph = visitor.current!
         assert(graph.children.count == 1, "it should want one child")
         let child = graph.children[0]
-//        visitor.visit(child)
-        
+
         graph.contentSize = Size(
             width: child.contentSize.width + horizontalLength(),
             height: child.contentSize.height + verticalLength()
         )
         if edges.contains(.leading) { child.rect.origin.x = (insets?.leading ?? defaultPadding) }
         if edges.contains(.top) { child.rect.origin.y = (insets?.top ?? defaultPadding) }
+    }
+}
+
+extension _PaddingLayout: ViewSetPositionVisitorAcceptable {
+    func accept(visitor: ViewSetPositionVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        
+        if edges.contains(.leading) { child.rect.origin.x = min(graph.contentSize.width / 2, (insets?.leading ?? defaultPadding)) }
+        if edges.contains(.top) { child.rect.origin.y = min(graph.contentSize.height / 2, (insets?.top ?? defaultPadding)) }
     }
 }
 
