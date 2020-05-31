@@ -41,3 +41,39 @@ extension TupleView: ViewSetContentSizeVisitorAcceptable {
         }
     }
 }
+
+extension TupleView: ViewSetSizeVisitorAcceptable {
+    private func verticalContextSize(viewGraph: ViewGraph) -> Size {
+        var allocableHeight: PhysicalDistance = viewGraph.proposedSize.height - (viewGraph.children.count - 1) * viewGraph.spacing
+        var maxElementWidth: PhysicalDistance = 0
+        viewGraph.children.enumerated().forEach { (offset, element) in
+            let provisionalElementHeight: PhysicalDistance = allocableHeight / (viewGraph.children.count - offset)
+            let elementProposedSize = Size(width: viewGraph.proposedSize.width, height: max(provisionalElementHeight, 0))
+            element.proposedSize = elementProposedSize
+            
+            maxElementWidth = max(maxElementWidth, element.rect.size.width + element.rect.origin.x)
+            allocableHeight -= element.rect.size.height
+        }
+        
+        maxElementWidth = min(maxElementWidth, viewGraph.proposedSize.width)
+        
+        switch allocableHeight {
+        case let allocableHeight where allocableHeight < 0:
+            return Size(width: maxElementWidth, height: viewGraph.proposedSize.height + abs(allocableHeight))
+        case let allocableHeight where allocableHeight > 0:
+            return Size(width: maxElementWidth, height: viewGraph.proposedSize.height - allocableHeight)
+        case _:
+            return Size(width: maxElementWidth, height: viewGraph.proposedSize.height)
+        }
+    }
+    
+    func accept(visitor: ViewSetSizeVisitor) {
+        let viewGraph = visitor.current!
+        switch viewGraph.listType {
+        case .vertical:
+            viewGraph.rect.size = verticalContextSize(viewGraph: viewGraph)
+        case .horizontal:
+            fatalError()
+        }
+    }
+}
