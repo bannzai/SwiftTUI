@@ -86,7 +86,11 @@ extension Text: ViewSetPositionVisitorAcceptable {
 extension Text: ViewSetSizeVisitorAcceptable {
     func accept(visitor: ViewSetSizeVisitor) {
         let graph = visitor.current!
-        graph.rect.size = graph.contentSize
+        let size = intrinsicContentSize(viewGraph: graph)
+        graph.rect.size = Size(
+            width: min(graph.proposedSize.width, size.width),
+            height: min(graph.proposedSize.height, size.height)
+        )
     }
 }
 
@@ -188,5 +192,31 @@ extension Text {
     /// - Returns: Text that's above or below its baseline.
     public func baselineOffset(_ baselineOffset: CGFloat) -> Text {
         return self
+    }
+}
+
+extension Text: HasIntrinsicContentSize {
+    private func calcTextSize(proposedWidth: PhysicalDistance) -> Size {
+        let contents = content.split(separator: "\n").map { String($0) }
+        let baseHeight = contents.count
+        guard let maxWidthString = contents.max (by: { $0.width < $1.width }) else {
+            return Size(width: proposedWidth, height: baseHeight)
+        }
+        let width = maxWidthString.width
+        if width > proposedWidth {
+            let lineBreakCount = PhysicalDistance(roundf(Float(width) / Float(proposedWidth)))
+            return Size(width: proposedWidth, height: lineBreakCount)
+        }
+        return Size(width: width, height: baseHeight)
+    }
+    func intrinsicContentSize(viewGraph: ViewGraph, visitor: ViewSetRectVisitor) -> Size {
+        return intrinsicContentSize(viewGraph: viewGraph)
+    }
+    func intrinsicContentSize(viewGraph: ViewGraph) -> Size {
+        if viewGraph.proposedSize.width == 0 {
+            return .zero
+        }
+        let size = calcTextSize(proposedWidth: viewGraph.proposedSize.width)
+        return size
     }
 }
