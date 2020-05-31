@@ -83,8 +83,10 @@ extension ForEach: HasContainerContentSize { }
 extension ForEach: ViewSetSizeVisitorAcceptable {
     func accept(visitor: ViewSetSizeVisitor) {
         let graph = visitor.current!
+        var maxWidth: PhysicalDistance = 0
         graph.rect.size = graph.children.reduce(into: Size.zero) { (result, element) in
-            result.width += element.rect.size.width
+            maxWidth = max(element.rect.size.width, maxWidth)
+            result.width = maxWidth
             result.height += element.rect.size.height
         }
     }
