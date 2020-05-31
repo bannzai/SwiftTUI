@@ -18,6 +18,17 @@ extension ViewGraph {
         visitor.visit(self)
     }
 }
+extension ViewGraph {
+    func acceptSetPosition(visitor: ViewSetPositionVisitor) {
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = self
+        children.forEach {
+            $0.acceptSetPosition(visitor: visitor)
+        }
+        visitor.visit(self)
+    }
+}
 
 extension ViewGraph: ViewSetRectVisitorAcceptable { }
 extension ViewGraph {
