@@ -39,3 +39,18 @@ extension _BackgroundModifier: ViewContentAcceptable {
 }
 
 extension _BackgroundModifier: Primitive { }
+
+extension _BackgroundModifier: ViewSetContentSizeVisitorAcceptable {
+    func accept(visitor: ViewSetContentSizeVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        graph.contentSize = child.contentSize
+    }
+}
+
+extension _BackgroundModifier: ViewSetPositionVisitorAcceptable {
+    func accept(visitor: ViewSetPositionVisitor) {
+        
+    }
+}
