@@ -78,6 +78,11 @@ extension Text: ViewSetContentSizeVisitorAcceptable {
         visitor.current?.contentSize = Size(width: maxWidthString.width, height: contents.count)
     }
 }
+extension Text: ViewSetPositionVisitorAcceptable {
+    func accept(visitor: ViewSetPositionVisitor) {
+        
+    }
+}
 extension Text: ViewSetSizeVisitorAcceptable {
     func accept(visitor: ViewSetSizeVisitor) {
         let graph = visitor.current!

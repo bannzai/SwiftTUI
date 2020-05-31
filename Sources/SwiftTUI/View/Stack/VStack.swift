@@ -44,6 +44,11 @@ extension VStack: ViewSetContentSizeVisitorAcceptable {
         }
     }
 }
+extension VStack: ViewSetPositionVisitorAcceptable {
+    func accept(visitor: ViewSetPositionVisitor) {
+        
+    }
+}
 extension VStack: ViewSetSizeVisitorAcceptable {
     func accept(visitor: ViewSetSizeVisitor) {
         let graph = visitor.current!

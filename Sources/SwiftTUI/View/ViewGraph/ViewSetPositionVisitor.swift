@@ -20,11 +20,12 @@ internal final class ViewSetPositionVisitor: Visitor {
         defer {
             debugLogger.debug(userInfo: "end set positon visitor: \(type(of: content))")
         }
-        switch content {
-        case let acceptable as ViewSetPositionVisitorAcceptable:
+        if let graph = content as? ViewGraph, let acceptable = graph.anyView as? ViewSetPositionVisitorAcceptable {
             return acceptable.accept(visitor: self)
-        case _:
-            return visit(content.body)
         }
+        if let graph = content as? ViewGraph {
+            return graph.children.forEach(visit)
+        }
+        return visit(content.body)
     }
 }
