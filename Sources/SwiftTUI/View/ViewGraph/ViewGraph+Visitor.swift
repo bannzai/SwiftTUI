@@ -7,6 +7,29 @@
 
 import Foundation
 
+extension ViewGraph {
+    func acceptContentSize(visitor: ViewSetContentSizeVisitor) {
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = self
+        children.forEach {
+            $0.acceptContentSize(visitor: visitor)
+        }
+        visitor.visit(self)
+    }
+}
+extension ViewGraph {
+    func acceptSetPosition(visitor: ViewSetPositionVisitor) {
+        let keepCurrent = visitor.current
+        defer { visitor.current = keepCurrent }
+        visitor.current = self
+        children.forEach {
+            $0.acceptSetPosition(visitor: visitor)
+        }
+        visitor.visit(self)
+    }
+}
+
 extension ViewGraph: ViewSetRectVisitorAcceptable { }
 extension ViewGraph {
     func acceptSize(visitor: ViewSetRectVisitor) -> ViewSetRectVisitor.VisitResult {
@@ -72,40 +95,30 @@ extension ViewGraph {
     }
 }
 
+internal func extractAlignmentXValue(graph: ViewGraph, alignment: HorizontalAlignment) -> PhysicalDistance {
+    switch graph.dimensions[explicit: alignment] {
+    case nil:
+        return alignment.id.defaultValue(in: graph.dimensions)
+    case .some(let explicitValue):
+        return explicitValue
+    }
+}
+internal func extractAlignmentYValue(graph: ViewGraph, alignment: VerticalAlignment) -> PhysicalDistance {
+    switch graph.dimensions[explicit: alignment] {
+    case nil:
+        return alignment.id.defaultValue(in: graph.dimensions)
+    case .some(let explicitValue):
+        return explicitValue
+    }
+}
 extension ViewGraph {
-    private static func extractAlignmentXValue(graph: ViewGraph, alignment: HorizontalAlignment) -> PhysicalDistance {
-        switch graph.dimensions[explicit: alignment] {
-        case nil:
-            return alignment.id.defaultValue(in: graph.dimensions)
-        case .some(let explicitValue):
-            return explicitValue
-        }
-    }
-    private static func extractAlignmentYValue(graph: ViewGraph, alignment: VerticalAlignment) -> PhysicalDistance {
-        switch graph.dimensions[explicit: alignment] {
-        case nil:
-            return alignment.id.defaultValue(in: graph.dimensions)
-        case .some(let explicitValue):
-            return explicitValue
-        }
-    }
     private func acceptSetPosition(visitor: ViewSetRectVisitor) {
-        let keepCurrentContainer = visitor.currentContainerGraph
-        defer { visitor.currentContainerGraph = keepCurrentContainer }
-        if anyView is ContainerViewType {
-            visitor.currentContainerGraph = self
-        }
-        
         if children.isEmpty {
             return
         }
 
         children.forEach { $0.acceptSetPosition(visitor: visitor) }
         
-        if isUserDefinedModifierContent {
-            return
-        }
-
         if isModifiedContent {
             guard let view = anyView as? HasAnyModifier else {
                 fatalError("isModifiedContent is true but it has not anyModifier \(self)")
@@ -120,12 +133,12 @@ extension ViewGraph {
             }
             if view.anyModifier is _FrameLayout {
                 rendableChildren.forEach { child in
-                    let containerX = ViewGraph.extractAlignmentXValue(graph: self, alignment: child.alignment.horizontal)
-                    let x = ViewGraph.extractAlignmentXValue(graph: child, alignment: child.alignment.horizontal)
+                    let containerX = extractAlignmentXValue(graph: self, alignment: child.alignment.horizontal)
+                    let x = extractAlignmentXValue(graph: child, alignment: child.alignment.horizontal)
                     child.rect.origin.x = containerX - x
                     
-                    let containerY = ViewGraph.extractAlignmentYValue(graph: self, alignment: child.alignment.vertical)
-                    let y = ViewGraph.extractAlignmentYValue(graph: child, alignment: child.alignment.vertical)
+                    let containerY = extractAlignmentYValue(graph: self, alignment: child.alignment.vertical)
+                    let y = extractAlignmentYValue(graph: child, alignment: child.alignment.vertical)
                     child.rect.origin.y = containerY - y
                 }
                 return
@@ -136,7 +149,7 @@ extension ViewGraph {
         case .vertical:
             var maxX = PhysicalDistance(0)
             rendableChildren.enumerated().forEach { (offset, child) in
-                let x = ViewGraph.extractAlignmentXValue(graph: child, alignment: alignment.horizontal)
+                let x = extractAlignmentXValue(graph: child, alignment: alignment.horizontal)
                 debugLogger.debug(userInfo: "self type \(type(of: self)) child type \(type(of: child)), self.alignment.horizontal: \(alignment.horizontal), x: \(x)")
                 switch x {
                 case let x where x < 0:
@@ -184,7 +197,7 @@ extension ViewGraph {
         
         children.forEach { $0.accept(visitor: visitor) }
         
-        guard let _ = visitor.currentContainerGraph else {
+        if visitor.currentContainerGraph == nil {
             return
         }
         
@@ -204,11 +217,6 @@ extension ViewGraph {
 
 extension ViewGraph {
     private func acceptSetContainerSize(visitor: ViewSetRectVisitor) {
-        let keepCurrentContainer = visitor.currentContainerGraph
-        defer { visitor.currentContainerGraph = keepCurrentContainer }
-        if isContainerType {
-            visitor.currentContainerGraph = self
-        }
         if let view = anyView as? HasContainerContentSize {
             let size = view.containerContentSize(viewGraph: self, visitor: visitor)
             rect.size = size
@@ -220,7 +228,7 @@ extension ViewGraph {
         }
         children.forEach { $0.acceptSize(visitor: visitor) }
 
-        if !(isUserDefinedView || isUserDefinedModifierContent) {
+        if !(isUserDefinedView) {
             return
         }
         

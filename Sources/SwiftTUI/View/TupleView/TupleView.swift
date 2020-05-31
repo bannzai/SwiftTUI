@@ -31,3 +31,13 @@ extension TupleView: ContainerViewType { }
 extension TupleView: HasContainerContentSize { }
 internal protocol _TupleView { }
 extension TupleView: _TupleView { }
+
+extension TupleView: ViewSetContentSizeVisitorAcceptable {
+    func accept(visitor: ViewSetContentSizeVisitor) {
+        let graph = visitor.current!
+        graph.contentSize = graph.children.reduce(into: Size.zero) { (result, element) in
+            result.width += element.contentSize.width
+            result.height += element.contentSize.height
+        }
+    }
+}

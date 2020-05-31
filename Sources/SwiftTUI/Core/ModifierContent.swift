@@ -31,12 +31,6 @@ extension ModifiedContent: ViewContentAcceptable {
             return
         }
 
-        if content is UserDefinedViewModifierContent {
-            assert(visitor.current?.children.count == 0)
-            debugLogger.debug()
-            visitor.current?.children.forEach(visitor.visit)
-            return
-        }
         if !(modifier is Primitive) {
             return
         }
@@ -125,3 +119,13 @@ extension ModifiedContent: HasAnyModifier {
 
 internal protocol _ModifiedContent { }
 extension ModifiedContent: _ModifiedContent { }
+
+extension ModifiedContent: ViewSetContentSizeVisitorAcceptable {
+    func accept(visitor: ViewSetContentSizeVisitor) {
+        let graph = visitor.current!
+        graph.contentSize = graph.children.reduce(into: Size.zero) { (result, element) in
+            result.width += element.contentSize.width
+            result.height += element.contentSize.height
+        }
+    }
+}

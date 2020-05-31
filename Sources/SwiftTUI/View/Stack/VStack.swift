@@ -35,6 +35,16 @@ extension VStack: ViewGraphSetAcceptable {
     }
 }
 
+extension VStack: ViewSetContentSizeVisitorAcceptable {
+    func accept(visitor: ViewSetContentSizeVisitor) {
+        let graph = visitor.current!
+        graph.contentSize = graph.children.reduce(into: Size.zero) { (result, element) in
+            result.width += element.contentSize.width
+            result.width += element.contentSize.height
+        }
+    }
+}
+
 @frozen public struct _VStackLayout {
     @usableFromInline internal var alignment: HorizontalAlignment
     @usableFromInline internal var spacing: PhysicalDistance?

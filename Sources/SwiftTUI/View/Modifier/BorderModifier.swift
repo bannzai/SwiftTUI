@@ -130,12 +130,17 @@ extension _BorderModifier: ViewContentAcceptable {
     }
 }
 
+extension View {
+    @inlinable public func border(_ color: Color, _ edges: Edge.Set = .all) -> some View {
+        modifier(_BorderModifier(color: color, edges: edges))
+    }
+}
+
 extension _BorderModifier: ViewSetContentSizeVisitorAcceptable {
     func accept(visitor: ViewSetContentSizeVisitor) {
         let graph = visitor.current!
         assert(graph.children.count == 1, "it should want one child")
         let child = graph.children[0]
-        visitor.visit(child)
 
         graph.contentSize = Size(
             width: child.contentSize.width + horizontalLength(),
@@ -146,8 +151,13 @@ extension _BorderModifier: ViewSetContentSizeVisitorAcceptable {
     }
 }
 
-extension View {
-    @inlinable public func border(_ color: Color, _ edges: Edge.Set = .all) -> some View {
-        modifier(_BorderModifier(color: color, edges: edges))
+extension _BorderModifier: ViewSetPositionVisitorAcceptable {
+    func accept(visitor: ViewSetPositionVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        
+        if edges.contains(.leading) { child.rect.origin.x = defaultBorderWidth }
+        if edges.contains(.top) { child.rect.origin.y = defaultBorderWidth }
     }
 }
