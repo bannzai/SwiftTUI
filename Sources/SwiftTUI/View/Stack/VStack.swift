@@ -44,6 +44,15 @@ extension VStack: ViewSetContentSizeVisitorAcceptable {
         }
     }
 }
+extension VStack: ViewSetSizeVisitorAcceptable {
+    func accept(visitor: ViewSetSizeVisitor) {
+        let graph = visitor.current!
+        assert(graph.children.count == 1, "it should want one child")
+        let child = graph.children[0]
+        
+        graph.rect.size = child.rect.size
+    }
+}
 
 @frozen public struct _VStackLayout {
     @usableFromInline internal var alignment: HorizontalAlignment
