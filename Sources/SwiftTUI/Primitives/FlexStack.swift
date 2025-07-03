@@ -1,15 +1,12 @@
 import yoga
 
 /// 汎用 Flexbox Stack
-// Sources/SwiftTUI/Primitives/FlexStack.swift
-
 final class FlexStack: LayoutView {
 
   enum Axis { case column, row }
   private let axis: Axis
   private let children: [AnyView]
 
-  // ① キャッシュ
   private var cachedNode: YogaNode?
 
   init(_ axis: Axis, @ViewBuilder _ content: () -> [AnyView]) {
@@ -17,26 +14,26 @@ final class FlexStack: LayoutView {
     self.children = content()
   }
 
-  // --- Yoga node --------------------------------------------------------
+  // MARK: Yoga
   func makeNode() -> YogaNode {
-    if let n = cachedNode { return n }             // ② 再利用
+    if let n = cachedNode { return n }
 
     let n = YogaNode()
     n.flexDirection(axis == .column ? .column : .row)
-    for ch in children { n.insert(child: ch.makeNode()) }
-
-    cachedNode = n                                 // ③ 保持して返す
+    children.forEach { n.insert(child: $0.makeNode()) }
+    cachedNode = n
     return n
   }
 
-  // --- Paint ------------------------------------------------------------
+  // MARK: Paint
   func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
-    let root = makeNode()
-    root.calculate()                               // ← ここで layout 確定
 
-    let cnt = Int(YGNodeGetChildCount(root.rawPtr))
-    for i in 0..<cnt {
-      guard let raw = YGNodeGetChild(root.rawPtr, Int(i)) else { continue }
+    // ★ calculate() を 呼ばない  ← ここが修正点
+    let node = makeNode()
+
+    let count = Int(YGNodeGetChildCount(node.rawPtr))
+    for i in 0..<count {
+      guard let raw = YGNodeGetChild(node.rawPtr, Int(i)) else { continue }
       let dx = Int(YGNodeLayoutGetLeft(raw))
       let dy = Int(YGNodeLayoutGetTop(raw))
       children[i].paint(origin: (origin.x + dx, origin.y + dy), into: &buf)
