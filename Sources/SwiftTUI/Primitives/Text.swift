@@ -1,3 +1,5 @@
+import yoga
+
 public struct Text: View {
   let content: String
   var fgColor: Color? = nil
