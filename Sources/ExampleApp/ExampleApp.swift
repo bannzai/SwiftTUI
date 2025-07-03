@@ -1,20 +1,25 @@
+// Sources/ExampleApp/main.swift
 import SwiftTUI
-import Dispatch
+import Dispatch           // dispatchMain()
 
-struct CounterView: View {
+// ① View を class にする（参照型）
+final class CounterView: View {
+
   @State private var count = 0
 
   func render(into buffer: inout [String]) {
     buffer.append("Count: \(count)")
-    buffer.append("Press ‘i’ to increment / ESC to quit")
+    buffer.append("Press 'i' to increment, ESC to quit")
   }
 
   func handle(event: KeyboardEvent) -> Bool {
     switch event.key {
     case .character("i"):
-      count += 1           // @State → RenderLoop.scheduleRedraw()
-      return true          // ← handled
+      count += 1
+      print("[DEBUG] incremented to", count)
+      return true                    // handled
     case .escape:
+      print("[DEBUG] escape pressed, exiting")
       exit(0)
     case _:
       return false
@@ -25,8 +30,13 @@ struct CounterView: View {
 @main
 struct ExampleApp {
   static func main() {
-    var counter = CounterView()
+    // ② インスタンスは 1 個だけ
+    let counter = CounterView()
+
+    // ③ クロージャは “常に同じ参照” を返す
     RenderLoop.mount { counter }
-    Dispatch.dispatchMain()
+
+    // ④ GCD イベントループへ
+    dispatchMain()
   }
 }
