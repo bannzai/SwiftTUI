@@ -1,32 +1,43 @@
 import yoga
 
-/// 汎用 Flexbox Stack
+// Sources/SwiftTUI/Primitives/FlexStack.swift
+
 final class FlexStack: LayoutView {
 
   enum Axis { case column, row }
   private let axis: Axis
   private let children: [AnyView]
-  private var cached: YogaNode?          // キャッシュ
+
+  // --- ここを変更 -------------------------------------------------------
+  private var laidOutNode: YogaNode?   // ← 計算済みノードを保持
+  // --------------------------------------------------------------------
 
   init(_ axis: Axis, @ViewBuilder _ c: () -> [AnyView]) {
     self.axis = axis
     self.children = c()
   }
 
-  // MARK: - Yoga
+  // MARK: YogaNode
   func makeNode() -> YogaNode {
-    if let n = cached { return n }
     let n = YogaNode()
     n.flexDirection(axis == .column ? .column : .row)
     children.forEach { n.insert(child: $0.makeNode()) }
-    cached = n
     return n
   }
 
-  // MARK: - Paint
+  // MARK: Paint
   func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
-    let node = makeNode()                 // 既に calculate 済み
-    let cnt  = Int(YGNodeGetChildCount(node.rawPtr))
+
+    // ① まだ計算していない or @State で無効化 → レイアウトする
+    if laidOutNode == nil {
+      let n = makeNode()
+      n.calculate()                 // ★ この1回だけ
+      laidOutNode = n
+    }
+    guard let node = laidOutNode else { return }
+
+    // ② 確定座標で描画
+    let cnt = Int(YGNodeGetChildCount(node.rawPtr))
     for i in 0..<cnt {
       guard let raw = YGNodeGetChild(node.rawPtr, Int(i)) else { continue }
       let dx = Int(YGNodeLayoutGetLeft(raw))
@@ -35,6 +46,7 @@ final class FlexStack: LayoutView {
     }
   }
 }
+
 
 // ---------- SwiftUI 風ラッパ ----------
 
