@@ -1,36 +1,40 @@
+// Sources/ExampleApp/main.swift
 import SwiftTUI
+import Dispatch           // dispatchMain()
 
-struct ColorDemo: View {
+// ① View を class にする（参照型）
+final class CounterView: View {
+
+  @State private var count = 0
+
   func render(into buffer: inout [String]) {
-    buffer.append("🎨  ANSI Styling Demo")
-    buffer.append(
-      HStack {
-        Text("Red").color(.red).bold()
-        Text("Green BG").background(.green).underline()
-        Text("RGB").color(.rgb(r: 255, g: 128, b: 0))
-      }
-        .rendered()   // ← 後述ヘルパ（HStack → String）
-    )
-    buffer.append("")               // 空行
-    buffer.append("Press q + Enter to quit")
+    buffer.append("Count: \(count)")
+    buffer.append("Press 'i' to increment, ESC to quit")
   }
-}
 
-// HStack -> String 変換の簡易ヘルパ
-private extension View {
-  func rendered() -> String {
-    var tmp: [String] = []
-    render(into: &tmp)
-    return tmp.joined()
+  func handle(event: KeyboardEvent) -> Bool {
+    switch event.key {
+    case .character("i"):
+      count += 1
+      return true                    // handled
+    case .escape:
+      exit(0)
+    case _:
+      return false
+    }
   }
 }
 
 @main
 struct ExampleApp {
   static func main() {
-    RenderLoop.mount { ColorDemo() }
-    while let line = readLine(strippingNewline: true) {
-      if line.lowercased() == "q" { break }
-    }
+    // ② インスタンスは 1 個だけ
+    let counter = CounterView()
+
+    // ③ クロージャは “常に同じ参照” を返す
+    RenderLoop.mount { counter }
+
+    // ④ GCD イベントループへ
+    dispatchMain()
   }
 }

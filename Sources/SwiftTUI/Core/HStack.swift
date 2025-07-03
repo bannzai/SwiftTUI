@@ -22,4 +22,11 @@ public struct HStack: View {
     }
     buffer.append(line)
   }
+
+  public func handle(event: KeyboardEvent) -> Bool {
+    for child in children where child.handle(event: event) {
+      return true
+    }
+    return false
+  }
 }
