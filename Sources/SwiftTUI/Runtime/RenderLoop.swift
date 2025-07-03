@@ -1,14 +1,14 @@
 import Foundation
 
-enum RenderLoop {
+public enum RenderLoop {
   private static var makeRoot: (() -> AnyView)?
 
-  static func mount<V: View>(_ build: @escaping () -> V) {
+  public static func mount<V: View>(_ build: @escaping () -> V) {
     makeRoot = { AnyView(build()) }
     redraw()                      // 初期描画
   }
 
-  static func redraw() {
+  internal static func redraw() {
     guard let makeRoot else { return }
 
     print("\u{001B}[2J\u{001B}[H", terminator: "")
