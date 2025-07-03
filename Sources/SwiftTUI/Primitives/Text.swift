@@ -28,12 +28,9 @@ extension Text: LayoutView {
 
   // 1行＝文字数、縦1 の寸法を Yoga に教える
   func makeNode() -> YogaNode {
-    let n = YogaNode()
-    n.setMeasure { _, _, _, _, _ in
-      YGSize(width: Float(self.contentWidth()), height: 1)
-    }
-    return n
-  }
+    let node = YogaNode()
+    node.setSize(width: Float(content.count), height: 1)
+    return node  }
 
   // Yoga が決めた座標に描画
   public func paint(origin: (x: Int, y: Int), into buf: inout [String]) {

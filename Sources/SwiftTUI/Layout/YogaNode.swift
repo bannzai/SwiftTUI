@@ -47,4 +47,9 @@ final class YogaNode {
 
   // internal
   var rawPtr: YGNodeRef { raw }
+
+  func setSize(width w: Float, height h: Float) {
+    YGNodeStyleSetWidth(raw, w)
+    YGNodeStyleSetHeight(raw, h)
+  }
 }
