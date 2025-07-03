@@ -6,33 +6,28 @@ final class FlexStack: LayoutView {
   enum Axis { case column, row }
   private let axis: Axis
   private let children: [AnyView]
+  private var cached: YogaNode?          // キャッシュ
 
-  private var cachedNode: YogaNode?
-
-  init(_ axis: Axis, @ViewBuilder _ content: () -> [AnyView]) {
+  init(_ axis: Axis, @ViewBuilder _ c: () -> [AnyView]) {
     self.axis = axis
-    self.children = content()
+    self.children = c()
   }
 
-  // MARK: Yoga
+  // MARK: - Yoga
   func makeNode() -> YogaNode {
-    if let n = cachedNode { return n }
-
+    if let n = cached { return n }
     let n = YogaNode()
     n.flexDirection(axis == .column ? .column : .row)
     children.forEach { n.insert(child: $0.makeNode()) }
-    cachedNode = n
+    cached = n
     return n
   }
 
-  // MARK: Paint
+  // MARK: - Paint
   func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
-
-    // ★ calculate() を 呼ばない  ← ここが修正点
-    let node = makeNode()
-
-    let count = Int(YGNodeGetChildCount(node.rawPtr))
-    for i in 0..<count {
+    let node = makeNode()                 // 既に calculate 済み
+    let cnt  = Int(YGNodeGetChildCount(node.rawPtr))
+    for i in 0..<cnt {
       guard let raw = YGNodeGetChild(node.rawPtr, Int(i)) else { continue }
       let dx = Int(YGNodeLayoutGetLeft(raw))
       let dy = Int(YGNodeLayoutGetTop(raw))
@@ -40,7 +35,6 @@ final class FlexStack: LayoutView {
     }
   }
 }
-
 
 // ---------- SwiftUI 風ラッパ ----------
 

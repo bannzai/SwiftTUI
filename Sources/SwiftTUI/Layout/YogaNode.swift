@@ -9,6 +9,10 @@ public final class YogaNode {
     guard let n = YGNodeNew() else { fatalError("YGNodeNew() nil") }
     raw = n
   }
+
+  /// internal: wrap existing raw pointer（DEBUG 用）
+  init(raw: YGNodeRef) { self.raw = raw }
+  
   deinit { YGNodeFree(raw) }
 
   // MARK: – children

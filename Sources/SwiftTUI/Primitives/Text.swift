@@ -26,38 +26,27 @@ public struct Text: View {
 
 extension Text: LayoutView {
 
-  // 1行＝文字数、縦1 の寸法を Yoga に教える
-  // Text.makeNode() をこれで置き換え
   public func makeNode() -> YogaNode {
     let n = YogaNode()
-    // content.count “文字” 分だけ固定幅にする
+    // 固定幅 + 高さ1（全角は要調整）
     n.setSize(width: Float(max(content.count, 1)), height: 1)
-    // ついでに minHeight を 1 にして高さ 0 を防止
     n.setMinHeight(1)
     return n
   }
 
-  // Yoga が決めた座標に描画
   public func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
-
-    // ① 行バッファを確保
+    // 行確保
     while buf.count <= origin.y { buf.append("") }
 
-    var line = buf[origin.y]
-    if line.count < origin.x {
-      line += String(repeating: " ", count: origin.x - line.count)
+    // 左側スペース確保
+    if buf[origin.y].count < origin.x {
+      buf[origin.y] += String(repeating: " ", count: origin.x - buf[origin.y].count)
     }
 
     let styled = buildStyledText()
+    let line   = buf[origin.y]
     let prefix = line.prefix(origin.x)
-    var suffix = ""
-    if line.count > origin.x {
-      // 既にあった文字列を塗り替えずに残す
-      let start = line.index(line.startIndex, offsetBy: origin.x)
-      suffix = String(line[start...])
-    }
-
-    buf[origin.y] = prefix + styled + suffix
+    buf[origin.y] = prefix + styled
   }
 
   // ---------- helpers ----------
@@ -74,4 +63,5 @@ extension Text: LayoutView {
     let reset  = "\u{1B}[0m"
     return prefix + content + reset
   }
+
 }
