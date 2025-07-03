@@ -5,9 +5,13 @@ struct ExampleApp {
   static func main() {
     Renderer.render(
       VStack {
-        Text("🍣  SwiftTUI へようこそ")
-        Text("🚀  VStack が動いています")
-        Text("✅  行が縦に並びました！")
+        Text("📦  VStack + HStack デモ")
+        HStack(spacing: 3) {
+          Text("🐶 Dog")
+          Text("🐱 Cat")
+          Text("🦊 Fox")
+        }
+        Text("— 横に 3 つ並びました —")
       }
     )
   }
