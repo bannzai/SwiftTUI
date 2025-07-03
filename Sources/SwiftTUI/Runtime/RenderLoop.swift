@@ -1,119 +1,119 @@
+//  Sources/SwiftTUI/Runtime/RenderLoop.swift
 import Foundation
+import yoga               // ←★ 追加：YGNodeGetChildCount などを使うため
 
-/// 描画ループ（行差分パッチ描画＋入力統合＋デバッグログ）
+/// 描画ループ（Yoga → 行差分パッチ描画 + DEBUG ダンプ）
 public enum RenderLoop {
 
-  // MARK: Public API
+  // ── Public ────────────────────────────────────────────────────────────
   public static func mount<V: View>(_ build: @escaping () -> V) {
     makeRoot = { AnyView(build()) }
     fullRedraw()
     startInputLoop()
   }
 
-  // MARK: - Internal state
-  private static var makeRoot: (() -> AnyView)?
+  // ── Internal state ───────────────────────────────────────────────────
+  private static var makeRoot      : (() -> AnyView)?
   private static var redrawPending = false
-  private static let renderQueue = DispatchQueue(label: "SwiftTUI.RenderLoop")
-  private static var prevBuffer: [String] = []
+  private static let renderQ       = DispatchQueue(label: "SwiftTUI.Render")
+  private static var prevBuf       : [String] = []
 }
 
-// MARK: - Called from @State
+// MARK: - @State から呼ばれる
 extension RenderLoop {
   static func scheduleRedraw() {
-    guard redrawPending == false else { return }
+    guard !redrawPending else { return }
     redrawPending = true
-
-    if DEBUG {
-      print("[DEBUG] redraw scheduled")
-    }
-
-    renderQueue.async {
+    renderQ.async {
       incrementalRedraw()
       redrawPending = false
+    }
+  }
+}
 
-      if DEBUG {
-        print("[DEBUG] redraw finished")
+// MARK: - Frame builder + DEBUG
+private extension RenderLoop {
+
+  static func buildFrame() -> [String] {
+    guard let root = makeRoot?() else { return [] }
+
+    guard let lv = root as? LayoutView else {          // AnyView は必ず OK
+      var b: [String] = []; root.render(into: &b)
+      if DEBUG { dumpBuffer(b) }
+      return b
+    }
+
+    let n = lv.makeNode()
+    n.calculate()                                      // Yoga レイアウト
+
+    var buf: [String] = []
+    lv.paint(origin: (0, 0), into: &buf)
+
+    if DEBUG {
+      print("===== layout dump =====")
+      dumpNode(n, indent: 0)
+      dumpBuffer(buf)
+    }
+    return buf
+  }
+
+  // ---- debug helpers ---------------------------------------------------
+  static func dumpNode(_ n: YogaNode, indent: Int) {
+    let f = n.frame
+    print(String(repeating: " ", count: indent),
+          "frame:(\(f.x),\(f.y),\(f.w),\(f.h))")
+    let cnt = Int(YGNodeGetChildCount(n.rawPtr))       // ← yoga C-API
+    for i in 0..<cnt {
+      if let c = YGNodeGetChild(n.rawPtr, Int(i)) {
+        dumpNode(YogaNode(raw: c), indent: indent + 2)
       }
     }
+  }
+
+  static func dumpBuffer(_ b: [String]) {
+    print("===== buffer dump =====")
+    for (i,l) in b.enumerated() { print(i, "[\(l)]") }
+    print("-----------------------")
   }
 }
 
 // MARK: - Draw routines
-extension RenderLoop {
+private extension RenderLoop {
 
-  private static func fullRedraw() {
-    guard let makeRoot else { return }
-
-    // clear screen + cursor home
+  static func fullRedraw() {
     print("\u{1B}[2J\u{1B}[H", terminator: "")
-
-    var buffer: [String] = []
-    makeRoot().render(into: &buffer)
-    buffer.forEach { print($0) }
-
-    prevBuffer = buffer
+    prevBuf = buildFrame()
+    prevBuf.forEach { print($0) }
     fflush(stdout)
   }
 
-  private static func incrementalRedraw() {
-    guard let makeRoot else { return }
+  static func incrementalRedraw() {
+    let next = buildFrame()
 
-    var next: [String] = []
-    makeRoot().render(into: &next)
-
-    let common = min(prevBuffer.count, next.count)
-    for row in 0 ..< common where prevBuffer[row] != next[row] {
-      moveCursor(to: row)
-      clearLine()
-      print(next[row], terminator: "")
+    let common = min(prevBuf.count, next.count)
+    for row in 0..<common where prevBuf[row] != next[row] {
+      move(row); clear(); print(next[row], terminator: "")
     }
-
-    if next.count > prevBuffer.count {
-      for row in prevBuffer.count ..< next.count {
-        moveCursor(to: row)
-        clearLine()
-        print(next[row], terminator: "")
-      }
+    if next.count > prevBuf.count {
+      for r in prevBuf.count..<next.count { move(r); clear(); print(next[r], terminator:"") }
+    } else if next.count < prevBuf.count {
+      for r in next.count..<prevBuf.count { move(r); clear() }
     }
-
-    if next.count < prevBuffer.count {
-      for row in next.count ..< prevBuffer.count {
-        moveCursor(to: row)
-        clearLine()
-      }
-    }
-
-    moveCursor(to: next.count)
-    prevBuffer = next
+    move(next.count)
+    prevBuf = next
     fflush(stdout)
   }
 }
 
 // MARK: - ANSI helpers
-extension RenderLoop {
-
-  private static func moveCursor(to row: Int) {
-    print("\u{1B}[\(row + 1);1H", terminator: "")
-  }
-
-  private static func clearLine() {
-    print("\u{1B}[2K", terminator: "")
-  }
+private extension RenderLoop {
+  static func move(_ r: Int)  { print("\u{1B}[\(r+1);1H", terminator:"") }
+  static func clear()         { print("\u{1B}[2K",       terminator:"") }
 }
 
-// MARK: - Input integration
-extension RenderLoop {
-
-  private static func startInputLoop() {
-    InputLoop.start { event in
-      guard let makeRoot else { return }
-
-      if DEBUG {
-        print("[DEBUG] handle(event:) invoked with", event)
-      }
-
-      _ = makeRoot().handle(event: event)
-      // @State 内の setter が scheduleRedraw() を呼ぶのでここでは描画を直接触らない
-    }
+// MARK: - Input
+private extension RenderLoop {
+  static func startInputLoop() {
+    InputLoop.start { ev in _ = makeRoot?().handle(event: ev) }
   }
 }

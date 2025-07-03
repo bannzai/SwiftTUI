@@ -12,8 +12,18 @@ let package = Package(
     .library(name: "SwiftTUI", targets: ["SwiftTUI"]),
     .executable(name: "ExampleApp", targets: ["ExampleApp"]),
   ],
+  dependencies: [
+    .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
+  ],
   targets: [
-    .target(name: "SwiftTUI"),
+    // Swift ランタイム
+    .target(
+      name: "SwiftTUI",
+      dependencies: [
+        .product(name: "yoga", package: "yoga")
+      ],
+      path: "Sources/SwiftTUI"
+    ),
     .executableTarget(
       name: "ExampleApp",
       dependencies: ["SwiftTUI"]
