@@ -10,4 +10,11 @@ public struct VStack: View {
       child.render(into: &buffer)
     }
   }
+
+  public func handle(event: KeyboardEvent) -> Bool {
+    for child in children where child.handle(event: event) {
+      return true
+    }
+    return false
+  }
 }
