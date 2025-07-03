@@ -1,10 +1,9 @@
-import Foundation
 import yoga
 
+/// 汎用 Flexbox Stack
 struct FlexStack: LayoutView {
 
   enum Axis { case column, row }
-
   private let axis: Axis
   private let children: [AnyView]
 
@@ -13,11 +12,11 @@ struct FlexStack: LayoutView {
     self.children = content()
   }
 
+  // MARK: Yoga node
   func makeNode() -> YogaNode {
     let node = YogaNode()
-    node.flexDirection(axis == .column ? YGFlexDirection.column
-                       : YGFlexDirection.row)
-
+    node.flexDirection(axis == .column ? YGFlexDirectionColumn
+                       : YGFlexDirectionRow)
     for child in children {
       if let lv = child as? LayoutView {
         node.insert(child: lv.makeNode())
@@ -26,30 +25,39 @@ struct FlexStack: LayoutView {
     return node
   }
 
+  // MARK: Paint
   func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
-    var index = 0
-    makeNode().rawPtr.pointee.forEachChild { rawChild in
-      let childNode = YogaNodeWrapper(raw: rawChild)
-      let frame = childNode.frame
-      let childOrigin = (x: origin.x + frame.x,
-                         y: origin.y + frame.y)
+    let root = makeNode()
+    root.calculate()                               // 必ずレイアウト
 
-      let lv = children[index] as! LayoutView
-      lv.paint(origin: childOrigin, into: &buf)
-      index += 1
+    let count = Int(YGNodeGetChildCount(root.rawPtr))
+    for i in 0..<count {
+      guard let childRaw = YGNodeGetChild(root.rawPtr, UInt32(i)),
+            let lv = children[i] as? LayoutView else { continue }
+
+      let ox = origin.x + Int(YGNodeLayoutGetLeft(childRaw))
+      let oy = origin.y + Int(YGNodeLayoutGetTop(childRaw))
+      lv.paint(origin: (ox, oy), into: &buf)
     }
   }
 }
 
-// Helper to walk raw pointers
-private struct YogaNodeWrapper {
-  let raw: YGNodeRef
-  var frame: (x: Int, y: Int, w: Int, h: Int) {
-    (Int(YGNodeLayoutGetLeft(raw)),
-     Int(YGNodeLayoutGetTop(raw)),
-     Int(YGNodeLayoutGetWidth(raw)),
-     Int(YGNodeLayoutGetHeight(raw)))
+// ---------- SwiftUI 風ラッパ ----------
+
+struct VStack: LayoutView {
+  private let stack: FlexStack
+  init(@ViewBuilder _ c: () -> [AnyView]) { stack = FlexStack(.column, c) }
+  func makeNode() -> YogaNode { stack.makeNode() }
+  func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
+    stack.paint(origin: origin, into: &buf)
   }
 }
 
-typealias HStack = FlexStack where Axis == .row
+struct HStack: LayoutView {
+  private let stack: FlexStack
+  init(@ViewBuilder _ c: () -> [AnyView]) { stack = FlexStack(.row, c) }
+  func makeNode() -> YogaNode { stack.makeNode() }
+  func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
+    stack.paint(origin: origin, into: &buf)
+  }
+}
