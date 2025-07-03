@@ -19,12 +19,12 @@ public struct AnyView: View, LayoutView {
 
     if let lv = view as? LayoutView {
       // ------ LayoutView を包めた場合 ------
-      if RenderLoop.DEBUG {
+      if DEBUG {
         print("[DEBUG] AnyView wraps LayoutView:", type(of: view))
       }
       _make  = {
         let n = lv.makeNode()
-        if RenderLoop.DEBUG {
+        if DEBUG {
           let f = n.frame
           print("[DEBUG]  └ makeNode size (w\(f.w)×h\(f.h))")
         }
@@ -35,7 +35,7 @@ public struct AnyView: View, LayoutView {
       }
     } else {
       // ------ LayoutView でない場合 --------
-      if RenderLoop.DEBUG {
+      if DEBUG {
         print("[DEBUG] AnyView wraps NON-LayoutView:", type(of: view))
       }
       _make  = { YogaNode() }                    // 幅0×高0

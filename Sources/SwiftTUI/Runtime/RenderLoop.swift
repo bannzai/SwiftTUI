@@ -6,8 +6,6 @@ import yoga               // ←★ 追加：YGNodeGetChildCount などを使う
 public enum RenderLoop {
 
   // ── Public ────────────────────────────────────────────────────────────
-  public static var DEBUG = true
-
   public static func mount<V: View>(_ build: @escaping () -> V) {
     makeRoot = { AnyView(build()) }
     fullRedraw()
