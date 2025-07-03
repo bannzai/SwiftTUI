@@ -15,8 +15,8 @@ struct FlexStack: LayoutView {
   // MARK: Yoga node
   func makeNode() -> YogaNode {
     let node = YogaNode()
-    node.flexDirection(axis == .column ? YGFlexDirectionColumn
-                       : YGFlexDirectionRow)
+    node.flexDirection(axis == .column ? YGFlexDirection.column
+                       : YGFlexDirection.row)
     for child in children {
       if let lv = child as? LayoutView {
         node.insert(child: lv.makeNode())
@@ -32,7 +32,7 @@ struct FlexStack: LayoutView {
 
     let count = Int(YGNodeGetChildCount(root.rawPtr))
     for i in 0..<count {
-      guard let childRaw = YGNodeGetChild(root.rawPtr, UInt32(i)),
+      guard let childRaw = YGNodeGetChild(root.rawPtr, Int(i)),
             let lv = children[i] as? LayoutView else { continue }
 
       let ox = origin.x + Int(YGNodeLayoutGetLeft(childRaw))
