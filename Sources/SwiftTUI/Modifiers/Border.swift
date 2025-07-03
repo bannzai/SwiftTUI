@@ -39,16 +39,28 @@ final class BorderView<Content: LayoutView>: LayoutView {
   func render(into buffer: inout [String]) {}
 
   // helper
-  private func drawLine(row:Int,col:Int,text:String,in buf:inout [String]){
-    while buf.count<=row{ buf.append("") }
-    if buf[row].count<col{ buf[row]+=String(repeating:" ",count:col-buf[row].count) }
-    var line=buf[row]; let start=line.index(line.startIndex,offsetBy:col)
-    if line.count<col+text.count{
-      line+=String(repeating:" ",count:col+text.count-line.count)
+  private func drawLine(row: Int, col: Int, text: String, in buf: inout [String]) {
+    // ① 行数を確保
+    while buf.count <= row { buf.append("") }
+
+    // ② 現行行
+    var line = buf[row]
+
+    // ③ 左側スペースを埋める
+    if line.count < col {
+      line += String(repeating: " ", count: col - line.count)
     }
-    line.replaceSubrange(start..<line.index(start,offsetBy:text.count), with:text)
-    buf[row]=line
+
+    // ④ 文字列を合成（index 計算を避けて丸ごと作り直す）
+    let prefix = line.prefix(col)
+    let suffixStart = line.index(line.startIndex, offsetBy: min(col + text.count, line.count))
+    let suffix = line[suffixStart...]
+    line = String(prefix) + text + suffix
+
+    // ⑤ 行バッファを更新
+    buf[row] = line
   }
+
 }
 
 // Modifier
