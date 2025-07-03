@@ -77,25 +77,6 @@ public enum RenderLoop {
 
 // MARK: - Frame builder + DEBUG
 private extension RenderLoop {
-
-  private static func buildFrame() -> [String] {
-    guard let root = makeRoot?() as? LayoutView else { return [] }
-
-    let node = root.makeNode()
-
-    // ① 現在のターミナル幅を取得
-    var w = winsize(); ioctl(STDOUT_FILENO, TIOCGWINSZ, &w)
-    let termWidth  = Float(w.ws_col > 0 ? w.ws_col : 80)
-
-    // ② 幅だけ指定してレイアウト
-    node.calculate(width: termWidth)
-
-    var buf: [String] = []
-    root.paint(origin: (0, 0), into: &buf)
-    
-    return buf
-  }
-
   // ---- debug helpers ---------------------------------------------------
   static func dumpNode(_ n: YogaNode, indent: Int) {
     let f = n.frame
