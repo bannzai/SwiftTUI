@@ -44,20 +44,20 @@ struct FlexStack: LayoutView {
 
 // ---------- SwiftUI 風ラッパ ----------
 
-struct VStack: LayoutView {
+public struct VStack: LayoutView {
   private let stack: FlexStack
-  init(@ViewBuilder _ c: () -> [AnyView]) { stack = FlexStack(.column, c) }
-  func makeNode() -> YogaNode { stack.makeNode() }
-  func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
+  public init(@ViewBuilder _ c: () -> [AnyView]) { stack = FlexStack(.column, c) }
+  public func makeNode() -> YogaNode { stack.makeNode() }
+  public func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
     stack.paint(origin: origin, into: &buf)
   }
 }
 
-struct HStack: LayoutView {
+public struct HStack: LayoutView {
   private let stack: FlexStack
-  init(@ViewBuilder _ c: () -> [AnyView]) { stack = FlexStack(.row, c) }
-  func makeNode() -> YogaNode { stack.makeNode() }
-  func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
+  public init(@ViewBuilder _ c: () -> [AnyView]) { stack = FlexStack(.row, c) }
+  public func makeNode() -> YogaNode { stack.makeNode() }
+  public func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
     stack.paint(origin: origin, into: &buf)
   }
 }

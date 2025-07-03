@@ -1,40 +1,34 @@
-// Sources/ExampleApp/main.swift
 import SwiftTUI
-import Dispatch           // dispatchMain()
+import Dispatch
 
-// ① View を class にする（参照型）
-final class CounterView: View {
+final class DemoView: LayoutView {
 
-  @State private var count = 0
-
-  func render(into buffer: inout [String]) {
-    buffer.append("Count: \(count)")
-    buffer.append("Press 'i' to increment, ESC to quit")
+  func makeNode() -> YogaNode {
+    VStack {
+      HStack {
+        Text("🟥").background(.red)
+        Text("row").color(.yellow)
+      }
+      Text("center").background(.blue)
+      HStack {
+        Text("end")
+        Text("→").color(.green)
+      }
+    }.makeNode()
   }
 
-  func handle(event: KeyboardEvent) -> Bool {
-    switch event.key {
-    case .character("i"):
-      count += 1
-      return true                    // handled
-    case .escape:
-      exit(0)
-    case _:
-      return false
-    }
+  func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
+    // FlexStack が再帰的に paint するので何もしない
   }
+
+  func render(into buffer: inout [String]) { }       // protocol conformance
 }
 
 @main
 struct ExampleApp {
   static func main() {
-    // ② インスタンスは 1 個だけ
-    let counter = CounterView()
-
-    // ③ クロージャは “常に同じ参照” を返す
-    RenderLoop.mount { counter }
-
-    // ④ GCD イベントループへ
+    let view = DemoView()
+    RenderLoop.mount { view }
     dispatchMain()
   }
 }

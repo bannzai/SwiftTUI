@@ -1,6 +1,6 @@
 import yoga                     // ← .package で入れた product
 
-final class YogaNode {
+public final class YogaNode {
 
   // OpaquePointer（nil で落とす）
   private let raw: YGNodeRef

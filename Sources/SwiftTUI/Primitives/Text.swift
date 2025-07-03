@@ -27,7 +27,7 @@ public struct Text: View {
 extension Text: LayoutView {
 
   // 1行＝文字数、縦1 の寸法を Yoga に教える
-  func makeNode() -> YogaNode {
+  public func makeNode() -> YogaNode {
     let node = YogaNode()
     node.setSize(width: Float(content.count), height: 1)
     return node  }
