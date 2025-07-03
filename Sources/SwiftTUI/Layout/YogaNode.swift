@@ -39,4 +39,27 @@ public final class YogaNode {
     return (s(YGNodeLayoutGetLeft(raw)), s(YGNodeLayoutGetTop(raw)),
             s(YGNodeLayoutGetWidth(raw)), s(YGNodeLayoutGetHeight(raw)))
   }
+
+
+  // MARK: – Flex
+  public func setFlexGrow(_ g: Float) {
+    YGNodeStyleSetFlexGrow(raw, g)
+  }
+  public func setFlexShrink(_ s: Float) {
+    YGNodeStyleSetFlexShrink(raw, s)
+  }
+
+  public enum Edge { case all, horizontal, vertical, top, left, bottom, right }
+
+  public func setPadding(_ val: Float, _ edge: Edge = .all) {
+    switch edge {
+    case .all:        YGNodeStyleSetPadding(raw, YGEdge.all, val)
+    case .horizontal: YGNodeStyleSetPadding(raw, YGEdge.horizontal, val)
+    case .vertical:   YGNodeStyleSetPadding(raw, YGEdge.vertical, val)
+    case .top:        YGNodeStyleSetPadding(raw, YGEdge.top, val)
+    case .left:       YGNodeStyleSetPadding(raw, YGEdge.left, val)
+    case .bottom:     YGNodeStyleSetPadding(raw, YGEdge.bottom, val)
+    case .right:      YGNodeStyleSetPadding(raw, YGEdge.right, val)
+    }
+  }
 }
