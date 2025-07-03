@@ -3,22 +3,22 @@ import Dispatch
 
 final class DemoView: LayoutView {
 
-  func makeNode() -> YogaNode {
-    VStack {
-      HStack {
-        Text("🟥").background(.red)
-        Text("row").color(.yellow)
-      }
-      Text("center").background(.blue)
-      HStack {
-        Text("end")
-        Text("→").color(.green)
-      }
-    }.makeNode()
+  // ① “中身” を 1 つ持っておく
+  private let body: VStack = VStack {
+    HStack {
+      Text("🟥").background(.red)
+      Text("row").color(.yellow)
+    }
+    Text("center").background(.blue)
+    HStack {
+      Text("end")
+      Text("→").color(.green)
+    }
   }
+  func makeNode() -> YogaNode { body.makeNode() }
 
   func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
-    // FlexStack が再帰的に paint するので何もしない
+    body.paint(origin: origin, into: &buf)
   }
 
   func render(into buffer: inout [String]) { }       // protocol conformance

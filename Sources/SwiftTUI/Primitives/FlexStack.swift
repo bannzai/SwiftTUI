@@ -1,6 +1,8 @@
 import yoga
 
 /// 汎用 Flexbox Stack
+// Sources/SwiftTUI/Primitives/FlexStack.swift
+
 struct FlexStack: LayoutView {
 
   enum Axis { case column, row }
@@ -12,35 +14,37 @@ struct FlexStack: LayoutView {
     self.children = content()
   }
 
-  // MARK: Yoga node
+  // --- Yoga node --------------------------------------------------------
   func makeNode() -> YogaNode {
     let node = YogaNode()
-    node.flexDirection(axis == .column ? YGFlexDirection.column
-                       : YGFlexDirection.row)
+    node.flexDirection(axis == .column ? .column : .row)
+
     for child in children {
-      if let lv = child as? LayoutView {
-        node.insert(child: lv.makeNode())
-      }
+      node.insert(child: child.makeNode())
     }
     return node
   }
 
-  // MARK: Paint
+  // --- Paint ------------------------------------------------------------
   func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
+
     let root = makeNode()
-    root.calculate()                               // 必ずレイアウト
+    root.calculate()                              // ① レイアウト確定
 
     let count = Int(YGNodeGetChildCount(root.rawPtr))
     for i in 0..<count {
-      guard let childRaw = YGNodeGetChild(root.rawPtr, Int(i)),
-            let lv = children[i] as? LayoutView else { continue }
+      guard let childRaw = YGNodeGetChild(root.rawPtr, Int(i)) else { continue }
 
-      let ox = origin.x + Int(YGNodeLayoutGetLeft(childRaw))
-      let oy = origin.y + Int(YGNodeLayoutGetTop(childRaw))
-      lv.paint(origin: (ox, oy), into: &buf)
+      // 子のレイアウト結果を取得
+      let cx = Int(YGNodeLayoutGetLeft(childRaw))
+      let cy = Int(YGNodeLayoutGetTop(childRaw))
+
+      // 同じ index の AnyView へ paint
+      children[i].paint(origin: (origin.x + cx, origin.y + cy), into: &buf)
     }
   }
 }
+
 
 // ---------- SwiftUI 風ラッパ ----------
 

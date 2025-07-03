@@ -1,30 +1,39 @@
+// Sources/SwiftTUI/Core/AnyView.swift
 import Foundation
+import yoga                       // LayoutView 用に必要
 
-/// 型消去ビュー。`render` だけでなく `handle(event:)` も委譲する。
-public struct AnyView: View {
+public struct AnyView: View, LayoutView {
 
-  // MARK: - Stored closures
-  private let _render: (inout [String]) -> Void
-  private let _handle: (KeyboardEvent) -> Bool
+  // --- クロージャを保持 -------------------------------------------------
+  private let _render : (inout [String]) -> Void
+  private let _handle : (KeyboardEvent) -> Bool
+  private let _make   : () -> YogaNode
+  private let _paint  : ((x: Int, y: Int), inout [String]) -> Void
 
-  // MARK: - Init
+  // --- 汎用イニシャライザ ---------------------------------------------
   public init<V: View>(_ view: V) {
-    _render = { buffer in
-      var buf = buffer
-      view.render(into: &buf)
-      buffer = buf
-    }
-    _handle = { event in
-      view.handle(event: event)
+    _render = { buf in var b = buf; view.render(into: &b); buf = b }
+    _handle = { ev in view.handle(event: ev) }
+
+    if let lv = view as? LayoutView {
+      // LayoutView を包める場合
+      _make  = { lv.makeNode() }
+      _paint = { origin, buf in
+        var b = buf; lv.paint(origin: origin, into: &b); buf = b
+      }
+    } else {
+      // LayoutView でない場合は「サイズ 0」でダミー化
+      _make  = { YogaNode() }
+      _paint = { _, _ in }
     }
   }
 
-  // MARK: - View conformance
-  public func render(into buffer: inout [String]) {
-    _render(&buffer)
-  }
+  // --- View conformance -------------------------------------------------
+  public func render(into buf: inout [String]) { _render(&buf) }
+  public func handle(event: KeyboardEvent) -> Bool { _handle(event) }
 
-  public func handle(event: KeyboardEvent) -> Bool {
-    _handle(event)
-  }
+  // --- LayoutView conformance ------------------------------------------
+  public func makeNode() -> YogaNode { _make() }
+  public func paint(origin: (x: Int, y: Int),
+                    into buf: inout [String]) { _paint(origin, &buf) }
 }
