@@ -34,3 +34,37 @@ public struct Text: View {
     buffer.append(prefix + content + reset)
   }
 }
+
+extension Text: LayoutView {
+
+  func makeNode() -> YogaNode {
+    let node = YogaNode()
+
+    // 1 行文字列の幅 = codeUnit 数 として計測
+    node.setMeasure { _, _, _, _, _ in
+      let w = Float(self.contentsWidth())
+      return YGSize(width: w, height: 1)
+    }
+    return node
+  }
+
+  func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
+    assureLines(min: origin.y, in: &buf)
+    var line = buf[origin.y]
+    if line.count < origin.x {
+      line += String(repeating: " ", count: origin.x - line.count)
+    }
+    let styled = buildStyledText()
+    line.replaceSubrange(origin.x ..< origin.x + styled.count, with: styled)
+    buf[origin.y] = line
+  }
+
+  private func assureLines(min: Int, in buf: inout [String]) {
+    while buf.count <= min { buf.append("") }
+  }
+
+  private func contentsWidth() -> Int {
+    // “全角幅” を正確に計測したいなら将来ここで wcwidth 相当を実装
+    content.count
+  }
+}
