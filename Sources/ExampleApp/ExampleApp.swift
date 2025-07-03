@@ -28,6 +28,18 @@ final class DemoView: LayoutView {
   func render(into buffer: inout [String]) { }
 }
 
+extension DemoView {
+  func handle(event: KeyboardEvent) -> Bool {
+    switch event.key {
+    case .character("q"), .escape:
+      RenderLoop.shutdown()          // ← 安全終了
+      return true
+    default:
+      return false
+    }
+  }
+}
+
 @main
 struct ExampleApp {
   static func main() {

@@ -117,3 +117,12 @@ private extension RenderLoop {
     InputLoop.start { ev in _ = makeRoot?().handle(event: ev) }
   }
 }
+
+extension RenderLoop {
+  public static func shutdown() {
+    InputLoop.stop()             // ← raw-mode を確実に解除
+    move( prevBuf.count ); clear()
+    fflush(stdout)
+    exit(0)
+  }
+}
