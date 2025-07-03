@@ -2,10 +2,21 @@ import Foundation
 
 public enum RenderLoop {
   private static var makeRoot: (() -> AnyView)?
+  private static var redrawPending = false
 
   public static func mount<V: View>(_ build: @escaping () -> V) {
     makeRoot = { AnyView(build()) }
     redraw()                      // 初期描画
+  }
+
+
+  internal static func scheduleRedraw() {
+    guard !redrawPending else { return }
+    redrawPending = true
+    DispatchQueue.main.async {
+      redraw()
+      redrawPending = false
+    }
   }
 
   internal static func redraw() {
