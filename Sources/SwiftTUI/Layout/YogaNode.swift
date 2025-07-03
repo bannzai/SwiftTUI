@@ -1,66 +1,55 @@
-import yoga                     // ← .package で入れた product
+import yoga
 
 public final class YogaNode {
 
-  // OpaquePointer（nil で落とす）
-  private let raw: YGNodeRef
+  // MARK: storage
+  fileprivate let raw: YGNodeRef            // 実ノード
 
-  init() {
-    guard let n = YGNodeNew() else { fatalError("YGNodeNew() nil") }
-    raw = n
+  // MARK: init / deinit
+  public init() {
+    guard let p = YGNodeNew() else { fatalError("YGNodeNew nil!") }
+    raw = p
   }
-
-  /// internal: wrap existing raw pointer（DEBUG 用）
-  init(raw: YGNodeRef) { self.raw = raw }
-  
   deinit { YGNodeFree(raw) }
 
-  // MARK: – children
-  func insert(child: YogaNode) {
-    let idx = Int(YGNodeGetChildCount(raw))      // Swift 側は Int
-    YGNodeInsertChild(raw, child.raw, idx)
+  /// DEBUG 用：既存 raw を包む
+  init(raw: YGNodeRef) { self.raw = raw }
+
+  // MARK: expose raw
+  /// C-API を直接呼びたいデバッグ・トラバース用
+  public var rawPtr: YGNodeRef { raw }      // ←★ これを追加
+
+  // MARK: children
+  public func insert(child: YogaNode) {
+    YGNodeInsertChild(raw, child.raw, Int(YGNodeGetChildCount(raw)))
   }
 
-  // MARK: – style
-  func flexDirection(_ dir: YGFlexDirection) {
-    YGNodeStyleSetFlexDirection(raw, dir)        // .row / .column
+  // MARK: style setters
+  public func flexDirection(_ d: YGFlexDirection) {
+    YGNodeStyleSetFlexDirection(raw, d)
+  }
+  public func padding(all v: Float) {
+    YGNodeStyleSetPadding(raw, YGEdge.all, v)
+  }
+  public func setSize(width w: Float, height h: Float) {
+    YGNodeStyleSetWidth(raw,  w)
+    YGNodeStyleSetHeight(raw, h)
+  }
+  public func setMinHeight(_ h: Float) {
+    YGNodeStyleSetMinHeight(raw, h)
   }
 
-  func padding(all v: Float) {
-    YGNodeStyleSetPadding(raw, YGEdge.all, v)    // ← ドット記法
-  }
-
-  // MARK: – layout
-  func calculate(width: Float = .nan,
-                 height: Float = .nan) {
+  // MARK: layout
+  public func calculate(width: Float = .nan, height: Float = .nan) {
     YGNodeCalculateLayout(raw, width, height, YGDirection.LTR)
   }
 
-  // MARK: – result
-  var frame: (x: Int, y: Int, w: Int, h: Int) {
-    // NaN → 0 にフォールバックして Int 変換
-    func safeInt(_ f: Float) -> Int { f.isFinite ? Int(f) : 0 }
-    let l = safeInt(YGNodeLayoutGetLeft(raw))
-    let t = safeInt(YGNodeLayoutGetTop(raw))
-    let w = safeInt(YGNodeLayoutGetWidth(raw))
-    let h = safeInt(YGNodeLayoutGetHeight(raw))
-    return (l, t, w, h)
-  }
-
-  // MARK: – measure
-  func setMeasure(_ f: @escaping YGMeasureFunc) {
-    YGNodeSetMeasureFunc(raw, f)
-  }
-
-  // internal
-  var rawPtr: YGNodeRef { raw }
-
-  func setSize(width w: Float, height h: Float) {
-    YGNodeStyleSetWidth(raw, w)
-    YGNodeStyleSetHeight(raw, h)
-  }
-
-  func setMinHeight(_ h: Float) {
-    YGNodeStyleSetMinHeight(raw, h)
+  // MARK: frame (NaN→0)
+  public var frame: (x:Int,y:Int,w:Int,h:Int) {
+    func safe(_ v: Float) -> Int { v.isFinite ? Int(v) : 0 }
+    return (safe(YGNodeLayoutGetLeft(raw)),
+            safe(YGNodeLayoutGetTop(raw)),
+            safe(YGNodeLayoutGetWidth(raw)),
+            safe(YGNodeLayoutGetHeight(raw)))
   }
 }

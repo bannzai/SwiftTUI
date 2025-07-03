@@ -25,10 +25,9 @@ public struct Text: View {
 }
 
 extension Text: LayoutView {
-
   public func makeNode() -> YogaNode {
     let n = YogaNode()
-    // 固定幅 + 高さ1（全角は要調整）
+    // “幅 = 文字数, 高 = 1” を固定で与える
     n.setSize(width: Float(max(content.count, 1)), height: 1)
     n.setMinHeight(1)
     return n
