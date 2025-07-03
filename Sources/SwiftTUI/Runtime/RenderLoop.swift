@@ -11,7 +11,9 @@ public enum RenderLoop {
 
 
   internal static func scheduleRedraw() {
-    guard !redrawPending else { return }
+    guard !redrawPending else {
+      return
+    }
     redrawPending = true
     DispatchQueue.main.async {
       redraw()
@@ -20,7 +22,9 @@ public enum RenderLoop {
   }
 
   internal static func redraw() {
-    guard let makeRoot else { return }
+    guard let makeRoot else {
+      return
+    }
 
     print("\u{001B}[2J\u{001B}[H", terminator: "")
 
