@@ -13,7 +13,17 @@ let package = Package(
     .executable(name: "ExampleApp", targets: ["ExampleApp"]),
   ],
   targets: [
-    .target(name: "SwiftTUI"),
+    .target(
+      name: "CYoga",
+      path: "Sources/CYoga",
+      publicHeadersPath: ".",
+      cSettings: [.define("YG_ENABLE_EVENTS")]
+    ),
+    // Swift ランタイム
+    .target(
+      name: "SwiftTUI",
+      dependencies: ["CYoga"]
+    ),
     .executableTarget(
       name: "ExampleApp",
       dependencies: ["SwiftTUI"]
