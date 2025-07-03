@@ -12,17 +12,17 @@ let package = Package(
     .library(name: "SwiftTUI", targets: ["SwiftTUI"]),
     .executable(name: "ExampleApp", targets: ["ExampleApp"]),
   ],
+  dependencies: [
+    .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
+  ],
   targets: [
-    .target(
-      name: "CYoga",
-      path: "Sources/CYoga",
-      publicHeadersPath: ".",
-      cSettings: [.define("YG_ENABLE_EVENTS")]
-    ),
     // Swift ランタイム
     .target(
       name: "SwiftTUI",
-      dependencies: ["CYoga"]
+      dependencies: [
+        .product(name: "yoga", package: "yoga")
+      ],
+      path: "Sources/SwiftTUI"
     ),
     .executableTarget(
       name: "ExampleApp",
