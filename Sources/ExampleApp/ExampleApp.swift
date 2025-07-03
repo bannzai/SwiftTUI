@@ -16,10 +16,8 @@ final class CounterView: View {
     switch event.key {
     case .character("i"):
       count += 1
-      print("[DEBUG] incremented to", count)
       return true                    // handled
     case .escape:
-      print("[DEBUG] escape pressed, exiting")
       exit(0)
     case _:
       return false
