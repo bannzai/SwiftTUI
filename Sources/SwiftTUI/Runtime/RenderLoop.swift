@@ -1,6 +1,7 @@
 //  Sources/SwiftTUI/Runtime/RenderLoop.swift
 import Foundation
 import yoga               // ←★ 追加：YGNodeGetChildCount などを使うため
+import Darwin   // ← ioctl 用
 
 /// 描画ループ（Yoga → 行差分パッチ描画 + DEBUG ダンプ）
 public enum RenderLoop {
@@ -34,26 +35,20 @@ extension RenderLoop {
 // MARK: - Frame builder + DEBUG
 private extension RenderLoop {
 
-  static func buildFrame() -> [String] {
-    guard let root = makeRoot?() else { return [] }
+  private static func buildFrame() -> [String] {
+    guard let root = makeRoot?() as? LayoutView else { return [] }
 
-    guard let lv = root as? LayoutView else {          // AnyView は必ず OK
-      var b: [String] = []; root.render(into: &b)
-      if DEBUG { dumpBuffer(b) }
-      return b
-    }
+    let node = root.makeNode()
 
-    let n = lv.makeNode()
-    n.calculate()                                      // Yoga レイアウト
+    // ① 現在のターミナル幅を取得
+    var w = winsize(); ioctl(STDOUT_FILENO, TIOCGWINSZ, &w)
+    let termWidth  = Float(w.ws_col > 0 ? w.ws_col : 80)
+
+    // ② 幅だけ指定してレイアウト
+    node.calculate(width: termWidth)
 
     var buf: [String] = []
-    lv.paint(origin: (0, 0), into: &buf)
-
-    if DEBUG {
-      print("===== layout dump =====")
-      dumpNode(n, indent: 0)
-      dumpBuffer(buf)
-    }
+    root.paint(origin: (0, 0), into: &buf)
     return buf
   }
 
