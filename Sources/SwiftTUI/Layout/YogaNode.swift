@@ -38,10 +38,13 @@ public final class YogaNode {
 
   // MARK: – result
   var frame: (x: Int, y: Int, w: Int, h: Int) {
-    (Int(YGNodeLayoutGetLeft(raw)),
-     Int(YGNodeLayoutGetTop(raw)),
-     Int(YGNodeLayoutGetWidth(raw)),
-     Int(YGNodeLayoutGetHeight(raw)))
+    // NaN → 0 にフォールバックして Int 変換
+    func safeInt(_ f: Float) -> Int { f.isFinite ? Int(f) : 0 }
+    let l = safeInt(YGNodeLayoutGetLeft(raw))
+    let t = safeInt(YGNodeLayoutGetTop(raw))
+    let w = safeInt(YGNodeLayoutGetWidth(raw))
+    let h = safeInt(YGNodeLayoutGetHeight(raw))
+    return (l, t, w, h)
   }
 
   // MARK: – measure
