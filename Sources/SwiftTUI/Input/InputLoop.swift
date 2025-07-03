@@ -1,70 +1,60 @@
 import Foundation
-import Darwin               // termios / STDIN_FILENO
+import Darwin        // termios, signal
 
 enum InputLoop {
 
-  // MARK: - Private state
-  private static var source: DispatchSourceRead?
-  private static var originalTermios = termios()
+  // ── internal state ────────────────────────────────────────────────
+  private static var src : DispatchSourceRead?
+  private static var oldTerm = termios()
+  private static let fd = STDIN_FILENO
 
-  // MARK: - Public
-  /// RenderLoop.mount 内から 1 回だけ呼ぶ
-  static func start(eventHandler: @escaping (KeyboardEvent) -> Void) {
+  // ── public ────────────────────────────────────────────────────────
+  static func start(eventHandler: @escaping (KeyboardEvent)->Void) {
 
-    let fd = STDIN_FILENO
-
-    // ① Raw mode へ
-    tcgetattr(fd, &originalTermios)
-    var raw = originalTermios
-    cfmakeraw(&raw)
+    // ① raw-mode へ
+    tcgetattr(fd, &oldTerm)
+    var raw = oldTerm; cfmakeraw(&raw)
     tcsetattr(fd, TCSANOW, &raw)
-    if DEBUG {
-      print("[DEBUG] TTY switched to raw mode")
-    }
 
-    // ② 非同期読み取り
-    let queue = DispatchQueue(label: "SwiftTUI.Input")
-    source = DispatchSource.makeReadSource(fileDescriptor: fd, queue: queue)
+    // ② 終了シグナルをフック
+    atexit(c_restoreTTY)
+    signal(SIGINT, c_sigint)
 
-    source?.setEventHandler {
-      while true {
-        var byte: UInt8 = 0
-        let n = read(fd, &byte, 1)
-        if n != 1 { break }
-
-        if DEBUG {
-          print("[DEBUG] read byte:", byte)
-        }
-
-        if let ev = Self.translate(byte: byte) {
-          if DEBUG {
-            print("[DEBUG] translated event:", ev)
-          }
-          eventHandler(ev)
-        }
+    // ③ 非同期 read
+    let q = DispatchQueue(label: "SwiftTUI.Input")
+    src = DispatchSource.makeReadSource(fileDescriptor: fd, queue: q)
+    src?.setEventHandler {
+      var byte: UInt8 = 0
+      while read(fd, &byte, 1) == 1 {
+        if let ev = Self.translate(byte: byte) { eventHandler(ev) }
       }
     }
-
-    source?.setCancelHandler {
-      tcsetattr(fd, TCSANOW, &originalTermios)
-      if DEBUG {
-        print("[DEBUG] TTY restored original mode")
-      }
-    }
-
-    source?.resume()
+    src?.resume()
   }
 
-  // ③ 1 バイト → KeyboardEvent
-  private static func translate(byte: UInt8) -> KeyboardEvent? {
+  /// RenderLoop.shutdown から呼ぶ
+  static func stop() {
+    src?.cancel()
+    restoreTTY()
+  }
+
+  // ── helpers ───────────────────────────────────────────────────────
+  private static func restoreTTY() {
+    tcsetattr(fd, TCSANOW, &oldTerm)
+    fputs("\u{1B}[0m", stdout)      // ANSI リセット
+    fflush(stdout)
+  }
+  private static func translate(byte: UInt8)->KeyboardEvent? {
     switch byte {
-    case 27:
-      return KeyboardEvent(key: .escape)
-    case 97 ... 122:                    // a–z
-      let c = Character(UnicodeScalar(byte))
-      return KeyboardEvent(key: .character(c))
-    default:
-      return nil
+    case 27:        return .init(key: .escape)
+    case 97...122:  return .init(key: .character(Character(UnicodeScalar(byte))))
+    default:        return nil
     }
   }
+}
+
+// MARK: – C シンボル
+@_cdecl("c_restoreTTY") private func c_restoreTTY() { InputLoop.stop() }
+@_cdecl("c_sigint")     private func c_sigint(_ s:Int32){
+  InputLoop.stop(); exit(s)
 }
