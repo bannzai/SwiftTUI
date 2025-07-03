@@ -52,4 +52,8 @@ public final class YogaNode {
     YGNodeStyleSetWidth(raw, w)
     YGNodeStyleSetHeight(raw, h)
   }
+
+  func setMinHeight(_ h: Float) {
+    YGNodeStyleSetMinHeight(raw, h)
+  }
 }

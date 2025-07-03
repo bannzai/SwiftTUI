@@ -27,10 +27,15 @@ public struct Text: View {
 extension Text: LayoutView {
 
   // 1行＝文字数、縦1 の寸法を Yoga に教える
+  // Text.makeNode() をこれで置き換え
   public func makeNode() -> YogaNode {
-    let node = YogaNode()
-    node.setSize(width: Float(content.count), height: 1)
-    return node  }
+    let n = YogaNode()
+    // content.count “文字” 分だけ固定幅にする
+    n.setSize(width: Float(max(content.count, 1)), height: 1)
+    // ついでに minHeight を 1 にして高さ 0 を防止
+    n.setMinHeight(1)
+    return n
+  }
 
   // Yoga が決めた座標に描画
   public func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
