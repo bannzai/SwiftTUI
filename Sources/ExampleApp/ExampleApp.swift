@@ -1,36 +1,33 @@
 import SwiftTUI
+import Dispatch
 
-struct ColorDemo: View {
+struct CounterView: View {
+  @State private var count = 0
+
   func render(into buffer: inout [String]) {
-    buffer.append("🎨  ANSI Styling Demo")
-    buffer.append(
-      HStack {
-        Text("Red").color(.red).bold()
-        Text("Green BG").background(.green).underline()
-        Text("RGB").color(.rgb(r: 255, g: 128, b: 0))
-      }
-        .rendered()   // ← 後述ヘルパ（HStack → String）
-    )
-    buffer.append("")               // 空行
-    buffer.append("Press q + Enter to quit")
+    buffer.append("Count: \(count)")
+    buffer.append("Press 'i' to increment / ESC で終了")
   }
-}
 
-// HStack -> String 変換の簡易ヘルパ
-private extension View {
-  func rendered() -> String {
-    var tmp: [String] = []
-    render(into: &tmp)
-    return tmp.joined()
+  func handle(event: KeyboardEvent) -> Bool {
+    switch event.key {
+    case .character("i"):
+      count += 1          // @State → scheduleRedraw()
+      return true
+    case .escape:
+      // アプリ終了フラグを立てても良い
+      return false
+    default:
+      return false
+    }
   }
 }
 
 @main
 struct ExampleApp {
   static func main() {
-    RenderLoop.mount { ColorDemo() }
-    while let line = readLine(strippingNewline: true) {
-      if line.lowercased() == "q" { break }
-    }
+    RenderLoop.mount { CounterView() }
+    // 以後は InputLoop が非同期で動くためメインスレッドをブロックしない
+    Dispatch.dispatchMain()
   }
 }
