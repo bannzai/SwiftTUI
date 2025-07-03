@@ -6,7 +6,6 @@ enum InputLoop {
   // MARK: - Private state
   private static var source: DispatchSourceRead?
   private static var originalTermios = termios()
-  private static let DEBUG = true
 
   // MARK: - Public
   /// RenderLoop.mount 内から 1 回だけ呼ぶ

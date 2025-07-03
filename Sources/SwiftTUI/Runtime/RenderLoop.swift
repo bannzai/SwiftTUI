@@ -15,7 +15,6 @@ public enum RenderLoop {
   private static var redrawPending = false
   private static let renderQueue = DispatchQueue(label: "SwiftTUI.RenderLoop")
   private static var prevBuffer: [String] = []
-  private static let DEBUG = true
 }
 
 // MARK: - Called from @State
