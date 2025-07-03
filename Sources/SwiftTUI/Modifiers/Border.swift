@@ -39,28 +39,34 @@ final class BorderView<Content: LayoutView>: LayoutView {
   func render(into buffer: inout [String]) {}
 
   // helper
+  /// row 行 col 列に `text` を埋め込む（UTF-8 セーフ & 境界安全）
   private func drawLine(row: Int, col: Int, text: String, in buf: inout [String]) {
-    // ① 行数を確保
+
+    // ① 対象行を確保
     while buf.count <= row { buf.append("") }
 
-    // ② 現行行
+    // ② 行を取得し必要分スペース拡張
     var line = buf[row]
-
-    // ③ 左側スペースを埋める
-    if line.count < col {
+    if line.count < col {                       // 左側が足りない
       line += String(repeating: " ", count: col - line.count)
     }
+    let after = col + text.count
+    if line.count < after {                     // 右側が足りない
+      line += String(repeating: " ", count: after - line.count)
+    }
 
-    // ④ 文字列を合成（index 計算を避けて丸ごと作り直す）
-    let prefix = line.prefix(col)
-    let suffixStart = line.index(line.startIndex, offsetBy: min(col + text.count, line.count))
-    let suffix = line[suffixStart...]
-    line = String(prefix) + text + suffix
+    // ③ 文字列 → Character 配列へ
+    var chars = Array(line)
+    let txtChars = Array(text)
 
-    // ⑤ 行バッファを更新
-    buf[row] = line
+    // ④ text を上書き
+    for (i, ch) in txtChars.enumerated() {
+      chars[col + i] = ch
+    }
+
+    // ⑤ 行を戻す
+    buf[row] = String(chars)
   }
-
 }
 
 // Modifier
