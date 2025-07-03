@@ -1,9 +1,6 @@
 public enum KeyboardKey: Equatable {
-  case character(Character)
-  case enter
+  case character(Character)    // a–z
   case escape
-  case arrowUp, arrowDown, arrowLeft, arrowRight
-  case unknown
 }
 
 public struct KeyboardEvent {
