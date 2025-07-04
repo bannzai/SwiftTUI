@@ -1,19 +1,9 @@
 import SwiftTUI
+import Foundation
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Text("Hello, SwiftTUI!")
-                .padding()
-                .border()
-            
-            HStack {
-                Text("Left")
-                Spacer()
-                Text("Right")
-            }
-            .padding()
-        }
+        Text("Single Text - No VStack")
     }
 }
 

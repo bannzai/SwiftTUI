@@ -1,11 +1,21 @@
 import Foundation
 
 // LayoutViewをLegacyViewでラップする構造体
-private struct LayoutViewWrapper: LegacyView {
+private struct LayoutViewWrapper: LegacyView, LayoutView {
     let layoutView: any LayoutView
+    
+    func makeNode() -> YogaNode {
+        layoutView.makeNode()
+    }
+    
+    func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
+        layoutView.paint(origin: origin, into: &buffer)
+    }
+    
     func render(into buffer: inout [String]) {
         layoutView.render(into: &buffer)
     }
+    
     func handle(event: KeyboardEvent) -> Bool {
         // TODO: イベント処理の実装
         return false
