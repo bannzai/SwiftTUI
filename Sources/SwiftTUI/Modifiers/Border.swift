@@ -40,15 +40,17 @@ final class BorderView<Content: LayoutView>: LayoutView {
                 text: "└" + horiz + "┘",
                 into: &buf)
 
-    for dy in 1...f.h {
-      bufferWrite(row: origin.y + dy,
-                  col: origin.x,
-                  text: "│",
-                  into: &buf)
-      bufferWrite(row: origin.y + dy,
-                  col: origin.x + f.w + 1,
-                  text: "│",
-                  into: &buf)
+    if f.h > 0 {
+      for dy in 1...f.h {
+        bufferWrite(row: origin.y + dy,
+                    col: origin.x,
+                    text: "│",
+                    into: &buf)
+        bufferWrite(row: origin.y + dy,
+                    col: origin.x + f.w + 1,
+                    text: "│",
+                    into: &buf)
+      }
     }
   }
 
