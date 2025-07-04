@@ -1,20 +1,30 @@
 import SwiftTUI
 import Foundation
 
-// 最も簡単なケース - 単一のText
-struct SimpleTextView: View {
+print("DEBUG: DebugExample started")
+
+// テスト1: 直接LegacyTextが動作することを確認
+print("\nDEBUG: Test 1 - Direct LegacyText")
+let legacyText = LegacyText("Direct Legacy Text")
+var buffer1: [String] = []
+legacyText.render(into: &buffer1)
+print("Buffer: \(buffer1)")
+
+// テスト2: 簡単なViewをSwiftTUI.runで実行（短時間で終了）
+print("\nDEBUG: Test 2 - SwiftUI-like API")
+
+struct SimpleView: View {
     var body: some View {
-        Text("Debug: Hello, SwiftTUI!")
+        Text("Hello from SwiftUI-like API!")
     }
 }
 
-// 直接RenderLoopを使用して確認
-print("Starting debug example...")
-
-RenderLoop.mount {
-    // 直接LegacyTextで確認
-    LegacyText("Direct LegacyText Test")
+// 5秒後に終了するようにスケジュール
+DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+    print("\nDEBUG: Shutting down...")
+    RenderLoop.shutdown()
+    exit(0)
 }
 
-// メインループを開始
-dispatchMain()
+// SwiftTUI.runを実行
+SwiftTUI.run(SimpleView())

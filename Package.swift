@@ -13,6 +13,7 @@ let package = Package(
     .executable(name: "ExampleApp", targets: ["ExampleApp"]),
     .executable(name: "SwiftUILikeExample", targets: ["SwiftUILikeExample"]),
     .executable(name: "DebugExample", targets: ["DebugExample"]),
+    .executable(name: "TestExample", targets: ["TestExample"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -36,6 +37,10 @@ let package = Package(
     ),
     .executableTarget(
       name: "DebugExample",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "TestExample",
       dependencies: ["SwiftTUI"]
     )
   ]
