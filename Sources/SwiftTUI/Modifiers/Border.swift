@@ -1,64 +1,67 @@
 import yoga
 
+/// ┌─┐
+/// │ │   の 1-pixel 枠を付けるデバッグ用ラッパー
+/// └─┘
 final class BorderView<Content: LayoutView>: LayoutView {
 
-  private let inset: Float = 1
   private let child: Content
-
   init(_ c: Content) { child = c }
 
-  // Yoga
+  // MARK: LayoutView ---------------------------------------------------
   func makeNode() -> YogaNode {
     let n = YogaNode()
-    n.setPadding(inset, .all)
+    n.setPadding(1, .all)                // 枠線ぶんの余白
     n.insert(child: child.makeNode())
     return n
   }
 
-  // Paint
   func paint(origin:(x:Int,y:Int), into buf:inout [String]) {
 
-    let n = makeNode()
-    let f = n.frame                        // 子サイズ
+    let node = makeNode()
 
-    // ① 子ビューを描画
-    if let raw = YGNodeGetChild(n.rawPtr, 0) {
-      let dx = Int(YGNodeLayoutGetLeft(raw))
-      let dy = Int(YGNodeLayoutGetTop (raw))
-      child.paint(origin:(origin.x+dx, origin.y+dy), into:&buf)
-    }
+    // ── 子ビューレイアウトを取得 ───────────────────────
+    guard let raw = YGNodeGetChild(node.rawPtr, 0) else { return }
 
-    // ② 枠線を bufferWrite だけで描く
-    let horiz = String(repeating: "─", count: max(f.w, 0))
+    func f2i(_ v: Float) -> Int { v.isFinite ? Int(v) : 0 }   // ← ★ 追加
+
+    let cw = f2i(YGNodeLayoutGetWidth (raw))   // child width  (safe)
+    let ch = f2i(YGNodeLayoutGetHeight(raw))   // child height (safe)
+    // ── 1) 子ビューを描画 ───────────────────────────────
+    child.paint(origin:(origin.x+1, origin.y+1), into:&buf)
+
+    // ── 2) 枠線を描画（bufferWrite だけ使用） ─────────
+    let horiz = String(repeating: "─", count: cw)
+
     bufferWrite(row: origin.y,
                 col: origin.x,
                 text: "┌" + horiz + "┐",
-                into: &buf)
+                into:&buf)
 
-    bufferWrite(row: origin.y + f.h + 1,
+    bufferWrite(row: origin.y + ch + 1,
                 col: origin.x,
                 text: "└" + horiz + "┘",
-                into: &buf)
+                into:&buf)
 
-    if f.h > 0 {
-      for dy in 1...f.h {
-        bufferWrite(row: origin.y + dy,
+    if ch > 0 {
+      for yOff in 1...ch {
+        bufferWrite(row: origin.y + yOff,
                     col: origin.x,
                     text: "│",
-                    into: &buf)
-        bufferWrite(row: origin.y + dy,
-                    col: origin.x + f.w + 1,
+                    into:&buf)
+        bufferWrite(row: origin.y + yOff,
+                    col: origin.x + cw + 1,
                     text: "│",
-                    into: &buf)
+                    into:&buf)
       }
     }
   }
 
-  // View 互換
+  // MARK: View 互換
   func render(into buffer: inout [String]) {}
 }
 
-// Modifier
+// MARK: – SwiftUI-like modifier
 public extension LayoutView {
   func border() -> some LayoutView { BorderView(self) }
 }
