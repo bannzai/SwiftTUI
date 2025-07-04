@@ -34,19 +34,40 @@ extension Text: LayoutView {
   }
 
   public func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
-    // 行確保
+
+    // ── DEBUG ────────────────────────────────────────────
+    print("[TXT] row:", origin.y,
+          "col:", origin.x,
+          "textLen:", content.count,
+          "bufRows:", buf.count)
+    // ────────────────────────────────────────────────────
+
     while buf.count <= origin.y { buf.append("") }
 
-    // 左側スペース確保
-    if buf[origin.y].count < origin.x {
-      buf[origin.y] += String(repeating: " ", count: origin.x - buf[origin.y].count)
+    var lineChars = Array(buf[origin.y])
+
+    if lineChars.count < origin.x {
+      let gap = origin.x - lineChars.count
+      print("[TXT]   pad left gap:", gap)
+      lineChars += Array(repeating: " ", count: gap)
     }
 
-    let styled = buildStyledText()
-    let line   = buf[origin.y]
-    let prefix = line.prefix(origin.x)
-    buf[origin.y] = prefix + styled
+    let styled = Array(buildStyledText())
+    let after  = origin.x + styled.count
+
+    if lineChars.count < after {
+      let gap = after - lineChars.count
+      print("[TXT]   pad right gap:", gap)
+      lineChars += Array(repeating: " ", count: gap)
+    }
+
+    for i in 0..<styled.count {
+      lineChars[origin.x + i] = styled[i]
+    }
+
+    buf[origin.y] = String(lineChars)
   }
+
 
   // ---------- helpers ----------
   private func contentWidth() -> Int { content.count }
