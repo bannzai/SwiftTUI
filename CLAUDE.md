@@ -1,36 +1,36 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このファイルは、Claude Code (claude.ai/code) がこのリポジトリのコードを扱う際のガイダンスを提供します。
 
-## Project Vision
+## プロジェクトビジョン
 
-SwiftTUI is the Swift equivalent of React's Ink - a Terminal User Interface (TUI) library that brings SwiftUI's declarative paradigm to terminal applications. Just as Ink enables React developers to build TUIs with familiar React patterns, SwiftTUI allows Swift developers to create terminal interfaces using SwiftUI-like syntax.
+SwiftTUIは、ReactのInkに相当するSwift向けライブラリです。InkがReact開発者に馴染みのあるReactパターンでTUIを構築できるようにするのと同様に、SwiftTUIはSwift開発者がSwiftUIライクな構文でターミナルインターフェースを作成できるようにします。
 
-## Core Philosophy
+## コア哲学
 
-### 1. SwiftUI-Compatible API
-- **MUST** follow SwiftUI's API patterns exactly
-- Views are structs conforming to `View` protocol
-- All views implement `var body: some View` computed property
-- ViewModifiers are applied via method chaining (`.padding()`, `.border()`, etc.)
-- **NO** manual render calls - the framework handles all rendering internally
+### 1. SwiftUI互換API
+- SwiftUIのAPIパターンに**必ず**従う
+- Viewは`View`プロトコルに準拠したstruct
+- 全てのViewは`var body: some View`計算プロパティを実装
+- ViewModifierはメソッドチェインで適用（`.padding()`、`.border()`など）
+- 手動のrender呼び出しは**不要** - フレームワークが内部で全てのレンダリングを処理
 
-### 2. Declarative, Not Imperative
-- Users describe WHAT the UI should look like, not HOW to render it
-- State changes automatically trigger re-renders
-- No manual buffer manipulation or coordinate calculations in user code
+### 2. 宣言的、命令的ではない
+- ユーザーはUIが「どのように見えるべきか」を記述し、「どうレンダリングするか」は記述しない
+- 状態変更は自動的に再レンダリングをトリガー
+- ユーザーコードでの手動バッファ操作や座標計算は不要
 
-### 3. Familiar to SwiftUI Developers
-- A SwiftUI developer should be able to use SwiftTUI with minimal learning curve
-- Same mental model: Views, Modifiers, State management
-- Same patterns: `@State`, `@Binding`, `@ObservedObject` (when implemented)
+### 3. SwiftUI開発者にとって馴染みやすい
+- SwiftUI開発者が最小限の学習コストでSwiftTUIを使えるべき
+- 同じメンタルモデル：Views、Modifiers、State管理
+- 同じパターン：`@State`、`@Binding`、`@ObservedObject`（実装時）
 
-## Development Guidelines
+## 開発ガイドライン
 
-### API Design Principles
+### API設計原則
 
 ```swift
-// ✅ GOOD - SwiftUI-like
+// ✅ 良い例 - SwiftUIライク
 struct ContentView: View {
     @State private var name = ""
     
@@ -47,7 +47,7 @@ struct ContentView: View {
     }
 }
 
-// ❌ BAD - Current implementation (to be refactored)
+// ❌ 悪い例 - 現在の実装（リファクタリング対象）
 struct ContentView: LayoutView {
     func makeNode() -> YogaNode { ... }
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) { ... }
@@ -55,69 +55,69 @@ struct ContentView: LayoutView {
 }
 ```
 
-### Implementation Strategy
+### 実装戦略
 
-1. **View Protocol Evolution**
-   - Transition from current `LayoutView` with `render(into:)` to SwiftUI-style `View` with `body`
-   - Hide Yoga implementation details completely
-   - Automatic layout calculation based on view hierarchy
+1. **Viewプロトコルの進化**
+   - 現在の`render(into:)`を持つ`LayoutView`から、SwiftUIスタイルの`body`を持つ`View`へ移行
+   - Yoga実装の詳細を完全に隠蔽
+   - View階層に基づく自動レイアウト計算
 
-2. **ViewModifier Protocol**
-   - Implement proper ViewModifier protocol
-   - Enable method chaining for all modifiers
-   - Modifiers return `some View`, not concrete types
+2. **ViewModifierプロトコル**
+   - 適切なViewModifierプロトコルの実装
+   - 全てのmodifierでメソッドチェインを有効化
+   - Modifierは`some View`を返し、具象型ではない
 
-3. **Rendering Pipeline**
-   - User code only declares views
-   - Framework handles:
-     - Layout calculation (via Yoga)
-     - Buffer management
-     - Differential rendering
-     - Terminal manipulation
+3. **レンダリングパイプライン**
+   - ユーザーコードはViewの宣言のみ
+   - フレームワークが処理：
+     - レイアウト計算（Yoga経由）
+     - バッファ管理
+     - 差分レンダリング
+     - ターミナル操作
 
-### Component Roadmap
+### コンポーネントロードマップ
 
-**Phase 1 - Core Components** (Current)
+**フェーズ1 - コアコンポーネント**（現在）
 - [x] Text
-- [x] VStack, HStack
+- [x] VStack、HStack
 - [x] Spacer
-- [ ] TextField (with proper binding)
+- [ ] TextField（適切なbinding付き）
 - [ ] Button
 
-**Phase 2 - Essential Modifiers**
+**フェーズ2 - 必須Modifier**
 - [x] .padding()
 - [x] .border()
 - [x] .background()
 - [ ] .foregroundColor()
 - [ ] .frame(width:height:)
 
-**Phase 3 - Advanced Features**
-- [ ] @State property wrapper
-- [ ] @Binding support
+**フェーズ3 - 高度な機能**
+- [ ] @State プロパティラッパー
+- [ ] @Binding サポート
 - [ ] ForEach
 - [ ] ScrollView
 - [ ] List
 
-## Technical Architecture (Internal)
+## 技術アーキテクチャ（内部）
 
-### Current State (To Be Refactored)
-- `LayoutView` protocol with explicit `render` and `paint` methods
-- Direct Yoga node manipulation in view code
-- Manual buffer management
+### 現在の状態（リファクタリング対象）
+- 明示的な`render`と`paint`メソッドを持つ`LayoutView`プロトコル
+- ViewコードでのYogaノードの直接操作
+- 手動バッファ管理
 
-### Target State
-- Pure `View` protocol with `body: some View`
-- Yoga encapsulated in internal layout engine
-- Automatic rendering pipeline
-- View diffing for optimal performance
+### 目標状態
+- `body: some View`を持つ純粋な`View`プロトコル
+- 内部レイアウトエンジンにカプセル化されたYoga
+- 自動レンダリングパイプライン
+- 最適なパフォーマンスのためのView差分検出
 
-### Migration Path
-1. Create new `View` protocol alongside existing `LayoutView`
-2. Implement internal renderer that bridges new API to existing engine
-3. Gradually migrate all components to new API
-4. Deprecate and remove old `LayoutView` system
+### 移行パス
+1. 既存の`LayoutView`と並行して新しい`View`プロトコルを作成
+2. 新APIを既存エンジンにブリッジする内部レンダラーを実装
+3. 全コンポーネントを新APIに段階的に移行
+4. 古い`LayoutView`システムを非推奨化して削除
 
-## Usage Examples (Target API)
+## 使用例（目標API）
 
 ### Hello World
 ```swift
@@ -132,11 +132,11 @@ struct HelloApp: View {
     }
 }
 
-// In main.swift
+// main.swiftで
 SwiftTUI.run(HelloApp())
 ```
 
-### Interactive Form
+### インタラクティブフォーム
 ```swift
 struct FormView: View {
     @State private var username = ""
@@ -144,24 +144,24 @@ struct FormView: View {
     
     var body: some View {
         VStack(spacing: 1) {
-            Text("User Registration")
+            Text("ユーザー登録")
                 .bold()
                 .padding(.bottom, 2)
             
             HStack {
-                Text("Username:")
-                TextField("Enter username", text: $username)
+                Text("ユーザー名:")
+                TextField("ユーザー名を入力", text: $username)
                     .frame(width: 20)
             }
             
             HStack {
-                Text("Age:")
-                TextField("Enter age", text: $age)
+                Text("年齢:")
+                TextField("年齢を入力", text: $age)
                     .frame(width: 10)
             }
             
-            Button("Submit") {
-                // Handle submission
+            Button("送信") {
+                // 送信処理
             }
             .padding(.top, 2)
         }
@@ -171,7 +171,7 @@ struct FormView: View {
 }
 ```
 
-## Comparison with React Ink
+## React Inkとの比較
 
 ```javascript
 // React Ink
@@ -193,7 +193,7 @@ render(<App />);
 ```
 
 ```swift
-// SwiftTUI (Target)
+// SwiftTUI（目標）
 import SwiftTUI
 
 struct App: View {
@@ -202,7 +202,7 @@ struct App: View {
     var body: some View {
         VStack {
             Text("Hello, \(name)!")
-            TextField("Enter name", text: $name)
+            TextField("名前を入力", text: $name)
         }
         .border()
     }
@@ -211,23 +211,23 @@ struct App: View {
 SwiftTUI.run(App())
 ```
 
-## Internal Implementation Notes
+## 内部実装メモ
 
-- Yoga is used internally for layout calculations but NEVER exposed in public API
-- Terminal manipulation uses ANSI escape sequences
-- Differential rendering optimizes performance
-- Event loop handles keyboard input and state updates
+- YogaはレイアウトCalculateに内部的に使用されるが、公開APIには**決して**露出しない
+- ターミナル操作はANSIエスケープシーケンスを使用
+- 差分レンダリングでパフォーマンスを最適化
+- イベントループがキーボード入力と状態更新を処理
 
-## Testing Guidelines
+## テストガイドライン
 
-- Test public API behavior, not internal implementation
-- Ensure SwiftUI compatibility in API design
-- Performance tests for rendering large view hierarchies
-- Integration tests for terminal output
+- 内部実装ではなく、公開APIの振る舞いをテスト
+- API設計でSwiftUI互換性を確保
+- 大規模なView階層のレンダリングのパフォーマンステスト
+- ターミナル出力の統合テスト
 
-## DO NOT
+## してはいけないこと
 
-- Expose Yoga types in public API
-- Require users to call render methods
-- Mix imperative and declarative patterns
-- Create APIs that don't exist in SwiftUI without strong justification
+- 公開APIでYoga型を露出する
+- ユーザーにrenderメソッドの呼び出しを要求する
+- 命令的パターンと宣言的パターンを混在させる
+- 強い正当性なしにSwiftUIに存在しないAPIを作成する
