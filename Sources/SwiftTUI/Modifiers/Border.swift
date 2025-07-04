@@ -24,10 +24,15 @@ final class BorderView<Content: LayoutView>: LayoutView {
     
     // 子ビューレイアウトを取得
     if let raw = YGNodeGetChild(n.rawPtr, 0) {
-      let dx = Int(YGNodeLayoutGetLeft(raw))
-      let dy = Int(YGNodeLayoutGetTop(raw))
-      let cw = Int(YGNodeLayoutGetWidth(raw))
-      let ch = Int(YGNodeLayoutGetHeight(raw))
+      // NaN/Infiniteチェック付きで値を取得
+      func safeInt(_ f: Float) -> Int {
+        f.isFinite ? Int(f) : 0
+      }
+      
+      let dx = safeInt(YGNodeLayoutGetLeft(raw))
+      let dy = safeInt(YGNodeLayoutGetTop(raw))
+      let cw = safeInt(YGNodeLayoutGetWidth(raw))
+      let ch = safeInt(YGNodeLayoutGetHeight(raw))
       
       // 子ビューを描画
       child.paint(origin:(origin.x+dx, origin.y+dy), into:&buf)
