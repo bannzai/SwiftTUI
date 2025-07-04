@@ -1,7 +1,7 @@
 import yoga
 
 /// 伸縮する空白
-public final class Spacer: LayoutView {
+public final class LegacySpacer: LayoutView {
 
   public init() {}
 

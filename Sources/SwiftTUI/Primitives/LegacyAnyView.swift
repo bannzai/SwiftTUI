@@ -2,7 +2,7 @@
 import yoga
 
 /// 型消去 + LayoutView ブリッジ + デバッグ
-public struct AnyView: View, LayoutView {
+public struct LegacyAnyView: LegacyView, LayoutView {
 
   // クロージャ保持
   private let _render : (inout [String]) -> Void
@@ -11,9 +11,9 @@ public struct AnyView: View, LayoutView {
   private let _paint  : ((x: Int, y: Int), inout [String]) -> Void
 
   // --- イニシャライザ ---------------------------------------------------
-  public init<V: View>(_ view: V) {
+  public init<V: LegacyView>(_ view: V) {
 
-    // View→render/handle は以前と同じ
+    // LegacyView→render/handle は以前と同じ
     _render = { buf in var b = buf; view.render(into: &b); buf = b }
     _handle = { ev in view.handle(event: ev) }
 

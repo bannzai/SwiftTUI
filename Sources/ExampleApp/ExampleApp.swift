@@ -3,16 +3,16 @@ import Dispatch
 
 final class DemoView: LayoutView {
 
-  private let body = VStack {
-    HStack {
-      Text("Left")
-      Spacer()
-      Text("Right")
+  private let body = LegacyVStack {
+    LegacyHStack {
+      LegacyText("Left")
+      LegacySpacer()
+      LegacyText("Right")
     }
     .padding(1)
     .border()             // ← 枠を付ける
 
-    Text("bottom").background(.blue).border()
+    LegacyText("bottom").background(.blue).border()
   }
 
   func makeNode() -> YogaNode { body.makeNode() }
@@ -22,7 +22,7 @@ final class DemoView: LayoutView {
   func render(into buffer: inout [String]) {}
 }
 
-@main
+// @main  // SwiftUILikeExampleの@mainと衝突を避けるため一時的にコメントアウト
 struct ExampleApp {
   static func main() {
     RenderLoop.mount { DemoView() }

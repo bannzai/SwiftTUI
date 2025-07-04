@@ -1,4 +1,4 @@
-struct OnKeyPress<Content: View>: View {
+struct OnKeyPress<Content: LegacyView>: LegacyView {
   let keys: [KeyboardKey]
   let action: () -> Void
   let content: Content
@@ -16,10 +16,10 @@ struct OnKeyPress<Content: View>: View {
   }
 }
 
-public extension View {
+public extension LegacyView {
   /// 例: `.onKeyPress(.character("i")) { … }`
   func onKeyPress(_ keys: KeyboardKey...,
-                  perform action: @escaping () -> Void) -> some View {
+                  perform action: @escaping () -> Void) -> some LegacyView {
     OnKeyPress(keys: keys, action: action, content: self)
   }
 }

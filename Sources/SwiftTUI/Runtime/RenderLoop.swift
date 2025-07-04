@@ -11,13 +11,13 @@ import Darwin   // winsize, ioctl
 
 public enum RenderLoop {
   public static var DEBUG = false
-  private static var makeRoot:(()->AnyView)?
+  private static var makeRoot:(()->LegacyAnyView)?
   private static let rq = DispatchQueue(label:"SwiftTUI.Render")
   private static var prev:[String]=[]
   private static var redrawPending=false
 
-  public static func mount<V:View>(_ build:@escaping()->V){
-    makeRoot={ AnyView(build()) }
+  public static func mount<V:LegacyView>(_ build:@escaping()->V){
+    makeRoot={ LegacyAnyView(build()) }
     fullRedraw(); startInput()
   }
   static func scheduleRedraw(){

@@ -12,7 +12,7 @@ public struct LayoutNode {
 }
 
 /// 改良されたLayoutViewプロトコル
-public protocol LayoutViewV2: View {
+public protocol LayoutViewV2: LegacyView {
     func makeNode() -> YogaNode
     func paint(layoutNode: YogaNode, origin: (x: Int, y: Int), into buffer: inout [String])
 }

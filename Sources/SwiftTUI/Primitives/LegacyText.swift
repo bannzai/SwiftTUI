@@ -2,7 +2,8 @@
 import yoga
 
 // ── 公開 API ───────────────────────────────────────────────
-public struct Text: View {
+// 一時的にLegacyTextにリネーム（新しいAPIへの移行後に削除予定）
+public struct LegacyText: LegacyView {
   let content: String
   var fgColor: Color? = nil
   var bgColor: Color? = nil
@@ -17,7 +18,7 @@ public struct Text: View {
 }
 
 // ── LayoutView 適合 ───────────────────────────────────────
-extension Text: LayoutView {
+extension LegacyText: LayoutView {
 
   // Yoga node  : 1 行・幅 = 印字セル数
   public func makeNode() -> YogaNode {
@@ -41,7 +42,7 @@ extension Text: LayoutView {
 }
 
 // ── 内部ヘルパ ────────────────────────────────────────────
-private extension Text {
+private extension LegacyText {
 
   /// 表示セル幅（全角=2, それ以外=1 の簡易版）
   func displayWidth() -> Int {
