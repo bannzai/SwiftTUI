@@ -6,9 +6,9 @@ final class FlexStack: LayoutView {
 
   enum Axis { case column, row }
   private let axis: Axis
-  private let children: [AnyView]
+  private let children: [LegacyAnyView]
 
-  init(_ axis: Axis, @ViewBuilder _ c: () -> [AnyView]) {
+  init(_ axis: Axis, @LegacyViewBuilder _ c: () -> [LegacyAnyView]) {
     self.axis = axis
     self.children = c()
   }
@@ -40,18 +40,18 @@ final class FlexStack: LayoutView {
 
 // ---------- SwiftUI 風ラッパ ----------
 
-public struct VStack: LayoutView {
+public struct LegacyVStack: LayoutView {
   private let stack: FlexStack
-  public init(@ViewBuilder _ c: () -> [AnyView]) { stack = FlexStack(.column, c) }
+  public init(@LegacyViewBuilder _ c: () -> [LegacyAnyView]) { stack = FlexStack(.column, c) }
   public func makeNode() -> YogaNode { stack.makeNode() }
   public func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
     stack.paint(origin: origin, into: &buf)
   }
 }
 
-public struct HStack: LayoutView {
+public struct LegacyHStack: LayoutView {
   private let stack: FlexStack
-  public init(@ViewBuilder _ c: () -> [AnyView]) { stack = FlexStack(.row, c) }
+  public init(@LegacyViewBuilder _ c: () -> [LegacyAnyView]) { stack = FlexStack(.row, c) }
   public func makeNode() -> YogaNode { stack.makeNode() }
   public func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
     stack.paint(origin: origin, into: &buf)
