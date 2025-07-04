@@ -28,11 +28,17 @@ public enum HorizontalAlignment {
 // 内部実装：既存のFlexStackへの変換
 extension VStack {
     internal var _layoutView: any LayoutView {
-        // 既存のFlexStackを使用
-        // TODO: contentをAnyViewの配列に変換する処理を実装
-        return FlexStack(.column) { 
-            // 一時的な実装
-            LegacyText("TODO: Implement VStack")
+        // contentをLayoutViewに変換
+        let contentLayoutView = ViewRenderer.renderView(content)
+        
+        // FlexStackとして返す
+        return FlexStack(.column) {
+            // TupleLayoutViewの場合は子要素を展開
+            if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
+                return tupleLayoutView.views
+            } else {
+                return [LegacyAnyView(contentLayoutView)]
+            }
         }
     }
 }
