@@ -28,9 +28,13 @@ extension Text: LayoutView {
   }
 
   public func paint(origin:(x:Int,y:Int), into buf:inout [String]) {
+    // 1) ANSI 付き全文字列を用意
+    let styled = buildStyledText()
+
+    // 2) 共通ユーティリティで安全書き込み
     bufferWrite(row: origin.y,
                 col: origin.x,
-                text: buildStyledText(),
+                text: styled,
                 into: &buf)
   }
 
