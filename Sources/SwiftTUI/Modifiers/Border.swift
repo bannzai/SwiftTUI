@@ -4,7 +4,6 @@ final class BorderView<Content: LayoutView>: LayoutView {
 
   private let inset: Float = 1
   private let child: Content
-  
   init(_ c: Content) { child = c }
 
   func makeNode() -> YogaNode {
@@ -15,27 +14,38 @@ final class BorderView<Content: LayoutView>: LayoutView {
   }
 
   func paint(origin:(x:Int,y:Int), into buf:inout [String]) {
-    // Get node for layout information (already calculated by RenderLoop)
-    let node = makeNode()
-    let f = node.frame
+    // 1. 子ビューを描画（padding分のオフセット付き）
+    child.paint(origin:(origin.x + 1, origin.y + 1), into:&buf)
     
-    // Paint child with padding offset
-    if let raw = YGNodeGetChild(node.rawPtr, 0) {
-      let dx = Int(YGNodeLayoutGetLeft(raw))
-      let dy = Int(YGNodeLayoutGetTop(raw))
-      child.paint(origin:(origin.x + dx, origin.y + dy), into:&buf)
-    }
+    // 2. 子ビューの実際のサイズを取得するため、子ビューのノードを作成
+    let childNode = child.makeNode()
+    childNode.calculate()  // 幅を自動計算
     
-    // Draw border using the calculated frame dimensions
-    let horiz = String(repeating: "─", count: max(f.w, 0))
-    bufferWrite(row: origin.y,           col: origin.x, text: "┌" + horiz + "┐", into:&buf)
-    bufferWrite(row: origin.y + f.h + 1, col: origin.x, text: "└" + horiz + "┘", into:&buf)
+    let width = childNode.frame.w
+    let height = childNode.frame.h
     
-    if f.h > 0 {
-      for dy in 1...f.h {
-        bufferWrite(row: origin.y + dy, col: origin.x,           text: "│", into:&buf)
-        bufferWrite(row: origin.y + dy, col: origin.x + f.w + 1, text: "│", into:&buf)
-      }
+    // 3. 枠線を描画
+    let horiz = String(repeating: "─", count: width + 2)  // +2 for padding
+    
+    bufferWrite(row: origin.y,
+                col: origin.x,
+                text: "┌" + horiz + "┐",
+                into:&buf)
+    
+    bufferWrite(row: origin.y + height + 2,  // +2 for top and bottom padding
+                col: origin.x,
+                text: "└" + horiz + "┘",
+                into:&buf)
+    
+    for dy in 1...(height + 1) {  // +1 for bottom padding
+      bufferWrite(row: origin.y + dy,
+                  col: origin.x,
+                  text: "│",
+                  into:&buf)
+      bufferWrite(row: origin.y + dy,
+                  col: origin.x + width + 3,  // +3 for padding and borders
+                  text: "│",
+                  into:&buf)
     }
   }
 

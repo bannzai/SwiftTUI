@@ -25,7 +25,6 @@ final class DemoView: LayoutView {
 @main
 struct ExampleApp {
   static func main() {
-    RenderLoop.DEBUG = false
     RenderLoop.mount { DemoView() }
     dispatchMain()
   }
