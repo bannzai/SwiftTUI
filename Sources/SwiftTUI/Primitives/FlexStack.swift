@@ -8,10 +8,6 @@ final class FlexStack: LayoutView {
   private let axis: Axis
   private let children: [AnyView]
 
-  // --- ここを変更 -------------------------------------------------------
-  private var laidOutNode: YogaNode?   // ← 計算済みノードを保持
-  // --------------------------------------------------------------------
-
   init(_ axis: Axis, @ViewBuilder _ c: () -> [AnyView]) {
     self.axis = axis
     self.children = c()
@@ -27,16 +23,10 @@ final class FlexStack: LayoutView {
 
   // MARK: Paint
   func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
-
-    // ① まだ計算していない or @State で無効化 → レイアウトする
-    if laidOutNode == nil {
-      let n = makeNode()
-      n.calculate()                 // ★ この1回だけ
-      laidOutNode = n
-    }
-    guard let node = laidOutNode else { return }
-
-    // ② 確定座標で描画
+    // Create node for coordinate lookup (already calculated by RenderLoop)
+    let node = makeNode()
+    
+    // Paint children at their calculated positions
     let cnt = Int(YGNodeGetChildCount(node.rawPtr))
     for i in 0..<cnt {
       guard let raw = YGNodeGetChild(node.rawPtr, Int(i)) else { continue }
