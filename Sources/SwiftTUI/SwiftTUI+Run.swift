@@ -1,5 +1,10 @@
 import Foundation
 
+// グローバルなキーハンドラー
+public struct GlobalKeyHandler {
+    public static var handler: ((KeyboardEvent) -> Bool)?
+}
+
 // LayoutViewをLegacyViewでラップする構造体
 private struct LayoutViewWrapper: LegacyView, LayoutView {
     let layoutView: any LayoutView
@@ -17,6 +22,12 @@ private struct LayoutViewWrapper: LegacyView, LayoutView {
     }
     
     func handle(event: KeyboardEvent) -> Bool {
+        // グローバルハンドラーを最初にチェック
+        if let globalHandler = GlobalKeyHandler.handler, globalHandler(event) {
+            RenderLoop.scheduleRedraw()
+            return true
+        }
+        
         // FocusManagerに処理を委譲
         if FocusManager.shared.handleKeyEvent(event) {
             RenderLoop.scheduleRedraw()
@@ -36,11 +47,13 @@ private struct LayoutViewWrapper: LegacyView, LayoutView {
 public extension SwiftTUI {
     /// SwiftUIライクなAPIでアプリケーションを起動
     static func run<Content: View>(_ view: @escaping () -> Content) {
+        // Viewインスタンスを一度だけ作成
+        let viewInstance = view()
+        
         // 既存のRenderLoopを使用してマウント
         RenderLoop.mount {
-            // 毎回新しいViewインスタンスを生成してレンダリング
-            let newView = view()
-            let layoutView = ViewRenderer.renderView(newView)
+            // 保持したインスタンスのLayoutViewを返す
+            let layoutView = ViewRenderer.renderView(viewInstance)
             return LegacyAnyView(LayoutViewWrapper(layoutView: layoutView))
         }
         
@@ -50,6 +63,12 @@ public extension SwiftTUI {
     
     /// View型を直接受け取るバージョン（後方互換性のため）
     static func run<Content: View>(_ view: Content) {
-        run { view }
+        // 既にインスタンス化されたViewをそのまま使用
+        RenderLoop.mount {
+            let layoutView = ViewRenderer.renderView(view)
+            return LegacyAnyView(LayoutViewWrapper(layoutView: layoutView))
+        }
+        
+        RunLoop.main.run()
     }
 }

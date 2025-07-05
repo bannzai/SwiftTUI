@@ -115,6 +115,10 @@ let package = Package(
       dependencies: ["SwiftTUI"]
     ),
     .executableTarget(
+      name: "KeyTestVerify",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
       name: "ForEachTest",
       dependencies: ["SwiftTUI"]
     ),

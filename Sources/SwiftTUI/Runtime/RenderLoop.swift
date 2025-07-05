@@ -20,7 +20,7 @@ public enum RenderLoop {
     makeRoot={ LegacyAnyView(build()) }
     fullRedraw(); startInput()
   }
-  static func scheduleRedraw(){
+  public static func scheduleRedraw(){
     guard !redrawPending else{return}; redrawPending=true
     rq.async{ incrementalRedraw(); redrawPending=false }
   }
