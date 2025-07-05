@@ -1,5 +1,5 @@
 import SwiftTUI
-import Dispatch
+import Foundation
 
 final class DemoView: LayoutView {
 
@@ -26,7 +26,7 @@ final class DemoView: LayoutView {
 struct ExampleApp {
   static func main() {
     RenderLoop.mount { DemoView() }
-    dispatchMain()
+    RunLoop.main.run()
   }
 }
 

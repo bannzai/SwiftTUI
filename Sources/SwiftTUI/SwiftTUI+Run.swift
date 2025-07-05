@@ -17,7 +17,18 @@ private struct LayoutViewWrapper: LegacyView, LayoutView {
     }
     
     func handle(event: KeyboardEvent) -> Bool {
-        // TODO: イベント処理の実装
+        // FocusManagerに処理を委譲
+        if FocusManager.shared.handleKeyEvent(event) {
+            RenderLoop.scheduleRedraw()
+            return true
+        }
+        
+        // ESCキーで終了
+        if event.key == .escape {
+            RenderLoop.shutdown()
+            return true
+        }
+        
         return false
     }
 }
@@ -34,7 +45,7 @@ public extension SwiftTUI {
         }
         
         // メインループを開始
-        dispatchMain()
+        RunLoop.main.run()
     }
     
     /// View型を直接受け取るバージョン（後方互換性のため）
