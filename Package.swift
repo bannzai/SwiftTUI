@@ -31,6 +31,8 @@ let package = Package(
     .executable(name: "ListTest", targets: ["ListTest"]),
     .executable(name: "DebugHStackTest", targets: ["DebugHStackTest"]),
     .executable(name: "ButtonFocusTest", targets: ["ButtonFocusTest"]),
+    .executable(name: "ScrollableListTest", targets: ["ScrollableListTest"]),
+    .executable(name: "SimpleScrollableListTest", targets: ["SimpleScrollableListTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -138,6 +140,14 @@ let package = Package(
     ),
     .executableTarget(
       name: "ButtonFocusTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ScrollableListTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleScrollableListTest",
       dependencies: ["SwiftTUI"]
     )
   ]
