@@ -114,13 +114,3 @@ internal struct ListLayoutView: LayoutView {
     }
 }
 
-// ListLayoutViewのスタイル拡張
-extension ListLayoutView {
-    /// カスタムスタイルのList
-    init(child: any LayoutView, rowSpacing: Float, showSeparators: Bool, separatorColor: Color) {
-        self.child = child
-        self.rowSpacing = rowSpacing
-        self.showSeparators = showSeparators
-        self.separatorColor = separatorColor
-    }
-}
