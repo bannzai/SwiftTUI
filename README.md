@@ -63,25 +63,42 @@ swift run InteractiveFormTest
 
 # SwiftUIライクな完全な例
 swift run SwiftUILikeExample
+
+# 高度なコンポーネントのテスト
+swift run DirectionalPaddingTest  # 方向指定パディング
+swift run SpacingTest             # Stack間隔の指定
+swift run ForEachTest             # 動的リスト生成
+swift run ScrollViewTest          # スクロール可能なビュー
+swift run ListTest                # リスト表示
 ```
 
 ### 現在サポートされているコンポーネント
 
+#### 基本コンポーネント
 - **Text**: テキストの表示
-- **VStack**: 縦方向のスタックレイアウト
-- **HStack**: 横方向のスタックレイアウト
+- **VStack**: 縦方向のスタックレイアウト（`spacing`パラメータ対応）
+- **HStack**: 横方向のスタックレイアウト（`spacing`パラメータ対応）
 - **Spacer**: 残りのスペースを埋めるコンポーネント
 - **EmptyView**: 何も表示しないビュー
+
+#### インタラクティブコンポーネント
 - **TextField**: テキスト入力フィールド
 - **Button**: クリック可能なボタン
 
+#### 高度なコンポーネント
+- **ForEach**: コレクションから動的にビューを生成
+- **ScrollView**: スクロール可能なコンテナ
+- **List**: 自動区切り線付きのリスト表示
+
 ### ViewModifier
 
-- **`.padding(_:)`**: 内側の余白を追加
+- **`.padding(_:)`**: 内側の余白を追加（全方向）
+- **`.padding(.top, _:)`, `.padding(.bottom, _:)`など**: 方向指定の余白
 - **`.border()`**: 枠線を描画
 - **`.background(_:)`**: 背景色を設定
 - **`.foregroundColor(_:)`**: テキスト色を設定
 - **`.frame(width:height:)`**: サイズ制約を設定
+- **`.bold()`**: 太字テキスト表示
 
 ### State管理
 
@@ -222,6 +239,96 @@ struct FormView: View {
 }
 ```
 
+#### 高度なコンポーネントの使用例
+
+##### ForEach - 動的リスト生成
+
+```swift
+struct TodoListView: View {
+    let todos = [
+        Todo(id: 1, title: "SwiftTUIの実装", done: true),
+        Todo(id: 2, title: "テストを書く", done: false),
+        Todo(id: 3, title: "ドキュメント作成", done: false)
+    ]
+    
+    var body: some View {
+        VStack {
+            Text("TODO リスト")
+                .bold()
+                .padding()
+            
+            ForEach(todos) { todo in
+                HStack {
+                    Text(todo.done ? "✓" : "○")
+                        .foregroundColor(todo.done ? .green : .red)
+                    Text(todo.title)
+                }
+                .padding()
+            }
+        }
+    }
+}
+```
+
+##### ScrollView - スクロール可能なコンテンツ
+
+```swift
+struct ScrollableView: View {
+    var body: some View {
+        ScrollView {
+            VStack {
+                ForEach(1...50, id: \.self) { i in
+                    Text("Item \(i)")
+                        .padding()
+                        .background(i % 2 == 0 ? .cyan : .magenta)
+                }
+            }
+        }
+        .frame(height: 10)  // ビューポートの高さを制限
+    }
+}
+```
+
+##### List - 自動区切り線付きリスト
+
+```swift
+struct ListExampleView: View {
+    var body: some View {
+        List {
+            Text("項目1")
+                .padding()
+            Text("項目2")
+                .padding()
+            Text("項目3")
+                .padding()
+        }
+        .frame(height: 15)
+    }
+}
+```
+
+##### VStack/HStack with spacing
+
+```swift
+struct SpacedLayoutView: View {
+    var body: some View {
+        VStack(spacing: 2) {  // 各要素間に2行の間隔
+            Text("Header")
+                .background(.blue)
+            
+            HStack(spacing: 3) {  // 各要素間に3文字の間隔
+                Text("A").background(.red)
+                Text("B").background(.green)
+                Text("C").background(.yellow)
+            }
+            
+            Text("Footer")
+                .background(.cyan)
+        }
+    }
+}
+```
+
 ### 操作方法
 
 - **Tab / Shift+Tab**: フォーカスの移動
@@ -229,5 +336,6 @@ struct FormView: View {
 - **文字入力**: TextFieldへの入力
 - **Backspace**: 文字の削除
 - **←→**: カーソルの移動
+- **↑↓**: ScrollView内でのスクロール
 
 

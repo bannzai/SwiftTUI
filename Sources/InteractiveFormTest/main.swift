@@ -12,11 +12,10 @@ struct FormView: View {
     @State private var submitted = false
     
     var body: some View {
-        VStack {
+        VStack(spacing: 1) {
             Text("ユーザー登録")
-                .foregroundColor(.cyan)
-                .padding()
-                .border()
+                .bold()
+                .padding(.bottom, 2)
             
             HStack {
                 Text("ユーザー名:")
@@ -42,7 +41,7 @@ struct FormView: View {
                 print("年齢: \(age)")
                 print("==================\n")
             }
-            .padding()
+            .padding(.top, 2)
             
             if submitted {
                 Text("送信完了！")
