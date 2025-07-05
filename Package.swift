@@ -19,6 +19,8 @@ let package = Package(
     .executable(name: "HStackTest", targets: ["HStackTest"]),
     .executable(name: "NestedLayoutTest", targets: ["NestedLayoutTest"]),
     .executable(name: "SpacerTest", targets: ["SpacerTest"]),
+    .executable(name: "ModifierTest", targets: ["ModifierTest"]),
+    .executable(name: "SimplePaddingTest", targets: ["SimplePaddingTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -66,6 +68,14 @@ let package = Package(
     ),
     .executableTarget(
       name: "SpacerTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ModifierTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimplePaddingTest",
       dependencies: ["SwiftTUI"]
     )
   ]

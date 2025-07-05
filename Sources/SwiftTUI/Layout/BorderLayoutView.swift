@@ -1,0 +1,95 @@
+import yoga
+
+/// Borderを適用するLayoutView
+internal struct BorderLayoutView: LayoutView {
+    let child: any LayoutView
+    private let inset: Float = 1
+    
+    init(child: any LayoutView) {
+        self.child = child
+    }
+    
+    func makeNode() -> YogaNode {
+        let node = YogaNode()
+        node.setPadding(inset, .all)
+        
+        let childNode = child.makeNode()
+        node.insert(child: childNode)
+        
+        return node
+    }
+    
+    func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
+        // 1. 子ビューを描画（padding分のオフセット付き）
+        child.paint(origin: (origin.x + 1, origin.y + 1), into: &buffer)
+        
+        // 2. 描画されたコンテンツのサイズを推定
+        var maxWidth = 0
+        var contentLines = 0
+        
+        for y in (origin.y + 1)..<buffer.count {
+            let line = buffer[y]
+            if line.count > origin.x + 1 {
+                // この行に実際のコンテンツがあるかチェック
+                let lineContent = String(line.dropFirst(origin.x + 1))
+                let trimmed = lineContent.trimmingCharacters(in: .whitespaces)
+                if !trimmed.isEmpty {
+                    contentLines = y - origin.y
+                    // ANSIエスケープを除いた実際の幅を計算
+                    let visibleWidth = stripANSI(lineContent).trimmingCharacters(in: .whitespaces).count
+                    maxWidth = max(maxWidth, visibleWidth)
+                }
+            }
+        }
+        
+        // 最小サイズを確保
+        if contentLines == 0 { contentLines = 1 }
+        if maxWidth == 0 { maxWidth = 5 }  // 最小幅
+        
+        // 枠線を描画
+        let horiz = String(repeating: "─", count: maxWidth + 2)  // +2 for padding
+        
+        bufferWrite(row: origin.y,
+                    col: origin.x,
+                    text: "┌" + horiz + "┐",
+                    into: &buffer)
+        
+        bufferWrite(row: origin.y + contentLines + 1,
+                    col: origin.x,
+                    text: "└" + horiz + "┘",
+                    into: &buffer)
+        
+        for yOff in 1...contentLines {
+            bufferWrite(row: origin.y + yOff,
+                        col: origin.x,
+                        text: "│",
+                        into: &buffer)
+            bufferWrite(row: origin.y + yOff,
+                        col: origin.x + maxWidth + 3,
+                        text: "│",
+                        into: &buffer)
+        }
+    }
+    
+    func render(into buffer: inout [String]) {
+        child.render(into: &buffer)
+    }
+}
+
+// ANSIエスケープシーケンスを除去
+private func stripANSI(_ str: String) -> String {
+    var result = ""
+    var inEscape = false
+    
+    for char in str {
+        if char == "\u{1B}" {
+            inEscape = true
+        } else if inEscape && char == "m" {
+            inEscape = false
+        } else if !inEscape {
+            result.append(char)
+        }
+    }
+    
+    return result
+}

@@ -49,6 +49,9 @@ swift run NestedLayoutTest
 # Spacerを使ったレイアウト
 swift run SpacerTest
 
+# ViewModifierのテスト
+swift run SimplePaddingTest
+
 # SwiftUIライクな完全な例
 swift run SwiftUILikeExample
 ```
@@ -60,6 +63,13 @@ swift run SwiftUILikeExample
 - **HStack**: 横方向のスタックレイアウト
 - **Spacer**: 残りのスペースを埋めるコンポーネント
 - **EmptyView**: 何も表示しないビュー
+
+### ViewModifier
+
+- **`.padding(_:)`**: 内側の余白を追加
+- **`.border()`**: 枠線を描画
+- **`.background(_:)`**: 背景色を設定
+- **`.foregroundColor(_:)`**: テキスト色を設定
 
 ### コード例
 
@@ -93,6 +103,29 @@ struct SpacedView: View {
             Text("Left aligned")
             Spacer()
             Text("Right aligned")
+        }
+    }
+}
+```
+
+#### ViewModifierの使用例
+
+```swift
+struct StyledView: View {
+    var body: some View {
+        VStack {
+            Text("Styled Text")
+                .foregroundColor(.red)
+                .padding(2)
+                .border()
+            
+            Text("Background Color")
+                .background(.blue)
+            
+            Text("Combined Modifiers")
+                .foregroundColor(.green)
+                .background(.yellow)
+                .padding()
         }
     }
 }

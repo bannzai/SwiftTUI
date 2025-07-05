@@ -6,6 +6,12 @@ internal struct ViewRenderer {
     
     /// ViewをLayoutViewに変換
     static func renderView<V: View>(_ view: V) -> any LayoutView {
+        // 型名を確認してModifiedContentを特別扱い
+        let typeName = String(describing: type(of: view))
+        if typeName.hasPrefix("ModifiedContent<") {
+            return renderModifiedContent(view)
+        }
+        
         // プリミティブViewの場合（Body == Never）
         if V.Body.self == Never.self {
             return renderPrimitiveView(view)
@@ -34,8 +40,13 @@ internal struct ViewRenderer {
             return renderConditionalContent(conditional)
             
         default:
-            // 型名でTupleViewを検出
+            // 型名でModifiedContentを検出
             let typeName = String(describing: type(of: view))
+            if typeName.hasPrefix("ModifiedContent<") {
+                return renderModifiedContent(view)
+            }
+            
+            // 型名でTupleViewを検出
             if typeName.hasPrefix("TupleView<") {
                 return renderTupleViewGeneric(view)
             }
@@ -147,6 +158,59 @@ internal struct ViewRenderer {
         
         // 未対応のViewはEmptyViewとして扱う
         return EmptyView._LayoutView()
+    }
+    
+    /// ModifiedContentの変換
+    private static func renderModifiedContent<V: View>(_ view: V) -> any LayoutView {
+        // ModifiedContentはbodyを持つViewなので、bodyを経由する必要がある
+        // しかし、ModifiedContentのbodyはmodifierのbodyを呼び出す
+        // ここでは直接処理する
+        
+        // Mirror経由でcontent と modifier にアクセス
+        let mirror = Mirror(reflecting: view)
+        
+        guard let contentChild = mirror.children.first(where: { $0.label == "content" }),
+              let modifierChild = mirror.children.first(where: { $0.label == "modifier" }) else {
+            return EmptyView._LayoutView()
+        }
+        
+        // contentをLayoutViewに変換
+        let contentView = contentChild.value as? any View ?? EmptyView()
+        let contentLayoutView = renderView(contentView)
+        
+        // modifierの型を判定して適切なLayoutViewを返す
+        let modifierTypeName = String(describing: type(of: modifierChild.value))
+        
+        if modifierTypeName.contains("PaddingModifier") {
+            // PaddingModifierの処理
+            let paddingMirror = Mirror(reflecting: modifierChild.value)
+            let length = paddingMirror.children.first(where: { $0.label == "length" })?.value as? Int ?? 1
+            return PaddingLayoutView(inset: Float(length), child: contentLayoutView)
+        } else if modifierTypeName.contains("BorderModifier") {
+            // BorderModifierの処理
+            return BorderLayoutView(child: contentLayoutView)
+        } else if modifierTypeName.contains("BackgroundModifier") {
+            // BackgroundModifierの処理
+            let bgMirror = Mirror(reflecting: modifierChild.value)
+            if let bgChild = bgMirror.children.first(where: { $0.label == "background" }),
+               let colorView = bgChild.value as? Color.ColorView {
+                let colorMirror = Mirror(reflecting: colorView)
+                if let colorChild = colorMirror.children.first(where: { $0.label == "color" }),
+                   let color = colorChild.value as? Color {
+                    return BackgroundLayoutView(color: color, child: contentLayoutView)
+                }
+            }
+        } else if modifierTypeName.contains("ForegroundColorModifier") {
+            // ForegroundColorModifierの処理
+            let fgMirror = Mirror(reflecting: modifierChild.value)
+            if let colorChild = fgMirror.children.first(where: { $0.label == "color" }),
+               let color = colorChild.value as? Color {
+                return ForegroundColorLayoutView(color: color, child: contentLayoutView)
+            }
+        }
+        
+        // 未対応のmodifierはcontentをそのまま返す
+        return contentLayoutView
     }
 }
 
