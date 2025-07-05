@@ -30,26 +30,50 @@ internal struct ViewRenderer {
         case let spacer as Spacer:
             return spacer._layoutView
             
-        case let tuple as TupleView<Any>:
-            return renderTupleView(tuple)
-            
         case let conditional as ConditionalContent<AnyView, AnyView>:
             return renderConditionalContent(conditional)
             
         default:
-            // VStackやHStackなど、その他のプリミティブViewは_layoutViewを使用
+            // 型名でTupleViewを検出
             let typeName = String(describing: type(of: view))
-            if typeName.hasPrefix("VStack<") ||
-               typeName.hasPrefix("HStack<") {
-                return (view as any View)._layoutView
+            if typeName.hasPrefix("TupleView<") {
+                return renderTupleViewGeneric(view)
             }
             
-            // 未対応のViewはEmptyViewとして扱う
-            return EmptyView._LayoutView()
+            // VStackやHStackの場合は特別な処理
+            return renderStackView(view)
         }
     }
     
-    /// TupleViewの変換
+    /// TupleViewの変換（ジェネリック版）
+    private static func renderTupleViewGeneric<V: View>(_ view: V) -> any LayoutView {
+        // Mirror経由でvalueプロパティにアクセス
+        let mirror = Mirror(reflecting: view)
+        guard let valueChild = mirror.children.first(where: { $0.label == "value" }) else {
+            return EmptyView._LayoutView()
+        }
+        
+        let valueMirror = Mirror(reflecting: valueChild.value)
+        var views: [LegacyAnyView] = []
+        
+        for child in valueMirror.children {
+            if let childView = child.value as? any View {
+                let layoutView = renderView(childView)
+                views.append(LegacyAnyView(layoutView))
+            }
+        }
+        
+        // 複数のViewをTupleLayoutViewでラップ
+        if views.isEmpty {
+            return EmptyView._LayoutView()
+        } else if views.count == 1 {
+            return views[0]
+        } else {
+            return TupleLayoutView(views: views)
+        }
+    }
+    
+    /// TupleViewの変換（型安全版 - 使用されない）
     private static func renderTupleView<T>(_ tupleView: TupleView<T>) -> any LayoutView {
         let mirror = Mirror(reflecting: tupleView.value)
         var views: [LegacyAnyView] = []
@@ -81,6 +105,48 @@ internal struct ViewRenderer {
         case .second(let content):
             return renderView(content)
         }
+    }
+    
+    /// VStackやHStackの特別な処理
+    private static func renderStackView<V: View>(_ view: V) -> any LayoutView {
+        let typeName = String(describing: type(of: view))
+        
+        // VStackの処理
+        if typeName.hasPrefix("VStack<") {
+            // Mirror経由でcontentにアクセス
+            let mirror = Mirror(reflecting: view)
+            if let contentChild = mirror.children.first(where: { $0.label == "content" }),
+               let content = contentChild.value as? any View {
+                let contentLayoutView = renderView(content)
+                return FlexStack(.column) {
+                    if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
+                        return tupleLayoutView.views
+                    } else {
+                        return [LegacyAnyView(contentLayoutView)]
+                    }
+                }
+            }
+        }
+        
+        // HStackの処理
+        if typeName.hasPrefix("HStack<") {
+            // Mirror経由でcontentにアクセス
+            let mirror = Mirror(reflecting: view)
+            if let contentChild = mirror.children.first(where: { $0.label == "content" }),
+               let content = contentChild.value as? any View {
+                let contentLayoutView = renderView(content)
+                return FlexStack(.row) {
+                    if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
+                        return tupleLayoutView.views
+                    } else {
+                        return [LegacyAnyView(contentLayoutView)]
+                    }
+                }
+            }
+        }
+        
+        // 未対応のViewはEmptyViewとして扱う
+        return EmptyView._LayoutView()
     }
 }
 
