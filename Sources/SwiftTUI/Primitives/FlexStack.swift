@@ -7,10 +7,12 @@ final class FlexStack: LayoutView {
   enum Axis { case column, row }
   private let axis: Axis
   private let children: [LegacyAnyView]
+  private let spacing: Float
   private var calculatedNode: YogaNode?
 
-  init(_ axis: Axis, @LegacyViewBuilder _ c: () -> [LegacyAnyView]) {
+  init(_ axis: Axis, spacing: Float = 0, @LegacyViewBuilder _ c: () -> [LegacyAnyView]) {
     self.axis = axis
+    self.spacing = spacing
     self.children = c()
   }
 
@@ -18,6 +20,12 @@ final class FlexStack: LayoutView {
   func makeNode() -> YogaNode {
     let n = YogaNode()
     n.flexDirection(axis == .column ? .column : .row)
+    
+    // Set gap (spacing) if specified
+    if spacing > 0 {
+      n.setGap(spacing, axis == .column ? .column : .row)
+    }
+    
     children.forEach { n.insert(child: $0.makeNode()) }
     self.calculatedNode = n
     return n

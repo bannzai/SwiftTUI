@@ -31,8 +31,8 @@ extension VStack {
         // contentをLayoutViewに変換
         let contentLayoutView = ViewRenderer.renderView(content)
         
-        // FlexStackとして返す
-        return FlexStack(.column) {
+        // FlexStackとして返す（spacingを渡す）
+        return FlexStack(.column, spacing: Float(spacing)) {
             // TupleLayoutViewの場合は子要素を展開
             if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
                 return tupleLayoutView.views
