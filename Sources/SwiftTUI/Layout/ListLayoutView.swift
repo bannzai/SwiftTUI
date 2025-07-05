@@ -28,8 +28,6 @@ internal struct ListLayoutView: LayoutView {
             node.setGap(rowSpacing, .column)
         }
         
-        let childNode = child.makeNode()
-        
         // 子要素がTupleLayoutViewの場合、その子要素を直接追加
         if let tupleChild = child as? TupleLayoutView {
             for view in tupleChild.views {
@@ -61,20 +59,30 @@ internal struct ListLayoutView: LayoutView {
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
         let node = makeNode()
         
+        // レイアウトを計算（デフォルトサイズを使用）
+        let defaultWidth: Float = 80
+        let defaultHeight: Float = 24
+        node.calculate(width: defaultWidth, height: defaultHeight)
+        
+        // 安全なFloat→Int変換関数
+        func safeInt(_ v: Float) -> Int {
+            v.isFinite ? Int(v) : 0
+        }
+        
         // 各行を描画
         let childCount = Int(YGNodeGetChildCount(node.rawPtr))
         
         for i in 0..<childCount {
             guard let rowRaw = YGNodeGetChild(node.rawPtr, i) else { continue }
             
-            let rowY = Int(YGNodeLayoutGetTop(rowRaw))
-            let rowHeight = Int(YGNodeLayoutGetHeight(rowRaw))
-            let rowWidth = Int(YGNodeLayoutGetWidth(node.rawPtr))
+            let rowY = safeInt(YGNodeLayoutGetTop(rowRaw))
+            let rowHeight = safeInt(YGNodeLayoutGetHeight(rowRaw))
+            let rowWidth = safeInt(YGNodeLayoutGetWidth(node.rawPtr))
             
             // 行の内容を描画
             if let contentRaw = YGNodeGetChild(rowRaw, 0) {
-                let contentX = Int(YGNodeLayoutGetLeft(contentRaw))
-                let contentY = Int(YGNodeLayoutGetTop(contentRaw))
+                let contentX = safeInt(YGNodeLayoutGetLeft(contentRaw))
+                let contentY = safeInt(YGNodeLayoutGetTop(contentRaw))
                 
                 // 実際のViewを取得して描画
                 if child is TupleLayoutView,
@@ -96,7 +104,7 @@ internal struct ListLayoutView: LayoutView {
             if showSeparators && i < childCount - 1 {
                 let separatorY = origin.y + rowY + rowHeight
                 if separatorY >= 0 && separatorY < buffer.count {
-                    let separatorLine = String(repeating: "─", count: rowWidth)
+                    let separatorLine = String(repeating: "─", count: max(0, rowWidth))
                     let coloredLine = "\u{1B}[\(separatorColor.fg)m\(separatorLine)\u{1B}[0m"
                     bufferWrite(
                         row: separatorY,

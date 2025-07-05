@@ -355,4 +355,34 @@ struct SpacedLayoutView: View {
 - **ViewBuilder制限**: 1つのViewBuilder内で5つ以上のViewを配置するとエラーになります。この場合はVStackやGroupでグループ化してください。
 - **ForEach使用時**: Range（例：`1..<10`）を使用する場合は`ForEachRange`を使用してください。
 
+#### 動作確認済みのサンプル
+
+以下のサンプルは正常に動作することが確認されています：
+
+```bash
+# ✅ 基本的なテスト（動作確認済み）
+swift run SimpleTest          # シンプルなテキスト表示
+swift run SimpleVStackTest    # VStackのテスト
+swift run HStackTest          # HStackのテスト
+swift run SpacerTest          # Spacerを使ったレイアウト
+swift run SimplePaddingTest   # Paddingのテスト
+
+# ✅ State管理（動作確認済み）
+swift run StateTest           # @Stateの動作確認（5秒後に自動終了）
+
+# ⚠️ 既知の問題があるサンプル
+swift run ListTest            # Range errorが発生する場合があります
+swift run ScrollViewTest      # Range errorが発生する場合があります
+swift run ForEachTest         # ViewBuilder制限により修正が必要
+swift run InteractiveFormTest # ハングする場合があります
+```
+
+#### 既知の問題と回避策
+
+1. **Float→Int変換エラー**: Yogaレイアウトエンジンから返される値がNaNやinfiniteの場合があります。これは修正済みです。
+
+2. **Range error**: ForEachやListを使用する際に発生する場合があります。現在調査中です。
+
+3. **ViewBuilder制限**: 1つのブロック内に5つ以上のViewを配置できません。VStackやGroupでグループ化してください。
+
 

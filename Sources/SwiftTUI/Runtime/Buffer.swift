@@ -17,19 +17,28 @@ func bufferWrite(row: Int, col: Int, text: String, into buf: inout [String]) {
 
   // 左側スペース
   if line.count < col {
-    line += Array(repeating: " ", count: col - line.count)
+    let spaceCount = col - line.count
+    if spaceCount > 0 {
+      line += Array(repeating: " ", count: spaceCount)
+    }
   }
 
   // 右側スペース
   let after = col + text.count
   if line.count < after {
-    line += Array(repeating: " ", count: after - line.count)
+    let spaceCount = after - line.count
+    if spaceCount > 0 {
+      line += Array(repeating: " ", count: spaceCount)
+    }
   }
 
   // 上書き
   let chars = Array(text)
   for i in 0..<chars.count {
-    line[col + i] = chars[i]
+    let index = col + i
+    if index < line.count {
+      line[index] = chars[i]
+    }
   }
   buf[row] = String(line)
 }

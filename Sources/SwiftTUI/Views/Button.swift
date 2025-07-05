@@ -87,11 +87,16 @@ internal class ButtonLayoutView<Content: View>: LayoutView, FocusableView {
         let textColor = isFocused ? "\u{1B}[30m" : "" // 黒文字（フォーカス時のみ）
         let resetColor = "\u{1B}[0m"
         
+        // 安全なFloat→Int変換
+        func safeInt(_ v: Float) -> Int {
+            v.isFinite ? Int(v) : 0
+        }
+        
         // ラベルのサイズを取得
         let labelNode = labelLayoutView.makeNode()
         labelNode.calculate(width: 100)
-        let labelWidth = Int(YGNodeLayoutGetWidth(labelNode.rawPtr))
-        let labelHeight = Int(YGNodeLayoutGetHeight(labelNode.rawPtr))
+        let labelWidth = safeInt(YGNodeLayoutGetWidth(labelNode.rawPtr))
+        let labelHeight = safeInt(YGNodeLayoutGetHeight(labelNode.rawPtr))
         
         // 上の枠線
         let topBorder = borderColor + "┌" + String(repeating: "─", count: labelWidth + 4) + "┐" + resetColor

@@ -61,21 +61,25 @@ struct ListTestView: View {
                 .padding(.top)
             
             List {
-                Text("First item")
-                    .padding()
-                    .background(.blue)
+                VStack {
+                    Text("First item")
+                        .padding()
+                        .background(.blue)
+                    
+                    Text("Second item")
+                        .padding()
+                        .background(.green)
+                }
                 
-                Text("Second item")
-                    .padding()
-                    .background(.green)
-                
-                Text("Third item")
-                    .padding()
-                    .background(.yellow)
-                
-                Text("Fourth item")
-                    .padding()
-                    .background(.red)
+                VStack {
+                    Text("Third item")
+                        .padding()
+                        .background(.yellow)
+                    
+                    Text("Fourth item")
+                        .padding()
+                        .background(.red)
+                }
             }
             .frame(height: 10)
             .border()

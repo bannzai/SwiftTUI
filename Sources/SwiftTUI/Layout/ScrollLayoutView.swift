@@ -36,14 +36,24 @@ internal final class ScrollLayoutView: LayoutView {
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
         let node = makeNode()
         
+        // レイアウトを計算（デフォルトサイズを使用）
+        let defaultWidth: Float = 80
+        let defaultHeight: Float = 24
+        node.calculate(width: defaultWidth, height: defaultHeight)
+        
+        // 安全なFloat→Int変換関数
+        func safeInt(_ v: Float) -> Int {
+            v.isFinite ? Int(v) : 0
+        }
+        
         // ビューポートのサイズを取得
-        let viewportWidth = Int(YGNodeLayoutGetWidth(node.rawPtr))
-        let viewportHeight = Int(YGNodeLayoutGetHeight(node.rawPtr))
+        let viewportWidth = safeInt(YGNodeLayoutGetWidth(node.rawPtr))
+        let viewportHeight = safeInt(YGNodeLayoutGetHeight(node.rawPtr))
         
         // コンテンツのサイズを取得
         if let childRaw = YGNodeGetChild(node.rawPtr, 0) {
-            let contentWidth = Int(YGNodeLayoutGetWidth(childRaw))
-            let contentHeight = Int(YGNodeLayoutGetHeight(childRaw))
+            let contentWidth = safeInt(YGNodeLayoutGetWidth(childRaw))
+            let contentHeight = safeInt(YGNodeLayoutGetHeight(childRaw))
             
             // スクロール可能な範囲を計算
             let maxScrollX = max(0, contentWidth - viewportWidth)
