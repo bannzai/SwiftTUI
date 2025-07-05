@@ -62,18 +62,20 @@ struct ForEachTestView: View {
             .padding()
             
             // ForEach with KeyPath
-            Text("Using KeyPath:")
-                .foregroundColor(.cyan)
-                .padding(.top)
-            
             VStack {
-                ForEach(["Hello", "World", "from", "SwiftTUI"], id: \.self) { word in
-                    Text(word)
-                        .padding()
-                        .border()
+                Text("Using KeyPath:")
+                    .foregroundColor(.cyan)
+                    .padding(.top)
+                
+                VStack {
+                    ForEach(["Hello", "World", "from", "SwiftTUI"], id: \.self) { word in
+                        Text(word)
+                            .padding()
+                            .border()
+                    }
                 }
+                .padding()
             }
-            .padding()
         }
     }
 }
