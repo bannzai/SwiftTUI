@@ -342,23 +342,40 @@ struct SpacedLayoutView: View {
 
 ### StateTestの動作確認
 
-StateTestは@Stateプロパティラッパーの動作を確認するためのサンプルです：
+StateTestはグローバル状態管理とキーボードショートカットの動作を確認するサンプルです：
 
 ```bash
 swift run StateTest
 
+# キー操作
+u - カウンターを増やす (increment)
+d - カウンターを減らす (decrement)  
+m - メッセージを切り替える (Hello ⇔ World)
+q - プログラムを終了
+```
+
+このテストでは、キーボードショートカットで状態を変更し、画面が自動的に更新されることを確認できます。
+
+### ButtonFocusTestの動作確認
+
+ButtonFocusTestは@Stateプロパティラッパーとボタンフォーカス機能を確認するサンプルです：
+
+```bash
+swift run ButtonFocusTest
+
 # 操作方法
-Tab/Shift+Tab - ボタン間のフォーカス移動
+Tab - 次のボタンにフォーカスを移動
 Enter/Space - フォーカスされているボタンを押す
 q - プログラムを終了
 
 # 利用可能なボタン
 Count++ - カウンターを増やす
 Count-- - カウンターを減らす
-Toggle - メッセージを切り替える (Hello ⇔ World)
+Toggle Message - メッセージを切り替える (Hello ⇔ World)
+Reset - すべてをリセット
 ```
 
-このテストでは、@Stateプロパティの変更が自動的にUIに反映されることを確認できます。
+このテストでは、@Stateプロパティの変更が自動的にUIに反映され、Tabキーでボタン間を移動できることを確認できます。
 
 ### トラブルシューティング
 
@@ -388,7 +405,8 @@ swift run SpacerTest          # Spacerを使ったレイアウト
 swift run SimplePaddingTest   # Paddingのテスト
 
 # ✅ State管理（動作確認済み）
-swift run StateTest           # @Stateの動作確認（ボタンで値を変更、qで終了）
+swift run StateTest           # グローバル状態管理の動作確認（u/d/mキーで値を変更、qで終了）
+swift run ButtonFocusTest     # ボタンフォーカス機能のテスト（Tab/Enter操作、@State使用）
 swift run KeyTestVerify       # グローバルキーハンドラーの動作確認（自動テスト）
 
 # ⚠️ 既知の問題があるサンプル
