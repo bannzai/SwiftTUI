@@ -3,19 +3,22 @@ import Foundation
 
 print("State Test starting...")
 
+// グローバルな状態を保持（シンプルな動作確認のため）
+class GlobalState {
+    static var count = 0
+    static var message = "Hello"
+}
+
 // Stateを使った動的UIのテスト
 struct CounterView: View {
-    @State private var count = 0
-    @State private var message = "Hello"
-    
     var body: some View {
         VStack {
-            Text("Counter: \(count)")
+            Text("Counter: \(GlobalState.count)")
                 .foregroundColor(.cyan)
                 .padding()
                 .border()
             
-            Text("Message: \(message)")
+            Text("Message: \(GlobalState.message)")
                 .background(.blue)
                 .padding()
             
@@ -28,19 +31,27 @@ struct CounterView: View {
     }
 }
 
-// 簡単なキーボード処理のシミュレーション
-DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-    print("\nSimulating state changes...")
+// グローバルキーハンドラーを設定
+GlobalKeyHandler.handler = { event in
+    switch event.key {
+    case .character("u"):
+        GlobalState.count += 1
+        return true
+    case .character("d"):
+        GlobalState.count -= 1
+        return true
+    case .character("m"):
+        GlobalState.message = GlobalState.message == "Hello" ? "World" : "Hello"
+        return true
+    case .character("q"):
+        RenderLoop.shutdown()
+        return true
+    default:
+        return false
+    }
 }
 
-// 2秒後に終了
-DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-    print("Exiting...")
-    RenderLoop.shutdown()
-    exit(0)
-}
-
-// Viewをクロージャとして渡す
+// Viewを起動
 SwiftTUI.run {
     CounterView()
 }
