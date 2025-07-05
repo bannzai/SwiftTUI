@@ -77,26 +77,49 @@ struct ContentView: LayoutView {
 
 ### コンポーネントロードマップ
 
-**フェーズ1 - コアコンポーネント**（現在）
+**フェーズ1 - コアコンポーネント**（完了）
 - [x] Text
-- [x] VStack、HStack
+- [x] VStack、HStack（spacing対応）
 - [x] Spacer
-- [ ] TextField（適切なbinding付き）
-- [ ] Button
+- [x] TextField（@Binding対応）
+- [x] Button（フォーカス管理対応）
 
-**フェーズ2 - 必須Modifier**
-- [x] .padding()
+**フェーズ2 - 必須Modifier**（完了）
+- [x] .padding()（方向指定対応）
 - [x] .border()
 - [x] .background()
-- [ ] .foregroundColor()
-- [ ] .frame(width:height:)
+- [x] .foregroundColor()
+- [x] .frame(width:height:)
+- [x] .bold()
 
-**フェーズ3 - 高度な機能**
-- [ ] @State プロパティラッパー
-- [ ] @Binding サポート
-- [ ] ForEach
-- [ ] ScrollView
-- [ ] List
+**フェーズ3 - 高度な機能**（完了）
+- [x] @State プロパティラッパー
+- [x] @Binding サポート
+- [x] ForEach（Identifiable、KeyPath、Range対応）
+- [x] ScrollView（垂直・水平スクロール対応）
+- [x] List（自動セパレーター付き）
+
+**フェーズ4 - 追加コンポーネント**（計画中）
+- [ ] Toggle
+- [ ] Picker
+- [ ] Sheet
+- [ ] Alert
+- [ ] ProgressView
+- [ ] Slider
+
+**フェーズ5 - 高度な状態管理**（計画中）
+- [ ] @ObservedObject
+- [ ] @StateObject
+- [ ] @EnvironmentObject
+- [ ] @Environment
+
+**フェーズ6 - 追加Modifier**（計画中）
+- [ ] .opacity()
+- [ ] .disabled()
+- [ ] .hidden()
+- [ ] .overlay()
+- [ ] .clipShape()
+- [ ] .animation()
 
 ## 技術アーキテクチャ（内部）
 
@@ -136,7 +159,7 @@ struct HelloApp: View {
 SwiftTUI.run(HelloApp())
 ```
 
-### インタラクティブフォーム
+### インタラクティブフォーム（現在動作中）
 ```swift
 struct FormView: View {
     @State private var username = ""
@@ -161,7 +184,7 @@ struct FormView: View {
             }
             
             Button("送信") {
-                // 送信処理
+                print("ユーザー名: \(username), 年齢: \(age)")
             }
             .padding(.top, 2)
         }
@@ -169,6 +192,8 @@ struct FormView: View {
         .border()
     }
 }
+
+// 実行方法：swift run InteractiveFormTest
 ```
 
 ## React Inkとの比較
