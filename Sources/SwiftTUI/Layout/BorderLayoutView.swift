@@ -20,6 +20,9 @@ internal struct BorderLayoutView: LayoutView {
     }
     
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
+        // 座標の妥当性チェック
+        guard origin.x >= 0, origin.y >= 0 else { return }
+        
         // 1. 子ビューを描画（padding分のオフセット付き）
         child.paint(origin: (origin.x + 1, origin.y + 1), into: &buffer)
         
@@ -27,17 +30,21 @@ internal struct BorderLayoutView: LayoutView {
         var maxWidth = 0
         var contentLines = 0
         
-        for y in (origin.y + 1)..<buffer.count {
-            let line = buffer[y]
-            if line.count > origin.x + 1 {
-                // この行に実際のコンテンツがあるかチェック
-                let lineContent = String(line.dropFirst(origin.x + 1))
-                let trimmed = lineContent.trimmingCharacters(in: .whitespaces)
-                if !trimmed.isEmpty {
-                    contentLines = y - origin.y
-                    // ANSIエスケープを除いた実際の幅を計算
-                    let visibleWidth = stripANSI(lineContent).trimmingCharacters(in: .whitespaces).count
-                    maxWidth = max(maxWidth, visibleWidth)
+        // Range作成前に境界チェック
+        let startY = origin.y + 1
+        if startY < buffer.count {
+            for y in startY..<buffer.count {
+                let line = buffer[y]
+                if line.count > origin.x + 1 {
+                    // この行に実際のコンテンツがあるかチェック
+                    let lineContent = String(line.dropFirst(origin.x + 1))
+                    let trimmed = lineContent.trimmingCharacters(in: .whitespaces)
+                    if !trimmed.isEmpty {
+                        contentLines = y - origin.y
+                        // ANSIエスケープを除いた実際の幅を計算
+                        let visibleWidth = stripANSI(lineContent).trimmingCharacters(in: .whitespaces).count
+                        maxWidth = max(maxWidth, visibleWidth)
+                    }
                 }
             }
         }
