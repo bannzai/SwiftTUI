@@ -1,8 +1,19 @@
 import SwiftTUI
+import Foundation
 
-// 直接LegacyTextを使用
-print("SimpleTest: Starting...")
-RenderLoop.mount {
-    LegacyText("Hello from Legacy!")
+// VStackのテスト
+struct VStackTestView: View {
+    var body: some View {
+        VStack {
+            Text("First Line")
+            Text("Second Line")
+            Text("Third Line")
+        }
+    }
 }
-dispatchMain()
+
+// デバッグ出力を有効化
+RenderLoop.DEBUG = true
+
+print("Starting VStack test...")
+SwiftTUI.run(VStackTestView())
