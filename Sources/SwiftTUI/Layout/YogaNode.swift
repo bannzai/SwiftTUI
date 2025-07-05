@@ -62,4 +62,9 @@ public final class YogaNode {
     case .right:      YGNodeStyleSetPadding(raw, YGEdge.right, val)
     }
   }
+  
+  // MARK: - Gap (spacing between flex items)
+  public func setGap(_ gap: Float, _ gutter: YGGutter = .column) {
+    YGNodeStyleSetGap(raw, gutter, gap)
+  }
 }

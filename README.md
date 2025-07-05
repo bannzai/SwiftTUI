@@ -55,6 +55,12 @@ swift run SimplePaddingTest
 # State管理のテスト
 swift run SimpleStateTest
 
+# インタラクティブコンポーネントのテスト
+swift run SimpleInteractiveTest
+
+# ユーザー登録フォームのデモ
+swift run InteractiveFormTest
+
 # SwiftUIライクな完全な例
 swift run SwiftUILikeExample
 ```
@@ -66,6 +72,8 @@ swift run SwiftUILikeExample
 - **HStack**: 横方向のスタックレイアウト
 - **Spacer**: 残りのスペースを埋めるコンポーネント
 - **EmptyView**: 何も表示しないビュー
+- **TextField**: テキスト入力フィールド
+- **Button**: クリック可能なボタン
 
 ### ViewModifier
 
@@ -73,6 +81,7 @@ swift run SwiftUILikeExample
 - **`.border()`**: 枠線を描画
 - **`.background(_:)`**: 背景色を設定
 - **`.foregroundColor(_:)`**: テキスト色を設定
+- **`.frame(width:height:)`**: サイズ制約を設定
 
 ### State管理
 
@@ -156,9 +165,12 @@ struct CounterView: View {
             Text("Message: \(message)")
                 .foregroundColor(.cyan)
             
-            // TextFieldやButtonが実装されたら:
-            // Button("Increment") { count += 1 }
-            // TextField("Enter message", text: $message)
+            Button("Increment") { 
+                count += 1 
+            }
+            
+            TextField("Enter message", text: $message)
+                .frame(width: 20)
         }
     }
 }
@@ -168,5 +180,54 @@ SwiftTUI.run {
     CounterView()
 }
 ```
+
+#### インタラクティブフォーム
+
+```swift
+struct FormView: View {
+    @State private var username = ""
+    @State private var age = ""
+    @State private var submitted = false
+    
+    var body: some View {
+        VStack {
+            Text("ユーザー登録")
+                .foregroundColor(.cyan)
+                .padding()
+                .border()
+            
+            HStack {
+                Text("名前:")
+                TextField("ユーザー名を入力", text: $username)
+                    .frame(width: 20)
+            }
+            
+            HStack {
+                Text("年齢:")
+                TextField("年齢を入力", text: $age)
+                    .frame(width: 10)
+            }
+            
+            Button("送信") {
+                submitted = true
+            }
+            .padding()
+            
+            if submitted {
+                Text("登録完了: \(username) (\(age)歳)")
+                    .foregroundColor(.green)
+            }
+        }
+    }
+}
+```
+
+### 操作方法
+
+- **Tab / Shift+Tab**: フォーカスの移動
+- **Enter / Space**: ボタンのクリック
+- **文字入力**: TextFieldへの入力
+- **Backspace**: 文字の削除
+- **←→**: カーソルの移動
 
 
