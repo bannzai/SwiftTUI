@@ -340,6 +340,20 @@ struct SpacedLayoutView: View {
 - **ESC**: プログラムの終了
 - **Ctrl+C**: 強制終了
 
+### StateTestの動作確認
+
+StateTestでは以下のキー操作が可能です：
+
+```bash
+swift run StateTest
+
+# キー操作
+u - カウンターを増やす (increment)
+d - カウンターを減らす (decrement)  
+m - メッセージを切り替える (Hello ⇔ World)
+q - プログラムを終了
+```
+
 ### トラブルシューティング
 
 #### プログラムがすぐに終了してしまう場合
@@ -368,7 +382,8 @@ swift run SpacerTest          # Spacerを使ったレイアウト
 swift run SimplePaddingTest   # Paddingのテスト
 
 # ✅ State管理（動作確認済み）
-swift run StateTest           # @Stateの動作確認（5秒後に自動終了）
+swift run StateTest           # @Stateの動作確認（u/d/mキーで値を変更、qで終了）
+swift run KeyTestVerify       # グローバルキーハンドラーの動作確認（自動テスト）
 
 # ⚠️ 既知の問題があるサンプル
 swift run ListTest            # Range errorが発生する場合があります
