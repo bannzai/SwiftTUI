@@ -84,13 +84,9 @@ internal class FocusManager {
     
     /// キーボードイベントを処理
     func handleKeyEvent(_ event: KeyboardEvent) -> Bool {
-        // Tab/Shift+Tabでフォーカス移動
+        // Tabでフォーカス移動（Shift+Tabは現在未実装）
         if event.key == .tab {
-            if event.shift {
-                focusPrevious()
-            } else {
-                focusNext()
-            }
+            focusNext()
             return true
         }
         
