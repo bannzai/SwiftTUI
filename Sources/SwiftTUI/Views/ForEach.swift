@@ -42,10 +42,6 @@ public struct ForEachRange<Content: View>: View {
     }
 }
 
-// Range用のForEach拡張
-public func ForEach<Content: View>(_ range: Range<Int>, @ViewBuilder content: @escaping (Int) -> Content) -> ForEachRange<Content> {
-    ForEachRange(range, content: content)
-}
 
 // 内部実装用のヘルパーView
 private struct _ForEachContent<Data: RandomAccessCollection, ID: Hashable, Content: View>: View {
