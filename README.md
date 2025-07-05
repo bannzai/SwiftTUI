@@ -391,6 +391,46 @@ swift run ListTest
 
 プログラムは5秒後に自動的に終了します。Range errorは修正済みで、クラッシュすることなく動作します。
 
+### スクロール機能について
+
+SwiftTUIでは、SwiftUIとは異なり、Listコンポーネント自体はスクロール機能を持ちません。スクロール可能なリストを作成するには、ScrollViewで明示的に囲む必要があります：
+
+```swift
+// SwiftUIでは自動的にスクロール可能
+List(items) { item in
+    Text(item.name)
+}
+
+// SwiftTUIでは明示的にScrollViewが必要
+ScrollView {
+    List {
+        ForEach(items) { item in
+            Text(item.name)
+        }
+    }
+}
+.frame(height: 10)  // ビューポートの高さを指定
+```
+
+#### スクロール関連のテスト
+
+```bash
+# ScrollViewの基本的な使い方
+swift run ScrollViewTest
+
+# Listをスクロール可能にする方法の例（ForEachの表示問題あり）
+swift run ScrollableListTest
+
+# スクロールの仕組みを説明するシンプルな例
+swift run SimpleScrollableListTest
+```
+
+#### スクロール操作
+
+- **↑↓**: ScrollView内でコンテンツをスクロール
+- スクロールバーが表示され、現在の位置を確認できます
+- frameで指定した高さ以上のコンテンツがある場合のみスクロール可能
+
 ### 動作確認時の便利なTips
 
 #### echoコマンドを使った自動テスト
