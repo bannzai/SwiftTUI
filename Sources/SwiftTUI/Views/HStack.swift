@@ -18,12 +18,7 @@ public struct HStack<Content: View>: View {
     public typealias Body = Never
 }
 
-/// 垂直方向の配置
-public enum VerticalAlignment {
-    case top
-    case center
-    case bottom
-}
+// VerticalAlignmentはFrameModifier.swiftで定義済み
 
 // 内部実装：既存のFlexStackへの変換
 extension HStack {
