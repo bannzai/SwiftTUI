@@ -24,16 +24,21 @@ private struct LayoutViewWrapper: LegacyView, LayoutView {
 
 public extension SwiftTUI {
     /// SwiftUIライクなAPIでアプリケーションを起動
-    static func run<Content: View>(_ view: Content) {
-        // ViewをLayoutViewに変換
-        let layoutView = ViewRenderer.renderView(view)
-        
+    static func run<Content: View>(_ view: @escaping () -> Content) {
         // 既存のRenderLoopを使用してマウント
         RenderLoop.mount {
+            // 毎回新しいViewインスタンスを生成してレンダリング
+            let newView = view()
+            let layoutView = ViewRenderer.renderView(newView)
             return LegacyAnyView(LayoutViewWrapper(layoutView: layoutView))
         }
         
         // メインループを開始
         dispatchMain()
+    }
+    
+    /// View型を直接受け取るバージョン（後方互換性のため）
+    static func run<Content: View>(_ view: Content) {
+        run { view }
     }
 }

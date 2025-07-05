@@ -52,6 +52,9 @@ swift run SpacerTest
 # ViewModifierのテスト
 swift run SimplePaddingTest
 
+# State管理のテスト
+swift run SimpleStateTest
+
 # SwiftUIライクな完全な例
 swift run SwiftUILikeExample
 ```
@@ -70,6 +73,12 @@ swift run SwiftUILikeExample
 - **`.border()`**: 枠線を描画
 - **`.background(_:)`**: 背景色を設定
 - **`.foregroundColor(_:)`**: テキスト色を設定
+
+### State管理
+
+- **`@State`**: 値の変更を監視し、自動的に再レンダリング
+- **`@Binding`**: 親Viewから渡された値への参照
+- **`Binding.constant(_:)`**: 読み取り専用のBinding
 
 ### コード例
 
@@ -128,6 +137,35 @@ struct StyledView: View {
                 .padding()
         }
     }
+}
+```
+
+#### @Stateを使った動的UI
+
+```swift
+struct CounterView: View {
+    @State private var count = 0
+    @State private var message = "Hello"
+    
+    var body: some View {
+        VStack {
+            Text("Count: \(count)")
+                .padding()
+                .border()
+            
+            Text("Message: \(message)")
+                .foregroundColor(.cyan)
+            
+            // TextFieldやButtonが実装されたら:
+            // Button("Increment") { count += 1 }
+            // TextField("Enter message", text: $message)
+        }
+    }
+}
+
+// アプリケーションの起動（State対応版）
+SwiftTUI.run {
+    CounterView()
 }
 ```
 

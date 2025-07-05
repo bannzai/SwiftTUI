@@ -21,6 +21,7 @@ let package = Package(
     .executable(name: "SpacerTest", targets: ["SpacerTest"]),
     .executable(name: "ModifierTest", targets: ["ModifierTest"]),
     .executable(name: "SimplePaddingTest", targets: ["SimplePaddingTest"]),
+    .executable(name: "StateTest", targets: ["StateTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -76,6 +77,10 @@ let package = Package(
     ),
     .executableTarget(
       name: "SimplePaddingTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "StateTest",
       dependencies: ["SwiftTUI"]
     )
   ]
