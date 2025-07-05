@@ -24,6 +24,11 @@ let package = Package(
     .executable(name: "StateTest", targets: ["StateTest"]),
     .executable(name: "SimpleInteractiveTest", targets: ["SimpleInteractiveTest"]),
     .executable(name: "InteractiveFormTest", targets: ["InteractiveFormTest"]),
+    .executable(name: "SpacingTest", targets: ["SpacingTest"]),
+    .executable(name: "DirectionalPaddingTest", targets: ["DirectionalPaddingTest"]),
+    .executable(name: "ForEachTest", targets: ["ForEachTest"]),
+    .executable(name: "ScrollViewTest", targets: ["ScrollViewTest"]),
+    .executable(name: "ListTest", targets: ["ListTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -91,6 +96,26 @@ let package = Package(
     ),
     .executableTarget(
       name: "InteractiveFormTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SpacingTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "DirectionalPaddingTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ForEachTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ScrollViewTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ListTest",
       dependencies: ["SwiftTUI"]
     )
   ]
