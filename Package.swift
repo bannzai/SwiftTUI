@@ -14,6 +14,11 @@ let package = Package(
     .executable(name: "SwiftUILikeExample", targets: ["SwiftUILikeExample"]),
     .executable(name: "DebugExample", targets: ["DebugExample"]),
     .executable(name: "TestExample", targets: ["TestExample"]),
+    .executable(name: "SimpleTest", targets: ["SimpleTest"]),
+    .executable(name: "SimpleVStackTest", targets: ["SimpleVStackTest"]),
+    .executable(name: "HStackTest", targets: ["HStackTest"]),
+    .executable(name: "NestedLayoutTest", targets: ["NestedLayoutTest"]),
+    .executable(name: "SpacerTest", targets: ["SpacerTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -41,6 +46,26 @@ let package = Package(
     ),
     .executableTarget(
       name: "TestExample",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleVStackTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "HStackTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "NestedLayoutTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SpacerTest",
       dependencies: ["SwiftTUI"]
     )
   ]

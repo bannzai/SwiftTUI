@@ -1,8 +1,8 @@
 /// SwiftUIライクなVStack View
 public struct VStack<Content: View>: View {
-    private let content: Content
-    private let spacing: Int
-    private let alignment: HorizontalAlignment
+    internal let content: Content
+    internal let spacing: Int
+    internal let alignment: HorizontalAlignment
     
     public init(
         alignment: HorizontalAlignment = .center,
