@@ -342,17 +342,23 @@ struct SpacedLayoutView: View {
 
 ### StateTestの動作確認
 
-StateTestでは以下のキー操作が可能です：
+StateTestは@Stateプロパティラッパーの動作を確認するためのサンプルです：
 
 ```bash
 swift run StateTest
 
-# キー操作
-u - カウンターを増やす (increment)
-d - カウンターを減らす (decrement)  
-m - メッセージを切り替える (Hello ⇔ World)
+# 操作方法
+Tab/Shift+Tab - ボタン間のフォーカス移動
+Enter/Space - フォーカスされているボタンを押す
 q - プログラムを終了
+
+# 利用可能なボタン
+Count++ - カウンターを増やす
+Count-- - カウンターを減らす
+Toggle - メッセージを切り替える (Hello ⇔ World)
 ```
+
+このテストでは、@Stateプロパティの変更が自動的にUIに反映されることを確認できます。
 
 ### トラブルシューティング
 
@@ -382,7 +388,7 @@ swift run SpacerTest          # Spacerを使ったレイアウト
 swift run SimplePaddingTest   # Paddingのテスト
 
 # ✅ State管理（動作確認済み）
-swift run StateTest           # @Stateの動作確認（u/d/mキーで値を変更、qで終了）
+swift run StateTest           # @Stateの動作確認（ボタンで値を変更、qで終了）
 swift run KeyTestVerify       # グローバルキーハンドラーの動作確認（自動テスト）
 
 # ⚠️ 既知の問題があるサンプル
