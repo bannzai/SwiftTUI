@@ -51,6 +51,21 @@ internal struct ViewRenderer {
                 return renderTupleViewGeneric(view)
             }
             
+            // ForEachExpandedの検出
+            if let forEachExpanded = view as? _ForEachExpandedProtocol {
+                return renderForEachExpanded(forEachExpanded)
+            }
+            
+            // ScrollViewの検出
+            if typeName.hasPrefix("ScrollView<") {
+                return renderScrollView(view)
+            }
+            
+            // Listの検出
+            if typeName.hasPrefix("List<") {
+                return renderList(view)
+            }
+            
             // VStackやHStackの場合は特別な処理
             return renderStackView(view)
         }
@@ -124,12 +139,13 @@ internal struct ViewRenderer {
         
         // VStackの処理
         if typeName.hasPrefix("VStack<") {
-            // Mirror経由でcontentにアクセス
+            // Mirror経由でcontent, spacingにアクセス
             let mirror = Mirror(reflecting: view)
             if let contentChild = mirror.children.first(where: { $0.label == "content" }),
                let content = contentChild.value as? any View {
+                let spacing = mirror.children.first(where: { $0.label == "spacing" })?.value as? Int ?? 0
                 let contentLayoutView = renderView(content)
-                return FlexStack(.column) {
+                return FlexStack(.column, spacing: Float(spacing)) {
                     if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
                         return tupleLayoutView.views
                     } else {
@@ -141,12 +157,13 @@ internal struct ViewRenderer {
         
         // HStackの処理
         if typeName.hasPrefix("HStack<") {
-            // Mirror経由でcontentにアクセス
+            // Mirror経由でcontent, spacingにアクセス
             let mirror = Mirror(reflecting: view)
             if let contentChild = mirror.children.first(where: { $0.label == "content" }),
                let content = contentChild.value as? any View {
+                let spacing = mirror.children.first(where: { $0.label == "spacing" })?.value as? Int ?? 0
                 let contentLayoutView = renderView(content)
-                return FlexStack(.row) {
+                return FlexStack(.row, spacing: Float(spacing)) {
                     if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
                         return tupleLayoutView.views
                     } else {
@@ -184,8 +201,16 @@ internal struct ViewRenderer {
         if modifierTypeName.contains("PaddingModifier") {
             // PaddingModifierの処理
             let paddingMirror = Mirror(reflecting: modifierChild.value)
+            let edges = paddingMirror.children.first(where: { $0.label == "edges" })?.value as? Edge.Set ?? .all
             let length = paddingMirror.children.first(where: { $0.label == "length" })?.value as? Int ?? 1
-            return PaddingLayoutView(inset: Float(length), child: contentLayoutView)
+            
+            // 全方向の場合は既存のPaddingLayoutViewを使用
+            if edges == .all {
+                return PaddingLayoutView(inset: Float(length), child: contentLayoutView)
+            } else {
+                // 方向指定の場合はDirectionalPaddingLayoutViewを使用
+                return DirectionalPaddingLayoutView(edges: edges, length: Float(length), child: contentLayoutView)
+            }
         } else if modifierTypeName.contains("BorderModifier") {
             // BorderModifierの処理
             return BorderLayoutView(child: contentLayoutView)
@@ -211,6 +236,68 @@ internal struct ViewRenderer {
         
         // 未対応のmodifierはcontentをそのまま返す
         return contentLayoutView
+    }
+    
+    /// ForEachExpandedの変換
+    private static func renderForEachExpanded(_ forEachExpanded: _ForEachExpandedProtocol) -> any LayoutView {
+        let views = forEachExpanded._views.map { view in
+            LegacyAnyView(renderView(view))
+        }
+        
+        // 複数のViewをTupleLayoutViewでラップ
+        if views.isEmpty {
+            return EmptyView._LayoutView()
+        } else if views.count == 1 {
+            return views[0]
+        } else {
+            return TupleLayoutView(views: views)
+        }
+    }
+    
+    /// ScrollViewの処理
+    private static func renderScrollView<V: View>(_ view: V) -> any LayoutView {
+        // ScrollViewは_layoutViewプロパティを持つはず
+        if let scrollView = view as? ScrollView<AnyView> {
+            return scrollView._layoutView
+        }
+        
+        // Mirror経由でプロパティにアクセス
+        let mirror = Mirror(reflecting: view)
+        if let axesChild = mirror.children.first(where: { $0.label == "axes" }),
+           let axes = axesChild.value as? Axis.Set,
+           let showsIndicatorsChild = mirror.children.first(where: { $0.label == "showsIndicators" }),
+           let showsIndicators = showsIndicatorsChild.value as? Bool,
+           let contentChild = mirror.children.first(where: { $0.label == "content" }),
+           let content = contentChild.value as? any View {
+            let contentLayoutView = renderView(content)
+            return ScrollLayoutView(
+                axes: axes,
+                showsIndicators: showsIndicators,
+                child: contentLayoutView
+            )
+        }
+        
+        // 未対応の場合はEmptyView
+        return EmptyView._LayoutView()
+    }
+    
+    /// Listの処理
+    private static func renderList<V: View>(_ view: V) -> any LayoutView {
+        // Listは_layoutViewプロパティを持つはず
+        if let list = view as? List<AnyView> {
+            return list._layoutView
+        }
+        
+        // Mirror経由でcontentにアクセス
+        let mirror = Mirror(reflecting: view)
+        if let contentChild = mirror.children.first(where: { $0.label == "content" }),
+           let content = contentChild.value as? any View {
+            let contentLayoutView = renderView(content)
+            return ListLayoutView(child: contentLayoutView)
+        }
+        
+        // 未対応の場合はEmptyView
+        return EmptyView._LayoutView()
     }
 }
 
