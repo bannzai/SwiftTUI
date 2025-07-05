@@ -108,18 +108,19 @@ struct ContentView: LayoutView {
 - [ ] Slider
 
 **フェーズ5 - 高度な状態管理**（計画中）
-- [ ] @ObservedObject
-- [ ] @StateObject
-- [ ] @EnvironmentObject
+- [ ] ~@ObservedObject~ Observable
+- [ ] ~@StateObject~ Observable
+- [ ] ~@EnvironmentObject~ Observable
+- [ ] Observable
 - [ ] @Environment
 
 **フェーズ6 - 追加Modifier**（計画中）
 - [ ] .opacity()
 - [ ] .disabled()
-- [ ] .hidden()
+- [ ] ~.hidden()~ 不要
 - [ ] .overlay()
-- [ ] .clipShape()
-- [ ] .animation()
+- [ ] ~.clipShape()~ 不要
+- [ ] ~.animation()~ 不要
 
 ## 技術アーキテクチャ（内部）
 
