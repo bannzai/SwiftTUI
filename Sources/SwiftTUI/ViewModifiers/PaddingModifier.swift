@@ -16,7 +16,12 @@ public struct PaddingModifier: ViewModifier {
 }
 
 /// エッジの定義
-public struct Edge {
+public enum Edge {
+    case top
+    case leading
+    case bottom
+    case trailing
+    
     public struct Set: OptionSet {
         public let rawValue: Int
         
@@ -49,6 +54,25 @@ public extension View {
     
     /// 特定のエッジにpadding
     func padding(_ edge: Edge.Set) -> some View {
-        modifier(PaddingModifier(edge, nil))
+        modifier(PaddingModifier(edge, 1))
+    }
+}
+
+// Edge拡張
+public extension Edge {
+    var toSet: Edge.Set {
+        switch self {
+        case .top: return .top
+        case .leading: return .leading
+        case .bottom: return .bottom
+        case .trailing: return .trailing
+        }
+    }
+}
+
+// Edgeを直接受け取るバージョン
+public extension View {
+    func padding(_ edge: Edge, _ length: Int = 1) -> some View {
+        modifier(PaddingModifier(edge.toSet, length))
     }
 }
