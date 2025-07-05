@@ -2,6 +2,8 @@
 public enum Color {
   // 8 color ANSI (foreground)
   case black, red, green, yellow, blue, magenta, cyan, white
+  // Additional colors
+  case orange
   // 256色 or RGB
   case indexed(UInt8)       // 0-255
   case rgb(r: UInt8, g: UInt8, b: UInt8)
@@ -17,6 +19,7 @@ public enum Color {
     case .magenta: return "35"
     case .cyan:    return "36"
     case .white:   return "37"
+    case .orange:  return "38;5;208"  // Orange using 256 color
     case .indexed(let i):
       return "38;5;\(i)"
     case .rgb(let r, let g, let b):
@@ -35,6 +38,7 @@ public enum Color {
     case .magenta: return "45"
     case .cyan:    return "46"
     case .white:   return "47"
+    case .orange:  return "48;5;208"  // Orange using 256 color
     case .indexed(let i):
       return "48;5;\(i)"
     case .rgb(let r, let g, let b):
