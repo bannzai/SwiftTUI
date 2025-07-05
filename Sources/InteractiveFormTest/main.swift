@@ -15,7 +15,7 @@ struct FormView: View {
         VStack(spacing: 1) {
             Text("ユーザー登録")
                 .bold()
-                .padding(.bottom, 2)
+                .padding(Edge.bottom, 2)
             
             HStack {
                 Text("ユーザー名:")
@@ -41,13 +41,17 @@ struct FormView: View {
                 print("年齢: \(age)")
                 print("==================\n")
             }
-            .padding(.top, 2)
+            .padding(Edge.top, 2)
             
-            if submitted {
-                Text("送信完了！")
-                    .foregroundColor(.yellow)
-                    .background(.green)
-                    .padding()
+            Group {
+                if submitted {
+                    Text("送信完了！")
+                        .foregroundColor(.yellow)
+                        .background(.green)
+                        .padding()
+                } else {
+                    EmptyView()
+                }
             }
         }
         .padding()
