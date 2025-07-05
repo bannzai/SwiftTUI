@@ -2,48 +2,57 @@ import SwiftTUI
 import Foundation
 
 print("State Test starting...")
-
-// グローバルな状態を保持（シンプルな動作確認のため）
-class GlobalState {
-    static var count = 0
-    static var message = "Hello"
-}
+print("Tab/Shift+Tab: Move focus, Enter/Space: Press button")
 
 // Stateを使った動的UIのテスト
 struct CounterView: View {
+    @State private var count = 0
+    @State private var message = "Hello"
+    
     var body: some View {
         VStack {
-            Text("Counter: \(GlobalState.count)")
+            Text("@State Test Demo")
                 .foregroundColor(.cyan)
                 .padding()
                 .border()
             
-            Text("Message: \(GlobalState.message)")
-                .background(.blue)
+            Text("Counter: \(count)")
+                .foregroundColor(.green)
                 .padding()
             
-            Text("Press 'u' to increment, 'd' to decrement")
-                .foregroundColor(.green)
-            
-            Text("Press 'm' to change message, 'q' to quit")
+            Text("Message: \(message)")
                 .foregroundColor(.yellow)
+                .padding()
+            
+            HStack {
+                Button("Count++") { 
+                    count += 1 
+                }
+                .padding()
+                
+                Button("Count--") { 
+                    count -= 1 
+                }
+                .padding()
+                
+                Button("Toggle") { 
+                    message = message == "Hello" ? "World" : "Hello"
+                }
+                .padding()
+            }
+            
+            Text("Tab to navigate, Enter to press")
+                .foregroundColor(.white)
+                .padding(.top)
         }
     }
 }
 
-// グローバルキーハンドラーを設定
+// グローバルキーハンドラーでqキーで終了できるようにする
 GlobalKeyHandler.handler = { event in
     switch event.key {
-    case .character("u"):
-        GlobalState.count += 1
-        return true
-    case .character("d"):
-        GlobalState.count -= 1
-        return true
-    case .character("m"):
-        GlobalState.message = GlobalState.message == "Hello" ? "World" : "Hello"
-        return true
     case .character("q"):
+        print("\nExiting...")
         RenderLoop.shutdown()
         return true
     default:
