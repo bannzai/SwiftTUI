@@ -17,12 +17,11 @@ public struct Button<Label: View>: View {
     }
 }
 
-// Stringラベル用の便利初期化
+// Stringラベル用の便利初期化（修正版）
 public extension Button where Label == Text {
     init(_ title: String, action: @escaping () -> Void) {
-        self.init(action: action) {
-            Text(title)
-        }
+        self.action = action
+        self.label = Text(title)
     }
 }
 
@@ -31,6 +30,23 @@ private struct ButtonContainer<Content: View>: View {
     let action: () -> Void
     let label: Content
     let id: String
+    
+    init(action: @escaping () -> Void, label: Content, id: String) {
+        self.action = action
+        self.label = label
+        // Textラベルの場合、そのテキストをIDとして使用
+        if let textLabel = label as? Text {
+            let mirror = Mirror(reflecting: textLabel)
+            if let textChild = mirror.children.first(where: { $0.label == "content" }),
+               let text = textChild.value as? String {
+                self.id = "Button-\(text)"
+            } else {
+                self.id = id
+            }
+        } else {
+            self.id = id
+        }
+    }
     
     public typealias Body = Never
     

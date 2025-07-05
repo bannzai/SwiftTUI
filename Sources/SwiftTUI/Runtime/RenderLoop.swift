@@ -27,6 +27,9 @@ public enum RenderLoop {
 
   // --- frame builder --------------------------------------------------
   private static func buildFrame()->[String]{
+    // レンダリング前にFocusManagerを準備
+    FocusManager.shared.prepareForRerender()
+    
     guard let root=makeRoot?() else{return[]}
 
     guard let lv=root as? LayoutView else{

@@ -2,8 +2,10 @@ import SwiftTUI
 import Foundation
 
 print("State Test starting...")
+print("Press 'u' to increment, 'd' to decrement")
+print("Press 'm' to change message, 'q' to quit")
 
-// グローバルな状態を保持（シンプルな動作確認のため）
+// グローバルな状態を保持（@Stateの制限を回避）
 class GlobalState {
     static var count = 0
     static var message = "Hello"
@@ -13,20 +15,24 @@ class GlobalState {
 struct CounterView: View {
     var body: some View {
         VStack {
-            Text("Counter: \(GlobalState.count)")
+            Text("State Test Demo")
                 .foregroundColor(.cyan)
                 .padding()
                 .border()
             
-            Text("Message: \(GlobalState.message)")
-                .background(.blue)
+            Text("Counter: \(GlobalState.count)")
+                .foregroundColor(.green)
                 .padding()
             
-            Text("Press 'u' to increment, 'd' to decrement")
-                .foregroundColor(.green)
-            
-            Text("Press 'm' to change message, 'q' to quit")
+            Text("Message: \(GlobalState.message)")
                 .foregroundColor(.yellow)
+                .padding()
+            
+            Text("u: increment, d: decrement")
+                .foregroundColor(.white)
+            
+            Text("m: toggle message, q: quit")
+                .foregroundColor(.white)
         }
     }
 }
@@ -36,14 +42,18 @@ GlobalKeyHandler.handler = { event in
     switch event.key {
     case .character("u"):
         GlobalState.count += 1
+        RenderLoop.scheduleRedraw()
         return true
     case .character("d"):
         GlobalState.count -= 1
+        RenderLoop.scheduleRedraw()
         return true
     case .character("m"):
         GlobalState.message = GlobalState.message == "Hello" ? "World" : "Hello"
+        RenderLoop.scheduleRedraw()
         return true
     case .character("q"):
+        print("\nExiting...")
         RenderLoop.shutdown()
         return true
     default:

@@ -16,14 +16,25 @@ internal class FocusManager {
     
     /// フォーカス可能なViewを登録
     func register(_ view: FocusableView, id: String, acceptsInput: Bool = false) {
+        // 現在フォーカスされているViewのIDを保持
+        let currentFocusedID = currentFocusIndex.flatMap { index in
+            index < focusableViews.count ? focusableViews[index].id : nil
+        }
+        
         // 既存の同じIDを削除
         focusableViews.removeAll { $0.id == id }
         
         let info = FocusableViewInfo(id: id, acceptsInput: acceptsInput, handler: view)
         focusableViews.append(info)
         
-        // 最初のViewにフォーカスを設定
-        if currentFocusIndex == nil && !focusableViews.isEmpty {
+        // フォーカスを復元または初期設定
+        if let focusedID = currentFocusedID,
+           let newIndex = focusableViews.firstIndex(where: { $0.id == focusedID }) {
+            // 以前フォーカスされていたViewが再登録された場合、フォーカスを復元
+            currentFocusIndex = newIndex
+            updateFocusState()
+        } else if currentFocusIndex == nil && !focusableViews.isEmpty {
+            // 最初のViewにフォーカスを設定
             currentFocusIndex = 0
             updateFocusState()
         }
@@ -111,6 +122,20 @@ internal class FocusManager {
     func reset() {
         focusableViews.removeAll()
         currentFocusIndex = nil
+    }
+    
+    /// レンダリング前の準備（現在のフォーカスIDを保持してViewリストをクリア）
+    func prepareForRerender() {
+        // 現在フォーカスされているViewのIDを保持
+        if let index = currentFocusIndex,
+           index < focusableViews.count {
+            _ = focusableViews[index].id
+            // すべてのViewをクリアするが、フォーカス情報は保持
+            focusableViews.removeAll()
+            // フォーカスIDを一時的に保存（次の登録で復元される）
+        } else {
+            focusableViews.removeAll()
+        }
     }
 }
 

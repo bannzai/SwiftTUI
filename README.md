@@ -342,7 +342,7 @@ struct SpacedLayoutView: View {
 
 ### StateTestの動作確認
 
-StateTestでは以下のキー操作が可能です：
+StateTestはグローバル状態管理とキーボードショートカットの動作を確認するサンプルです：
 
 ```bash
 swift run StateTest
@@ -353,6 +353,67 @@ d - カウンターを減らす (decrement)
 m - メッセージを切り替える (Hello ⇔ World)
 q - プログラムを終了
 ```
+
+このテストでは、キーボードショートカットで状態を変更し、画面が自動的に更新されることを確認できます。
+
+### ButtonFocusTestの動作確認
+
+ButtonFocusTestは@Stateプロパティラッパーとボタンフォーカス機能を確認するサンプルです：
+
+```bash
+swift run ButtonFocusTest
+
+# 操作方法
+Tab - 次のボタンにフォーカスを移動
+Enter/Space - フォーカスされているボタンを押す
+q - プログラムを終了
+
+# 利用可能なボタン
+Count++ - カウンターを増やす
+Count-- - カウンターを減らす
+Toggle Message - メッセージを切り替える (Hello ⇔ World)
+Reset - すべてをリセット
+```
+
+このテストでは、@Stateプロパティの変更が自動的にUIに反映され、Tabキーでボタン間を移動できることを確認できます。
+
+### 動作確認時の便利なTips
+
+#### echoコマンドを使った自動テスト
+
+インタラクティブなプログラムの動作確認時に、echoコマンドでキー入力を自動化できます：
+
+```bash
+# StateTestの自動テスト例
+# u を2回、d を1回、m を1回押してから q で終了
+echo -e "u\nu\nd\nm\nq" | swift run StateTest
+
+# ButtonFocusTestの自動テスト例  
+# Tabを3回押して3番目のボタンにフォーカス、Enterで押してから q で終了
+echo -e "\t\t\t\n\nq" | swift run ButtonFocusTest
+
+# 複数のキー入力を時間差で送る例（bashスクリプト）
+(sleep 1; echo -e "\t"; sleep 1; echo -e "\n"; sleep 1; echo "q") | swift run ButtonFocusTest
+```
+
+#### テスト出力の保存
+
+```bash
+# 出力をファイルに保存
+swift run StateTest 2>&1 | tee state_test_output.txt
+
+# 特定の部分だけを確認
+echo -e "u\nu\nq" | swift run StateTest 2>&1 | grep "Counter:"
+
+# 最後の画面状態を確認
+echo -e "\t\nq" | swift run ButtonFocusTest 2>&1 | tail -30
+```
+
+#### デバッグ時のTips
+
+- プログラムが応答しない場合は `Ctrl+C` で強制終了
+- ターミナルの表示が崩れた場合は `reset` コマンドでリセット
+- ANSIエスケープシーケンスを確認したい場合は `cat -v` を使用
 
 ### トラブルシューティング
 
@@ -382,7 +443,8 @@ swift run SpacerTest          # Spacerを使ったレイアウト
 swift run SimplePaddingTest   # Paddingのテスト
 
 # ✅ State管理（動作確認済み）
-swift run StateTest           # @Stateの動作確認（u/d/mキーで値を変更、qで終了）
+swift run StateTest           # グローバル状態管理の動作確認（u/d/mキーで値を変更、qで終了）
+swift run ButtonFocusTest     # ボタンフォーカス機能のテスト（Tab/Enter操作、@State使用）
 swift run KeyTestVerify       # グローバルキーハンドラーの動作確認（自動テスト）
 
 # ⚠️ 既知の問題があるサンプル
