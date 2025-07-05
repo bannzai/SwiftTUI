@@ -1,4 +1,5 @@
 import SwiftTUI
+import Foundation
 
 struct Person: Identifiable {
     let id: Int
@@ -86,6 +87,12 @@ struct ListTestView: View {
             .padding()
         }
     }
+}
+
+// 5秒後に自動終了
+DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+    print("\nExiting...")
+    RenderLoop.shutdown()
 }
 
 SwiftTUI.run {
