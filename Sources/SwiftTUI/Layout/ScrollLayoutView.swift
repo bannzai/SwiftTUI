@@ -15,6 +15,16 @@ internal final class ScrollLayoutView: LayoutView {
         self.axes = axes
         self.showsIndicators = showsIndicators
         self.child = child
+        
+        // FocusManagerに登録
+        let id = "ScrollView_\(ObjectIdentifier(self).hashValue)"
+        FocusManager.shared.register(self, id: id, acceptsInput: false)
+    }
+    
+    deinit {
+        // FocusManagerから削除
+        let id = "ScrollView_\(ObjectIdentifier(self).hashValue)"
+        FocusManager.shared.unregister(id: id)
     }
     
     func makeNode() -> YogaNode {
