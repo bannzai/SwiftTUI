@@ -66,6 +66,15 @@ internal struct ViewRenderer {
                 return renderList(view)
             }
             
+            
+            // _layoutViewプロパティを持つViewの処理
+            // Mirrorで_layoutViewプロパティを探す
+            let mirror = Mirror(reflecting: view)
+            if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
+               let layoutView = layoutViewChild.value as? any LayoutView {
+                return layoutView
+            }
+            
             // VStackやHStackの場合は特別な処理
             return renderStackView(view)
         }
@@ -139,6 +148,10 @@ internal struct ViewRenderer {
         
         // VStackの処理
         if typeName.hasPrefix("VStack<") {
+            // VStackは既に_layoutViewプロパティを持っている
+            if let vstack = view as? VStack<AnyView> {
+                return vstack._layoutView
+            }
             // Mirror経由でcontent, spacingにアクセス
             let mirror = Mirror(reflecting: view)
             if let contentChild = mirror.children.first(where: { $0.label == "content" }),
@@ -157,6 +170,10 @@ internal struct ViewRenderer {
         
         // HStackの処理
         if typeName.hasPrefix("HStack<") {
+            // HStackは既に_layoutViewプロパティを持っている
+            if let hstack = view as? HStack<AnyView> {
+                return hstack._layoutView
+            }
             // Mirror経由でcontent, spacingにアクセス
             let mirror = Mirror(reflecting: view)
             if let contentChild = mirror.children.first(where: { $0.label == "content" }),
@@ -170,6 +187,23 @@ internal struct ViewRenderer {
                         return [LegacyAnyView(contentLayoutView)]
                     }
                 }
+            }
+        }
+        
+        // ButtonContainerの処理
+        if typeName.hasPrefix("ButtonContainer<") {
+            // Mirror経由でaction, label, idにアクセス
+            let mirror = Mirror(reflecting: view)
+            if let actionChild = mirror.children.first(where: { $0.label == "action" }),
+               let labelChild = mirror.children.first(where: { $0.label == "label" }),
+               let idChild = mirror.children.first(where: { $0.label == "id" }),
+               let label = labelChild.value as? Text,
+               let id = idChild.value as? String {
+                return ButtonLayoutView<Text>(
+                    action: actionChild.value as! () -> Void,
+                    label: label,
+                    id: id
+                )
             }
         }
         
