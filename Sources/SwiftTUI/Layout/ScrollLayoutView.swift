@@ -1,15 +1,15 @@
 import yoga
 
 /// ScrollViewのレイアウト実装
-internal struct ScrollLayoutView: LayoutView {
+internal final class ScrollLayoutView: LayoutView {
     let axes: Axis.Set
     let showsIndicators: Bool
     let child: any LayoutView
     
     // スクロール状態
-    private var scrollOffset: (x: Int, y: Int) = (0, 0)
-    private var contentSize: (width: Int, height: Int) = (0, 0)
-    private var viewportSize: (width: Int, height: Int) = (0, 0)
+    var scrollOffset: (x: Int, y: Int) = (0, 0)
+    var contentSize: (width: Int, height: Int) = (0, 0)
+    var viewportSize: (width: Int, height: Int) = (0, 0)
     
     init(axes: Axis.Set, showsIndicators: Bool, child: any LayoutView) {
         self.axes = axes
@@ -134,27 +134,27 @@ internal struct ScrollLayoutView: LayoutView {
 
 // ScrollLayoutViewをFocusableに拡張
 extension ScrollLayoutView: FocusableView {
+    func setFocused(_ focused: Bool) {
+        // ScrollViewはフォーカス状態の視覚的変化を持たない
+    }
+    
     func handleKeyEvent(_ event: KeyboardEvent) -> Bool {
         // 矢印キーでスクロール
         switch event.key {
         case .up where axes.contains(.vertical):
-            var mutableSelf = self
-            mutableSelf.scrollOffset.y = max(0, scrollOffset.y - 1)
+            scrollOffset.y = max(0, scrollOffset.y - 1)
             return true
             
         case .down where axes.contains(.vertical):
-            var mutableSelf = self
-            mutableSelf.scrollOffset.y += 1
+            scrollOffset.y += 1
             return true
             
         case .left where axes.contains(.horizontal):
-            var mutableSelf = self
-            mutableSelf.scrollOffset.x = max(0, scrollOffset.x - 1)
+            scrollOffset.x = max(0, scrollOffset.x - 1)
             return true
             
         case .right where axes.contains(.horizontal):
-            var mutableSelf = self
-            mutableSelf.scrollOffset.x += 1
+            scrollOffset.x += 1
             return true
             
         default:

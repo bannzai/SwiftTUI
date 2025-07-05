@@ -1,3 +1,6 @@
+import Foundation
+import yoga
+
 /// SwiftUIライクなButton
 public struct Button<Label: View>: View {
     private let action: () -> Void

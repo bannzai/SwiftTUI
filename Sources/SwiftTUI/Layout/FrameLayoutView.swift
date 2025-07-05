@@ -18,31 +18,16 @@ internal struct FrameLayoutView: LayoutView {
         let node = YogaNode()
         
         // サイズ制約を設定
-        if let w = width {
-            node.setWidth(w)
-        }
-        if let h = height {
-            node.setHeight(h)
-        }
-        
-        // アライメントを設定
-        switch alignment.horizontal {
-        case .leading:
-            node.justifyContent(.flexStart)
-        case .center:
-            node.justifyContent(.center)
-        case .trailing:
-            node.justifyContent(.flexEnd)
+        if let w = width, let h = height {
+            node.setSize(width: w, height: h)
+        } else if let w = width {
+            node.setSize(width: w, height: .nan)
+        } else if let h = height {
+            node.setSize(width: .nan, height: h)
         }
         
-        switch alignment.vertical {
-        case .top:
-            node.alignItems(.flexStart)
-        case .center:
-            node.alignItems(.center)
-        case .bottom:
-            node.alignItems(.flexEnd)
-        }
+        // フレックスコンテナとして設定
+        node.flexDirection(.column)
         
         // 子ノードを追加
         let childNode = child.makeNode()

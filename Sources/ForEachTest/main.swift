@@ -17,15 +17,16 @@ struct ForEachTestView: View {
     
     var body: some View {
         VStack(spacing: 1) {
-            Text("ForEach Test")
-                .bold()
-                .padding()
-                .border()
-            
-            // ForEach with Identifiable
-            Text("Using Identifiable:")
-                .foregroundColor(.cyan)
-                .padding(.top)
+            VStack {
+                Text("ForEach Test")
+                    .bold()
+                    .padding()
+                    .border()
+                
+                Text("Using Identifiable:")
+                    .foregroundColor(.cyan)
+                    .padding(.top)
+            }
             
             VStack {
                 ForEach(items) { item in
@@ -51,7 +52,7 @@ struct ForEachTestView: View {
                 .padding(.top)
             
             HStack(spacing: 2) {
-                ForEach(0..<5) { index in
+                ForEachRange(0..<5) { index in
                     Text("\(index)")
                         .padding()
                         .background(index % 2 == 0 ? .green : .blue)

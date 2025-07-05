@@ -1,3 +1,5 @@
+import Foundation
+
 /// SwiftUIライクなTextField
 public struct TextField: View {
     private let placeholder: String
@@ -52,7 +54,7 @@ internal class TextFieldLayoutView: LayoutView, FocusableView {
         let displayText = text.wrappedValue.isEmpty ? placeholder : text.wrappedValue
         let width = Float(displayText.count + 4) // 枠線とパディング分
         node.setSize(width: width, height: 3) // 枠線含めて3行
-        node.setMinSize(width: 10, height: 3)
+        node.setMinHeight(3)
         return node
     }
     

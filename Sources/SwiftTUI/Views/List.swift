@@ -31,16 +31,6 @@ public struct ListWithData<Data: RandomAccessCollection, ID: Hashable, RowConten
     }
 }
 
-// Identifiableデータ用の簡易版
-public extension List {
-    init<Data: RandomAccessCollection, RowContent: View>(
-        _ data: Data,
-        @ViewBuilder rowContent: @escaping (Data.Element) -> RowContent
-    ) -> ListWithData<Data, Data.Element.ID, RowContent>
-    where Data.Element: Identifiable {
-        ListWithData(data, id: \.id, rowContent: rowContent)
-    }
-}
 
 // 内部実装：ListLayoutViewへの変換
 extension List {

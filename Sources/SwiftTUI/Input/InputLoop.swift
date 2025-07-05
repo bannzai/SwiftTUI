@@ -47,7 +47,13 @@ enum InputLoop {
   private static func translate(byte: UInt8)->KeyboardEvent? {
     switch byte {
     case 27:        return .init(key: .escape)
+    case 9:         return .init(key: .tab)
+    case 10, 13:    return .init(key: .enter)
+    case 32:        return .init(key: .space)
+    case 127:       return .init(key: .backspace)
     case 97...122:  return .init(key: .character(Character(UnicodeScalar(byte))))
+    case 65...90:   return .init(key: .character(Character(UnicodeScalar(byte))))
+    case 48...57:   return .init(key: .character(Character(UnicodeScalar(byte))))
     default:        return nil
     }
   }
