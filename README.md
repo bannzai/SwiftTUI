@@ -377,6 +377,20 @@ Reset - すべてをリセット
 
 このテストでは、@Stateプロパティの変更が自動的にUIに反映され、Tabキーでボタン間を移動できることを確認できます。
 
+### ListTestの動作確認
+
+ListTestはListコンポーネントの動作を確認するサンプルです：
+
+```bash
+swift run ListTest
+
+# 表示内容
+- Basic List: ForEachを使用した動的リスト（現在は内容が表示されない問題あり）
+- Static List: 静的に配置したアイテムのリスト（正常に表示）
+```
+
+プログラムは5秒後に自動的に終了します。Range errorは修正済みで、クラッシュすることなく動作します。
+
 ### 動作確認時の便利なTips
 
 #### echoコマンドを使った自動テスト
@@ -447,8 +461,11 @@ swift run StateTest           # グローバル状態管理の動作確認（u/d
 swift run ButtonFocusTest     # ボタンフォーカス機能のテスト（Tab/Enter操作、@State使用）
 swift run KeyTestVerify       # グローバルキーハンドラーの動作確認（自動テスト）
 
+# ✅ 修正済みのサンプル
+swift run ListTest            # Listコンポーネントのテスト（Range error修正済み）
+swift run MinimalListTest     # シンプルなListのテスト
+
 # ⚠️ 既知の問題があるサンプル
-swift run ListTest            # Range errorが発生する場合があります
 swift run ScrollViewTest      # Range errorが発生する場合があります
 swift run ForEachTest         # ViewBuilder制限により修正が必要
 swift run InteractiveFormTest # ハングする場合があります
