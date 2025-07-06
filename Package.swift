@@ -38,6 +38,9 @@ let package = Package(
     .executable(name: "SimpleScrollTest", targets: ["SimpleScrollTest"]),
     .executable(name: "ESCTest", targets: ["ESCTest"]),
     .executable(name: "ForEachDebugTest", targets: ["ForEachDebugTest"]),
+    .executable(name: "ForEachCellTest", targets: ["ForEachCellTest"]),
+    .executable(name: "SimpleForEachCellTest", targets: ["SimpleForEachCellTest"]),
+    .executable(name: "QuickForEachTest", targets: ["QuickForEachTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -212,6 +215,26 @@ let package = Package(
       dependencies: ["SwiftTUI"]
     ),
     .executableTarget(
+      name: "QuickHStackTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ManualCellTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "VerboseHStackTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "HStackColorDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "QuickDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
       name: "ScrollableListTest",
       dependencies: ["SwiftTUI"]
     ),
@@ -237,6 +260,18 @@ let package = Package(
     ),
     .executableTarget(
       name: "ForEachDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ForEachCellTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleForEachCellTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "QuickForEachTest",
       dependencies: ["SwiftTUI"]
     )
   ]
