@@ -12,12 +12,14 @@ import Darwin   // winsize, ioctl
 public enum RenderLoop {
   public static var DEBUG = false
   private static var makeRoot:(()->LegacyAnyView)?
+  private static var cachedRoot: LegacyAnyView?
   private static let rq = DispatchQueue(label:"SwiftTUI.Render")
   private static var prev:[String]=[]
   private static var redrawPending=false
 
   public static func mount<V:LegacyView>(_ build:@escaping()->V){
     makeRoot={ LegacyAnyView(build()) }
+    cachedRoot = makeRoot?()  // ルートビューをキャッシュ
     fullRedraw(); startInput()
   }
   public static func scheduleRedraw(){
@@ -30,7 +32,7 @@ public enum RenderLoop {
     // レンダリング前にFocusManagerを準備
     FocusManager.shared.prepareForRerender()
     
-    guard let root=makeRoot?() else{return[]}
+    guard let root=cachedRoot else{return[]}
 
     guard let lv=root as? LayoutView else{
       var b:[String]=[]; root.render(into:&b); return b }
@@ -68,7 +70,7 @@ public enum RenderLoop {
   private static func clr(){ print("\u{1B}[2K",terminator:"") }
 
   private static func startInput(){
-    InputLoop.start{ ev in _=makeRoot?().handle(event:ev) }
+    InputLoop.start{ ev in _=cachedRoot?.handle(event:ev) }
   }
 
   // DEBUG
@@ -106,12 +108,6 @@ private extension RenderLoop {
   static func clear()         { print("\u{1B}[2K",       terminator:"") }
 }
 
-// MARK: - Input
-private extension RenderLoop {
-  static func startInputLoop() {
-    InputLoop.start { ev in _ = makeRoot?().handle(event: ev) }
-  }
-}
 
 extension RenderLoop {
   public static func shutdown() {
