@@ -40,6 +40,12 @@ internal struct ViewRenderer {
             return renderConditionalContent(conditional)
             
         default:
+            // 型名でConditionalContentを検出
+            let viewTypeName = String(describing: type(of: view))
+            if viewTypeName.hasPrefix("ConditionalContent<") {
+                return renderConditionalContentGeneric(view)
+            }
+            
             // 型名でModifiedContentを検出
             let typeName = String(describing: type(of: view))
             if typeName.hasPrefix("ModifiedContent<") {
@@ -140,6 +146,21 @@ internal struct ViewRenderer {
         case .second(let content):
             return renderView(content)
         }
+    }
+    
+    /// ConditionalContentの変換（ジェネリック版）
+    private static func renderConditionalContentGeneric<V: View>(_ view: V) -> any LayoutView {
+        // Mirror経由でenumケースを判定
+        let mirror = Mirror(reflecting: view)
+        
+        // ConditionalContentのミラーは子要素を1つ持つ
+        if let child = mirror.children.first {
+            if let content = child.value as? any View {
+                return renderView(content)
+            }
+        }
+        
+        return EmptyView._LayoutView()
     }
     
     /// VStackやHStackの特別な処理
@@ -351,8 +372,13 @@ extension View {
 }
 
 // TupleView用の内部LayoutView
-internal struct TupleLayoutView: LayoutView {
+internal final class TupleLayoutView: LayoutView {
     let views: [LegacyAnyView]
+    private var calculatedNode: YogaNode?
+    
+    init(views: [LegacyAnyView]) {
+        self.views = views
+    }
     
     func makeNode() -> YogaNode {
         // 複数のViewを配列として保持するだけ
@@ -362,12 +388,21 @@ internal struct TupleLayoutView: LayoutView {
         for view in views {
             node.insert(child: view.makeNode())
         }
+        self.calculatedNode = node
         return node
     }
     
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
-        // 各子要素を描画
-        let node = makeNode()
+        // Use the calculated node if available, otherwise create a new one
+        let node = calculatedNode ?? makeNode()
+        
+        // If we don't have layout information, we need to calculate it
+        if YGNodeLayoutGetWidth(node.rawPtr) == 0 {
+            // Fallback: calculate with a default width
+            node.calculate(width: 80)
+        }
+        
+        // Paint children at their calculated positions
         let cnt = Int(YGNodeGetChildCount(node.rawPtr))
         for i in 0..<cnt {
             guard let raw = YGNodeGetChild(node.rawPtr, Int(i)) else { continue }
