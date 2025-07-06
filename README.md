@@ -423,6 +423,12 @@ swift run ScrollableListTest
 
 # スクロールの仕組みを説明するシンプルな例
 swift run SimpleScrollableListTest
+
+# 矢印キー入力のテスト
+swift run ArrowKeyTest
+
+# シンプルなスクロールテスト（スクロール描画は未実装）
+swift run SimpleScrollTest
 ```
 
 #### スクロール操作
@@ -430,6 +436,8 @@ swift run SimpleScrollableListTest
 - **↑↓**: ScrollView内でコンテンツをスクロール
 - スクロールバーが表示され、現在の位置を確認できます
 - frameで指定した高さ以上のコンテンツがある場合のみスクロール可能
+
+**注意**: 2025年7月現在、矢印キーの認識は実装済みですが、実際のスクロール描画（コンテンツのクリッピング）は未実装です。
 
 ### 動作確認時の便利なTips
 
