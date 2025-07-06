@@ -58,7 +58,7 @@ internal final class ScrollLayoutView: LayoutView {
     
     
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
-        fputs("DEBUG: paint() called on \(ObjectIdentifier(self).hashValue), scrollOffset=\(scrollOffset)\n", stderr)
+        // fputs("DEBUG: paint() called on \(ObjectIdentifier(self).hashValue), scrollOffset=\(scrollOffset)\n", stderr)
         
         let node = makeNode()
         
@@ -91,7 +91,7 @@ internal final class ScrollLayoutView: LayoutView {
             let scrollX = scrollOffset.x
             let scrollY = scrollOffset.y
             
-            fputs("DEBUG: paint() scrollOffset=\(scrollOffset), using scrollY=\(scrollY) directly\n", stderr)
+            // fputs("DEBUG: paint() scrollOffset=\(scrollOffset), using scrollY=\(scrollY) directly\n", stderr)
             
             // スクロール状態を更新
             self.contentSize = (contentWidth, contentHeight)
@@ -164,10 +164,10 @@ internal final class ScrollLayoutView: LayoutView {
                     let srcLine = tempBuffer[srcY]
                     
                     // スクロール時のみデバッグ出力
-                    if scrollY > 0 {
-                        let displayText = srcLine.replacingOccurrences(of: "\u{1B}", with: "\\e")
-                        fputs("DEBUG: Displaying row \(i): '\(displayText)' (content line \(contentIndex+1))\n", stderr)
-                    }
+                    // if scrollY > 0 {
+                    //     let displayText = srcLine.replacingOccurrences(of: "\u{1B}", with: "\\e")
+                    //     fputs("DEBUG: Displaying row \(i): '\(displayText)' (content line \(contentIndex+1))\n", stderr)
+                    // }
                     
                     // クリッピング：actualViewportWidthの範囲内に制限
                     let clippedLine = clipToWidth(srcLine, width: actualViewportWidth)
@@ -307,13 +307,18 @@ extension ScrollLayoutView: FocusableView {
     }
     
     func handleKeyEvent(_ event: KeyboardEvent) -> Bool {
-        fputs("DEBUG: handleKeyEvent called on \(ObjectIdentifier(self).hashValue)\n", stderr)
+        // fputs("DEBUG: handleKeyEvent called on \(ObjectIdentifier(self).hashValue)\n", stderr)
+        
+        // ESCキーは処理しない（上位で処理されるべき）
+        if event.key == .escape {
+            return false
+        }
         
         // 矢印キーでスクロール
         switch event.key {
         case .up where axes.contains(.vertical):
             scrollOffset.y = max(0, scrollOffset.y - 1)
-            fputs("DEBUG: ScrollView UP pressed, scrollOffset.y=\(scrollOffset.y)\n", stderr)
+            // fputs("DEBUG: ScrollView UP pressed, scrollOffset.y=\(scrollOffset.y)\n", stderr)
             RenderLoop.scheduleRedraw()
             return true
             
@@ -322,7 +327,7 @@ extension ScrollLayoutView: FocusableView {
             // 例: 5行のコンテンツで3行のビューポートなら、maxScroll = 5 - 3 = 2
             let maxScroll = max(0, contentLineCount - 3)  // 3はビューポートの高さ（固定値）
             scrollOffset.y = min(scrollOffset.y + 1, maxScroll)
-            fputs("DEBUG: ScrollView DOWN pressed, scrollOffset.y=\(scrollOffset.y), maxScroll=\(maxScroll), contentLineCount=\(contentLineCount)\n", stderr)
+            // fputs("DEBUG: ScrollView DOWN pressed, scrollOffset.y=\(scrollOffset.y), maxScroll=\(maxScroll), contentLineCount=\(contentLineCount)\n", stderr)
             RenderLoop.scheduleRedraw()
             return true
             
