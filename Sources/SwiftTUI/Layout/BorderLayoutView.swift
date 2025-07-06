@@ -24,6 +24,7 @@ internal struct BorderLayoutView: LayoutView {
         guard origin.x >= 0, origin.y >= 0 else { return }
         
         // 1. 子ビューを描画（padding分のオフセット付き）
+        // fputs("DEBUG: BorderLayoutView painting child at (\(origin.x + 1), \(origin.y + 1))\n", stderr)
         child.paint(origin: (origin.x + 1, origin.y + 1), into: &buffer)
         
         // 2. 描画されたコンテンツのサイズを推定
@@ -42,7 +43,13 @@ internal struct BorderLayoutView: LayoutView {
                     if !trimmed.isEmpty {
                         contentLines = y - origin.y
                         // ANSIエスケープを除いた実際の幅を計算
-                        let visibleWidth = stripANSI(lineContent).trimmingCharacters(in: .whitespaces).count
+                        let strippedContent = stripANSI(lineContent).trimmingCharacters(in: .whitespaces)
+                        let visibleWidth = displayWidth(strippedContent)
+                        // if y == origin.y + 1 {  // 最初の行をデバッグ
+                        //     fputs("DEBUG: BorderLayoutView y=\(y), line='\(line.replacingOccurrences(of: "\u{1B}", with: "\\e"))'\n", stderr)
+                        //     fputs("DEBUG: BorderLayoutView lineContent='\(lineContent.replacingOccurrences(of: "\u{1B}", with: "\\e"))'\n", stderr)
+                        //     fputs("DEBUG: BorderLayoutView stripped='\(strippedContent)', visibleWidth=\(visibleWidth)\n", stderr)
+                        // }
                         maxWidth = max(maxWidth, visibleWidth)
                     }
                 }
@@ -52,6 +59,8 @@ internal struct BorderLayoutView: LayoutView {
         // 最小サイズを確保
         if contentLines == 0 { contentLines = 1 }
         if maxWidth == 0 { maxWidth = 5 }  // 最小幅
+        
+        // fputs("DEBUG: BorderLayoutView origin=(\(origin.x),\(origin.y)), maxWidth=\(maxWidth), contentLines=\(contentLines)\n", stderr)
         
         // 枠線を描画
         let horiz = String(repeating: "─", count: maxWidth + 2)  // +2 for padding
@@ -67,12 +76,15 @@ internal struct BorderLayoutView: LayoutView {
                     into: &buffer)
         
         for yOff in 1...contentLines {
+            let leftCol = origin.x
+            let rightCol = origin.x + maxWidth + 3
+            // fputs("DEBUG: BorderLayoutView drawing vertical lines at row=\(origin.y + yOff), leftCol=\(leftCol), rightCol=\(rightCol)\n", stderr)
             bufferWrite(row: origin.y + yOff,
-                        col: origin.x,
+                        col: leftCol,
                         text: "│",
                         into: &buffer)
             bufferWrite(row: origin.y + yOff,
-                        col: origin.x + maxWidth + 3,
+                        col: rightCol,
                         text: "│",
                         into: &buffer)
         }
@@ -99,4 +111,19 @@ private func stripANSI(_ str: String) -> String {
     }
     
     return result
+}
+
+// 文字列の表示幅を計算（日本語文字は幅2）
+private func displayWidth(_ str: String) -> Int {
+    var width = 0
+    for char in str {
+        let scalar = char.unicodeScalars.first?.value ?? 0
+        // 日本語文字（CJK統合漢字、ひらがな、カタカナなど）は幅2
+        if scalar > 0x7F {
+            width += 2
+        } else {
+            width += 1
+        }
+    }
+    return width
 }
