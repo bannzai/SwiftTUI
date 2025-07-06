@@ -230,6 +230,41 @@ internal struct ViewRenderer {
             }
         }
         
+        // Toggleの処理
+        if let toggle = view as? Toggle {
+            return toggle._layoutView
+        }
+        
+        // Pickerの処理
+        if typeName.hasPrefix("Picker<") {
+            // Mirror経由で_layoutViewプロパティを探す
+            let mirror = Mirror(reflecting: view)
+            if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
+               let layoutView = layoutViewChild.value as? any LayoutView {
+                return layoutView
+            }
+        }
+        
+        // ProgressViewの処理
+        if let progressView = view as? ProgressView {
+            return progressView._layoutView
+        }
+        
+        // Sliderの処理
+        if typeName.hasPrefix("Slider<") {
+            // Mirror経由で_layoutViewプロパティを探す
+            let mirror = Mirror(reflecting: view)
+            if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
+               let layoutView = layoutViewChild.value as? any LayoutView {
+                return layoutView
+            }
+        }
+        
+        // Alertの処理
+        if let alert = view as? Alert {
+            return alert._layoutView
+        }
+        
         // 未対応のViewはEmptyViewとして扱う
         return EmptyView._LayoutView()
     }
