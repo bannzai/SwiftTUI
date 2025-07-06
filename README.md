@@ -557,18 +557,20 @@ swift run KeyTestVerify       # グローバルキーハンドラーの動作確
 swift run ListTest            # Listコンポーネントのテスト（Range error修正済み）
 swift run MinimalListTest     # シンプルなListのテスト
 
-# ⚠️ 既知の問題があるサンプル
-swift run ScrollViewTest      # Range errorが発生する場合があります
-swift run ForEachTest         # ViewBuilder制限により修正が必要
-swift run InteractiveFormTest # ハングする場合があります
+# ✅ 修正完了したサンプル（以前は問題あり）
+swift run ScrollViewTest      # Range error修正済み - 正常に動作します
+swift run ForEachTest         # ViewBuilder制限を10個まで拡張 - コンパイル可能（表示の問題は残存）
+swift run InteractiveFormTest # ESCキー修正により解決済み - 正常に終了できます
 ```
 
 #### 既知の問題と回避策
 
 1. **Float→Int変換エラー**: Yogaレイアウトエンジンから返される値がNaNやinfiniteの場合があります。これは修正済みです。
 
-2. **Range error**: ForEachやListを使用する際に発生する場合があります。現在調査中です。
+2. **Range error**: ForEachやListを使用する際に発生する場合があります。ScrollViewTestのRange errorは修正済みです。
 
-3. **ViewBuilder制限**: 1つのブロック内に5つ以上のViewを配置できません。VStackやGroupでグループ化してください。
+3. **ViewBuilder制限**: ~~1つのブロック内に5つ以上のViewを配置できません。~~ **修正済み**: 最大10個のViewまで配置できるように拡張しました。
+
+4. **ForEachTest表示問題**: HStackのボーダー描画とBackgroundLayoutViewのANSIエスケープ処理に問題があり、表示が崩れる場合があります。
 
 
