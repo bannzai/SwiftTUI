@@ -40,6 +40,12 @@ internal struct ViewRenderer {
             return renderConditionalContent(conditional)
             
         default:
+            // 型名でConditionalContentを検出
+            let viewTypeName = String(describing: type(of: view))
+            if viewTypeName.hasPrefix("ConditionalContent<") {
+                return renderConditionalContentGeneric(view)
+            }
+            
             // 型名でModifiedContentを検出
             let typeName = String(describing: type(of: view))
             if typeName.hasPrefix("ModifiedContent<") {
@@ -140,6 +146,21 @@ internal struct ViewRenderer {
         case .second(let content):
             return renderView(content)
         }
+    }
+    
+    /// ConditionalContentの変換（ジェネリック版）
+    private static func renderConditionalContentGeneric<V: View>(_ view: V) -> any LayoutView {
+        // Mirror経由でenumケースを判定
+        let mirror = Mirror(reflecting: view)
+        
+        // ConditionalContentのミラーは子要素を1つ持つ
+        if let child = mirror.children.first {
+            if let content = child.value as? any View {
+                return renderView(content)
+            }
+        }
+        
+        return EmptyView._LayoutView()
     }
     
     /// VStackやHStackの特別な処理
