@@ -15,6 +15,16 @@ internal final class ScrollLayoutView: LayoutView {
         self.axes = axes
         self.showsIndicators = showsIndicators
         self.child = child
+        
+        // FocusManagerに登録
+        let id = "ScrollView_\(ObjectIdentifier(self).hashValue)"
+        FocusManager.shared.register(self, id: id, acceptsInput: false)
+    }
+    
+    deinit {
+        // FocusManagerから削除
+        let id = "ScrollView_\(ObjectIdentifier(self).hashValue)"
+        FocusManager.shared.unregister(id: id)
     }
     
     func makeNode() -> YogaNode {
@@ -63,11 +73,14 @@ internal final class ScrollLayoutView: LayoutView {
             let scrollX = min(max(0, scrollOffset.x), maxScrollX)
             let scrollY = min(max(0, scrollOffset.y), maxScrollY)
             
-            // コンテンツを描画（スクロールオフセットを適用）
-            child.paint(
-                origin: (origin.x - scrollX, origin.y - scrollY),
-                into: &buffer
-            )
+            // クリップ領域を設定して描画
+            // 現在の実装では、シンプルにスクロールオフセットを保存して状態を確認
+            self.contentSize = (contentWidth, contentHeight)
+            self.viewportSize = (viewportWidth, viewportHeight)
+            
+            // TODO: より洗練されたスクロール実装
+            // 現在は簡易的にオフセットなしで描画
+            child.paint(origin: origin, into: &buffer)
             
             // スクロールインジケーターを描画
             if showsIndicators {
@@ -153,18 +166,24 @@ extension ScrollLayoutView: FocusableView {
         switch event.key {
         case .up where axes.contains(.vertical):
             scrollOffset.y = max(0, scrollOffset.y - 1)
+            RenderLoop.scheduleRedraw()
             return true
             
         case .down where axes.contains(.vertical):
-            scrollOffset.y += 1
+            let maxScroll = max(0, contentSize.height - viewportSize.height)
+            scrollOffset.y = min(scrollOffset.y + 1, maxScroll)
+            RenderLoop.scheduleRedraw()
             return true
             
         case .left where axes.contains(.horizontal):
             scrollOffset.x = max(0, scrollOffset.x - 1)
+            RenderLoop.scheduleRedraw()
             return true
             
         case .right where axes.contains(.horizontal):
-            scrollOffset.x += 1
+            let maxScroll = max(0, contentSize.width - viewportSize.width)
+            scrollOffset.x = min(scrollOffset.x + 1, maxScroll)
+            RenderLoop.scheduleRedraw()
             return true
             
         default:

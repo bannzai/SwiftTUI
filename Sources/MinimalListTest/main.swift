@@ -1,4 +1,5 @@
 import SwiftTUI
+import Foundation
 
 struct MinimalListView: View {
     var body: some View {
@@ -9,6 +10,12 @@ struct MinimalListView: View {
             }
         }
     }
+}
+
+// 3秒後に自動終了
+DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+    print("\nExiting...")
+    RenderLoop.shutdown()
 }
 
 SwiftTUI.run {

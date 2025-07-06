@@ -1,3 +1,5 @@
+import Darwin
+
 /// フォーカス管理システム
 internal class FocusManager {
     static let shared = FocusManager()
