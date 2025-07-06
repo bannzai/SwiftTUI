@@ -148,6 +148,70 @@ let package = Package(
       dependencies: ["SwiftTUI"]
     ),
     .executableTarget(
+      name: "BorderHStackTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleBackgroundTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "DebugBackgroundTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "CellRenderTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "CellHStackTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleCellTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleCellDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "CellHStackDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "CellPositionDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "RealCellDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "CellIssueDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "CellAdapterFixTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "CellTextDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "TextCellRenderTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "HStackBackgroundDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleHStackTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
       name: "ScrollableListTest",
       dependencies: ["SwiftTUI"]
     ),

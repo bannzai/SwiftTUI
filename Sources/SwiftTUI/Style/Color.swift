@@ -1,5 +1,5 @@
 // Sources/SwiftTUI/Styling/Color.swift
-public enum Color {
+public enum Color: Equatable {
   // 8 color ANSI (foreground)
   case black, red, green, yellow, blue, magenta, cyan, white
   // Additional colors

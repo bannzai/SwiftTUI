@@ -16,41 +16,49 @@ internal struct BackgroundLayoutView: LayoutView {
     }
     
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
-        // まず子ビューを描画して、その範囲を把握
-        let tempBuffer = buffer
-        child.paint(origin: origin, into: &buffer)
+        // 子ビューのサイズを取得
+        let node = makeNode()
+        if YGNodeLayoutGetWidth(node.rawPtr) == 0 {
+            node.calculate(width: 80)
+        }
+        let width = Int(YGNodeLayoutGetWidth(node.rawPtr))
+        let height = Int(YGNodeLayoutGetHeight(node.rawPtr))
         
-        // 描画された範囲を検出
-        var minRow = buffer.count
-        var maxRow = 0
-        var minCol = Int.max
-        var maxCol = 0
+        // 背景色の開始と終了のエスケープシーケンス
+        let bgStart = "\u{1B}[\(color.bg)m"
+        let bgEnd = "\u{1B}[0m"
         
-        for (index, line) in buffer.enumerated() {
-            if index < tempBuffer.count && line != tempBuffer[index] {
-                // この行が変更された
-                minRow = min(minRow, index)
-                maxRow = max(maxRow, index)
-                
-                // 変更された範囲を検出
-                if line.count > origin.x {
-                    minCol = min(minCol, origin.x)
-                    maxCol = max(maxCol, line.count)
-                }
+        // 各行に背景色を適用
+        for row in 0..<height {
+            let y = origin.y + row
+            
+            // 行を確保
+            while buffer.count <= y {
+                buffer.append("")
             }
+            
+            // 背景色付きのスペースを描画（幅分）
+            let spaces = String(repeating: " ", count: width)
+            bufferWrite(row: y, col: origin.x, text: bgStart + spaces + bgEnd, into: &buffer)
         }
         
-        // 背景色を適用
-        if minRow <= maxRow {
-            for row in minRow...maxRow {
-                if row < buffer.count {
-                    // 行の内容を背景色で囲む
-                    let line = buffer[row]
-                    if line.count > origin.x {
-                        let startIdx = line.index(line.startIndex, offsetBy: origin.x)
-                        let content = String(line[startIdx...])
-                        let bgContent = "\u{1B}[\(color.bg)m" + content + "\u{1B}[0m"
-                        buffer[row] = String(line[..<startIdx]) + bgContent
+        // その上に子ビューを描画（背景色付き）
+        var tempBuffer: [String] = []
+        child.paint(origin: (0, 0), into: &tempBuffer)
+        
+        // 子ビューの内容を背景色付きで本バッファに転写
+        for (index, line) in tempBuffer.enumerated() {
+            if index < height {
+                let y = origin.y + index
+                if y >= 0 && y < buffer.count {
+                    // 各文字を背景色付きで描画
+                    var x = origin.x
+                    for char in line {
+                        if char != " " {
+                            // 空白以外の文字は背景色付きで描画
+                            bufferWrite(row: y, col: x, text: bgStart + String(char) + bgEnd, into: &buffer)
+                        }
+                        x += 1
                     }
                 }
             }
@@ -60,4 +68,55 @@ internal struct BackgroundLayoutView: LayoutView {
     func render(into buffer: inout [String]) {
         child.render(into: &buffer)
     }
+}
+
+// ANSIエスケープシーケンスを除去
+private func stripANSI(_ str: String) -> String {
+    var result = ""
+    var inEscape = false
+    
+    for char in str {
+        if char == "\u{1B}" {
+            inEscape = true
+        } else if inEscape && char == "m" {
+            inEscape = false
+        } else if !inEscape {
+            result.append(char)
+        }
+    }
+    
+    return result
+}
+
+// 文字列の表示幅を計算（日本語文字は幅2）
+private func displayWidth(_ str: String) -> Int {
+    var width = 0
+    for char in str {
+        let scalar = char.unicodeScalars.first?.value ?? 0
+        // 日本語文字（CJK統合漢字、ひらがな、カタカナなど）は幅2
+        if scalar > 0x7F {
+            width += 2
+        } else {
+            width += 1
+        }
+    }
+    return width
+}
+
+// 文字列の表示長を計算（ANSIエスケープシーケンスを除く）
+private func calculateVisibleLength(_ text: String) -> Int {
+    var length = 0
+    var inEscape = false
+    
+    for char in text {
+        if char == "\u{1B}" {
+            inEscape = true
+        } else if inEscape && char == "m" {
+            inEscape = false
+        } else if !inEscape {
+            length += 1
+        }
+    }
+    
+    return length
 }

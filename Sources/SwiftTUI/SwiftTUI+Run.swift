@@ -45,13 +45,13 @@ private struct LayoutViewWrapper: LegacyView, LayoutView {
 }
 
 public extension SwiftTUI {
-    /// SwiftUIライクなAPIでアプリケーションを起動
+    /// SwiftUIライクなAPIでアプリケーションを起動（セルベースレンダリング）
     static func run<Content: View>(_ view: @escaping () -> Content) {
         // Viewインスタンスを一度だけ作成
         let viewInstance = view()
         
-        // 既存のRenderLoopを使用してマウント
-        RenderLoop.mount {
+        // セルベースのRenderLoopを使用してマウント
+        CellRenderLoop.mount {
             // 保持したインスタンスのLayoutViewを返す
             let layoutView = ViewRenderer.renderView(viewInstance)
             return LegacyAnyView(LayoutViewWrapper(layoutView: layoutView))
@@ -64,7 +64,7 @@ public extension SwiftTUI {
     /// View型を直接受け取るバージョン（後方互換性のため）
     static func run<Content: View>(_ view: Content) {
         // 既にインスタンス化されたViewをそのまま使用
-        RenderLoop.mount {
+        CellRenderLoop.mount {
             let layoutView = ViewRenderer.renderView(view)
             return LegacyAnyView(LayoutViewWrapper(layoutView: layoutView))
         }

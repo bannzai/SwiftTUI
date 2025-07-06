@@ -268,7 +268,8 @@ internal struct ViewRenderer {
             }
         } else if modifierTypeName.contains("BorderModifier") {
             // BorderModifierの処理
-            return BorderLayoutView(child: contentLayoutView)
+            // セルベースレンダリングを使用
+            return CellBorderLayoutView(child: contentLayoutView)
         } else if modifierTypeName.contains("BackgroundModifier") {
             // BackgroundModifierの処理
             let bgMirror = Mirror(reflecting: modifierChild.value)
@@ -277,7 +278,8 @@ internal struct ViewRenderer {
                 let colorMirror = Mirror(reflecting: colorView)
                 if let colorChild = colorMirror.children.first(where: { $0.label == "color" }),
                    let color = colorChild.value as? Color {
-                    return BackgroundLayoutView(color: color, child: contentLayoutView)
+                    // セルベースレンダリングを使用
+                    return CellBackgroundLayoutView(color: color, child: contentLayoutView)
                 }
             }
         } else if modifierTypeName.contains("ForegroundColorModifier") {

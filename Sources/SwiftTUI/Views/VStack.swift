@@ -20,14 +20,14 @@ public struct VStack<Content: View>: View {
 
 // HorizontalAlignmentはFrameModifier.swiftで定義済み
 
-// 内部実装：既存のFlexStackへの変換
+// 内部実装：セルベースのFlexStackへの変換
 extension VStack {
     internal var _layoutView: any LayoutView {
         // contentをLayoutViewに変換
         let contentLayoutView = ViewRenderer.renderView(content)
         
-        // FlexStackとして返す（spacingを渡す）
-        return FlexStack(.column, spacing: Float(spacing)) {
+        // CellFlexStackとして返す（spacingを渡す）
+        return CellFlexStack(.column, spacing: Float(spacing)) {
             // TupleLayoutViewの場合は子要素を展開
             if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
                 return tupleLayoutView.views
