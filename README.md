@@ -372,6 +372,23 @@ ESC - プログラムを終了
 このテストでは、5つの項目を持つScrollViewが表示され、ビューポートは3行に制限されています。
 矢印キーで残りのコンテンツをスクロールして表示できます。
 
+### ForEachの動作確認
+
+ForEachの各種パターンを確認できます：
+
+```bash
+# シンプルなForEachテスト（Range使用）
+swift run SimpleForEachTest
+
+# 複雑なForEachテスト（Identifiable、Range、KeyPath）
+swift run ForEachTest
+```
+
+ForEachTestでは以下の3つのパターンが表示されます：
+1. **Identifiable**: カスタム構造体の配列を使用
+2. **Range**: `0..<5`のような範囲を使用
+3. **KeyPath**: 文字列配列で`id: \.self`を使用
+
 ### ButtonFocusTestの動作確認
 
 ButtonFocusTestは@Stateプロパティラッパーとボタンフォーカス機能を確認するサンプルです：
