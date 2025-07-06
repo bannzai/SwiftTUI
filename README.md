@@ -382,12 +382,23 @@ swift run SimpleForEachTest
 
 # 複雑なForEachテスト（Identifiable、Range、KeyPath）
 swift run ForEachTest
+
+# デバッグ用テスト（HStack内でのForEach）
+swift run ForEachDebugTest
 ```
 
 ForEachTestでは以下の3つのパターンが表示されます：
 1. **Identifiable**: カスタム構造体の配列を使用
 2. **Range**: `0..<5`のような範囲を使用
 3. **KeyPath**: 文字列配列で`id: \.self`を使用
+
+#### 既知の問題
+
+ForEach自体は正しく動作していますが、以下の組み合わせで表示が崩れる場合があります：
+- HStack内でborder()を使用した場合：境界線が重なって表示される
+- background()モディファイアとの組み合わせ：ANSIエスケープシーケンスが混在する場合がある
+
+これらは関連コンポーネント（HStack、BackgroundLayoutView）の問題であり、ForEachの実装自体は正常です。
 
 ### ButtonFocusTestの動作確認
 
