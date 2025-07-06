@@ -148,6 +148,18 @@ let package = Package(
       dependencies: ["SwiftTUI"]
     ),
     .executableTarget(
+      name: "BorderHStackTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleBackgroundTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "DebugBackgroundTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
       name: "ScrollableListTest",
       dependencies: ["SwiftTUI"]
     ),
