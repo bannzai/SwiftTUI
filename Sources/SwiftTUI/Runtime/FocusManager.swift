@@ -1,3 +1,5 @@
+import Darwin
+
 /// フォーカス管理システム
 internal class FocusManager {
     static let shared = FocusManager()
@@ -27,6 +29,8 @@ internal class FocusManager {
         let info = FocusableViewInfo(id: id, acceptsInput: acceptsInput, handler: view)
         focusableViews.append(info)
         
+        fputs("DEBUG: FocusManager registered: \(id), total views: \(focusableViews.count)\n", stderr)
+        
         // フォーカスを復元または初期設定
         if let focusedID = currentFocusedID,
            let newIndex = focusableViews.firstIndex(where: { $0.id == focusedID }) {
@@ -37,6 +41,7 @@ internal class FocusManager {
             // 最初のViewにフォーカスを設定
             currentFocusIndex = 0
             updateFocusState()
+            fputs("DEBUG: FocusManager set initial focus to: \(focusableViews[0].id)\n", stderr)
         }
     }
     
@@ -105,9 +110,14 @@ internal class FocusManager {
         if let index = currentFocusIndex,
            index < focusableViews.count,
            let handler = focusableViews[index].handler {
-            return handler.handleKeyEvent(event)
+            // デバッグ: フォーカスされているビューの情報
+            fputs("DEBUG: FocusManager forwarding \(event.key) to \(focusableViews[index].id)\n", stderr)
+            let handled = handler.handleKeyEvent(event)
+            fputs("DEBUG: Event handled: \(handled)\n", stderr)
+            return handled
         }
         
+        fputs("DEBUG: FocusManager - no focused view to handle event\n", stderr)
         return false
     }
     

@@ -73,11 +73,20 @@ internal final class ScrollLayoutView: LayoutView {
             let scrollX = min(max(0, scrollOffset.x), maxScrollX)
             let scrollY = min(max(0, scrollOffset.y), maxScrollY)
             
-            // コンテンツを描画（スクロールオフセットを適用）
-            child.paint(
-                origin: (origin.x - scrollX, origin.y - scrollY),
-                into: &buffer
-            )
+            // クリップ領域を設定して描画
+            // 現在の実装では、シンプルにスクロールオフセットを保存して状態を確認
+            self.contentSize = (contentWidth, contentHeight)
+            self.viewportSize = (viewportWidth, viewportHeight)
+            
+            // デバッグ: スクロール状態を表示
+            if scrollY > 0 || scrollX > 0 {
+                let debugInfo = "Scroll: (\(scrollX), \(scrollY))"
+                bufferWrite(row: origin.y, col: origin.x + viewportWidth + 2, text: debugInfo, into: &buffer)
+            }
+            
+            // TODO: より洗練されたスクロール実装
+            // 現在は簡易的にオフセットなしで描画
+            child.paint(origin: origin, into: &buffer)
             
             // スクロールインジケーターを描画
             if showsIndicators {
@@ -162,19 +171,29 @@ extension ScrollLayoutView: FocusableView {
         // 矢印キーでスクロール
         switch event.key {
         case .up where axes.contains(.vertical):
+            fputs("DEBUG: ScrollView handling UP key\n", stderr)
             scrollOffset.y = max(0, scrollOffset.y - 1)
+            RenderLoop.scheduleRedraw()
             return true
             
         case .down where axes.contains(.vertical):
-            scrollOffset.y += 1
+            fputs("DEBUG: ScrollView handling DOWN key\n", stderr)
+            let maxScroll = max(0, contentSize.height - viewportSize.height)
+            scrollOffset.y = min(scrollOffset.y + 1, maxScroll)
+            RenderLoop.scheduleRedraw()
             return true
             
         case .left where axes.contains(.horizontal):
+            fputs("DEBUG: ScrollView handling LEFT key\n", stderr)
             scrollOffset.x = max(0, scrollOffset.x - 1)
+            RenderLoop.scheduleRedraw()
             return true
             
         case .right where axes.contains(.horizontal):
-            scrollOffset.x += 1
+            fputs("DEBUG: ScrollView handling RIGHT key\n", stderr)
+            let maxScroll = max(0, contentSize.width - viewportSize.width)
+            scrollOffset.x = min(scrollOffset.x + 1, maxScroll)
+            RenderLoop.scheduleRedraw()
             return true
             
         default:

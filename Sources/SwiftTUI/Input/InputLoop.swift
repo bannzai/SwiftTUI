@@ -26,11 +26,7 @@ enum InputLoop {
     src?.setEventHandler {
       var byte: UInt8 = 0
       while read(fd, &byte, 1) == 1 {
-        // デバッグ: 受信したバイトを表示
-        fputs("DEBUG: Received byte: \(byte) (0x\(String(format: "%02X", byte)))\n", stderr)
-        
         if let ev = Self.translate(byte: byte) { 
-          fputs("DEBUG: Translated to key event: \(ev.key)\n", stderr)
           eventHandler(ev) 
         }
       }
@@ -57,7 +53,6 @@ enum InputLoop {
     // ESCシーケンスの処理
     if !escBuffer.isEmpty {
       escBuffer.append(byte)
-      fputs("DEBUG: ESC buffer now: \(escBuffer.map { String(format: "0x%02X", $0) }.joined(separator: " "))\n", stderr)
       
       // 矢印キーのESCシーケンス判定
       if escBuffer.count >= 3 {
@@ -67,27 +62,16 @@ enum InputLoop {
         // 矢印キーのESCシーケンス
         if seq.count >= 3 && seq[0] == 27 && seq[1] == 91 {  // ESC [
           switch seq[2] {
-          case 65: 
-            fputs("DEBUG: UP arrow detected!\n", stderr)
-            return .init(key: .up)     // ESC [ A
-          case 66: 
-            fputs("DEBUG: DOWN arrow detected!\n", stderr)
-            return .init(key: .down)   // ESC [ B
-          case 67: 
-            fputs("DEBUG: RIGHT arrow detected!\n", stderr)
-            return .init(key: .right)  // ESC [ C
-          case 68: 
-            fputs("DEBUG: LEFT arrow detected!\n", stderr)
-            return .init(key: .left)   // ESC [ D
-          default: 
-            fputs("DEBUG: Unknown ESC sequence\n", stderr)
-            break
+          case 65: return .init(key: .up)     // ESC [ A
+          case 66: return .init(key: .down)   // ESC [ B
+          case 67: return .init(key: .right)  // ESC [ C
+          case 68: return .init(key: .left)   // ESC [ D
+          default: break
           }
         }
         
         // 単独のESC（簡易実装 - 3バイト待ってもESC[X形式でなければESC）
         if seq.count == 1 && seq[0] == 27 {
-          fputs("DEBUG: Single ESC detected\n", stderr)
           return .init(key: .escape)
         }
       }
@@ -99,7 +83,6 @@ enum InputLoop {
     // ESCキーの開始
     if byte == 27 {
       escBuffer.append(byte)
-      fputs("DEBUG: ESC sequence started\n", stderr)
       return nil
     }
     
