@@ -372,8 +372,13 @@ extension View {
 }
 
 // TupleView用の内部LayoutView
-internal struct TupleLayoutView: LayoutView {
+internal final class TupleLayoutView: LayoutView {
     let views: [LegacyAnyView]
+    private var calculatedNode: YogaNode?
+    
+    init(views: [LegacyAnyView]) {
+        self.views = views
+    }
     
     func makeNode() -> YogaNode {
         // 複数のViewを配列として保持するだけ
@@ -383,12 +388,21 @@ internal struct TupleLayoutView: LayoutView {
         for view in views {
             node.insert(child: view.makeNode())
         }
+        self.calculatedNode = node
         return node
     }
     
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
-        // 各子要素を描画
-        let node = makeNode()
+        // Use the calculated node if available, otherwise create a new one
+        let node = calculatedNode ?? makeNode()
+        
+        // If we don't have layout information, we need to calculate it
+        if YGNodeLayoutGetWidth(node.rawPtr) == 0 {
+            // Fallback: calculate with a default width
+            node.calculate(width: 80)
+        }
+        
+        // Paint children at their calculated positions
         let cnt = Int(YGNodeGetChildCount(node.rawPtr))
         for i in 0..<cnt {
             guard let raw = YGNodeGetChild(node.rawPtr, Int(i)) else { continue }
