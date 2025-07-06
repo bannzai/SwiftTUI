@@ -586,4 +586,36 @@ swift run InteractiveFormTest # ESCキー修正により解決済み - 正常に
    - 原因: bufferWrite関数の単純な上書き処理
    - 根本的な解決にはレンダリングアーキテクチャの改善が必要
 
+### セルベースレンダリングの動作確認
+
+セルベースレンダリングの実装により、HStack内での背景色問題が修正されました：
+
+```bash
+# HStack内での背景色レンダリングテスト
+swift run ManualCellTest
+
+# 表示内容：
+# - 3つの要素（A=赤背景、B=緑背景、C=青背景）がすべて正しく表示されます
+# - 以前の問題（最後の要素の背景色のみ表示）が修正されています
+```
+
+#### セルベースレンダリングの特徴
+
+- **Cell構造体**: 各文字の位置に文字、前景色、背景色を保持
+- **CellBuffer**: 画面全体をセルの2次元配列として管理
+- **正しい重ね合わせ**: 背景色と文字を別々に管理することで、正しい描画順序を実現
+
+#### 関連テストプログラム
+
+```bash
+# HStackの背景色テスト（修正前の問題を確認）
+swift run HStackBackgroundDebugTest
+
+# 手動でセルベースレンダリングを確認
+swift run ManualCellTest
+
+# ForEachとセルベースレンダリングの組み合わせ
+swift run ForEachCellTest  # ForEachRange使用の例
+```
+
 

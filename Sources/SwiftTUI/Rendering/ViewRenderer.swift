@@ -74,6 +74,7 @@ internal struct ViewRenderer {
             
             
             // _layoutViewプロパティを持つViewの処理
+            // VStackやHStackは_layoutViewプロパティを持っている
             // Mirrorで_layoutViewプロパティを探す
             let mirror = Mirror(reflecting: view)
             if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
@@ -81,6 +82,7 @@ internal struct ViewRenderer {
                 return layoutView
             }
             
+            // _layoutViewが見つからない場合のフォールバック
             // VStackやHStackの場合は特別な処理
             return renderStackView(view)
         }
@@ -179,7 +181,7 @@ internal struct ViewRenderer {
                let content = contentChild.value as? any View {
                 let spacing = mirror.children.first(where: { $0.label == "spacing" })?.value as? Int ?? 0
                 let contentLayoutView = renderView(content)
-                return FlexStack(.column, spacing: Float(spacing)) {
+                return CellFlexStack(.column, spacing: Float(spacing)) {
                     if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
                         return tupleLayoutView.views
                     } else {
@@ -201,7 +203,7 @@ internal struct ViewRenderer {
                let content = contentChild.value as? any View {
                 let spacing = mirror.children.first(where: { $0.label == "spacing" })?.value as? Int ?? 0
                 let contentLayoutView = renderView(content)
-                return FlexStack(.row, spacing: Float(spacing)) {
+                return CellFlexStack(.row, spacing: Float(spacing)) {
                     if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
                         return tupleLayoutView.views
                     } else {

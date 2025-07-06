@@ -6,7 +6,7 @@ public struct GlobalKeyHandler {
 }
 
 // LayoutViewをLegacyViewでラップする構造体
-private struct LayoutViewWrapper: LegacyView, LayoutView {
+private struct LayoutViewWrapper: LegacyView, LayoutView, CellLayoutView {
     let layoutView: any LayoutView
     
     func makeNode() -> YogaNode {
@@ -19,6 +19,17 @@ private struct LayoutViewWrapper: LegacyView, LayoutView {
     
     func render(into buffer: inout [String]) {
         layoutView.render(into: &buffer)
+    }
+    
+    // CellLayoutView実装
+    func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
+        if let cellLayoutView = layoutView as? CellLayoutView {
+            cellLayoutView.paintCells(origin: origin, into: &buffer)
+        } else {
+            // 従来のLayoutViewの場合はアダプターを使用
+            let adapter = CellLayoutAdapter(layoutView)
+            adapter.paintCells(origin: origin, into: &buffer)
+        }
     }
     
     func handle(event: KeyboardEvent) -> Bool {
@@ -54,7 +65,7 @@ public extension SwiftTUI {
         CellRenderLoop.mount {
             // 保持したインスタンスのLayoutViewを返す
             let layoutView = ViewRenderer.renderView(viewInstance)
-            return LegacyAnyView(LayoutViewWrapper(layoutView: layoutView))
+            return LayoutViewWrapper(layoutView: layoutView)
         }
         
         // メインループを開始
@@ -66,7 +77,7 @@ public extension SwiftTUI {
         // 既にインスタンス化されたViewをそのまま使用
         CellRenderLoop.mount {
             let layoutView = ViewRenderer.renderView(view)
-            return LegacyAnyView(LayoutViewWrapper(layoutView: layoutView))
+            return LayoutViewWrapper(layoutView: layoutView)
         }
         
         RunLoop.main.run()
