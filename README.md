@@ -685,4 +685,57 @@ swift run ManualCellTest
 swift run ForEachCellTest  # ForEachRange使用の例
 ```
 
+### テストプログラムの実行と自動化
+
+#### Phase 4 コンポーネントのテスト
+
+Phase 4で実装された新しいコンポーネントのテストプログラム：
+
+```bash
+# Toggleコンポーネント - オン/オフ切り替え
+swift run ToggleTest
+
+# Pickerコンポーネント - ドロップダウン選択
+swift run PickerTest
+
+# ProgressViewコンポーネント - 進捗表示（5秒後に自動終了）
+swift run ProgressViewTest
+
+# Sliderコンポーネント - 値の範囲選択
+swift run SliderTest
+
+# Alertコンポーネント - .alert()モディファイア使用
+swift run AlertTest
+```
+
+#### 自動テストスクリプト
+
+各テストプログラムには自動実行用のスクリプトが用意されています：
+
+```bash
+# SimpleTestの自動実行（5秒後に自動終了）
+./scripts/SimpleTest/test.sh
+
+# AlertTestの自動実行（ボタン操作とアラート表示を自動化）
+./scripts/AlertTest/test.sh
+
+# ButtonFocusTestの自動実行（Tab移動とボタンクリックを自動化）
+./scripts/ButtonFocusTest/test.sh
+```
+
+各スクリプトは以下の機能を提供します：
+- キー入力の自動シミュレーション
+- 出力のファイル保存（`scripts/{TEST_NAME}/output.txt`）
+- 最終画面のスクリーンショット保存（`scripts/{TEST_NAME}/screenshot.txt`）
+
+#### テスト結果の確認
+
+すべてのテストプログラムの実行結果と詳細は`TEST_RESULTS.md`にまとめられています。
+このドキュメントには以下の情報が含まれます：
+
+- 各テストの期待される挙動
+- 実行結果と動作確認状況
+- 作成された自動テストスクリプトの一覧
+- 今後の課題と推奨事項
+
 
