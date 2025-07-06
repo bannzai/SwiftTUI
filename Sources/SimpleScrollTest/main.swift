@@ -29,11 +29,11 @@ struct SimpleScrollTestView: View {
     }
 }
 
-// 30秒後に自動終了
-DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
-    print("\nExiting...")
-    RenderLoop.shutdown()
-}
+// 手動でテストするため、自動終了を無効化
+// DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
+//     print("\nExiting...")
+//     RenderLoop.shutdown()
+// }
 
 SwiftTUI.run {
     SimpleScrollTestView()

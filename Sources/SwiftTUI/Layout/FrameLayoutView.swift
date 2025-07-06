@@ -55,6 +55,8 @@ internal struct FrameLayoutView: LayoutView {
             let frameWidth = Int(YGNodeLayoutGetWidth(node.rawPtr))
             let frameHeight = Int(YGNodeLayoutGetHeight(node.rawPtr))
             
+            // fputs("DEBUG: FrameLayoutView painting child at (\(origin.x + dx), \(origin.y + dy)), frame size: \(frameWidth)x\(frameHeight)\n", stderr)
+            
             // 子を描画
             child.paint(origin: (origin.x + dx, origin.y + dy), into: &buffer)
             

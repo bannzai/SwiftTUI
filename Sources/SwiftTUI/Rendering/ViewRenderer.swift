@@ -266,6 +266,13 @@ internal struct ViewRenderer {
                let color = colorChild.value as? Color {
                 return ForegroundColorLayoutView(color: color, child: contentLayoutView)
             }
+        } else if modifierTypeName.contains("FrameModifier") {
+            // FrameModifierの処理
+            let frameMirror = Mirror(reflecting: modifierChild.value)
+            let width = frameMirror.children.first(where: { $0.label == "width" })?.value as? Float
+            let height = frameMirror.children.first(where: { $0.label == "height" })?.value as? Float
+            let alignment = frameMirror.children.first(where: { $0.label == "alignment" })?.value as? Alignment ?? .center
+            return FrameLayoutView(width: width, height: height, alignment: alignment, child: contentLayoutView)
         }
         
         // 未対応のmodifierはcontentをそのまま返す
