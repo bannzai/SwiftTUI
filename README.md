@@ -111,6 +111,7 @@ swift run AlertTest               # 警告ダイアログ
 - **`.foregroundColor(_:)`**: テキスト色を設定
 - **`.frame(width:height:)`**: サイズ制約を設定
 - **`.bold()`**: 太字テキスト表示
+- **`.alert(_:isPresented:message:)`**: アラートダイアログを表示
 
 ### State管理
 
@@ -386,17 +387,10 @@ struct AlertExampleView: View {
     @State private var showAlert = false
     
     var body: some View {
-        if showAlert {
-            Alert(
-                title: "保存完了", 
-                message: "設定が保存されました",
-                dismiss: { showAlert = false }
-            )
-        } else {
-            Button("保存") {
-                showAlert = true
-            }
+        Button("保存") {
+            showAlert = true
         }
+        .alert("保存完了", isPresented: $showAlert, message: "設定が保存されました")
     }
 }
 ```
