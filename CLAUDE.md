@@ -99,13 +99,13 @@ struct ContentView: LayoutView {
 - [x] ScrollView（垂直・水平スクロール対応）
 - [x] List（自動セパレーター付き）
 
-**フェーズ4 - 追加コンポーネント**（計画中）
-- [ ] Toggle
-- [ ] Picker
-- [ ] Sheet
-- [ ] Alert
-- [ ] ProgressView
-- [ ] Slider
+**フェーズ4 - 追加コンポーネント**（ほぼ完了）
+- [x] Toggle
+- [x] Picker
+- [ ] ~Sheet~ （TUIでの使用頻度が低いため実装見送り）
+- [x] Alert
+- [x] ProgressView
+- [x] Slider
 
 **フェーズ5 - 高度な状態管理**（計画中）
 - [ ] ~@ObservedObject~ Observable
