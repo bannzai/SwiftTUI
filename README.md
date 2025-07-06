@@ -385,6 +385,10 @@ swift run ForEachTest
 
 # デバッグ用テスト（HStack内でのForEach）
 swift run ForEachDebugTest
+
+# 表示問題の調査用テスト
+swift run BorderHStackTest    # HStackでのボーダー重複を確認
+swift run SimpleBackgroundTest # 背景色の基本動作を確認
 ```
 
 ForEachTestでは以下の3つのパターンが表示されます：
@@ -396,9 +400,14 @@ ForEachTestでは以下の3つのパターンが表示されます：
 
 ForEach自体は正しく動作していますが、以下の組み合わせで表示が崩れる場合があります：
 - HStack内でborder()を使用した場合：境界線が重なって表示される
-- background()モディファイアとの組み合わせ：ANSIエスケープシーケンスが混在する場合がある
+- background()モディファイアとの組み合わせ：HStack内では最後の要素の背景色のみが表示される
 
-これらは関連コンポーネント（HStack、BackgroundLayoutView）の問題であり、ForEachの実装自体は正常です。
+これらは関連コンポーネント（HStack、BackgroundLayoutView、bufferWrite）の問題であり、ForEachの実装自体は正常です。
+
+##### 問題の詳細
+- **原因**: bufferWrite関数が単純な文字単位の上書きを行うため、HStack内で後の要素が前の要素を上書き
+- **影響**: ボーダーの重複、背景色の消失、ANSIエスケープシーケンスの混在
+- **対策**: レンダリングアーキテクチャの改善が必要（レイヤーベースの描画システムなど）
 
 ### ButtonFocusTestの動作確認
 
@@ -571,6 +580,10 @@ swift run InteractiveFormTest # ESCキー修正により解決済み - 正常に
 
 3. **ViewBuilder制限**: ~~1つのブロック内に5つ以上のViewを配置できません。~~ **修正済み**: 最大10個のViewまで配置できるように拡張しました。
 
-4. **ForEachTest表示問題**: HStackのボーダー描画とBackgroundLayoutViewのANSIエスケープ処理に問題があり、表示が崩れる場合があります。
+4. **HStack内での表示問題**: 
+   - ボーダーが重なって表示される
+   - 背景色が最後の要素のみ表示される
+   - 原因: bufferWrite関数の単純な上書き処理
+   - 根本的な解決にはレンダリングアーキテクチャの改善が必要
 
 
