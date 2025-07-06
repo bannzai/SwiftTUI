@@ -16,7 +16,6 @@ internal struct CellBackgroundLayoutView: CellLayoutView {
     }
     
     func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
-        print("DEBUG: CellBackgroundLayoutView.paintCells at origin (\(origin.x), \(origin.y)) with color \(color)")
         // 子ビューを先に描画して実際のサイズを取得
         var tempBuffer = CellBuffer(width: buffer.width, height: buffer.height)
         
@@ -42,8 +41,6 @@ internal struct CellBackgroundLayoutView: CellLayoutView {
         
         let width = maxCol + 1
         let height = maxRow + 1
-        
-        print("DEBUG: CellBackgroundLayoutView calculated size: width=\(width), height=\(height)")
         
         // 背景色を先に塗る
         bufferFillBackground(

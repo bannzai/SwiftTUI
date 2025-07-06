@@ -27,7 +27,6 @@ extension HStack {
         let contentLayoutView = ViewRenderer.renderView(content)
         
         // CellFlexStackとして返す（spacingを渡す）
-        print("DEBUG: Creating HStack with CellFlexStack")
         return CellFlexStack(.row, spacing: Float(spacing)) {
             // TupleLayoutViewの場合は子要素を展開
             if let tupleLayoutView = contentLayoutView as? TupleLayoutView {

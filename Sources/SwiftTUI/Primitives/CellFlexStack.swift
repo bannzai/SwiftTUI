@@ -58,8 +58,6 @@ final class CellFlexStack: CellLayoutView {
             let dy = Int(top.rounded())
             let childOrigin = (x: origin.x + dx, y: origin.y + dy)
             
-            // デバッグ出力（常に出力）
-            print("DEBUG: CellFlexStack child \(i): origin=(\(childOrigin.x), \(childOrigin.y)) size=(\(width), \(height))")
             
             // 子ビューを描画
             let child = children[i]
