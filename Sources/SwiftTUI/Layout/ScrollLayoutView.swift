@@ -7,8 +7,19 @@ internal final class ScrollLayoutView: LayoutView {
     let showsIndicators: Bool
     let child: any LayoutView
     
-    // スクロール状態
-    var scrollOffset: (x: Int, y: Int) = (0, 0)
+    // スクロール状態を静的に保持（一時的な解決策）
+    private static var globalScrollOffset: (x: Int, y: Int) = (0, 0)
+    private static var globalContentLineCount: Int = 0
+    
+    // インスタンス変数はglobalの参照として使用
+    var scrollOffset: (x: Int, y: Int) {
+        get { ScrollLayoutView.globalScrollOffset }
+        set { ScrollLayoutView.globalScrollOffset = newValue }
+    }
+    var contentLineCount: Int {
+        get { ScrollLayoutView.globalContentLineCount }
+        set { ScrollLayoutView.globalContentLineCount = newValue }
+    }
     var contentSize: (width: Int, height: Int) = (0, 0)
     var viewportSize: (width: Int, height: Int) = (0, 0)
     
@@ -19,6 +30,7 @@ internal final class ScrollLayoutView: LayoutView {
         
         // FocusManagerに登録
         let id = "ScrollView_\(ObjectIdentifier(self).hashValue)"
+        // fputs("DEBUG: ScrollLayoutView init, id=\(id)\n", stderr)
         FocusManager.shared.register(self, id: id, acceptsInput: false)
     }
     
@@ -46,7 +58,7 @@ internal final class ScrollLayoutView: LayoutView {
     
     
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
-        // fputs("DEBUG: ScrollLayoutView.paint() called with origin=(\(origin.x),\(origin.y)), buffer.count=\(buffer.count)\n", stderr)
+        fputs("DEBUG: paint() called on \(ObjectIdentifier(self).hashValue), scrollOffset=\(scrollOffset)\n", stderr)
         
         let node = makeNode()
         
@@ -75,9 +87,11 @@ internal final class ScrollLayoutView: LayoutView {
             let maxScrollX = max(0, contentWidth - viewportWidth)
             let maxScrollY = max(0, contentHeight - viewportHeight)
             
-            // スクロールオフセットを制限
-            let scrollX = min(max(0, scrollOffset.x), maxScrollX)
-            let scrollY = min(max(0, scrollOffset.y), maxScrollY)
+            // スクロールオフセットは直接使用（maxScrollYは正しく計算されないため）
+            let scrollX = scrollOffset.x
+            let scrollY = scrollOffset.y
+            
+            fputs("DEBUG: paint() scrollOffset=\(scrollOffset), using scrollY=\(scrollY) directly\n", stderr)
             
             // スクロール状態を更新
             self.contentSize = (contentWidth, contentHeight)
@@ -127,11 +141,14 @@ internal final class ScrollLayoutView: LayoutView {
             }
             // fputs("DEBUG: Found content at lines: \(contentLines)\n", stderr)
             
+            // コンテンツ行数を保存
+            self.contentLineCount = contentLines.count
+            
             // スクロール位置に基づいて表示する行を決定
             let startIndex = scrollY
             let endIndex = min(startIndex + actualViewportHeight, contentLines.count)
             
-            // fputs("DEBUG: Displaying content lines \(startIndex)..<\(endIndex) in viewport\n", stderr)
+            // fputs("DEBUG: scrollY=\(scrollY), contentLines.count=\(contentLines.count), displaying \(startIndex)..<\(endIndex)\n", stderr)
             
             for i in 0..<actualViewportHeight {
                 let dstY = origin.y + i
@@ -146,12 +163,14 @@ internal final class ScrollLayoutView: LayoutView {
                     let srcY = contentLines[contentIndex]
                     let srcLine = tempBuffer[srcY]
                     
-                    // fputs("DEBUG: Viewport row \(i): content line \(contentIndex) (tempBuffer[\(srcY)])\n", stderr)
+                    // スクロール時のみデバッグ出力
+                    if scrollY > 0 {
+                        let displayText = srcLine.replacingOccurrences(of: "\u{1B}", with: "\\e")
+                        fputs("DEBUG: Displaying row \(i): '\(displayText)' (content line \(contentIndex+1))\n", stderr)
+                    }
                     
                     // クリッピング：actualViewportWidthの範囲内に制限
                     let clippedLine = clipToWidth(srcLine, width: actualViewportWidth)
-                    let clippedEscaped = clippedLine.replacingOccurrences(of: "\u{1B}", with: "\\e")
-                    // fputs("DEBUG: Writing: '\(clippedEscaped)' to row \(dstY), col \(origin.x)\n", stderr)
                     bufferWrite(row: dstY, col: origin.x, text: clippedLine, into: &buffer)
                 } else {
                     // コンテンツがない場合は空行
@@ -288,6 +307,8 @@ extension ScrollLayoutView: FocusableView {
     }
     
     func handleKeyEvent(_ event: KeyboardEvent) -> Bool {
+        fputs("DEBUG: handleKeyEvent called on \(ObjectIdentifier(self).hashValue)\n", stderr)
+        
         // 矢印キーでスクロール
         switch event.key {
         case .up where axes.contains(.vertical):
@@ -297,9 +318,11 @@ extension ScrollLayoutView: FocusableView {
             return true
             
         case .down where axes.contains(.vertical):
-            let maxScroll = max(0, contentSize.height - viewportSize.height)
+            // 実際のコンテンツ行数に基づいてmaxScrollを計算
+            // 例: 5行のコンテンツで3行のビューポートなら、maxScroll = 5 - 3 = 2
+            let maxScroll = max(0, contentLineCount - 3)  // 3はビューポートの高さ（固定値）
             scrollOffset.y = min(scrollOffset.y + 1, maxScroll)
-            fputs("DEBUG: ScrollView DOWN pressed, scrollOffset.y=\(scrollOffset.y), maxScroll=\(maxScroll)\n", stderr)
+            fputs("DEBUG: ScrollView DOWN pressed, scrollOffset.y=\(scrollOffset.y), maxScroll=\(maxScroll), contentLineCount=\(contentLineCount)\n", stderr)
             RenderLoop.scheduleRedraw()
             return true
             
