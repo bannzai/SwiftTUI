@@ -41,6 +41,11 @@ let package = Package(
     .executable(name: "ForEachCellTest", targets: ["ForEachCellTest"]),
     .executable(name: "SimpleForEachCellTest", targets: ["SimpleForEachCellTest"]),
     .executable(name: "QuickForEachTest", targets: ["QuickForEachTest"]),
+    .executable(name: "ToggleTest", targets: ["ToggleTest"]),
+    .executable(name: "PickerTest", targets: ["PickerTest"]),
+    .executable(name: "ProgressViewTest", targets: ["ProgressViewTest"]),
+    .executable(name: "SliderTest", targets: ["SliderTest"]),
+    .executable(name: "AlertTest", targets: ["AlertTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -272,6 +277,26 @@ let package = Package(
     ),
     .executableTarget(
       name: "QuickForEachTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ToggleTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "PickerTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ProgressViewTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SliderTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "AlertTest",
       dependencies: ["SwiftTUI"]
     )
   ]

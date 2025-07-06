@@ -70,6 +70,13 @@ swift run SpacingTest             # Stack間隔の指定
 swift run ForEachTest             # 動的リスト生成
 swift run ScrollViewTest          # スクロール可能なビュー
 swift run ListTest                # リスト表示
+
+# 新しいコンポーネントのテスト
+swift run ToggleTest              # On/Offスイッチ
+swift run PickerTest              # ドロップダウン選択
+swift run ProgressViewTest        # 進捗表示（5秒後に自動終了）
+swift run SliderTest              # 値選択スライダー
+swift run AlertTest               # 警告ダイアログ
 ```
 
 ### 現在サポートされているコンポーネント
@@ -89,6 +96,11 @@ swift run ListTest                # リスト表示
 - **ForEach**: コレクションから動的にビューを生成
 - **ScrollView**: スクロール可能なコンテナ
 - **List**: 自動区切り線付きのリスト表示
+- **Toggle**: On/Offを切り替えるスイッチ
+- **Picker**: ドロップダウン形式の選択コンポーネント
+- **ProgressView**: 進捗状況の表示（確定/不確定）
+- **Slider**: 範囲内の値を選択するスライダー
+- **Alert**: 警告ダイアログの表示
 
 ### ViewModifier
 
@@ -99,6 +111,7 @@ swift run ListTest                # リスト表示
 - **`.foregroundColor(_:)`**: テキスト色を設定
 - **`.frame(width:height:)`**: サイズ制約を設定
 - **`.bold()`**: 太字テキスト表示
+- **`.alert(_:isPresented:message:)`**: アラートダイアログを表示
 
 ### State管理
 
@@ -329,15 +342,69 @@ struct SpacedLayoutView: View {
 }
 ```
 
+##### 新しいコンポーネントの使用例
+
+```swift
+struct SettingsView: View {
+    @State private var isDarkMode = false
+    @State private var selectedTheme = "Blue"
+    @State private var volume = 0.7
+    @State private var isLoading = true
+    
+    var body: some View {
+        VStack(spacing: 2) {
+            Text("Settings")
+                .bold()
+                .padding()
+                .border()
+            
+            // Toggle
+            Toggle("Dark Mode", isOn: $isDarkMode)
+                .padding()
+            
+            // Picker
+            Picker("Theme", selection: $selectedTheme, options: ["Blue", "Green", "Red", "Purple"])
+                .padding()
+            
+            // Slider
+            Slider(value: $volume, in: 0...1, label: "Volume")
+                .padding()
+            
+            // ProgressView
+            if isLoading {
+                ProgressView("Loading settings...")
+                    .padding()
+            } else {
+                ProgressView(value: 0.8, label: "Sync Progress")
+                    .padding()
+            }
+        }
+    }
+}
+
+// Alertの使用例
+struct AlertExampleView: View {
+    @State private var showAlert = false
+    
+    var body: some View {
+        Button("保存") {
+            showAlert = true
+        }
+        .alert("保存完了", isPresented: $showAlert, message: "設定が保存されました")
+    }
+}
+```
+
 ### 操作方法
 
 - **Tab / Shift+Tab**: フォーカスの移動
-- **Enter / Space**: ボタンのクリック
+- **Enter / Space**: ボタンのクリック、Toggle切り替え、Picker開閉、Alert閉じる
 - **文字入力**: TextFieldへの入力
 - **Backspace**: 文字の削除
-- **←→**: カーソルの移動（TextField内）
-- **↑↓**: ScrollView内でのスクロール
-- **ESC**: プログラムの終了
+- **←→**: カーソルの移動（TextField内）、Slider値の調整
+- **↑↓**: ScrollView内でのスクロール、Picker選択肢の移動
+- **Home/End**: Sliderの最小値/最大値へジャンプ
+- **ESC**: Pickerを閉じる、Alertを閉じる、プログラムの終了
 - **Ctrl+C**: 強制終了
 
 ### StateTestの動作確認

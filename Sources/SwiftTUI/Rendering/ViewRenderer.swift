@@ -230,6 +230,41 @@ internal struct ViewRenderer {
             }
         }
         
+        // Toggleの処理
+        if let toggle = view as? Toggle {
+            return toggle._layoutView
+        }
+        
+        // Pickerの処理
+        if typeName.hasPrefix("Picker<") {
+            // Mirror経由で_layoutViewプロパティを探す
+            let mirror = Mirror(reflecting: view)
+            if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
+               let layoutView = layoutViewChild.value as? any LayoutView {
+                return layoutView
+            }
+        }
+        
+        // ProgressViewの処理
+        if let progressView = view as? ProgressView {
+            return progressView._layoutView
+        }
+        
+        // Sliderの処理
+        if typeName.hasPrefix("Slider<") {
+            // Mirror経由で_layoutViewプロパティを探す
+            let mirror = Mirror(reflecting: view)
+            if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
+               let layoutView = layoutViewChild.value as? any LayoutView {
+                return layoutView
+            }
+        }
+        
+        // Alertの処理
+        if let alert = view as? Alert {
+            return alert._layoutView
+        }
+        
         // 未対応のViewはEmptyViewとして扱う
         return EmptyView._LayoutView()
     }
@@ -298,6 +333,24 @@ internal struct ViewRenderer {
             let height = frameMirror.children.first(where: { $0.label == "height" })?.value as? Float
             let alignment = frameMirror.children.first(where: { $0.label == "alignment" })?.value as? Alignment ?? .center
             return FrameLayoutView(width: width, height: height, alignment: alignment, child: contentLayoutView)
+        } else if modifierTypeName.contains("AlertModifier") {
+            // AlertModifierの処理
+            let alertMirror = Mirror(reflecting: modifierChild.value)
+            if let _ = alertMirror.children.first(where: { $0.label == "_isPresented" }),
+               let titleChild = alertMirror.children.first(where: { $0.label == "title" }),
+               let messageChild = alertMirror.children.first(where: { $0.label == "message" }),
+               let title = titleChild.value as? String {
+                let message = messageChild.value as? String
+                // Bindingの取得が複雑なので、直接AlertModifierから取得
+                if let alertModifier = modifierChild.value as? AlertModifier {
+                    return AlertModifierLayoutView(
+                        content: contentLayoutView,
+                        isPresented: alertModifier.$isPresented,
+                        title: title,
+                        message: message
+                    )
+                }
+            }
         }
         
         // 未対応のmodifierはcontentをそのまま返す
