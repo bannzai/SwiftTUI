@@ -81,10 +81,8 @@ private struct _ForEachRangeContent<Content: View>: View {
 private struct ForEachExpanded<Content: View>: View {
     let views: [Content]
     
-    var body: some View {
-        // 単純にEmptyViewを返す（実際のレンダリングはViewRendererで処理）
-        EmptyView()
-    }
+    // プリミティブViewとして扱うため、Bodyはなし
+    typealias Body = Never
 }
 
 // ViewRendererでForEachExpandedを特別扱いするためのプロトコル
