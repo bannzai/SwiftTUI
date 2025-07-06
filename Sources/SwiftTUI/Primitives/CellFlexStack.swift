@@ -48,8 +48,6 @@ final class CellFlexStack: CellLayoutView {
             // Float値の安全な変換
             let left = YGNodeLayoutGetLeft(raw)
             let top = YGNodeLayoutGetTop(raw)
-            let width = YGNodeLayoutGetWidth(raw)
-            let height = YGNodeLayoutGetHeight(raw)
             
             // NaNやInfiniteのチェック
             guard left.isFinite && top.isFinite else { continue }
@@ -58,9 +56,9 @@ final class CellFlexStack: CellLayoutView {
             let dy = Int(top.rounded())
             let childOrigin = (x: origin.x + dx, y: origin.y + dy)
             
-            
-            // 子ビューを描画
+            // 子ビューを取得
             let child = children[i]
+            
             if let cellChild = child as? CellLayoutView {
                 cellChild.paintCells(origin: childOrigin, into: &buffer)
             } else {

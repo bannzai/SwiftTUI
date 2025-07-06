@@ -51,16 +51,17 @@ public struct CellLayoutAdapter: CellLayoutView {
     }
     
     public func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
-        // 従来のLayoutViewをセルバッファに変換
+        // 従来のLayoutViewは絶対座標を使用するので、
+        // origin (0,0) で描画してから適切な位置にコピー
         var stringBuffer: [String] = []
-        wrapped.paint(origin: origin, into: &stringBuffer)
+        wrapped.paint(origin: (0, 0), into: &stringBuffer)
         
         // String配列からCellBufferに変換
         for (row, line) in stringBuffer.enumerated() {
             if !line.isEmpty {
                 bufferWriteCell(
-                    row: row,
-                    col: 0,
+                    row: origin.y + row,
+                    col: origin.x,
                     text: line,
                     into: &buffer
                 )
