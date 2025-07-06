@@ -1,3 +1,17 @@
+// ToggleTest - Toggleコンポーネントの動作確認
+//
+// 期待される挙動:
+// 1. タイトル "Toggle Component Test" が表示される
+// 2. 5つのトグルスイッチが表示される（3つ基本、2つ設定用）
+// 3. 各トグルは [x] または [ ] で状態を表示する
+// 4. Tabキーでトグル間のフォーカスを移動できる
+// 5. Space/Enterキーでフォーカスされたトグルのオン/オフを切り替えられる
+// 6. 初期状態: Toggle1=OFF, Toggle2=ON, Toggle3=OFF, Notifications=ON, DarkMode=OFF
+// 7. 下部に現在の各トグルの状態（ON/OFF）が色付きで表示される
+// 8. ESCキーでプログラムが終了する
+//
+// 実行方法: swift run ToggleTest
+
 import SwiftTUI
 
 struct ToggleTestView: View {

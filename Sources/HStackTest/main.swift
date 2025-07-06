@@ -1,3 +1,14 @@
+// HStackTest - 基本的なHStack動作確認
+//
+// 期待される挙動:
+// 1. "HStackTest starting..."というメッセージが出力される
+// 2. HStackで3つのTextが横方向に配置される
+// 3. "Left"、"Center"、"Right"が左から順に同じ行に表示される
+// 4. 2秒後に"Exiting..."メッセージが出力される
+// 5. プログラムが自動的に終了する
+//
+// 実行方法: swift run HStackTest
+
 import SwiftTUI
 import Foundation
 
