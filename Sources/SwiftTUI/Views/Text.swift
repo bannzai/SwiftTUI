@@ -57,14 +57,14 @@ public extension Text {
     }
 }
 
-// 内部実装：既存のLegacyText LayoutViewへの変換
+// 内部実装：CellText LayoutViewへの変換
 extension Text {
     internal var _layoutView: any LayoutView {
-        // 既存のLegacyTextを使用
-        let oldText = LegacyText(content)
+        // セルベースのCellTextを使用
+        let cellText = CellText(content)
         
         // モディファイアを適用
-        var result = oldText
+        var result = cellText
         if let fg = modifiers.foregroundColor {
             result = result.color(fg)
         }
