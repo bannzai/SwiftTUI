@@ -1,3 +1,19 @@
+// InteractiveFormTest - インタラクティブフォームの動作確認
+//
+// 期待される挙動:
+// 1. "Interactive Form Test"と操作説明が表示される
+// 2. 枠線で囲まれたフォームが表示される
+// 3. "ユーザー登録"というタイトルが表示される
+// 4. 2つの入力フィールド: ユーザー名（幅20）、年齢（幅10）
+// 5. Tab/Shift+Tabキーでフィールド間を移動できる
+// 6. TextFieldに文字を入力でき、Backspaceで削除できる
+// 7. "送信"ボタンをEnter/Spaceキーでクリックできる
+// 8. 送信すると入力内容がコンソールに出力される
+// 9. 送信後、"送信完了！"メッセージが黄色文字・緑背景で表示される
+// 10. ESCキーまたはCtrl+Cでプログラムが終了する
+//
+// 実行方法: swift run InteractiveFormTest
+
 import SwiftTUI
 import Foundation
 

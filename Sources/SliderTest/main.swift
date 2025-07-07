@@ -1,3 +1,20 @@
+// SliderTest - Sliderコンポーネントの動作確認
+//
+// 期待される挙動:
+// 1. タイトル "Slider Component Test" が表示される
+// 2. 5つのスライダーが2つのセクションに分かれて表示される
+// 3. Audio Settings セクション: Volume (0-1), Brightness (0-1), Playback Speed (0.5-2.0)
+// 4. Environment セクション: Temperature (-10-40), Progress (0-100)
+// 5. 各スライダーはトラック上にサム（つまみ）が表示される
+// 6. Tabキーでスライダー間のフォーカスを移動できる
+// 7. ←/→キーで値を調整できる（細かいステップ）
+// 8. Home/Endキーで最小値/最大値にジャンプできる
+// 9. 初期値: Volume=0.5, Brightness=0.7, Speed=1.0, Temperature=20.0, Progress=0.0
+// 10. 下部に現在の各スライダーの値がリアルタイムで表示される
+// 11. ESCキーでプログラムが終了する
+//
+// 実行方法: swift run SliderTest
+
 import SwiftTUI
 
 struct SliderTestView: View {
