@@ -1,3 +1,20 @@
+// ScrollableListTest - ScrollView内のリストのスクロール機能確認
+//
+// 期待される挙動:
+// 1. "Scrollable List Test"というタイトルが枠線付きで表示される
+// 2. "Use ↑↓ arrow keys to scroll"という操作説明がシアン色で表示される
+// 3. ScrollView内に10人分のデータがリスト形式で表示される
+// 4. 各項目には[ID]、名前（色付き）、役職（緑色）が横並びで表示される
+// 5. ScrollViewは10行分の高さに制限され、枠線で囲まれる
+// 6. 上下矢印キーでリストをスクロールできる
+// 7. "ESC to exit"というメッセージが白色で表示される
+// 8. 10秒後に自動的にプログラムが終了する
+// 9. ESCキーでも即座に終了できる
+//
+// 注意: ForEachとScrollViewの組み合わせによるスクロール機能をテストします
+//
+// 実行方法: swift run ScrollableListTest
+
 import SwiftTUI
 import Foundation
 
