@@ -243,6 +243,9 @@ SwiftTUI.run(App())
 - ターミナル操作はANSIエスケープシーケンスを使用
 - 差分レンダリングでパフォーマンスを最適化
 - イベントループがキーボード入力と状態更新を処理
+- FocusManagerはCellRenderLoopと統合され、Tabキーナビゲーションを管理
+  - `FocusManager.shared`がフォーカス可能なViewを追跡
+  - TabキーイベントはFocusManagerが処理し、CellRenderLoop.scheduleRedraw()を呼び出す
 - セルベースレンダリング：各セル（文字位置）に文字・前景色・背景色を独立して管理
   - `Cell`構造体: 個々のセルの情報を保持
   - `CellBuffer`: 画面全体のセルを2次元配列で管理
