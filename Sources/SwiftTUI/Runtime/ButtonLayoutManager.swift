@@ -5,6 +5,7 @@ internal class ButtonLayoutManager {
     static let shared = ButtonLayoutManager()
     
     private var buttonLayouts: [String: any LayoutView] = [:]
+    private var buttonOrder: [String] = [] // 登録順序を保持
     private let queue = DispatchQueue(label: "SwiftTUI.ButtonLayoutManager")
     
     private init() {}
@@ -24,6 +25,7 @@ internal class ButtonLayoutManager {
             fputs("[ButtonLayoutManager] Creating new ButtonLayoutView for id: \(id)\n", stderr)
             let layoutView = ButtonLayoutView(action: action, label: label, id: id)
             buttonLayouts[id] = layoutView
+            buttonOrder.append(id)
             return layoutView
         }
     }
@@ -32,6 +34,17 @@ internal class ButtonLayoutManager {
     func prepareForRerender() {
         // FocusManager\u3068\u540c\u671f\u3057\u3066\u30af\u30ea\u30a2\u3057\u306a\u3044\uff08\u30a4\u30f3\u30b9\u30bf\u30f3\u30b9\u3092\u4fdd\u6301\uff09
         fputs("[ButtonLayoutManager] prepareForRerender called, keeping \(buttonLayouts.count) button layouts\n", stderr)
+        
+        // 保持しているボタンをFocusManagerに再登録（順序を保持）
+        queue.sync {
+            for id in buttonOrder {
+                if let layoutView = buttonLayouts[id],
+                   let buttonLayoutView = layoutView as? FocusableView {
+                    fputs("[ButtonLayoutManager] Re-registering button \(id) with FocusManager\n", stderr)
+                    FocusManager.shared.register(buttonLayoutView, id: id)
+                }
+            }
+        }
     }
     
     /// \u3059\u3079\u3066\u30af\u30ea\u30a2
@@ -39,6 +52,7 @@ internal class ButtonLayoutManager {
         queue.sync {
             fputs("[ButtonLayoutManager] Clearing \(buttonLayouts.count) button layouts\n", stderr)
             buttonLayouts.removeAll()
+            buttonOrder.removeAll()
         }
     }
 }
