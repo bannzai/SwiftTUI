@@ -46,6 +46,7 @@ let package = Package(
     .executable(name: "ProgressViewTest", targets: ["ProgressViewTest"]),
     .executable(name: "SliderTest", targets: ["SliderTest"]),
     .executable(name: "AlertTest", targets: ["AlertTest"]),
+    .executable(name: "MinimalButtonTest", targets: ["MinimalButtonTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -297,6 +298,10 @@ let package = Package(
     ),
     .executableTarget(
       name: "AlertTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalButtonTest",
       dependencies: ["SwiftTUI"]
     )
   ]
