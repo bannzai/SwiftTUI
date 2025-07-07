@@ -6,7 +6,8 @@
 # 順番に実行し、タイムアウトで自動的に次のテストに移行します。
 
 # 設定
-DEFAULT_TIMEOUT=10  # デフォルトのタイムアウト秒数
+DEFAULT_TIMEOUT=15  # デフォルトのタイムアウト秒数（ビルド時間を考慮）
+BUILD_TIMEOUT=30    # ビルド用のタイムアウト
 LOG_FILE="scripts/all-test-results.log"
 SUMMARY_FILE="scripts/all-test-summary.txt"
 
@@ -28,34 +29,35 @@ FAILED_TESTS=0
 TIMEOUT_TESTS=0
 
 # タイムアウト設定（テストごとに異なる秒数を設定）
+# ビルド時間を考慮して全体的に増やす
 declare -A TIMEOUTS=(
-    ["SimpleTest"]=5
-    ["SimpleVStackTest"]=5
-    ["HStackTest"]=5
-    ["SimpleHStackTest"]=5
-    ["ESCTest"]=5
-    ["TestExample"]=5
-    ["QuickDebugTest"]=3
-    ["QuickHStackTest"]=3
-    ["QuickForEachTest"]=5
-    ["ManualCellTest"]=3
-    ["CellRenderTest"]=3
-    ["ScrollableListTest"]=12
-    ["SimpleScrollableListTest"]=12
-    ["ScrollDebugTest"]=12
-    ["ProgressViewTest"]=10
-    ["StateTest"]=8
-    ["ButtonFocusTest"]=8
-    ["InteractiveFormTest"]=10
-    ["ToggleTest"]=8
-    ["PickerTest"]=8
-    ["SliderTest"]=8
-    ["AlertTest"]=8
-    ["ListTest"]=8
-    ["ScrollViewTest"]=10
-    ["ForEachTest"]=8
-    ["ArrowKeyTest"]=8
-    ["KeyTestVerify"]=5
+    ["SimpleTest"]=10
+    ["SimpleVStackTest"]=10
+    ["HStackTest"]=10
+    ["SimpleHStackTest"]=10
+    ["ESCTest"]=10
+    ["TestExample"]=10
+    ["QuickDebugTest"]=8
+    ["QuickHStackTest"]=8
+    ["QuickForEachTest"]=10
+    ["ManualCellTest"]=8
+    ["CellRenderTest"]=10
+    ["ScrollableListTest"]=20
+    ["SimpleScrollableListTest"]=20
+    ["ScrollDebugTest"]=20
+    ["ProgressViewTest"]=15
+    ["StateTest"]=15
+    ["ButtonFocusTest"]=15
+    ["InteractiveFormTest"]=15
+    ["ToggleTest"]=15
+    ["PickerTest"]=15
+    ["SliderTest"]=15
+    ["AlertTest"]=15
+    ["ListTest"]=15
+    ["ScrollViewTest"]=20
+    ["ForEachTest"]=15
+    ["ArrowKeyTest"]=15
+    ["KeyTestVerify"]=10
 )
 
 # テスト実行関数
@@ -82,21 +84,26 @@ run_test() {
         TIMEOUT_CMD="timeout"
     else
         # timeoutコマンドがない場合は、バックグラウンドプロセスとsleepで代替
-        echo "Warning: timeout command not found. Using fallback method." >> "$LOG_FILE"
+        echo "Warning: timeout command not found. Using fallback method." | tee -a "$LOG_FILE"
         
-        # バックグラウンドでテストを実行
-        swift run "$test_name" >> "$LOG_FILE" 2>&1 &
+        # バックグラウンドでテストを実行（teeを使って画面にも表示）
+        # プロセスグループを使ってパイプ全体を管理
+        (
+            swift run "$test_name" 2>&1 | tee -a "$LOG_FILE"
+        ) &
         TEST_PID=$!
         
         # タイムアウト監視用のサブシェル
         (
             sleep $timeout
+            # プロセスグループ全体を終了
             if kill -0 $TEST_PID 2>/dev/null; then
+                pkill -P $TEST_PID 2>/dev/null
                 kill -TERM $TEST_PID 2>/dev/null
                 sleep 1
                 kill -KILL $TEST_PID 2>/dev/null
             fi
-        ) &
+        ) 2>/dev/null &
         TIMEOUT_PID=$!
         
         # テストプロセスの終了を待つ
@@ -105,6 +112,7 @@ run_test() {
         
         # タイムアウト監視プロセスを停止
         kill -TERM $TIMEOUT_PID 2>/dev/null
+        wait $TIMEOUT_PID 2>/dev/null
         
         # タイムアウトかどうかを判定
         if [ $exit_code -eq 143 ] || [ $exit_code -eq 137 ]; then
@@ -138,8 +146,8 @@ run_test() {
     fi
     
     # timeoutコマンドが使える場合の処理
-    $TIMEOUT_CMD $timeout swift run "$test_name" >> "$LOG_FILE" 2>&1
-    exit_code=$?
+    $TIMEOUT_CMD $timeout swift run "$test_name" 2>&1 | tee -a "$LOG_FILE"
+    exit_code=${PIPESTATUS[0]}
     
     end_time=$(date +%s)
     duration=$((end_time - start_time))
