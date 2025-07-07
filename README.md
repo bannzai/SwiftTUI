@@ -507,6 +507,24 @@ Reset - すべてをリセット
 3. フォーカスされたボタンは緑色で強調表示されます
 4. Enter または Space キーでフォーカスされたボタンを実行できます
 
+#### Tabキーナビゲーションのデバッグ
+
+Tabキーナビゲーションに問題が発生した場合、以下の方法でデバッグできます：
+
+```bash
+# 最小限のボタンテスト
+swift run MinimalButtonTest
+
+# デバッグ情報の確認
+# MinimalButtonTestはstderrにデバッグログを出力します
+# Tabキーイベントが正しく処理されているか確認できます
+```
+
+**技術的詳細**：
+- `ButtonLayoutManager`がButtonLayoutViewインスタンスを管理
+- `FocusManager`がフォーカス可能なViewを追跡
+- `CellRenderLoop`がレンダリング前に両マネージャーを準備
+
 ### ListTestの動作確認
 
 ListTestはListコンポーネントの動作を確認するサンプルです：

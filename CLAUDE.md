@@ -283,6 +283,23 @@ SwiftTUI.run(App())
    - 現時点では、HStack内でのborder()やbackground()の使用は制限される
    - 将来的にレイヤーベースのレンダリングシステムへの移行を検討中
 
+### Tabキーナビゲーションの実装
+現在のTabキーナビゲーションは以下のアーキテクチャで実装されています：
+
+1. **ButtonLayoutManager**
+   - ButtonLayoutViewインスタンスを永続化
+   - 再レンダリング時にインスタンスが破棄されないように管理
+   - Button IDごとにLayoutViewをキャッシュ
+
+2. **ライフサイクル管理**
+   - CellRenderLoop.buildFrame()でFocusManagerとButtonLayoutManagerを準備
+   - ButtonContainerがButtonLayoutManager経由でLayoutViewを取得
+   - ViewRendererがButtonContainerを適切に処理
+
+3. **注意点**
+   - ButtonLayoutViewインスタンスはアプリケーションのライフサイクル全体で保持
+   - メモリリークの可能性があるため、将来的には適切なクリーンアップが必要
+
 ### その他
 - /tmpにスクリプトファイルを作らないでください
 - ./tmp/に動作確認ようのスクリプトファイルを作りましょう
