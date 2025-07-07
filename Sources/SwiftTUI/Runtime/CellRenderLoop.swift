@@ -114,6 +114,7 @@ public enum CellRenderLoop {
     }
     
     private static func incrementalRedraw() {
+        fputs("[CellRenderLoop] incrementalRedraw called\n", stderr)
         let nextBuffer = buildFrame()
         let nextLines = nextBuffer.toANSILines()
         

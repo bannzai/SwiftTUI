@@ -124,8 +124,10 @@ internal struct ViewRenderer {
         
         // ButtonLayoutManagerを使用してLayoutViewを取得
         if let action = action, let label = label, let id = id {
-            fputs("[ViewRenderer] Creating ButtonLayoutView through ButtonLayoutManager for id: \(id)\n", stderr)
-            return ButtonLayoutManager.shared.getOrCreate(id: id, action: action, label: label)
+            fputs("[ViewRenderer] Getting ButtonLayoutView from ButtonLayoutManager for id: \(id)\n", stderr)
+            let layoutView = ButtonLayoutManager.shared.getOrCreate(id: id, action: action, label: label)
+            fputs("[ViewRenderer] Got layoutView: \(type(of: layoutView)) at \(Unmanaged.passUnretained(layoutView as AnyObject).toOpaque())\n", stderr)
+            return layoutView
         }
         
         // フォールバック
