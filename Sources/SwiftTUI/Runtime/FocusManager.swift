@@ -18,6 +18,7 @@ internal class FocusManager {
     
     /// フォーカス可能なViewを登録
     func register(_ view: FocusableView, id: String, acceptsInput: Bool = false) {
+        print("[FocusManager] Registering view: \(id)")
         // 現在フォーカスされているViewのIDを保持
         let currentFocusedID = currentFocusIndex.flatMap { index in
             index < focusableViews.count ? focusableViews[index].id : nil
@@ -28,6 +29,7 @@ internal class FocusManager {
         
         let info = FocusableViewInfo(id: id, acceptsInput: acceptsInput, handler: view)
         focusableViews.append(info)
+        print("[FocusManager] Total focusable views: \(focusableViews.count)")
         
         // フォーカスを復元または初期設定
         if let focusedID = currentFocusedID,
@@ -44,7 +46,9 @@ internal class FocusManager {
     
     /// フォーカス可能なViewを削除
     func unregister(id: String) {
+        print("[FocusManager] Unregistering view: \(id)")
         focusableViews.removeAll { $0.id == id }
+        print("[FocusManager] Remaining focusable views: \(focusableViews.count)")
         
         // フォーカスインデックスの調整
         if let index = currentFocusIndex, index >= focusableViews.count {
@@ -55,7 +59,11 @@ internal class FocusManager {
     
     /// 次のViewにフォーカスを移動
     func focusNext() {
-        guard !focusableViews.isEmpty else { return }
+        print("[FocusManager] focusNext called")
+        guard !focusableViews.isEmpty else { 
+            print("[FocusManager] No focusable views")
+            return 
+        }
         
         if let index = currentFocusIndex {
             currentFocusIndex = (index + 1) % focusableViews.count
@@ -97,8 +105,14 @@ internal class FocusManager {
     
     /// キーボードイベントを処理
     func handleKeyEvent(_ event: KeyboardEvent) -> Bool {
+        print("[FocusManager] handleKeyEvent called with key: \(event.key)")
+        print("[FocusManager] Current focusable views count: \(focusableViews.count)")
+        print("[FocusManager] Current focus index: \(String(describing: currentFocusIndex))")
+        
         // Tabでフォーカス移動（Shift+Tabは現在未実装）
         if event.key == .tab {
+            print("[FocusManager] Tab key detected")
+            debugPrint()
             focusNext()
             return true
         }
@@ -128,6 +142,7 @@ internal class FocusManager {
     
     /// レンダリング前の準備（現在のフォーカスIDを保持してViewリストをクリア）
     func prepareForRerender() {
+        print("[FocusManager] prepareForRerender called, current views: \(focusableViews.count)")
         // 現在フォーカスされているViewのIDを保持
         if let index = currentFocusIndex,
            index < focusableViews.count {
@@ -138,6 +153,18 @@ internal class FocusManager {
         } else {
             focusableViews.removeAll()
         }
+        print("[FocusManager] prepareForRerender finished, views cleared")
+    }
+    
+    /// デバッグ情報の出力
+    func debugPrint() {
+        print("[FocusManager] === DEBUG INFO ===")
+        print("[FocusManager] Total views: \(focusableViews.count)")
+        print("[FocusManager] Current focus index: \(String(describing: currentFocusIndex))")
+        for (index, view) in focusableViews.enumerated() {
+            print("[FocusManager] [\(index)] \(view.id) - handler: \(view.handler != nil)")
+        }
+        print("[FocusManager] ==================")
     }
 }
 

@@ -72,6 +72,7 @@ struct ButtonFocusView: View {
 
 // グローバルキーハンドラーでqキーで終了できるようにする
 GlobalKeyHandler.handler = { event in
+    print("[ButtonFocusTest] GlobalKeyHandler received: \(event.key)")
     switch event.key {
     case .character("q"):
         print("\nExiting...")
