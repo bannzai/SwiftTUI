@@ -803,14 +803,22 @@ brew install coreutils
 実行結果の例：
 ```
 === SwiftTUI All Tests Runner ===
-[1] Running: SimpleTest (timeout: 5s)
-✓ PASSED (2 seconds)
+Checking timeout command availability...
+⚠ Neither timeout nor gtimeout found. Using fallback method.
 
-[2] Running: ScrollViewTest (timeout: 10s)
+[1] Running: SimpleTest (timeout: 10s)
+Building for debugging...
+[3/7] Compiling SimpleTest main.swift
+Build of product 'SimpleTest' complete! (2.45s)
+Hello, SwiftTUI!
+This is a terminal UI framework
+✓ PASSED (3 seconds)
+
+[2] Running: ScrollViewTest (timeout: 20s)
+Building for debugging...
+Build of product 'ScrollViewTest' complete! (1.85s)
+[スクロールビューの内容が表示される]
 ✗ TIMEOUT
-
-[3] Running: ButtonFocusTest (timeout: 8s)
-✗ FAILED (exit code: 1)
 
 === Test Results Summary ===
 Total tests: 65
@@ -818,5 +826,11 @@ Passed: 50
 Failed: 5
 Timeout: 10
 ```
+
+**注意事項**：
+- 初回実行時はビルドに時間がかかるため、タイムアウトが発生しやすくなります
+- 2回目以降はビルドキャッシュが効くため、より多くのテストが成功します
+- `Ctrl+C`で実行を中断できます
+- タイムアウトしたテストは個別に `swift run TestName` で実行して確認してください
 
 
