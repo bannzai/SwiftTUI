@@ -1,3 +1,22 @@
+// ForEachCellTest - ForEachの各種パターンとセルレンダリングの動作確認
+//
+// 期待される挙動:
+// 1. "ForEach Cell Test"というタイトルが太字で表示される
+// 2. ForEachRange(0..<3)によるレンダリング:
+//    - "Item 0"、"Item 1"、"Item 2"がシアン文字・赤背景で横並びで表示される
+// 3. ForEach with Arrayによるレンダリング:
+//    - "A"、"B"、"C"が白文字・緑背景で横並びで表示される
+// 4. ForEach with Identifiableによるレンダリング:
+//    - "First"、"Second"、"Third"が黒文字・黄背景で横並びで表示される
+// 5. 各アイテムにパディングが適用される
+// 6. 全体が枠線で囲まれる
+// 7. ESCキーでプログラムが終了する
+//
+// 注意: ForEachの3つの異なる使用パターン（Range、Array、Identifiable）を
+//       セルベースレンダリングシステムでテストします
+//
+// 実行方法: swift run ForEachCellTest
+
 import SwiftTUI
 
 struct ForEachCellTestView: View {
