@@ -1,3 +1,24 @@
+// CellIssueDebugTest - セルレンダリングの問題を詳細にデバッグ
+//
+// 概要:
+// HStack内での背景色レンダリング問題を低レベルでデバッグするためのテスト。
+// CellFlexStack、CellBackgroundLayoutView、LegacyTextを直接使用して、
+// Yogaノードの計算からCellBufferへの描画までの全プロセスを追跡する。
+//
+// 期待される動作:
+// - HStack内の各要素が独立した背景色（赤、緑、青）を持つ
+// - 各列のセル内容、前景色、背景色が正しく設定される
+// - ANSI出力が適切なエスケープシーケンスを含む
+//
+// デバッグ内容:
+// 1. CellFlexStackの描画プロセスを追跡
+// 2. Yogaノードのレイアウト計算結果を確認
+// 3. CellBufferの内容を列ごとに検証
+// 4. 個別コンポーネント（LegacyText、CellBackgroundLayoutView）の動作をテスト
+//
+// 実行方法:
+// swift run CellIssueDebugTest
+
 import SwiftTUI
 import Foundation
 import yoga

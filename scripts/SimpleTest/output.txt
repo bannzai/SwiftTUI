@@ -1,0 +1,11 @@
+[0/1] Planning build
+Building for debugging...
+[0/6] Write sources
+[2/6] Write swift-version--58304C5D6DBC2206.txt
+[4/9] Compiling SwiftTUI ViewRenderer.swift
+[5/9] Compiling SwiftTUI AlertModifier.swift
+[6/9] Emitting module SwiftTUI
+[7/11] Emitting module SimpleTest
+[8/11] Compiling SimpleTest main.swift
+[8/11] Write Objects.LinkFileList
+[9/11] Linking SimpleTest

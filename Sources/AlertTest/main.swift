@@ -1,3 +1,17 @@
+// AlertTest - Alert Modifierの動作確認
+//
+// 期待される挙動:
+// 1. 画面にタイトル "Alert Component Test" と3つのボタンが表示される
+// 2. 3つのボタン: "Show Simple Alert", "Show Warning", "Show Error"
+// 3. Tabキーでボタン間のフォーカスを移動できる
+// 4. Enter/Spaceキーでフォーカスされたボタンをクリックできる
+// 5. ボタンをクリックするとアラートダイアログが表示される
+// 6. アラートが表示されたらEnter/Space/ESCキーで閉じることができる
+// 7. アラートが表示された回数がカウントされて表示される
+// 8. ESCキーまたはCtrl+Cでプログラムが終了する
+//
+// 実行方法: swift run AlertTest
+
 import SwiftTUI
 
 struct AlertTestView: View {

@@ -1,3 +1,19 @@
+// SimplePaddingTest - ViewModifierの基本動作確認
+//
+// 期待される挙動:
+// 1. "ViewModifier Test starting..."というメッセージが出力される
+// 2. 4つのテキストが縦に並んで表示される:
+//    - "With padding and border": 2単位のパディングと枠線付き
+//    - "Red text": 赤色のテキスト
+//    - "Blue background": 青色の背景
+//    - "Green text on yellow bg": 緑色のテキストに黄色の背景、パディング付き
+// 3. 各モディファイア（padding、border、foregroundColor、background）が正しく適用される
+// 4. モディファイアのチェーンが正しく動作する
+// 5. 2秒後に"Exiting..."メッセージが出力される
+// 6. プログラムが自動的に終了する
+//
+// 実行方法: swift run SimplePaddingTest
+
 import SwiftTUI
 import Foundation
 

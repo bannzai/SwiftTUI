@@ -1,3 +1,19 @@
+// PickerTest - Pickerコンポーネントの動作確認
+//
+// 期待される挙動:
+// 1. タイトル "Picker Component Test" が表示される
+// 2. 3つのPicker（Color、Size、Language）が表示される
+// 3. 各Pickerはラベルと現在の選択値を表示する（例: "Color: Red ▼"）
+// 4. Tabキーで次のPickerにフォーカスを移動できる
+// 5. Enter/Spaceキーでドロップダウンを開閉できる
+// 6. ドロップダウンが開いたら↑/↓キーで選択肢を移動できる
+// 7. Enterキーで選択を確定、ESCキーでキャンセルできる
+// 8. 初期値: Color=Red, Size=Medium(2), Language=Swift
+// 9. 現在の選択値が下部に色付きで表示される
+// 10. ESCキー（ドロップダウン閉じ時）でプログラムが終了する
+//
+// 実行方法: swift run PickerTest
+
 import SwiftTUI
 
 struct PickerTestView: View {

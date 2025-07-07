@@ -1,3 +1,16 @@
+// ProgressViewTest - ProgressViewコンポーネントの動作確認
+//
+// 期待される挙動:
+// 1. タイトル "ProgressView Component Test" が表示される
+// 2. 確定進捗（Determinate）セクションに5つのプログレスバーが表示される
+// 3. 各プログレスバーは異なる進捗率（0%, 30%, 75%, 90%, 100%）を表示
+// 4. 不確定進捗（Indeterminate）セクションに3つのスピナーが表示される
+// 5. スピナーはアニメーション（回転）して表示される
+// 6. "Stop Animation"ボタンがあるが、実際には機能しない（タイマー連携未実装）
+// 7. 5秒後にプログラムが自動的に終了する
+//
+// 実行方法: swift run ProgressViewTest
+
 import SwiftTUI
 import Foundation
 

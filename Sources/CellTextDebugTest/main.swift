@@ -1,3 +1,14 @@
+// CellTextDebugTest - CellTextのセル単位レンダリングをデバッグ
+//
+// Expected behavior:
+// - CellTextインスタンスを作成し、異なる背景色（赤、緑、青）を適用
+// - 各セルの座標、文字、前景色、背景色の情報を表示
+// - CellBufferへの描画結果とANSI出力を検証
+//
+// Note: セルベースレンダリングシステムの低レベル動作確認用
+//
+// How to run: swift run CellTextDebugTest
+
 import SwiftTUI
 import Foundation
 

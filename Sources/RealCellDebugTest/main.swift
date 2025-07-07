@@ -1,3 +1,14 @@
+// RealCellDebugTest - 実際のSwiftTUIビューでセルレンダリングをデバッグ
+//
+// Expected behavior:
+// - 単一のText要素に赤背景色を適用して正常にレンダリング
+// - HStack内の複数Text要素に異なる背景色（赤、緑、青）を適用
+// - CellRenderLoopのデバッグ情報を表示
+//
+// Note: SwiftTUIのビューシステムでのセルベースレンダリング統合テスト
+//
+// How to run: swift run RealCellDebugTest
+
 import SwiftTUI
 import Foundation
 

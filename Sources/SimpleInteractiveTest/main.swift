@@ -1,3 +1,21 @@
+// SimpleInteractiveTest - シンプルなインタラクティブUIの動作確認
+//
+// 期待される挙動:
+// 1. "Simple Interactive Test"と操作説明が表示される
+// 2. タイトル "Simple Interactive Demo" が枠線付きで表示される
+// 3. TextField（幅30）に名前を入力できる
+// 4. 入力した名前に応じて挨拶メッセージが変わる（空の場合は"Hello, World!"）
+// 5. 2つのボタンとカウンター表示が横並びで配置される:
+//    - "Increment": カウンターを増加
+//    - カウンター表示（青背景）
+//    - "Reset": カウンターと名前をリセット
+// 6. Tab/Shift+Tabでフィールド間を移動できる
+// 7. Enter/Spaceでボタンをクリックできる
+// 8. @Stateによる状態管理で、変更が即座にUIに反映される
+// 9. Ctrl+CまたはESCでプログラムが終了する
+//
+// 実行方法: swift run SimpleInteractiveTest
+
 import SwiftTUI
 import Foundation
 

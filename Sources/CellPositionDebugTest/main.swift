@@ -1,3 +1,25 @@
+// CellPositionDebugTest - HStack内でのセル位置計算デバッグ
+//
+// 概要:
+// HStack内での子要素の位置計算と描画プロセスを追跡するためのテスト。
+// カスタムのDebugTextとDebugHStackを使用して、paintCellsメソッドの
+// 呼び出しと座標計算を詳細にログ出力する。
+//
+// 期待される動作:
+// - DebugHStackが各子要素の正確な位置を計算する
+// - Yogaによるレイアウト計算が正しく動作する
+// - 各子要素が適切な座標でpaintCellsを呼び出される
+// - CellBufferに正しい位置に文字と背景色が書き込まれる
+//
+// デバッグ情報:
+// - 各paintCells呼び出しのorigin座標
+// - Yogaから取得した各子要素のleft, top, width, height
+// - 最終的なCellBufferの内容（各セルの文字と背景色）
+// - ANSIエスケープシーケンスを含む出力
+//
+// 実行方法:
+// swift run CellPositionDebugTest
+
 import SwiftTUI
 import yoga
 

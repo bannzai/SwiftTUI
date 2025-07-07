@@ -685,4 +685,152 @@ swift run ManualCellTest
 swift run ForEachCellTest  # ForEachRange使用の例
 ```
 
+### テストプログラムの実行と自動化
+
+#### Phase 4 コンポーネントのテスト
+
+Phase 4で実装された新しいコンポーネントのテストプログラム：
+
+```bash
+# Toggleコンポーネント - オン/オフ切り替え
+swift run ToggleTest
+
+# Pickerコンポーネント - ドロップダウン選択
+swift run PickerTest
+
+# ProgressViewコンポーネント - 進捗表示（5秒後に自動終了）
+swift run ProgressViewTest
+
+# Sliderコンポーネント - 値の範囲選択
+swift run SliderTest
+
+# Alertコンポーネント - .alert()モディファイア使用
+swift run AlertTest
+```
+
+#### 自動テストスクリプト
+
+各テストプログラムには自動実行用のスクリプトが用意されています：
+
+```bash
+# SimpleTestの自動実行（5秒後に自動終了）
+./scripts/SimpleTest/test.sh
+
+# AlertTestの自動実行（ボタン操作とアラート表示を自動化）
+./scripts/AlertTest/test.sh
+
+# ButtonFocusTestの自動実行（Tab移動とボタンクリックを自動化）
+./scripts/ButtonFocusTest/test.sh
+```
+
+各スクリプトは以下の機能を提供します：
+- キー入力の自動シミュレーション
+- 出力のファイル保存（`scripts/{TEST_NAME}/output.txt`）
+- 最終画面のスクリーンショット保存（`scripts/{TEST_NAME}/screenshot.txt`）
+
+#### テスト結果の確認
+
+すべてのテストプログラムの実行結果と詳細は`TEST_RESULTS.md`にまとめられています。
+このドキュメントには以下の情報が含まれます：
+
+- 各テストの期待される挙動
+- 実行結果と動作確認状況
+- 作成された自動テストスクリプトの一覧
+- 今後の課題と推奨事項
+
+#### テストプログラムのドキュメント
+
+すべてのテストプログラム（65個）には標準化されたヘッダーコメントが追加されています。
+各テストファイルの先頭に以下の情報が記載されています：
+
+```swift
+// TestName - テストの概要説明
+//
+// 期待される挙動:
+// 1. 具体的な動作の説明
+// 2. 表示される内容
+// 3. 操作方法
+// ...
+//
+// 注意: テストの目的や既知の問題
+//
+// 実行方法: swift run TestName
+```
+
+例えば、`Sources/SimpleTest/main.swift`では：
+
+```swift
+// SimpleTest - SwiftUIライクな構文の基本的な動作確認
+//
+// 期待される挙動:
+// 1. "Hello, SwiftTUI!"というメッセージがシアン色で表示される
+// 2. "This is a terminal UI framework"というメッセージが白色で表示される
+// 3. 両方のメッセージが縦に並んで表示される（VStack）
+// 4. ESCキーでプログラムが終了する
+//
+// 注意: 最も基本的なテストケースで、Text ViewとVStackの動作を確認します
+//
+// 実行方法: swift run SimpleTest
+```
+
+このドキュメント化により、各テストプログラムの目的と期待される動作が明確になり、
+新しい開発者がコードベースを理解しやすくなっています。
+
+#### 全テストプログラムの一括実行
+
+`scripts/all-test.sh`を使用すると、すべてのテストプログラムを順番に実行できます：
+
+```bash
+# timeoutコマンドの確認（macOSの場合）
+./scripts/check-timeout.sh
+
+# 必要に応じてcoreutilsをインストール
+brew install coreutils
+
+# 全テストを実行
+./scripts/all-test.sh
+```
+
+このスクリプトの特徴：
+- Sources/ディレクトリ内のすべての*Testプログラムを自動検出
+- 各テストにタイムアウトを設定（デフォルト10秒、テストごとにカスタマイズ可能）
+- タイムアウトコマンドがない環境でも動作（代替処理を実装）
+- カラー出力で結果を視覚的に表示
+- 実行結果をログファイルに保存
+  - `scripts/all-test-results.log`: 詳細な実行ログ
+  - `scripts/all-test-summary.txt`: 結果サマリー
+
+実行結果の例：
+```
+=== SwiftTUI All Tests Runner ===
+Checking timeout command availability...
+⚠ Neither timeout nor gtimeout found. Using fallback method.
+
+[1] Running: SimpleTest (timeout: 10s)
+Building for debugging...
+[3/7] Compiling SimpleTest main.swift
+Build of product 'SimpleTest' complete! (2.45s)
+Hello, SwiftTUI!
+This is a terminal UI framework
+✓ PASSED (3 seconds)
+
+[2] Running: ScrollViewTest (timeout: 20s)
+Building for debugging...
+Build of product 'ScrollViewTest' complete! (1.85s)
+[スクロールビューの内容が表示される]
+✗ TIMEOUT
+
+=== Test Results Summary ===
+Total tests: 65
+Passed: 50
+Failed: 5
+Timeout: 10
+```
+
+**注意事項**：
+- 初回実行時はビルドに時間がかかるため、タイムアウトが発生しやすくなります
+- 2回目以降はビルドキャッシュが効くため、より多くのテストが成功します
+- `Ctrl+C`で実行を中断できます
+- タイムアウトしたテストは個別に `swift run TestName` で実行して確認してください
+
 

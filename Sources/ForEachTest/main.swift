@@ -1,3 +1,26 @@
+// ForEachTest - ForEachの動作確認
+//
+// 期待される挙動:
+// 1. タイトル "ForEach Test" が表示される
+// 2. Using Identifiable セクション:
+//    - 5つのアイテム（果物）がリスト表示される
+//    - 各アイテムはID、名前、色付き背景で表示される
+//    - Identifiableプロトコルを使用したForEach
+// 3. Using Range セクション:
+//    - 0〜4の数字が横並びで表示される
+//    - 偶数は緑、奇数は青の背景色
+//    - ForEachRangeを使用（Rangeでの繰り返し）
+// 4. Using KeyPath セクション:
+//    - 4つの単語が縦に並んで表示される
+//    - 各単語は枠線付きで表示される
+//    - KeyPath（\.self）を使用したForEach
+// 5. ESCキーでプログラムが終了する
+//
+// 注意: ViewBuilder制限を10個まで拡張済みのため、コンパイル可能です
+// ただし、ForEachの内容が正しく表示されない場合があります
+//
+// 実行方法: swift run ForEachTest
+
 import SwiftTUI
 
 struct Item: Identifiable {

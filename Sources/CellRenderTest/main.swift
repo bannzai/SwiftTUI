@@ -1,6 +1,29 @@
+// CellRenderTest - セルベースレンダリングプロトタイプの動作確認
+//
+// 期待される挙動:
+// 1. "=== Cell-based Rendering Prototype Test ==="が出力される
+// 2. "1. Basic text rendering:":
+//    - "Hello, World!"がシアン色で表示される
+//    - "SwiftTUI"が緑色・太字で2列目から表示される
+// 3. "2. Overlapping backgrounds (HStack simulation):":
+//    - "AAA"（赤背景）、"BBB"（緑背景）、"CCC"（青背景）が白文字で表示される
+//    - 各背景色が正しく独立して表示される
+// 4. "3. Overlapping borders:":
+//    - 3つの隣接するボーダーボックスが描画される
+//    - "A"、"B"、"C"がそれぞれのボックス内に表示される
+// 5. "4. Complex example (borders with backgrounds):":
+//    - "X"（黄背景）と"Y"（マゼンタ背景）がシアン色のボーダー内に表示される
+// 6. "5. ANSI escape sequence handling:":
+//    - ANSIエスケープシーケンスを含むテキストが正しく処理される
+// 7. "=== Test Complete ==="が出力される
+//
+// 注意: CellBufferの低レベルAPI（bufferWriteCell、bufferFillBackground、
+//       bufferDrawBorder）の動作を直接テストします
+//
+// 実行方法: swift run CellRenderTest
+
 import SwiftTUI
 
-// セルベースレンダリングのプロトタイプテスト
 print("=== Cell-based Rendering Prototype Test ===\n")
 
 // 1. 基本的なテキスト描画
