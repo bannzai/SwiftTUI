@@ -64,7 +64,7 @@ internal class FocusManager {
         }
         
         updateFocusState()
-        RenderLoop.scheduleRedraw()
+        CellRenderLoop.scheduleRedraw()
     }
     
     /// 前のViewにフォーカスを移動
@@ -78,7 +78,7 @@ internal class FocusManager {
         }
         
         updateFocusState()
-        RenderLoop.scheduleRedraw()
+        CellRenderLoop.scheduleRedraw()
     }
     
     /// 現在フォーカスされているViewのIDを取得
