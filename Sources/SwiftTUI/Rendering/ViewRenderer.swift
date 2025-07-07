@@ -43,7 +43,6 @@ internal struct ViewRenderer {
             // 型名でButtonContainerを検出
             let viewTypeName = String(describing: type(of: view))
             if viewTypeName.hasPrefix("ButtonContainer<") {
-                fputs("[ViewRenderer] Found ButtonContainer, using special handling\n", stderr)
                 return renderButtonContainer(view)
             }
             
@@ -83,13 +82,8 @@ internal struct ViewRenderer {
             // VStackやHStackは_layoutViewプロパティを持っている
             // Mirrorで_layoutViewプロパティを探す
             let mirror = Mirror(reflecting: view)
-            fputs("[ViewRenderer] Looking for _layoutView in \(typeName)\n", stderr)
-            for child in mirror.children {
-                fputs("[ViewRenderer]   Found property: \(child.label ?? "nil")\n", stderr)
-            }
             if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
                let layoutView = layoutViewChild.value as? any LayoutView {
-                fputs("[ViewRenderer] Found _layoutView property!\n", stderr)
                 return layoutView
             }
             
@@ -124,10 +118,7 @@ internal struct ViewRenderer {
         
         // ButtonLayoutManagerを使用してLayoutViewを取得
         if let action = action, let label = label, let id = id {
-            fputs("[ViewRenderer] Getting ButtonLayoutView from ButtonLayoutManager for id: \(id)\n", stderr)
-            let layoutView = ButtonLayoutManager.shared.getOrCreate(id: id, action: action, label: label)
-            fputs("[ViewRenderer] Got layoutView: \(type(of: layoutView)) at \(Unmanaged.passUnretained(layoutView as AnyObject).toOpaque())\n", stderr)
-            return layoutView
+            return ButtonLayoutManager.shared.getOrCreate(id: id, action: action, label: label)
         }
         
         // フォールバック

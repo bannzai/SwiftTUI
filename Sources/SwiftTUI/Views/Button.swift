@@ -59,7 +59,6 @@ internal struct ButtonContainer<Content: View>: View {
             action: action,
             label: label
         )
-        fputs("[ButtonContainer] _layoutView called for id: \(id)\n", stderr)
         return layoutView
     }
 }
@@ -77,12 +76,9 @@ internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, Focu
         self.label = label
         self.id = id
         self.labelLayoutView = ViewRenderer.renderView(label)
-        
-        fputs("[ButtonLayoutView] init with id: \(id)\n", stderr)
     }
     
     deinit {
-        fputs("[ButtonLayoutView] deinit with id: \(id)\n", stderr)
         // FocusManagerから削除
         FocusManager.shared.unregister(id: id)
     }
@@ -157,7 +153,6 @@ internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, Focu
     
     func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
         // paintCells時にFocusManagerに登録
-        fputs("[ButtonLayoutView] paintCells called for id: \(id), registering with FocusManager\n", stderr)
         FocusManager.shared.register(self, id: id)
         
         // フォーカス時の色設定
@@ -228,7 +223,6 @@ internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, Focu
     // MARK: - FocusableView
     
     func setFocused(_ focused: Bool) {
-        fputs("[ButtonLayoutView] setFocused(\(focused)) for id: \(id)\n", stderr)
         isFocused = focused
     }
     

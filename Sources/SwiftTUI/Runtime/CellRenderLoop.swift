@@ -24,14 +24,9 @@ public enum CellRenderLoop {
     }
     
     public static func scheduleRedraw() {
-        fputs("[CellRenderLoop] scheduleRedraw called\n", stderr)
-        guard !redrawPending else { 
-            fputs("[CellRenderLoop] Redraw already pending, skipping\n", stderr)
-            return 
-        }
+        guard !redrawPending else { return }
         redrawPending = true
         rq.async {
-            fputs("[CellRenderLoop] Starting incrementalRedraw\n", stderr)
             incrementalRedraw()
             redrawPending = false
         }
@@ -50,10 +45,8 @@ public enum CellRenderLoop {
         // キャッシュされたLayoutViewを使用
         let lv: any LayoutView
         if let cached = cachedLayoutView {
-            fputs("[CellRenderLoop] Using cached LayoutView: \(type(of: cached))\n", stderr)
             lv = cached
         } else if let layoutView = root as? LayoutView {
-            fputs("[CellRenderLoop] Using LayoutView from root: \(type(of: layoutView))\n", stderr) 
             lv = layoutView
         } else {
             // 従来のレンダリング
@@ -83,11 +76,9 @@ public enum CellRenderLoop {
         
         // セルベースレンダリング
         if let cellLayoutView = lv as? CellLayoutView {
-            fputs("[CellRenderLoop] Calling paintCells on CellLayoutView\n", stderr)
             cellLayoutView.paintCells(origin: (0, 0), into: &cellBuffer)
         } else {
             // 従来のLayoutViewをアダプター経由で描画
-            fputs("[CellRenderLoop] Using CellLayoutAdapter for LayoutView\n", stderr)
             let adapter = CellLayoutAdapter(lv)
             adapter.paintCells(origin: (0, 0), into: &cellBuffer)
         }
@@ -114,7 +105,6 @@ public enum CellRenderLoop {
     }
     
     private static func incrementalRedraw() {
-        fputs("[CellRenderLoop] incrementalRedraw called\n", stderr)
         let nextBuffer = buildFrame()
         let nextLines = nextBuffer.toANSILines()
         
@@ -167,11 +157,8 @@ public enum CellRenderLoop {
     }
     
     private static func startInput() {
-        fputs("[CellRenderLoop] Starting input loop\n", stderr)
         InputLoop.start { ev in
-            fputs("[CellRenderLoop] Received event: \(ev.key)\n", stderr)
-            let handled = cachedRoot?.handle(event: ev) ?? false
-            fputs("[CellRenderLoop] Event handled: \(handled)\n", stderr)
+            cachedRoot?.handle(event: ev)
         }
     }
     

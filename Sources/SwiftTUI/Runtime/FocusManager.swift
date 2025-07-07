@@ -18,14 +18,11 @@ internal class FocusManager {
     
     /// フォーカス可能なViewを登録
     func register(_ view: FocusableView, id: String, acceptsInput: Bool = false) {
-        fputs("[FocusManager] Registering view: \(id)\n", stderr)
-        
         // 既存の同じIDを削除
         focusableViews.removeAll { $0.id == id }
         
         let info = FocusableViewInfo(id: id, acceptsInput: acceptsInput, handler: view)
         focusableViews.append(info)
-        fputs("[FocusManager] Total focusable views: \(focusableViews.count)\n", stderr)
         
         // フォーカスを復元または初期設定
         if let focusedID = savedFocusID,
@@ -33,20 +30,16 @@ internal class FocusManager {
             // 以前フォーカスされていたViewが再登録された場合、フォーカスを復元
             currentFocusIndex = newIndex
             updateFocusState()
-            fputs("[FocusManager] Restored focus to: \(focusedID)\n", stderr)
         } else if currentFocusIndex == nil && !focusableViews.isEmpty {
             // 最初のViewにフォーカスを設定
             currentFocusIndex = 0
             updateFocusState()
-            fputs("[FocusManager] Set initial focus to first view\n", stderr)
         }
     }
     
     /// フォーカス可能なViewを削除
     func unregister(id: String) {
-        fputs("[FocusManager] Unregistering view: \(id)\n", stderr)
         focusableViews.removeAll { $0.id == id }
-        fputs("[FocusManager] Remaining focusable views: \(focusableViews.count)\n", stderr)
         
         // フォーカスインデックスの調整
         if let index = currentFocusIndex, index >= focusableViews.count {
@@ -57,11 +50,7 @@ internal class FocusManager {
     
     /// 次のViewにフォーカスを移動
     func focusNext() {
-        fputs("[FocusManager] focusNext called\n", stderr)
-        guard !focusableViews.isEmpty else { 
-            fputs("[FocusManager] No focusable views\n", stderr)
-            return 
-        }
+        guard !focusableViews.isEmpty else { return }
         
         if let index = currentFocusIndex {
             currentFocusIndex = (index + 1) % focusableViews.count
@@ -103,14 +92,8 @@ internal class FocusManager {
     
     /// キーボードイベントを処理
     func handleKeyEvent(_ event: KeyboardEvent) -> Bool {
-        fputs("[FocusManager] handleKeyEvent called with key: \(event.key)\n", stderr)
-        fputs("[FocusManager] Current focusable views count: \(focusableViews.count)\n", stderr)
-        fputs("[FocusManager] Current focus index: \(String(describing: currentFocusIndex))\n", stderr)
-        
         // Tabでフォーカス移動（Shift+Tabは現在未実装）
         if event.key == .tab {
-            fputs("[FocusManager] Tab key detected\n", stderr)
-            debugPrint()
             focusNext()
             return true
         }
@@ -127,11 +110,8 @@ internal class FocusManager {
     
     /// フォーカス状態を更新
     private func updateFocusState() {
-        fputs("[FocusManager] updateFocusState: currentFocusIndex=\(String(describing: currentFocusIndex))\n", stderr)
         for (index, info) in focusableViews.enumerated() {
-            let isFocused = (index == currentFocusIndex)
-            fputs("[FocusManager] Setting focus for \(info.id): \(isFocused)\n", stderr)
-            info.handler?.setFocused(isFocused)
+            info.handler?.setFocused(index == currentFocusIndex)
         }
     }
     
@@ -145,17 +125,14 @@ internal class FocusManager {
     
     /// レンダリング前の準備（現在のフォーカスIDを保持してViewリストをクリア）
     func prepareForRerender() {
-        fputs("[FocusManager] prepareForRerender called, current views: \(focusableViews.count)\n", stderr)
         // 現在フォーカスされているViewのIDを保持
         if let index = currentFocusIndex,
            index < focusableViews.count {
             savedFocusID = focusableViews[index].id
-            fputs("[FocusManager] Saving focus ID: \(savedFocusID ?? "nil")\n", stderr)
         }
         // すべてのViewをクリアするが、フォーカス情報は保持
         focusableViews.removeAll()
         currentFocusIndex = nil
-        fputs("[FocusManager] prepareForRerender finished, views cleared\n", stderr)
     }
     
     /// デバッグ情報の出力

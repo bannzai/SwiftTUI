@@ -33,19 +33,14 @@ private struct LayoutViewWrapper: LegacyView, LayoutView, CellLayoutView {
     }
     
     func handle(event: KeyboardEvent) -> Bool {
-        fputs("[LayoutViewWrapper] handle event: \(event.key)\n", stderr)
-        
         // グローバルハンドラーを最初にチェック
         if let globalHandler = GlobalKeyHandler.handler, globalHandler(event) {
-            fputs("[LayoutViewWrapper] Event handled by GlobalKeyHandler\n", stderr)
             CellRenderLoop.scheduleRedraw()
             return true
         }
         
         // FocusManagerに処理を委譲
-        fputs("[LayoutViewWrapper] Delegating to FocusManager\n", stderr)
         if FocusManager.shared.handleKeyEvent(event) {
-            fputs("[LayoutViewWrapper] Event handled by FocusManager\n", stderr)
             CellRenderLoop.scheduleRedraw()
             return true
         }

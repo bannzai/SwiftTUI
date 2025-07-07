@@ -28,9 +28,7 @@ enum InputLoop {
     src?.setEventHandler {
       var byte: UInt8 = 0
       while read(fd, &byte, 1) == 1 {
-        fputs("[InputLoop] Read byte: \(byte)\n", stderr)
         if let ev = Self.translate(byte: byte) { 
-          fputs("[InputLoop] Translated to event: \(ev.key)\n", stderr)
           eventHandler(ev) 
         }
       }
