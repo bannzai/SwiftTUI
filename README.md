@@ -776,4 +776,47 @@ swift run AlertTest
 このドキュメント化により、各テストプログラムの目的と期待される動作が明確になり、
 新しい開発者がコードベースを理解しやすくなっています。
 
+#### 全テストプログラムの一括実行
+
+`scripts/all-test.sh`を使用すると、すべてのテストプログラムを順番に実行できます：
+
+```bash
+# timeoutコマンドの確認（macOSの場合）
+./scripts/check-timeout.sh
+
+# 必要に応じてcoreutilsをインストール
+brew install coreutils
+
+# 全テストを実行
+./scripts/all-test.sh
+```
+
+このスクリプトの特徴：
+- Sources/ディレクトリ内のすべての*Testプログラムを自動検出
+- 各テストにタイムアウトを設定（デフォルト10秒、テストごとにカスタマイズ可能）
+- タイムアウトコマンドがない環境でも動作（代替処理を実装）
+- カラー出力で結果を視覚的に表示
+- 実行結果をログファイルに保存
+  - `scripts/all-test-results.log`: 詳細な実行ログ
+  - `scripts/all-test-summary.txt`: 結果サマリー
+
+実行結果の例：
+```
+=== SwiftTUI All Tests Runner ===
+[1] Running: SimpleTest (timeout: 5s)
+✓ PASSED (2 seconds)
+
+[2] Running: ScrollViewTest (timeout: 10s)
+✗ TIMEOUT
+
+[3] Running: ButtonFocusTest (timeout: 8s)
+✗ FAILED (exit code: 1)
+
+=== Test Results Summary ===
+Total tests: 65
+Passed: 50
+Failed: 5
+Timeout: 10
+```
+
 
