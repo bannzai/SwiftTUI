@@ -24,9 +24,14 @@ public enum CellRenderLoop {
     }
     
     public static func scheduleRedraw() {
-        guard !redrawPending else { return }
+        fputs("[CellRenderLoop] scheduleRedraw called\n", stderr)
+        guard !redrawPending else { 
+            fputs("[CellRenderLoop] Redraw already pending, skipping\n", stderr)
+            return 
+        }
         redrawPending = true
         rq.async {
+            fputs("[CellRenderLoop] Starting incrementalRedraw\n", stderr)
             incrementalRedraw()
             redrawPending = false
         }

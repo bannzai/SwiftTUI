@@ -26,7 +26,7 @@ public extension Button where Label == Text {
 }
 
 /// Buttonのコンテナビュー（フォーカス管理のため）
-private struct ButtonContainer<Content: View>: View {
+internal struct ButtonContainer<Content: View>: View {
     let action: () -> Void
     let label: Content
     private let computedId: String
@@ -228,6 +228,7 @@ internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, Focu
     // MARK: - FocusableView
     
     func setFocused(_ focused: Bool) {
+        fputs("[ButtonLayoutView] setFocused(\(focused)) for id: \(id)\n", stderr)
         isFocused = focused
     }
     

@@ -127,8 +127,11 @@ internal class FocusManager {
     
     /// フォーカス状態を更新
     private func updateFocusState() {
+        fputs("[FocusManager] updateFocusState: currentFocusIndex=\(String(describing: currentFocusIndex))\n", stderr)
         for (index, info) in focusableViews.enumerated() {
-            info.handler?.setFocused(index == currentFocusIndex)
+            let isFocused = (index == currentFocusIndex)
+            fputs("[FocusManager] Setting focus for \(info.id): \(isFocused)\n", stderr)
+            info.handler?.setFocused(isFocused)
         }
     }
     

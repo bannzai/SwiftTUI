@@ -40,8 +40,14 @@ internal struct ViewRenderer {
             return renderConditionalContent(conditional)
             
         default:
-            // 型名でConditionalContentを検出
+            // 型名でButtonContainerを検出
             let viewTypeName = String(describing: type(of: view))
+            if viewTypeName.hasPrefix("ButtonContainer<") {
+                fputs("[ViewRenderer] Found ButtonContainer, using special handling\n", stderr)
+                return renderButtonContainer(view)
+            }
+            
+            // 型名でConditionalContentを検出
             if viewTypeName.hasPrefix("ConditionalContent<") {
                 return renderConditionalContentGeneric(view)
             }
@@ -77,8 +83,13 @@ internal struct ViewRenderer {
             // VStackやHStackは_layoutViewプロパティを持っている
             // Mirrorで_layoutViewプロパティを探す
             let mirror = Mirror(reflecting: view)
+            fputs("[ViewRenderer] Looking for _layoutView in \(typeName)\n", stderr)
+            for child in mirror.children {
+                fputs("[ViewRenderer]   Found property: \(child.label ?? "nil")\n", stderr)
+            }
             if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
                let layoutView = layoutViewChild.value as? any LayoutView {
+                fputs("[ViewRenderer] Found _layoutView property!\n", stderr)
                 return layoutView
             }
             
@@ -86,6 +97,39 @@ internal struct ViewRenderer {
             // VStackやHStackの場合は特別な処理
             return renderStackView(view)
         }
+    }
+    
+    /// ButtonContainerの変換
+    private static func renderButtonContainer<V: View>(_ view: V) -> any LayoutView {
+        // Mirror経由で_layoutViewを呼び出す
+        let mirror = Mirror(reflecting: view)
+        
+        // action, label, idを取得
+        var action: (() -> Void)?
+        var label: (any View)?
+        var id: String?
+        
+        for child in mirror.children {
+            switch child.label {
+            case "action":
+                action = child.value as? () -> Void
+            case "label":
+                label = child.value as? any View
+            case "computedId":
+                id = child.value as? String
+            default:
+                break
+            }
+        }
+        
+        // ButtonLayoutManagerを使用してLayoutViewを取得
+        if let action = action, let label = label, let id = id {
+            fputs("[ViewRenderer] Creating ButtonLayoutView through ButtonLayoutManager for id: \(id)\n", stderr)
+            return ButtonLayoutManager.shared.getOrCreate(id: id, action: action, label: label)
+        }
+        
+        // フォールバック
+        return EmptyView._LayoutView()
     }
     
     /// TupleViewの変換（ジェネリック版）
