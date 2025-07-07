@@ -60,6 +60,7 @@ final class CellFlexStack: CellLayoutView {
             let child = children[i]
             
             if let cellChild = child as? CellLayoutView {
+                fputs("[CellFlexStack] Calling paintCells on child: \(type(of: cellChild))\n", stderr)
                 cellChild.paintCells(origin: childOrigin, into: &buffer)
             } else {
                 // 従来のLayoutViewの場合はアダプターを使用

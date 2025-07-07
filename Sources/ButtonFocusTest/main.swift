@@ -72,10 +72,10 @@ struct ButtonFocusView: View {
 
 // グローバルキーハンドラーでqキーで終了できるようにする
 GlobalKeyHandler.handler = { event in
-    print("[ButtonFocusTest] GlobalKeyHandler received: \(event.key)")
+    fputs("[ButtonFocusTest] GlobalKeyHandler received: \(event.key)\n", stderr)
     switch event.key {
     case .character("q"):
-        print("\nExiting...")
+        fputs("\nExiting...\n", stderr)
         CellRenderLoop.shutdown()
         return true
     default:

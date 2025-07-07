@@ -59,7 +59,10 @@ public struct LegacyAnyView: LegacyView, LayoutView, CellLayoutView {
 
   // View
   public func render(into buf: inout [String]) { _render(&buf) }
-  public func handle(event: KeyboardEvent) -> Bool { _handle(event) }
+  public func handle(event: KeyboardEvent) -> Bool { 
+    fputs("[LegacyAnyView] handle event: \(event.key)\n", stderr)
+    return _handle(event) 
+  }
 
   // LayoutView
   public func makeNode() -> YogaNode { _make() }

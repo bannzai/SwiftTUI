@@ -45,8 +45,10 @@ public enum CellRenderLoop {
         // キャッシュされたLayoutViewを使用
         let lv: any LayoutView
         if let cached = cachedLayoutView {
+            fputs("[CellRenderLoop] Using cached LayoutView: \(type(of: cached))\n", stderr)
             lv = cached
         } else if let layoutView = root as? LayoutView {
+            fputs("[CellRenderLoop] Using LayoutView from root: \(type(of: layoutView))\n", stderr) 
             lv = layoutView
         } else {
             // 従来のレンダリング
@@ -76,9 +78,11 @@ public enum CellRenderLoop {
         
         // セルベースレンダリング
         if let cellLayoutView = lv as? CellLayoutView {
+            fputs("[CellRenderLoop] Calling paintCells on CellLayoutView\n", stderr)
             cellLayoutView.paintCells(origin: (0, 0), into: &cellBuffer)
         } else {
             // 従来のLayoutViewをアダプター経由で描画
+            fputs("[CellRenderLoop] Using CellLayoutAdapter for LayoutView\n", stderr)
             let adapter = CellLayoutAdapter(lv)
             adapter.paintCells(origin: (0, 0), into: &cellBuffer)
         }
@@ -157,11 +161,11 @@ public enum CellRenderLoop {
     }
     
     private static func startInput() {
-        print("[CellRenderLoop] Starting input loop")
+        fputs("[CellRenderLoop] Starting input loop\n", stderr)
         InputLoop.start { ev in
-            print("[CellRenderLoop] Received event: \(ev.key)")
+            fputs("[CellRenderLoop] Received event: \(ev.key)\n", stderr)
             let handled = cachedRoot?.handle(event: ev) ?? false
-            print("[CellRenderLoop] Event handled: \(handled)")
+            fputs("[CellRenderLoop] Event handled: \(handled)\n", stderr)
         }
     }
     
