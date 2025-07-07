@@ -51,10 +51,11 @@ private struct ButtonContainer<Content: View>: View {
     public typealias Body = Never
     
     internal var _layoutView: any LayoutView {
-        ButtonLayoutView(
+        // ButtonLayoutManagerを使用してインスタンスを管理
+        return ButtonLayoutManager.shared.getOrCreate(
+            id: id,
             action: action,
-            label: label,
-            id: id
+            label: label
         )
     }
 }
@@ -73,11 +74,13 @@ internal class ButtonLayoutView<Content: View>: LayoutView, FocusableView {
         self.id = id
         self.labelLayoutView = ViewRenderer.renderView(label)
         
+        print("[ButtonLayoutView] init with id: \(id)")
         // FocusManagerに登録
         FocusManager.shared.register(self, id: id)
     }
     
     deinit {
+        print("[ButtonLayoutView] deinit with id: \(id)")
         // FocusManagerから削除
         FocusManager.shared.unregister(id: id)
     }

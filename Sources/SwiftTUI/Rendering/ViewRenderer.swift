@@ -215,17 +215,22 @@ internal struct ViewRenderer {
         
         // ButtonContainerの処理
         if typeName.hasPrefix("ButtonContainer<") {
-            // Mirror経由でaction, label, idにアクセス
+            // _layoutViewプロパティを直接使用
             let mirror = Mirror(reflecting: view)
+            if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
+               let layoutView = layoutViewChild.value as? any LayoutView {
+                return layoutView
+            }
+            // Mirror経由でaction, label, idにアクセス
             if let actionChild = mirror.children.first(where: { $0.label == "action" }),
                let labelChild = mirror.children.first(where: { $0.label == "label" }),
                let idChild = mirror.children.first(where: { $0.label == "id" }),
-               let label = labelChild.value as? Text,
+               let label = labelChild.value as? any View,
                let id = idChild.value as? String {
-                return ButtonLayoutView<Text>(
+                return ButtonLayoutManager.shared.getOrCreate(
+                    id: id,
                     action: actionChild.value as! () -> Void,
-                    label: label,
-                    id: id
+                    label: label
                 )
             }
         }
