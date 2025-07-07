@@ -1,3 +1,14 @@
+// DebugBackgroundTest - HStack内の背景色レンダリングをデバッグ
+//
+// Expected behavior:
+// - HStack内の複数のText要素に異なる背景色を適用
+// - spacingあり/なしの両方のケースで背景色の描画を検証
+// - バッファ内容をstderrにデバッグ出力
+//
+// Note: HStack内での背景色重なり問題の調査用
+//
+// How to run: swift run DebugBackgroundTest
+
 import SwiftTUI
 import Foundation
 

@@ -1,3 +1,14 @@
+// HStackBackgroundDebugTest - CellRenderLoopのデバッグ出力でHStack背景色問題を調査
+//
+// Expected behavior:
+// - CellRenderLoop.DEBUGを有効化して詳細なレンダリング情報を出力
+// - HStack内の3つのText要素に赤、緑、青の背景色を適用
+// - 0.5秒後に自動終了
+//
+// Note: CellRenderLoopの内部動作を詳細にトレースするためのテスト
+//
+// How to run: swift run HStackBackgroundDebugTest
+
 import SwiftTUI
 
 // デバッグ出力を有効化
