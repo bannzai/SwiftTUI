@@ -1,6 +1,23 @@
-import SwiftTUI
+// HStackColorDebugTest - HStackの背景色レンダリング問題のデバッグ
+//
+// 期待される挙動:
+// 1. "Individual texts with background:"というラベルが表示される
+// 2. VStack内で個別に表示される:
+//    - "A"（赤背景）
+//    - "B"（緑背景）
+//    - "C"（青背景）
+// 3. 空行が挿入される
+// 4. "HStack with backgrounds:"というラベルが表示される
+// 5. HStack内で横並びに表示される:
+//    - "A"（赤背景）、"B"（緑背景）、"C"（青背景）
+// 6. ESCキーでプログラムが終了する
+//
+// 注意: VStack内とHStack内での背景色レンダリングの違いを確認し、
+//       HStack内での背景色の重複問題をデバッグするためのテストです
+//
+// 実行方法: swift run HStackColorDebugTest
 
-// HStackの背景色問題をデバッグ
+import SwiftTUI
 struct HStackColorDebugView: View {
     var body: some View {
         VStack {
