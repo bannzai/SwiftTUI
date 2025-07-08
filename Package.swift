@@ -47,6 +47,7 @@ let package = Package(
     .executable(name: "SliderTest", targets: ["SliderTest"]),
     .executable(name: "AlertTest", targets: ["AlertTest"]),
     .executable(name: "MinimalButtonTest", targets: ["MinimalButtonTest"]),
+    .executable(name: "SimpleButtonActionTest", targets: ["SimpleButtonActionTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -302,6 +303,10 @@ let package = Package(
     ),
     .executableTarget(
       name: "MinimalButtonTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleButtonActionTest",
       dependencies: ["SwiftTUI"]
     )
   ]

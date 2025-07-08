@@ -137,13 +137,13 @@ internal class FocusManager {
     
     /// デバッグ情報の出力
     func debugPrint() {
-        fputs("[FocusManager] === DEBUG INFO ===\n", stderr)
-        fputs("[FocusManager] Total views: \(focusableViews.count)\n", stderr)
-        fputs("[FocusManager] Current focus index: \(String(describing: currentFocusIndex))\n", stderr)
+        print("[FocusManager] === DEBUG INFO ===")
+        print("[FocusManager] Total views: \(focusableViews.count)")
+        print("[FocusManager] Current focus index: \(String(describing: currentFocusIndex))")
         for (index, view) in focusableViews.enumerated() {
-            fputs("[FocusManager] [\(index)] \(view.id) - handler: \(view.handler != nil)\n", stderr)
+            print("[FocusManager] [\(index)] \(view.id) - handler: \(view.handler != nil)")
         }
-        fputs("[FocusManager] ==================\n", stderr)
+        print("[FocusManager] ==================")
     }
 }
 
