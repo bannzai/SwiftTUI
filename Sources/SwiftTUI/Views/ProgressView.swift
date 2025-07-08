@@ -64,7 +64,7 @@ internal class ProgressViewLayoutView: LayoutView {
         spinnerTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.spinnerFrame = (self.spinnerFrame + 1) % self.spinnerChars.count
-            RenderLoop.scheduleRedraw()
+            CellRenderLoop.scheduleRedraw()
         }
     }
     
