@@ -74,7 +74,7 @@ struct ButtonFocusView: View {
 GlobalKeyHandler.handler = { event in
     switch event.key {
     case .character("q"):
-        fputs("\nExiting...\n", stderr)
+        print("\nExiting...")
         CellRenderLoop.shutdown()
         return true
     default:

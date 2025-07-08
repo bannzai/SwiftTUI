@@ -38,16 +38,18 @@ public enum CellRenderLoop {
         FocusManager.shared.prepareForRerender()
         ButtonLayoutManager.shared.prepareForRerender()
         
-        guard let root = cachedRoot else {
+        // 新しいrootを作成して最新の状態を反映
+        guard let makeRoot = makeRoot else {
             return CellBuffer(width: 80, height: 24)
         }
+        let root = makeRoot()
+        cachedRoot = root
         
-        // キャッシュされたLayoutViewを使用
+        // 新しいLayoutViewを作成
         let lv: any LayoutView
-        if let cached = cachedLayoutView {
-            lv = cached
-        } else if let layoutView = root as? LayoutView {
+        if let layoutView = root as? LayoutView {
             lv = layoutView
+            cachedLayoutView = lv
         } else {
             // 従来のレンダリング
             var b: [String] = []
