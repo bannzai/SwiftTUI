@@ -137,13 +137,17 @@ internal class EnvironmentWrapperLayoutView<Content: View>: LayoutView, CellLayo
     let content: Content
     let modifier: (inout EnvironmentValues) -> Void
     private var contentLayoutView: (any LayoutView)?
+    private var isContentCreated = false
     
     init(content: Content, modifier: @escaping (inout EnvironmentValues) -> Void) {
         self.content = content
         self.modifier = modifier
     }
     
-    func makeNode() -> YogaNode {
+    private func ensureContentLayoutView() {
+        guard !isContentCreated else { return }
+        isContentCreated = true
+        
         // 環境値を適用してcontentのLayoutViewを作成
         var newEnvironment = EnvironmentValues.current
         modifier(&newEnvironment)
@@ -153,10 +157,16 @@ internal class EnvironmentWrapperLayoutView<Content: View>: LayoutView, CellLayo
         defer { EnvironmentValues.current = oldEnvironment }
         
         contentLayoutView = ViewRenderer.renderView(content)
+    }
+    
+    func makeNode() -> YogaNode {
+        ensureContentLayoutView()
         return contentLayoutView?.makeNode() ?? YogaNode()
     }
     
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
+        ensureContentLayoutView()
+        
         // 環境値を適用してペイント
         var newEnvironment = EnvironmentValues.current
         modifier(&newEnvironment)
@@ -169,6 +179,8 @@ internal class EnvironmentWrapperLayoutView<Content: View>: LayoutView, CellLayo
     }
     
     func render(into buffer: inout [String]) {
+        ensureContentLayoutView()
+        
         // 環境値を適用してレンダリング
         var newEnvironment = EnvironmentValues.current
         modifier(&newEnvironment)
@@ -183,6 +195,8 @@ internal class EnvironmentWrapperLayoutView<Content: View>: LayoutView, CellLayo
     // MARK: - CellLayoutView
     
     func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
+        ensureContentLayoutView()
+        
         // 環境値を適用してセルペイント
         var newEnvironment = EnvironmentValues.current
         modifier(&newEnvironment)
