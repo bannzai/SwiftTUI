@@ -40,8 +40,13 @@ internal struct ViewRenderer {
             return renderConditionalContent(conditional)
             
         default:
-            // 型名でConditionalContentを検出
+            // 型名でButtonContainerを検出
             let viewTypeName = String(describing: type(of: view))
+            if viewTypeName.hasPrefix("ButtonContainer<") {
+                return renderButtonContainer(view)
+            }
+            
+            // 型名でConditionalContentを検出
             if viewTypeName.hasPrefix("ConditionalContent<") {
                 return renderConditionalContentGeneric(view)
             }
@@ -86,6 +91,38 @@ internal struct ViewRenderer {
             // VStackやHStackの場合は特別な処理
             return renderStackView(view)
         }
+    }
+    
+    /// ButtonContainerの変換
+    private static func renderButtonContainer<V: View>(_ view: V) -> any LayoutView {
+        // Mirror経由で_layoutViewを呼び出す
+        let mirror = Mirror(reflecting: view)
+        
+        // action, label, idを取得
+        var action: (() -> Void)?
+        var label: (any View)?
+        var id: String?
+        
+        for child in mirror.children {
+            switch child.label {
+            case "action":
+                action = child.value as? () -> Void
+            case "label":
+                label = child.value as? any View
+            case "computedId":
+                id = child.value as? String
+            default:
+                break
+            }
+        }
+        
+        // ButtonLayoutManagerを使用してLayoutViewを取得
+        if let action = action, let label = label, let id = id {
+            return ButtonLayoutManager.shared.getOrCreate(id: id, action: action, label: label)
+        }
+        
+        // フォールバック
+        return EmptyView._LayoutView()
     }
     
     /// TupleViewの変換（ジェネリック版）
@@ -215,17 +252,22 @@ internal struct ViewRenderer {
         
         // ButtonContainerの処理
         if typeName.hasPrefix("ButtonContainer<") {
-            // Mirror経由でaction, label, idにアクセス
+            // _layoutViewプロパティを直接使用
             let mirror = Mirror(reflecting: view)
+            if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
+               let layoutView = layoutViewChild.value as? any LayoutView {
+                return layoutView
+            }
+            // Mirror経由でaction, label, idにアクセス
             if let actionChild = mirror.children.first(where: { $0.label == "action" }),
                let labelChild = mirror.children.first(where: { $0.label == "label" }),
                let idChild = mirror.children.first(where: { $0.label == "id" }),
-               let label = labelChild.value as? Text,
+               let label = labelChild.value as? any View,
                let id = idChild.value as? String {
-                return ButtonLayoutView<Text>(
+                return ButtonLayoutManager.shared.getOrCreate(
+                    id: id,
                     action: actionChild.value as! () -> Void,
-                    label: label,
-                    id: id
+                    label: label
                 )
             }
         }

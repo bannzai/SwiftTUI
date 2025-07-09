@@ -26,10 +26,12 @@ public extension Button where Label == Text {
 }
 
 /// Buttonのコンテナビュー（フォーカス管理のため）
-private struct ButtonContainer<Content: View>: View {
+internal struct ButtonContainer<Content: View>: View {
     let action: () -> Void
     let label: Content
-    let id: String
+    private let computedId: String
+    
+    var id: String { computedId }
     
     init(action: @escaping () -> Void, label: Content, id: String) {
         self.action = action
@@ -39,28 +41,30 @@ private struct ButtonContainer<Content: View>: View {
             let mirror = Mirror(reflecting: textLabel)
             if let textChild = mirror.children.first(where: { $0.label == "content" }),
                let text = textChild.value as? String {
-                self.id = "Button-\(text)"
+                self.computedId = "Button-\(text)"
             } else {
-                self.id = id
+                self.computedId = id
             }
         } else {
-            self.id = id
+            self.computedId = id
         }
     }
     
     public typealias Body = Never
     
     internal var _layoutView: any LayoutView {
-        ButtonLayoutView(
+        // ButtonLayoutManagerを使用してインスタンスを管理
+        let layoutView = ButtonLayoutManager.shared.getOrCreate(
+            id: id,
             action: action,
-            label: label,
-            id: id
+            label: label
         )
+        return layoutView
     }
 }
 
 /// ButtonのLayoutView実装
-internal class ButtonLayoutView<Content: View>: LayoutView, FocusableView {
+internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, FocusableView {
     let action: () -> Void
     let label: Content
     let id: String
@@ -72,9 +76,6 @@ internal class ButtonLayoutView<Content: View>: LayoutView, FocusableView {
         self.label = label
         self.id = id
         self.labelLayoutView = ViewRenderer.renderView(label)
-        
-        // FocusManagerに登録
-        FocusManager.shared.register(self, id: id)
     }
     
     deinit {
@@ -97,6 +98,9 @@ internal class ButtonLayoutView<Content: View>: LayoutView, FocusableView {
     }
     
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
+        // paint時にFocusManagerに登録
+        FocusManager.shared.register(self, id: id)
+        
         // フォーカス時の色設定
         let borderColor = isFocused ? "\u{1B}[92m" : "\u{1B}[90m" // 緑（フォーカス時）またはグレー
         let fillColor = isFocused ? "\u{1B}[42m" : "" // 緑背景（フォーカス時のみ）
@@ -143,6 +147,77 @@ internal class ButtonLayoutView<Content: View>: LayoutView, FocusableView {
     
     func render(into buffer: inout [String]) {
         // LayoutViewプロトコルの要件
+    }
+    
+    // MARK: - CellLayoutView
+    
+    func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
+        // paintCells時にFocusManagerに登録
+        FocusManager.shared.register(self, id: id)
+        
+        // フォーカス時の色設定
+        let borderColor: Color = isFocused ? .green : .white
+        let fillColor: Color? = isFocused ? .green : nil
+        let textColor: Color = isFocused ? .black : .white
+        
+        // 安全なFloat→Int変換
+        func safeInt(_ v: Float) -> Int {
+            v.isFinite ? Int(v) : 0
+        }
+        
+        // ラベルのサイズを取得
+        let labelNode = labelLayoutView.makeNode()
+        labelNode.calculate(width: 100)
+        let labelWidth = safeInt(YGNodeLayoutGetWidth(labelNode.rawPtr))
+        let labelHeight = safeInt(YGNodeLayoutGetHeight(labelNode.rawPtr))
+        
+        // 上の枠線
+        bufferWriteCell(row: origin.y, col: origin.x, text: "┌", foregroundColor: borderColor, into: &buffer)
+        for i in 1...(labelWidth + 4) {
+            bufferWriteCell(row: origin.y, col: origin.x + i, text: "─", foregroundColor: borderColor, into: &buffer)
+        }
+        bufferWriteCell(row: origin.y, col: origin.x + labelWidth + 5, text: "┐", foregroundColor: borderColor, into: &buffer)
+        
+        // ラベル行
+        for i in 0..<labelHeight {
+            // 左枠
+            bufferWriteCell(row: origin.y + 1 + i, col: origin.x, text: "│", foregroundColor: borderColor, into: &buffer)
+            
+            // 背景色
+            if let bg = fillColor {
+                for j in 1...(labelWidth + 4) {
+                    bufferWriteCell(row: origin.y + 1 + i, col: origin.x + j, text: " ", backgroundColor: bg, into: &buffer)
+                }
+            }
+            
+            // ラベルを一時バッファに描画
+            if let cellLayoutView = labelLayoutView as? CellLayoutView {
+                var tempBuffer = CellBuffer(width: labelWidth + 10, height: labelHeight + 5)
+                cellLayoutView.paintCells(origin: (0, i), into: &tempBuffer)
+                
+                // tempBufferからコピー
+                for col in 0..<labelWidth {
+                    if let cell = tempBuffer.getCell(row: i, col: col) {
+                        var modifiedCell = cell
+                        if fillColor != nil {
+                            modifiedCell.foregroundColor = textColor
+                            modifiedCell.backgroundColor = fillColor
+                        }
+                        buffer.setCell(row: origin.y + 1 + i, col: origin.x + 2 + col, cell: modifiedCell)
+                    }
+                }
+            }
+            
+            // 右枠
+            bufferWriteCell(row: origin.y + 1 + i, col: origin.x + labelWidth + 5, text: "│", foregroundColor: borderColor, into: &buffer)
+        }
+        
+        // 下の枠線
+        bufferWriteCell(row: origin.y + labelHeight + 1, col: origin.x, text: "└", foregroundColor: borderColor, into: &buffer)
+        for i in 1...(labelWidth + 4) {
+            bufferWriteCell(row: origin.y + labelHeight + 1, col: origin.x + i, text: "─", foregroundColor: borderColor, into: &buffer)
+        }
+        bufferWriteCell(row: origin.y + labelHeight + 1, col: origin.x + labelWidth + 5, text: "┘", foregroundColor: borderColor, into: &buffer)
     }
     
     // MARK: - FocusableView

@@ -75,7 +75,7 @@ GlobalKeyHandler.handler = { event in
     switch event.key {
     case .character("q"):
         print("\nExiting...")
-        RenderLoop.shutdown()
+        CellRenderLoop.shutdown()
         return true
     default:
         return false

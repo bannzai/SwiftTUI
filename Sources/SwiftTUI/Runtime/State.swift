@@ -15,7 +15,7 @@ public struct State<Value> {
     get { box.value }
     nonmutating set {
       box.value = newValue
-      RenderLoop.scheduleRedraw() 
+      CellRenderLoop.scheduleRedraw() 
     }
   }
   

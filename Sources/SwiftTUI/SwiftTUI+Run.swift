@@ -35,19 +35,19 @@ private struct LayoutViewWrapper: LegacyView, LayoutView, CellLayoutView {
     func handle(event: KeyboardEvent) -> Bool {
         // グローバルハンドラーを最初にチェック
         if let globalHandler = GlobalKeyHandler.handler, globalHandler(event) {
-            RenderLoop.scheduleRedraw()
+            CellRenderLoop.scheduleRedraw()
             return true
         }
         
         // FocusManagerに処理を委譲
         if FocusManager.shared.handleKeyEvent(event) {
-            RenderLoop.scheduleRedraw()
+            CellRenderLoop.scheduleRedraw()
             return true
         }
         
         // ESCキーで終了
         if event.key == .escape {
-            RenderLoop.shutdown()
+            CellRenderLoop.shutdown()
             return true
         }
         

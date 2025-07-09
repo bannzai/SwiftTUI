@@ -497,6 +497,57 @@ Reset - すべてをリセット
 
 このテストでは、@Stateプロパティの変更が自動的にUIに反映され、Tabキーでボタン間を移動できることを確認できます。
 
+**注記**: Tab キーナビゲーションの問題が修正されました。以前は以下の問題がありましたが、現在は正常に動作します：
+- CellRenderLoopとFocusManagerの統合に不整合があり、Tab キーが反応しない問題
+- Tab キーで移動しても前のボタンのフォーカス状態が残る問題
+
+#### Tab キーナビゲーションの確認方法
+
+1. プログラムを起動すると、最初のボタン「Count++」が緑色の枠線と背景で表示されます（フォーカス状態）
+2. Tab キーを押すと、フォーカスが次のボタンに移動します：
+   - Count++ → Count-- → Toggle Message → Reset → Count++（循環）
+3. フォーカスされたボタンは緑色で強調表示されます
+4. Enter または Space キーでフォーカスされたボタンを実行できます
+5. Tab キーを4回押すと最初のボタンに循環して戻ります（他のボタンのフォーカスは解除されます）
+
+#### Tab循環の動作確認
+
+Tab キーの循環動作を自動的にテストできます：
+
+```bash
+# Tab キーを4回押して循環動作を確認
+{ sleep 2; echo -e "\t"; sleep 1; echo -e "\t"; sleep 1; echo -e "\t"; sleep 1; echo -e "\t"; sleep 2; echo -e "q"; } | swift run ButtonFocusTest
+
+# 期待される動作：
+# 1. Count++ (初期フォーカス)
+# 2. Count-- (1回目のTab)  
+# 3. Toggle Message (2回目のTab)
+# 4. Reset (3回目のTab)
+# 5. Count++ (4回目のTab - 循環)
+# すべての遷移で、1つのボタンのみが緑色で表示される
+```
+
+#### Tabキーナビゲーションのデバッグ
+
+Tabキーナビゲーションに問題が発生した場合、以下の方法でデバッグできます：
+
+```bash
+# 最小限のボタンテスト
+swift run MinimalButtonTest
+
+# デバッグ情報の確認
+# MinimalButtonTestはstderrにデバッグログを出力します
+# Tabキーイベントが正しく処理されているか確認できます
+```
+
+**技術的詳細**：
+- `ButtonLayoutManager`がButtonLayoutViewインスタンスを管理
+  - 再レンダリング時に`prepareForRerender()`ですべてのボタンのフォーカス状態をリセット
+- `FocusManager`がフォーカス可能なViewを追跡
+  - 再レンダリング中は`isRerendering`フラグで自動フォーカスを抑制
+  - `finishRerendering()`ですべてのビューが登録された後にフォーカスを復元
+- `CellRenderLoop`がレンダリング前に両マネージャーを準備し、レンダリング後に完了を通知
+
 ### ListTestの動作確認
 
 ListTestはListコンポーネントの動作を確認するサンプルです：

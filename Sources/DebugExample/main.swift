@@ -1,3 +1,13 @@
+// DebugExample - SwiftTUIの基本的な動作確認とAPI検証
+//
+// 期待される挙動:
+// 1. "DEBUG: DebugExample started"が表示される
+// 2. 直接LegacyTextをレンダリングし、バッファ内容を表示
+// 3. SwiftUIライクなAPIでTextビューを表示
+// 4. 5秒後に自動的にシャットダウンして終了
+//
+// 実行方法: swift run DebugExample
+
 import SwiftTUI
 import Foundation
 

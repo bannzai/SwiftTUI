@@ -1,0 +1,2 @@
+q
+EOF < /dev/null

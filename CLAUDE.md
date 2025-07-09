@@ -243,6 +243,9 @@ SwiftTUI.run(App())
 - ターミナル操作はANSIエスケープシーケンスを使用
 - 差分レンダリングでパフォーマンスを最適化
 - イベントループがキーボード入力と状態更新を処理
+- FocusManagerはCellRenderLoopと統合され、Tabキーナビゲーションを管理
+  - `FocusManager.shared`がフォーカス可能なViewを追跡
+  - TabキーイベントはFocusManagerが処理し、CellRenderLoop.scheduleRedraw()を呼び出す
 - セルベースレンダリング：各セル（文字位置）に文字・前景色・背景色を独立して管理
   - `Cell`構造体: 個々のセルの情報を保持
   - `CellBuffer`: 画面全体のセルを2次元配列で管理
@@ -279,6 +282,31 @@ SwiftTUI.run(App())
 3. **回避策**
    - 現時点では、HStack内でのborder()やbackground()の使用は制限される
    - 将来的にレイヤーベースのレンダリングシステムへの移行を検討中
+
+### Tabキーナビゲーションの実装
+現在のTabキーナビゲーションは以下のアーキテクチャで実装されています：
+
+1. **ButtonLayoutManager**
+   - ButtonLayoutViewインスタンスを永続化
+   - 再レンダリング時にインスタンスが破棄されないように管理
+   - Button IDごとにLayoutViewをキャッシュ
+   - `prepareForRerender()`ですべてのボタンのフォーカス状態をリセット（複数のボタンがフォーカス状態になる問題を防ぐ）
+
+2. **ライフサイクル管理**
+   - CellRenderLoop.buildFrame()でFocusManagerとButtonLayoutManagerを準備
+   - ButtonContainerがButtonLayoutManager経由でLayoutViewを取得
+   - ViewRendererがButtonContainerを適切に処理
+   - CellRenderLoop.buildFrame()の最後でFocusManager.finishRerendering()を呼び出し
+
+3. **FocusManagerの再レンダリング処理**
+   - `isRerendering`フラグで再レンダリング中の状態を管理
+   - 再レンダリング中は最初のビューへの自動フォーカスをスキップ
+   - `finishRerendering()`で保存されたフォーカスIDに基づいてフォーカスを復元
+   - これにより、Tab循環時に複数のボタンがフォーカス状態になる問題を防ぐ
+
+4. **注意点**
+   - ButtonLayoutViewインスタンスはアプリケーションのライフサイクル全体で保持
+   - メモリリークの可能性があるため、将来的には適切なクリーンアップが必要
 
 ### その他
 - /tmpにスクリプトファイルを作らないでください

@@ -319,7 +319,7 @@ extension ScrollLayoutView: FocusableView {
         case .up where axes.contains(.vertical):
             scrollOffset.y = max(0, scrollOffset.y - 1)
             // fputs("DEBUG: ScrollView UP pressed, scrollOffset.y=\(scrollOffset.y)\n", stderr)
-            RenderLoop.scheduleRedraw()
+            CellRenderLoop.scheduleRedraw()
             return true
             
         case .down where axes.contains(.vertical):
@@ -328,18 +328,18 @@ extension ScrollLayoutView: FocusableView {
             let maxScroll = max(0, contentLineCount - 3)  // 3はビューポートの高さ（固定値）
             scrollOffset.y = min(scrollOffset.y + 1, maxScroll)
             // fputs("DEBUG: ScrollView DOWN pressed, scrollOffset.y=\(scrollOffset.y), maxScroll=\(maxScroll), contentLineCount=\(contentLineCount)\n", stderr)
-            RenderLoop.scheduleRedraw()
+            CellRenderLoop.scheduleRedraw()
             return true
             
         case .left where axes.contains(.horizontal):
             scrollOffset.x = max(0, scrollOffset.x - 1)
-            RenderLoop.scheduleRedraw()
+            CellRenderLoop.scheduleRedraw()
             return true
             
         case .right where axes.contains(.horizontal):
             let maxScroll = max(0, contentSize.width - viewportSize.width)
             scrollOffset.x = min(scrollOffset.x + 1, maxScroll)
-            RenderLoop.scheduleRedraw()
+            CellRenderLoop.scheduleRedraw()
             return true
             
         default:

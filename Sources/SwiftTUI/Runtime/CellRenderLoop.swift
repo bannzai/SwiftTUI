@@ -7,6 +7,7 @@ public enum CellRenderLoop {
     public static var DEBUG = false
     private static var makeRoot: (() -> LegacyAnyView)?
     private static var cachedRoot: LegacyAnyView?
+    private static var cachedLayoutView: (any LayoutView)?
     private static let rq = DispatchQueue(label: "SwiftTUI.CellRender")
     private static var prevCellBuffer: CellBuffer?
     private static var redrawPending = false
@@ -14,6 +15,10 @@ public enum CellRenderLoop {
     public static func mount<V: LegacyView>(_ build: @escaping () -> V) {
         makeRoot = { LegacyAnyView(build()) }
         cachedRoot = makeRoot?()
+        // LayoutViewをキャッシュ
+        if let root = cachedRoot as? LayoutView {
+            cachedLayoutView = root
+        }
         fullRedraw()
         startInput()
     }
@@ -29,14 +34,23 @@ public enum CellRenderLoop {
     
     // --- frame builder --------------------------------------------------
     private static func buildFrame() -> CellBuffer {
-        // レンダリング前にFocusManagerを準備
+        // レンダリング前にFocusManagerとButtonLayoutManagerを準備
         FocusManager.shared.prepareForRerender()
+        ButtonLayoutManager.shared.prepareForRerender()
         
-        guard let root = cachedRoot else {
+        // 新しいrootを作成して最新の状態を反映
+        guard let makeRoot = makeRoot else {
             return CellBuffer(width: 80, height: 24)
         }
+        let root = makeRoot()
+        cachedRoot = root
         
-        guard let lv = root as? LayoutView else {
+        // 新しいLayoutViewを作成
+        let lv: any LayoutView
+        if let layoutView = root as? LayoutView {
+            lv = layoutView
+            cachedLayoutView = lv
+        } else {
             // 従来のレンダリング
             var b: [String] = []
             root.render(into: &b)
@@ -74,6 +88,9 @@ public enum CellRenderLoop {
         if DEBUG {
             dump(cellBuffer)
         }
+        
+        // レンダリング完了をFocusManagerに通知
+        FocusManager.shared.finishRerendering()
         
         return cellBuffer
     }
@@ -146,7 +163,7 @@ public enum CellRenderLoop {
     
     private static func startInput() {
         InputLoop.start { ev in
-            _ = cachedRoot?.handle(event: ev)
+            cachedRoot?.handle(event: ev)
         }
     }
     

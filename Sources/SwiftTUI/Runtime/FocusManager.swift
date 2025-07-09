@@ -6,6 +6,7 @@ internal class FocusManager {
     
     private var focusableViews: [FocusableViewInfo] = []
     private var currentFocusIndex: Int? = nil
+    private var isRerendering = false
     
     private init() {}
     
@@ -18,11 +19,6 @@ internal class FocusManager {
     
     /// フォーカス可能なViewを登録
     func register(_ view: FocusableView, id: String, acceptsInput: Bool = false) {
-        // 現在フォーカスされているViewのIDを保持
-        let currentFocusedID = currentFocusIndex.flatMap { index in
-            index < focusableViews.count ? focusableViews[index].id : nil
-        }
-        
         // 既存の同じIDを削除
         focusableViews.removeAll { $0.id == id }
         
@@ -30,13 +26,13 @@ internal class FocusManager {
         focusableViews.append(info)
         
         // フォーカスを復元または初期設定
-        if let focusedID = currentFocusedID,
+        if let focusedID = savedFocusID,
            let newIndex = focusableViews.firstIndex(where: { $0.id == focusedID }) {
             // 以前フォーカスされていたViewが再登録された場合、フォーカスを復元
             currentFocusIndex = newIndex
             updateFocusState()
-        } else if currentFocusIndex == nil && !focusableViews.isEmpty {
-            // 最初のViewにフォーカスを設定
+        } else if currentFocusIndex == nil && !focusableViews.isEmpty && !isRerendering {
+            // 再レンダリング中でない場合のみ、最初のViewにフォーカスを設定
             currentFocusIndex = 0
             updateFocusState()
         }
@@ -64,7 +60,7 @@ internal class FocusManager {
         }
         
         updateFocusState()
-        RenderLoop.scheduleRedraw()
+        CellRenderLoop.scheduleRedraw()
     }
     
     /// 前のViewにフォーカスを移動
@@ -78,7 +74,7 @@ internal class FocusManager {
         }
         
         updateFocusState()
-        RenderLoop.scheduleRedraw()
+        CellRenderLoop.scheduleRedraw()
     }
     
     /// 現在フォーカスされているViewのIDを取得
@@ -116,7 +112,8 @@ internal class FocusManager {
     /// フォーカス状態を更新
     private func updateFocusState() {
         for (index, info) in focusableViews.enumerated() {
-            info.handler?.setFocused(index == currentFocusIndex)
+            let shouldBeFocused = index == currentFocusIndex
+            info.handler?.setFocused(shouldBeFocused)
         }
     }
     
@@ -124,20 +121,48 @@ internal class FocusManager {
     func reset() {
         focusableViews.removeAll()
         currentFocusIndex = nil
+        isRerendering = false
     }
+    
+    /// レンダリング完了を通知
+    func finishRerendering() {
+        isRerendering = false
+        // 保存されたフォーカスIDに基づいてフォーカスを復元
+        if let focusedID = savedFocusID,
+           let index = focusableViews.firstIndex(where: { $0.id == focusedID }) {
+            currentFocusIndex = index
+            updateFocusState()
+        } else if currentFocusIndex == nil && !focusableViews.isEmpty {
+            // フォーカスが設定されていない場合は最初のViewにフォーカス
+            currentFocusIndex = 0
+            updateFocusState()
+        }
+    }
+    
+    private var savedFocusID: String?
     
     /// レンダリング前の準備（現在のフォーカスIDを保持してViewリストをクリア）
     func prepareForRerender() {
+        isRerendering = true
         // 現在フォーカスされているViewのIDを保持
         if let index = currentFocusIndex,
            index < focusableViews.count {
-            _ = focusableViews[index].id
-            // すべてのViewをクリアするが、フォーカス情報は保持
-            focusableViews.removeAll()
-            // フォーカスIDを一時的に保存（次の登録で復元される）
-        } else {
-            focusableViews.removeAll()
+            savedFocusID = focusableViews[index].id
         }
+        // すべてのViewをクリアするが、フォーカス情報は保持
+        focusableViews.removeAll()
+        currentFocusIndex = nil
+    }
+    
+    /// デバッグ情報の出力
+    func debugPrint() {
+        print("[FocusManager] === DEBUG INFO ===")
+        print("[FocusManager] Total views: \(focusableViews.count)")
+        print("[FocusManager] Current focus index: \(String(describing: currentFocusIndex))")
+        for (index, view) in focusableViews.enumerated() {
+            print("[FocusManager] [\(index)] \(view.id) - handler: \(view.handler != nil)")
+        }
+        print("[FocusManager] ==================")
     }
 }
 
