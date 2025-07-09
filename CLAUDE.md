@@ -113,13 +113,21 @@ struct ContentView: LayoutView {
 - [x] EnvironmentValues
 
 **重要な設計方針**：
-WWDC23で発表されたObservation Observableの再現を行う。
-そのため、以下は実装しない：
-- StateObject
-- Published
-- ObservableObject
-- ObservedObject
-- EnvironmentObject
+1. **デュアルObservableサポート**：
+   - SwiftTUI独自のObservable（全Swiftバージョン対応）
+   - Swift標準の@Observable（Swift 5.9+、Observation framework）
+   - 両方のObservableは同じ@Environmentで使用可能
+
+2. **WWDC23 Observableパターンの採用**：
+   - 手動通知: `didSet { notifyChange() }`（SwiftTUI Observable）
+   - 自動追跡: `@Observable`マクロ（標準Observable）
+   
+3. **実装しない機能**（Combineベースの旧パターン）：
+   - StateObject
+   - Published
+   - ObservableObject
+   - ObservedObject
+   - EnvironmentObject
 
 **フェーズ6 - 追加Modifier**（計画中）
 - [ ] .opacity()

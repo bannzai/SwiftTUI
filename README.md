@@ -79,8 +79,9 @@ swift run SliderTest              # 値選択スライダー
 swift run AlertTest               # 警告ダイアログ
 
 # Observable/状態管理のテスト
-swift run ObservableModelTest     # Observable（WWDC23スタイル）と@Environmentの動作確認
-swift run SimpleObservableTest    # シンプルなObservableパターンのテスト
+swift run ObservableModelTest     # SwiftTUI Observableと@Environmentの動作確認
+swift run SimpleObservableTest    # シンプルなSwiftTUI Observableパターンのテスト
+swift run StandardObservableTest  # Swift標準@Observableマクロのテスト（Swift 5.9+）
 ```
 
 ### 現在サポートされているコンポーネント
@@ -281,6 +282,58 @@ SwiftTUI.run {
         .environment(userModel)
 }
 ```
+
+#### Swift標準@Observableマクロの使用例（Swift 5.9+）
+
+SwiftTUIは、Swift 5.9以降で利用可能な標準の`@Observable`マクロもサポートしています：
+
+```swift
+import SwiftTUI
+import Observation
+
+// Swift標準の@Observableマクロを使用
+@Observable
+class ProductModel {
+    var name = "Product"
+    var price = 0.0
+    var inStock = true
+    
+    func updatePrice(to newPrice: Double) {
+        price = newPrice
+    }
+}
+
+// Viewでの使用（SwiftTUI Observableと同じ方法）
+struct ProductView: View {
+    @Environment(ProductModel.self) var product: ProductModel?
+    
+    var body: some View {
+        if let product = product {
+            VStack {
+                Text("\(product.name)")
+                    .bold()
+                Text("Price: $\(product.price)")
+                    .foregroundColor(product.inStock ? .white : .red)
+                
+                Button("Update Price") {
+                    product.updatePrice(to: product.price + 10.0)
+                }
+            }
+        }
+    }
+}
+
+// アプリケーションの起動
+let product = ProductModel()
+SwiftTUI.run {
+    ProductView()
+        .environment(product)
+}
+```
+
+**Observable パターンの選択**
+- **SwiftTUI Observable**: `didSet { notifyChange() }`パターンを使用。全てのSwiftバージョンで動作
+- **標準 @Observable**: Swift 5.9+で利用可能。プロパティの変更が自動的に追跡される
 
 #### 環境値の使用例
 
