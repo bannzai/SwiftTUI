@@ -21,6 +21,13 @@ public final class YogaNode {
     retainedChildren.append(child)              // ← ★ retain
     YGNodeInsertChild(raw, child.raw, Int(YGNodeGetChildCount(raw)))
   }
+  
+  public func removeAllChildren() {
+    // Yogaから子ノードを削除
+    YGNodeRemoveAllChildren(raw)
+    // 保持している参照もクリア
+    retainedChildren.removeAll()
+  }
 
   // ── style setters (unchanged) ───────────────────────────────────────
   public func flexDirection(_ d: YGFlexDirection) { YGNodeStyleSetFlexDirection(raw, d) }
