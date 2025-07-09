@@ -1,1 +1,1 @@
-var DEBUG: Bool { false }
+var DEBUG: Bool { true }
