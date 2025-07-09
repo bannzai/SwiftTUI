@@ -54,6 +54,8 @@ let package = Package(
     .executable(name: "MinimalHStackButtonTest", targets: ["MinimalHStackButtonTest"]),
     .executable(name: "SimpleObservableTest", targets: ["SimpleObservableTest"]),
     .executable(name: "StandardObservableTest", targets: ["StandardObservableTest"]),
+    .executable(name: "MinimalObservableTest", targets: ["MinimalObservableTest"]),
+    .executable(name: "MinimalEnvTest", targets: ["MinimalEnvTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -345,6 +347,14 @@ let package = Package(
     ),
     .executableTarget(
       name: "StandardObservableTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalObservableTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalEnvTest",
       dependencies: ["SwiftTUI"]
     )
   ]
