@@ -62,6 +62,19 @@ struct CounterView: View {
 
 // Observableインスタンスを作成してEnvironmentで渡す
 let counter = CounterModel()
+
+// グローバルキーハンドラーでqキーで終了できるようにする
+GlobalKeyHandler.handler = { event in
+    switch event.key {
+    case .character("q"):
+        print("\nExiting...")
+        CellRenderLoop.shutdown()
+        return true
+    default:
+        return false
+    }
+}
+
 SwiftTUI.run(
     CounterView()
         .environment(counter)
