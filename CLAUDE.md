@@ -323,6 +323,21 @@ SwiftTUI.run(App())
    - ButtonLayoutViewインスタンスはアプリケーションのライフサイクル全体で保持
    - メモリリークの可能性があるため、将来的には適切なクリーンアップが必要
 
+### 最近の修正事項
+
+#### EnvironmentWrapperの無限ループ修正（2025年7月）
+- **問題**: `.environment()`モディファイアを使用するとプログラムがハングする
+- **原因**: EnvironmentWrapperLayoutViewがmakeNode()内で毎回contentLayoutViewを作成していた
+- **解決**: `ensureContentLayoutView()`メソッドを追加し、contentLayoutViewを一度だけ作成するように修正
+
+#### PaddingLayoutViewのレイアウト計算修正（2025年7月）
+- **問題**: VStackに`.padding()`を適用するとサイズが(w0×h0)になる
+- **原因**: paint()メソッドで新しいノードを作成し、レイアウト計算をしていなかった
+- **解決**: 
+  - structからclassに変更し、calculatedNodeをキャッシュ
+  - CellLayoutViewプロトコルを実装
+  - レイアウト計算のフォールバック処理を追加
+
 ### その他
 - /tmpにスクリプトファイルを作らないでください
 - ./tmp/に動作確認ようのスクリプトファイルを作りましょう

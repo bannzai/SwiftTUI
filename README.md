@@ -840,6 +840,50 @@ q/ESC - プログラムの終了
 このテストでは、メッセージとカウントを持つシンプルなモデルを使用して、
 ボタンクリックによる状態変更がUIに反映されることを確認できます。
 
+### Observable実装の動作確認
+
+SwiftTUIは、WWDC23スタイルのObservableパターンをサポートしています：
+
+#### 基本的な使い方
+
+```swift
+// Observableクラスの定義
+class UserModel: Observable {
+    var name = "Guest" {
+        didSet { notifyChange() }
+    }
+    var age = 0 {
+        didSet { notifyChange() }
+    }
+}
+
+// Viewでの使用
+struct ContentView: View {
+    @Environment(UserModel.self) var userModel: UserModel?
+    
+    var body: some View {
+        if let userModel = userModel {
+            Text("\(userModel.name), age: \(userModel.age)")
+        } else {
+            Text("No user model")
+        }
+    }
+}
+
+// アプリケーションの起動
+let userModel = UserModel()
+SwiftTUI.run(
+    ContentView()
+        .environment(userModel)
+)
+```
+
+#### 重要なポイント
+
+1. **手動通知パターン**: `didSet { notifyChange() }` で変更を通知
+2. **@Environment経由の参照**: Observable型は@Environmentで取得（Optional型として）
+3. **.environment()での設定**: Observableインスタンスを環境に注入
+
 ### トラブルシューティング
 
 #### プログラムがすぐに終了してしまう場合
@@ -849,6 +893,13 @@ q/ESC - プログラムの終了
 
 1. SwiftTUIの最新バージョンを使用していることを確認
 2. `SwiftTUI.run()` を使用してアプリケーションを起動していることを確認
+
+#### Observable実装で表示されない場合
+
+最新バージョンで修正済みですが、以下の点を確認してください：
+
+1. **padding問題（修正済み）**: VStackに`.padding()`を適用するとサイズが0になる問題は修正されました
+2. **Environment無限ループ（修正済み）**: `.environment()`使用時のハング問題は修正されました
 
 #### ビルドエラーが発生する場合
 
