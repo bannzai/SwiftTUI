@@ -22,6 +22,9 @@ public struct EnvironmentValues {
     /// 内部ストレージ
     private var storage: [ObjectIdentifier: Any] = [:]
     
+    /// Observable型のストレージ
+    internal var observables: [ObjectIdentifier: Observable] = [:]
+    
     /// 現在の環境値（グローバル）
     internal static var current = EnvironmentValues()
     

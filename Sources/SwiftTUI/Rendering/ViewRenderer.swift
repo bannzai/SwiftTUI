@@ -12,6 +12,11 @@ internal struct ViewRenderer {
             return renderModifiedContent(view)
         }
         
+        // EnvironmentWrapperの特別扱い
+        if typeName.hasPrefix("EnvironmentWrapper<") {
+            return renderPrimitiveView(view)
+        }
+        
         // プリミティブViewの場合（Body == Never）
         if V.Body.self == Never.self {
             return renderPrimitiveView(view)
@@ -80,6 +85,11 @@ internal struct ViewRenderer {
                 return renderList(view)
             }
             
+            
+            // EnvironmentWrapperの処理
+            if let wrapper = view as? EnvironmentWrapperProtocol {
+                return wrapper.layoutView
+            }
             
             // _layoutViewプロパティを持つViewの処理
             // VStackやHStackは_layoutViewプロパティを持っている

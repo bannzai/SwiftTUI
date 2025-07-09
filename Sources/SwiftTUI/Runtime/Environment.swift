@@ -18,19 +18,60 @@ import Foundation
 ///     }
 /// }
 /// ```
+///
+/// Observable型の使用例：
+/// ```swift
+/// class UserModel: Observable {
+///     @Published var name = "Guest"
+/// }
+///
+/// struct ContentView: View {
+///     @Environment(UserModel.self) var userModel: UserModel?
+///     
+///     var body: some View {
+///         if let userModel = userModel {
+///             Text("Hello, \(userModel.name)")
+///         } else {
+///             Text("No user model")
+///         }
+///     }
+/// }
+/// ```
 @propertyWrapper
 public struct Environment<Value> {
-    /// キーパス
-    private let keyPath: KeyPath<EnvironmentValues, Value>
+    /// 環境値の取得方法
+    private enum Source {
+        case keyPath(KeyPath<EnvironmentValues, Value>)
+        case observableType(Observable.Type)
+    }
+    
+    private let source: Source
     
     /// キーパスを指定して初期化
     public init(_ keyPath: KeyPath<EnvironmentValues, Value>) {
-        self.keyPath = keyPath
+        self.source = .keyPath(keyPath)
+    }
+    
+    /// Observable型を指定して初期化
+    public init<T>(_ type: T.Type) where T: Observable, Value == T? {
+        self.source = .observableType(type)
     }
     
     /// 環境値の取得
     public var wrappedValue: Value {
-        EnvironmentValues.current[keyPath: keyPath]
+        switch source {
+        case .keyPath(let keyPath):
+            return EnvironmentValues.current[keyPath: keyPath]
+        case .observableType(let type):
+            // Observable型の場合、EnvironmentValuesから取得
+            let key = ObjectIdentifier(type)
+            if let observable = EnvironmentValues.current.observables[key] {
+                return observable as! Value
+            } else {
+                // Value は T? 型なので、nil を返す
+                return Optional<Any>.none as! Value
+            }
+        }
     }
 }
 
@@ -40,19 +81,100 @@ public struct EnvironmentModifier<Content: View>: View {
     let modifier: (inout EnvironmentValues) -> Void
     
     public var body: some View {
-        // 現在の環境値をコピー
+        // EnvironmentWrapperを使って環境値を保持
+        EnvironmentWrapper(content: content, modifier: modifier)
+    }
+}
+
+/// EnvironmentWrapperがLayoutViewを提供するためのプロトコル
+internal protocol EnvironmentWrapperProtocol {
+    var layoutView: any LayoutView { get }
+}
+
+/// 環境値を保持してレンダリング時に適用するラッパー
+internal struct EnvironmentWrapper<Content: View>: View, EnvironmentWrapperProtocol {
+    let content: Content
+    let modifier: (inout EnvironmentValues) -> Void
+    
+    public typealias Body = Never
+    
+    internal var _layoutView: any LayoutView {
+        EnvironmentWrapperLayoutView(content: content, modifier: modifier)
+    }
+    
+    // プロトコル要件
+    var layoutView: any LayoutView {
+        return _layoutView
+    }
+}
+
+/// EnvironmentWrapperのLayoutView実装
+internal class EnvironmentWrapperLayoutView<Content: View>: LayoutView, CellLayoutView {
+    let content: Content
+    let modifier: (inout EnvironmentValues) -> Void
+    private var contentLayoutView: (any LayoutView)?
+    
+    init(content: Content, modifier: @escaping (inout EnvironmentValues) -> Void) {
+        self.content = content
+        self.modifier = modifier
+    }
+    
+    func makeNode() -> YogaNode {
+        // 環境値を適用してcontentのLayoutViewを作成
         var newEnvironment = EnvironmentValues.current
-        
-        // 変更を適用
         modifier(&newEnvironment)
         
-        // 一時的に環境値を変更
         let oldEnvironment = EnvironmentValues.current
         EnvironmentValues.current = newEnvironment
         defer { EnvironmentValues.current = oldEnvironment }
         
-        // コンテンツを返す
-        return content
+        contentLayoutView = ViewRenderer.renderView(content)
+        return contentLayoutView?.makeNode() ?? YogaNode()
+    }
+    
+    func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
+        // 環境値を適用してペイント
+        var newEnvironment = EnvironmentValues.current
+        modifier(&newEnvironment)
+        
+        let oldEnvironment = EnvironmentValues.current
+        EnvironmentValues.current = newEnvironment
+        defer { EnvironmentValues.current = oldEnvironment }
+        
+        contentLayoutView?.paint(origin: origin, into: &buffer)
+    }
+    
+    func render(into buffer: inout [String]) {
+        // 環境値を適用してレンダリング
+        var newEnvironment = EnvironmentValues.current
+        modifier(&newEnvironment)
+        
+        let oldEnvironment = EnvironmentValues.current
+        EnvironmentValues.current = newEnvironment
+        defer { EnvironmentValues.current = oldEnvironment }
+        
+        contentLayoutView?.render(into: &buffer)
+    }
+    
+    // MARK: - CellLayoutView
+    
+    func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
+        // 環境値を適用してセルペイント
+        var newEnvironment = EnvironmentValues.current
+        modifier(&newEnvironment)
+        
+        let oldEnvironment = EnvironmentValues.current
+        EnvironmentValues.current = newEnvironment
+        defer { EnvironmentValues.current = oldEnvironment }
+        
+        if let cellLayoutView = contentLayoutView as? CellLayoutView {
+            cellLayoutView.paintCells(origin: origin, into: &buffer)
+        } else {
+            // CellLayoutViewでない場合は通常のpaintを使用
+            var stringBuffer: [String] = []
+            contentLayoutView?.paint(origin: origin, into: &stringBuffer)
+            // TODO: stringBufferからCellBufferへの変換が必要
+        }
     }
 }
 
@@ -78,42 +200,24 @@ public extension View {
         }
     }
     
-    /// 無効状態を設定
-    func disabled(_ disabled: Bool = true) -> some View {
-        environment(\.isEnabled, !disabled)
-    }
-}
-
-/// EnvironmentObjectをView階層に伝播するためのラッパー
-public struct EnvironmentObjectModifier<Content: View, Object: ObservableObject>: View {
-    let content: Content
-    let object: Object
-    
-    public var body: some View {
-        // TODO: EnvironmentObjectの実装
-        // 現在はプレースホルダー
-        content
-    }
-}
-
-/// EnvironmentObjectを設定するための拡張
-public extension View {
-    /// EnvironmentObjectを設定
+    /// Observable型を環境に設定
     ///
     /// 使用例：
     /// ```swift
-    /// struct MyApp: View {
-    ///     @StateObject private var userModel = UserModel()
-    ///     
-    ///     var body: some View {
-    ///         ContentView()
-    ///             .environmentObject(userModel)
-    ///     }
-    /// }
+    /// let userModel = UserModel()
+    /// 
+    /// ContentView()
+    ///     .environment(userModel)
     /// ```
-    func environmentObject<Object: ObservableObject>(
-        _ object: Object
-    ) -> some View {
-        EnvironmentObjectModifier(content: self, object: object)
+    func environment<T: Observable>(_ observable: T) -> some View {
+        EnvironmentModifier(content: self) { environment in
+            let key = ObjectIdentifier(type(of: observable))
+            environment.observables[key] = observable
+        }
+    }
+    
+    /// 無効状態を設定
+    func disabled(_ disabled: Bool = true) -> some View {
+        environment(\.isEnabled, !disabled)
     }
 }
