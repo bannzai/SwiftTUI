@@ -80,6 +80,7 @@ swift run AlertTest               # 警告ダイアログ
 
 # Observable/状態管理のテスト
 swift run ObservableModelTest     # Observable（WWDC23スタイル）と@Environmentの動作確認
+swift run SimpleObservableTest    # シンプルなObservableパターンのテスト
 ```
 
 ### 現在サポートされているコンポーネント
@@ -763,6 +764,28 @@ q/ESC - プログラムの終了
 ```
 
 このテストでは、シンプルなカウンターモデルを使用して、Observable の変更が手動通知により自動的にUIに反映されることを確認できます。
+
+### SimpleObservableTestの動作確認
+
+SimpleObservableTestはObservableパターンの基本的な使い方を確認するサンプルです：
+
+```bash
+swift run SimpleObservableTest
+
+# 操作方法
+Tab - Updateボタンへフォーカス
+Enter/Space - Updateボタンのクリック
+q/ESC - プログラムの終了
+
+# 確認できる機能
+- MessageModelのObservable実装
+- didSetでのnotifyChange()呼び出し
+- Updateボタンクリックによる動的な状態変更
+- @Environmentを通じたObservableインスタンスの共有
+```
+
+このテストでは、メッセージとカウントを持つシンプルなモデルを使用して、
+ボタンクリックによる状態変更がUIに反映されることを確認できます。
 
 ### トラブルシューティング
 
