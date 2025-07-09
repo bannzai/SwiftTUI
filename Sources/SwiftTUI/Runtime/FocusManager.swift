@@ -111,7 +111,8 @@ internal class FocusManager {
     /// フォーカス状態を更新
     private func updateFocusState() {
         for (index, info) in focusableViews.enumerated() {
-            info.handler?.setFocused(index == currentFocusIndex)
+            let shouldBeFocused = index == currentFocusIndex
+            info.handler?.setFocused(shouldBeFocused)
         }
     }
     
