@@ -77,6 +77,9 @@ swift run PickerTest              # ドロップダウン選択
 swift run ProgressViewTest        # 進捗表示（5秒後に自動終了）
 swift run SliderTest              # 値選択スライダー
 swift run AlertTest               # 警告ダイアログ
+
+# Observable/状態管理のテスト
+swift run ObservableModelTest     # ObservableObject、@Published、@StateObject、@Environmentの動作確認
 ```
 
 ### 現在サポートされているコンポーネント
@@ -118,6 +121,19 @@ swift run AlertTest               # 警告ダイアログ
 - **`@State`**: 値の変更を監視し、自動的に再レンダリング
 - **`@Binding`**: 親Viewから渡された値への参照
 - **`Binding.constant(_:)`**: 読み取り専用のBinding
+
+#### Observableシステム（フェーズ5で実装）
+- **`ObservableObject`**: 変更通知をサポートするプロトコル
+- **`@Published`**: プロパティの変更を自動通知
+- **`@StateObject`**: ObservableObjectを所有（Viewの再作成でも維持）
+- **`@ObservableState`**: ObservableObjectを参照（SwiftUIの@ObservedObject相当）
+- **`ObservableBase`**: @Publishedを使いやすくする基底クラス
+
+#### 環境値
+- **`@Environment`**: View階層を通じて伝播される値
+- **`EnvironmentValues`**: 環境値のコンテナ
+- **`.environment()`**: 環境値を設定するモディファイア
+- **`.disabled()`**: isEnabled環境値を設定
 
 ### コード例
 
@@ -208,6 +224,73 @@ struct CounterView: View {
 // アプリケーションの起動（State対応版）
 SwiftTUI.run {
     CounterView()
+}
+```
+
+#### Observableモデルの使用例
+
+```swift
+// ObservableBaseを使用したモデルクラス
+class UserModel: ObservableBase {
+    @Published var name = "Guest"
+    @Published var age = 0
+    @Published var isLoggedIn = false
+    
+    func login(name: String) {
+        self.name = name
+        self.isLoggedIn = true
+    }
+}
+
+// Viewでの使用
+struct UserView: View {
+    @StateObject private var user = UserModel()
+    @State private var inputName = ""
+    
+    var body: some View {
+        VStack {
+            Text("User: \(user.name)")
+                .foregroundColor(user.isLoggedIn ? .green : .red)
+            
+            if !user.isLoggedIn {
+                HStack {
+                    TextField("Name", text: $inputName)
+                    Button("Login") {
+                        user.login(name: inputName)
+                    }
+                }
+            }
+            
+            Button("Age++") {
+                user.age += 1  // @Publishedにより自動的にUI更新
+            }
+        }
+    }
+}
+```
+
+#### 環境値の使用例
+
+```swift
+struct ThemedView: View {
+    @Environment(\.foregroundColor) var themeColor
+    @Environment(\.isEnabled) var isEnabled
+    
+    var body: some View {
+        Text("Themed Text")
+            .foregroundColor(isEnabled ? themeColor : .white)
+    }
+}
+
+// 環境値を設定して使用
+struct ParentView: View {
+    var body: some View {
+        VStack {
+            ThemedView()
+                .environment(\.foregroundColor, .cyan)
+                .disabled(false)
+        }
+    }
 }
 ```
 
@@ -647,6 +730,30 @@ echo -e "\t\nq" | swift run ButtonFocusTest 2>&1 | tail -30
 - プログラムが応答しない場合は `Ctrl+C` で強制終了
 - ターミナルの表示が崩れた場合は `reset` コマンドでリセット
 - ANSIエスケープシーケンスを確認したい場合は `cat -v` を使用
+
+### ObservableModelTestの動作確認
+
+ObservableModelTestはSwiftTUIの高度な状態管理機能を確認するサンプルです：
+
+```bash
+swift run ObservableModelTest
+
+# 操作方法
+Tab - ボタン間の移動
+Enter/Space - ボタンのクリック
+文字入力 - TextFieldへの入力
+Backspace - 文字の削除
+q/ESC - プログラムの終了
+
+# 確認できる機能
+- @StateObjectによるObservableObjectの所有
+- @Publishedプロパティの自動変更通知
+- ObservableBaseクラスの使用
+- @Environmentによる環境値の参照
+- .environment()モディファイアによる環境値設定
+```
+
+このテストでは、シンプルなカウンターモデルを使用して、ObservableObjectの変更が自動的にUIに反映されることを確認できます。
 
 ### トラブルシューティング
 
