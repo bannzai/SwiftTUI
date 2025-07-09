@@ -22,8 +22,11 @@ public struct EnvironmentValues {
     /// 内部ストレージ
     private var storage: [ObjectIdentifier: Any] = [:]
     
-    /// Observable型のストレージ
+    /// SwiftTUI Observable型のストレージ
     internal var observables: [ObjectIdentifier: Observable] = [:]
+    
+    /// 標準Observable型のストレージ（AnyObservableBoxで保持）
+    internal var observableBoxes: [ObjectIdentifier: AnyObservableBox] = [:]
     
     /// 現在の環境値（グローバル）
     internal static var current = EnvironmentValues()

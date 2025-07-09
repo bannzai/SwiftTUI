@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(Observation)
+import Observation
+#endif
 
 /// 環境値にアクセスするためのプロパティラッパー
 ///
@@ -42,7 +45,10 @@ public struct Environment<Value> {
     /// 環境値の取得方法
     private enum Source {
         case keyPath(KeyPath<EnvironmentValues, Value>)
-        case observableType(Observable.Type)
+        case swiftTUIObservableType(Observable.Type)
+        #if canImport(Observation)
+        case standardObservableType(any Observation.Observable.Type)
+        #endif
     }
     
     private let source: Source
@@ -52,18 +58,25 @@ public struct Environment<Value> {
         self.source = .keyPath(keyPath)
     }
     
-    /// Observable型を指定して初期化
+    /// SwiftTUIのObservable型を指定して初期化
     public init<T>(_ type: T.Type) where T: Observable, Value == T? {
-        self.source = .observableType(type)
+        self.source = .swiftTUIObservableType(type)
     }
+    
+    #if canImport(Observation)
+    /// 標準のObservable型を指定して初期化
+    public init<T>(_ type: T.Type) where T: Observation.Observable, Value == T? {
+        self.source = .standardObservableType(type)
+    }
+    #endif
     
     /// 環境値の取得
     public var wrappedValue: Value {
         switch source {
         case .keyPath(let keyPath):
             return EnvironmentValues.current[keyPath: keyPath]
-        case .observableType(let type):
-            // Observable型の場合、EnvironmentValuesから取得
+        case .swiftTUIObservableType(let type):
+            // SwiftTUI Observable型の場合、EnvironmentValuesから取得
             let key = ObjectIdentifier(type)
             if let observable = EnvironmentValues.current.observables[key] {
                 return observable as! Value
@@ -71,6 +84,17 @@ public struct Environment<Value> {
                 // Value は T? 型なので、nil を返す
                 return Optional<Any>.none as! Value
             }
+        #if canImport(Observation)
+        case .standardObservableType(let type):
+            // 標準Observable型の場合、EnvironmentValuesから取得
+            let key = ObjectIdentifier(type)
+            if let box = EnvironmentValues.current.observableBoxes[key] {
+                return box.wrappedValue as! Value
+            } else {
+                // Value は T? 型なので、nil を返す
+                return Optional<Any>.none as! Value
+            }
+        #endif
         }
     }
 }
@@ -200,7 +224,7 @@ public extension View {
         }
     }
     
-    /// Observable型を環境に設定
+    /// SwiftTUIのObservable型を環境に設定
     ///
     /// 使用例：
     /// ```swift
@@ -215,6 +239,29 @@ public extension View {
             environment.observables[key] = observable
         }
     }
+    
+    #if canImport(Observation)
+    /// 標準のObservable型を環境に設定
+    ///
+    /// 使用例：
+    /// ```swift
+    /// @Observable
+    /// class UserModel {
+    ///     var name = "Guest"
+    /// }
+    /// 
+    /// let userModel = UserModel()
+    /// ContentView()
+    ///     .environment(userModel)
+    /// ```
+    func environment<T: Observation.Observable>(_ observable: T) -> some View {
+        EnvironmentModifier(content: self) { environment in
+            let key = ObjectIdentifier(type(of: observable))
+            let box = AnyObservableBox(observable)
+            environment.observableBoxes[key] = box
+        }
+    }
+    #endif
     
     /// 無効状態を設定
     func disabled(_ disabled: Bool = true) -> some View {
