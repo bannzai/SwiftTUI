@@ -497,7 +497,9 @@ Reset - すべてをリセット
 
 このテストでは、@Stateプロパティの変更が自動的にUIに反映され、Tabキーでボタン間を移動できることを確認できます。
 
-**注記**: Tab キーナビゲーションの問題が修正されました。以前はCellRenderLoopとFocusManagerの統合に不整合があり、Tab キーが反応しない問題がありましたが、現在は正常に動作します。
+**注記**: Tab キーナビゲーションの問題が修正されました。以前は以下の問題がありましたが、現在は正常に動作します：
+- CellRenderLoopとFocusManagerの統合に不整合があり、Tab キーが反応しない問題
+- Tab キーで移動しても前のボタンのフォーカス状態が残る問題
 
 #### Tab キーナビゲーションの確認方法
 
@@ -522,6 +524,7 @@ swift run MinimalButtonTest
 
 **技術的詳細**：
 - `ButtonLayoutManager`がButtonLayoutViewインスタンスを管理
+  - 再レンダリング時に`prepareForRerender()`ですべてのボタンのフォーカス状態をリセット
 - `FocusManager`がフォーカス可能なViewを追跡
 - `CellRenderLoop`がレンダリング前に両マネージャーを準備
 

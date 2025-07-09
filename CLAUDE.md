@@ -290,6 +290,7 @@ SwiftTUI.run(App())
    - ButtonLayoutViewインスタンスを永続化
    - 再レンダリング時にインスタンスが破棄されないように管理
    - Button IDごとにLayoutViewをキャッシュ
+   - `prepareForRerender()`ですべてのボタンのフォーカス状態をリセット（複数のボタンがフォーカス状態になる問題を防ぐ）
 
 2. **ライフサイクル管理**
    - CellRenderLoop.buildFrame()でFocusManagerとButtonLayoutManagerを準備
