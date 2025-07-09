@@ -1,5 +1,7 @@
 import SwiftTUI
 
+print("[SimpleObservableTest] Starting...")
+
 // Observable実装のテスト（WWDC23スタイル）
 class MessageModel: Observable {
     var message = "Hello, Observable!" {
@@ -48,6 +50,25 @@ struct SimpleView: View {
 
 // Test
 let model = MessageModel()
+
+print("[SimpleObservableTest] Model created")
+
+// グローバルキーハンドラーでqキーで終了できるようにする
+GlobalKeyHandler.handler = { event in
+    switch event.key {
+    case .character("q"):
+        print("\n[SimpleObservableTest] Exiting...")
+        CellRenderLoop.shutdown()
+        return true
+    default:
+        return false
+    }
+}
+
+print("[SimpleObservableTest] Running SwiftTUI.run...")
+
+// デバッグモード無効化
+CellRenderLoop.DEBUG = false
 
 SwiftTUI.run(
     SimpleView()
