@@ -26,56 +26,43 @@ import Foundation
 /// - ObservationTracking APIを使用して変更を検知
 /// - withObservationTracking { }ブロックで変更をトラッキング
 /// - ただし現時点ではTUI環境での動作は未検証
-public protocol SwiftTUIObservable: AnyObject {
-    /// 変更通知を送信
-    func objectWillChange()
-}
-
-/// ObservableObjectの変更通知を扱うPublisher
-public final class ObservableObjectPublisher {
-    private var observers: [() -> Void] = []
-    
-    public init() {}
-    
-    /// 変更を通知
-    public func send() {
-        // CellRenderLoopに再描画をスケジュール
-        CellRenderLoop.scheduleRedraw()
-        
-        // 登録されたオブザーバーに通知
-        for observer in observers {
-            observer()
-        }
-    }
-    
-    /// オブザーバーを追加
-    internal func addObserver(_ observer: @escaping () -> Void) {
-        observers.append(observer)
-    }
-    
-    /// オブザーバーをクリア
-    internal func removeAllObservers() {
-        observers.removeAll()
-    }
-}
-
-/// SwiftUIのObservableObjectプロトコルに相当
-/// 
-/// 使用例：
+///
+/// ## 使用方法
+/// WWDC23のObservation patternに従い、プロパティ変更時に手動で通知します：
 /// ```swift
-/// class UserModel: ObservableObject {
-///     @Published var name = "Guest"
-///     @Published var age = 0
+/// // Observableクラスの定義
+/// class UserModel: Observable {
+///     var name = "Guest" {
+///         didSet { notifyChange() }
+///     }
+///     var age = 0 {
+///         didSet { notifyChange() }
+///     }
 /// }
+///
+/// // Environmentでの共有
+/// struct ContentView: View {
+///     @Environment(UserModel.self) var userModel
+///     
+///     var body: some View {
+///         Text("\(userModel.name), age: \(userModel.age)")
+///     }
+/// }
+///
+/// // アプリケーションのエントリーポイント
+/// let userModel = UserModel()
+/// SwiftTUI.run(ContentView()
+///     .environment(userModel))
 /// ```
-public protocol ObservableObject: SwiftTUIObservable {
-    /// 変更通知を発行するPublisher
-    var objectWillChange: ObservableObjectPublisher { get }
+public protocol Observable: AnyObject {
+    /// 変更通知を送信
+    func notifyChange()
 }
 
-/// ObservableObjectのデフォルト実装
-public extension ObservableObject {
-    func objectWillChange() {
-        objectWillChange.send()
+/// Observableのデフォルト実装
+public extension Observable {
+    func notifyChange() {
+        // デフォルトではCellRenderLoopに再描画をスケジュール
+        CellRenderLoop.scheduleRedraw()
     }
 }
