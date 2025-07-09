@@ -1,8 +1,10 @@
 import SwiftTUI
 
-// シンプルなObservableBaseテスト
-class CounterModel: ObservableBase {
-    @Published var count = 0
+// Observable実装のテスト（WWDC23スタイル）
+class CounterModel: Observable {
+    var count = 0 {
+        didSet { notifyChange() }
+    }
     
     func increment() {
         count += 1
@@ -17,40 +19,50 @@ class CounterModel: ObservableBase {
     }
 }
 
-struct SimpleObservableTest: View {
-    @StateObject private var counter = CounterModel()
+struct CounterView: View {
+    @Environment(CounterModel.self) var counter: CounterModel?
     
     var body: some View {
-        VStack(spacing: 2) {
-            Text("Observable Test")
-                .bold()
-                .padding(.bottom)
-            
-            Text("Count: \(counter.count)")
-                .foregroundColor(counter.count > 0 ? .green : .red)
+        if let counter = counter {
+            VStack(spacing: 2) {
+                Text("Observable + Environment Test")
+                    .bold()
+                    .padding(.bottom)
+                
+                Text("Count: \(counter.count)")
+                    .foregroundColor(counter.count > 0 ? .green : .red)
+                    .padding()
+                    .border()
+                
+                HStack(spacing: 2) {
+                    Button("-") {
+                        counter.decrement()
+                    }
+                    
+                    Button("Reset") {
+                        counter.reset()
+                    }
+                    
+                    Button("+") {
+                        counter.increment()
+                    }
+                }
                 .padding()
-                .border()
-            
-            HStack(spacing: 2) {
-                Button("-") {
-                    counter.decrement()
-                }
                 
-                Button("Reset") {
-                    counter.reset()
-                }
-                
-                Button("+") {
-                    counter.increment()
-                }
+                Text("Press +/- to change count")
+                    .foregroundColor(.white)
             }
             .padding()
-            
-            Text("Press +/- to change count")
-                .foregroundColor(.white)
+        } else {
+            Text("No counter model in environment")
+                .foregroundColor(.red)
         }
-        .padding()
     }
 }
 
-SwiftTUI.run(SimpleObservableTest())
+// Observableインスタンスを作成してEnvironmentで渡す
+let counter = CounterModel()
+SwiftTUI.run(
+    CounterView()
+        .environment(counter)
+)
