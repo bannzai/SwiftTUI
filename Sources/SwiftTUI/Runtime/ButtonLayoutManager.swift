@@ -1,10 +1,12 @@
 import Foundation
+import Darwin
 
 /// Button\u306eLayoutView\u30a4\u30f3\u30b9\u30bf\u30f3\u30b9\u3092\u7ba1\u7406\u3059\u308b\u30de\u30cd\u30fc\u30b8\u30e3\u30fc
 internal class ButtonLayoutManager {
     static let shared = ButtonLayoutManager()
     
-    private var buttonLayouts: [String: any LayoutView] = [:]
+    // FocusableViewとして保持するように変更
+    private var buttonLayouts: [String: (any LayoutView & FocusableView)] = [:]
     private var buttonOrder: [String] = [] // 登録順序を保持
     private let queue = DispatchQueue(label: "SwiftTUI.ButtonLayoutManager")
     
@@ -30,8 +32,12 @@ internal class ButtonLayoutManager {
     
     /// \u30ec\u30f3\u30c0\u30ea\u30f3\u30b0\u524d\u306e\u6e96\u5099
     func prepareForRerender() {
-        // FocusManager\u3068\u540c\u671f\u3057\u3066\u30af\u30ea\u30a2\u3057\u306a\u3044\uff08\u30a4\u30f3\u30b9\u30bf\u30f3\u30b9\u3092\u4fdd\u6301\uff09
-        // paintCells\u304c\u547c\u3070\u308c\u308b\u3053\u3068\u3067\u81ea\u52d5\u7684\u306b\u518d\u767b\u9332\u3055\u308c\u308b
+        queue.sync {
+            // \u3059\u3079\u3066\u306eButtonLayoutView\u306e\u30d5\u30a9\u30fc\u30ab\u30b9\u72b6\u614b\u3092\u30ea\u30bb\u30c3\u30c8
+            for (_, layoutView) in buttonLayouts {
+                layoutView.setFocused(false)
+            }
+        }
     }
     
     /// \u3059\u3079\u3066\u30af\u30ea\u30a2
