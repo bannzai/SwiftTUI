@@ -108,14 +108,14 @@ struct ContentView: LayoutView {
 - [x] Slider
 
 **フェーズ5 - 高度な状態管理**（完了）
-- [x] SwiftTUIObservableプロトコル（独自実装）
-- [x] ObservableObjectプロトコル
+- [x] Observableプロトコル（独自実装）
+- [x] ~ObservableObjectプロトコル` 不要
 - [x] @Publishedプロパティラッパー
-- [x] @StateObject
-- [x] @ObservableState（@ObservedObjectに相当）
+- [x] ~@StateObject~ 不要
+- [x] ~@ObservableState（@ObservedObjectに相当）~ 不要
 - [x] @Environment
 - [x] EnvironmentValues
-- [x] ObservableBase便利クラス
+- [x] ~ObservableBase便利クラス~ 不要
 
 **フェーズ6 - 追加Modifier**（計画中）
 - [ ] .opacity()
