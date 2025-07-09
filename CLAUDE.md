@@ -108,14 +108,18 @@ struct ContentView: LayoutView {
 - [x] Slider
 
 **フェーズ5 - 高度な状態管理**（完了）
-- [x] Observableプロトコル（独自実装）
-- [x] ~ObservableObjectプロトコル` 不要
-- [x] @Publishedプロパティラッパー
-- [x] ~@StateObject~ 不要
-- [x] ~@ObservableState（@ObservedObjectに相当）~ 不要
+- [x] Observable（WWDC23スタイル）
 - [x] @Environment
 - [x] EnvironmentValues
-- [x] ~ObservableBase便利クラス~ 不要
+
+**重要な設計方針**：
+WWDC23で発表されたObservation Observableの再現を行う。
+そのため、以下は実装しない：
+- StateObject
+- Published
+- ObservableObject
+- ObservedObject
+- EnvironmentObject
 
 **フェーズ6 - 追加Modifier**（計画中）
 - [ ] .opacity()
@@ -332,8 +336,6 @@ SwiftTUIObservable (プロトコル)
    └─ ObservableObjectPublisher (通知機構)
 
 // Property Wrappers
-@Published         // プロパティ変更を自動通知
-@StateObject       // ObservableObjectを所有
 @ObservableState   // ObservableObjectを参照（@ObservedObject相当）
 @Environment       // 環境値アクセス
 ```

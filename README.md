@@ -79,7 +79,7 @@ swift run SliderTest              # 値選択スライダー
 swift run AlertTest               # 警告ダイアログ
 
 # Observable/状態管理のテスト
-swift run ObservableModelTest     # ObservableObject、@Published、@StateObject、@Environmentの動作確認
+swift run ObservableModelTest     # Observable（WWDC23スタイル）と@Environmentの動作確認
 ```
 
 ### 現在サポートされているコンポーネント
@@ -122,12 +122,9 @@ swift run ObservableModelTest     # ObservableObject、@Published、@StateObject
 - **`@Binding`**: 親Viewから渡された値への参照
 - **`Binding.constant(_:)`**: 読み取り専用のBinding
 
-#### Observableシステム（フェーズ5で実装）
-- **`ObservableObject`**: 変更通知をサポートするプロトコル
-- **`@Published`**: プロパティの変更を自動通知
-- **`@StateObject`**: ObservableObjectを所有（Viewの再作成でも維持）
-- **`@ObservableState`**: ObservableObjectを参照（SwiftUIの@ObservedObject相当）
-- **`ObservableBase`**: @Publishedを使いやすくする基底クラス
+#### Observableシステム（WWDC23スタイル）
+- **`Observable`**: 変更通知をサポートするプロトコル
+- **`notifyChange()`**: 手動で変更を通知するメソッド
 
 #### 環境値
 - **`@Environment`**: View階層を通じて伝播される値
@@ -227,14 +224,20 @@ SwiftTUI.run {
 }
 ```
 
-#### Observableモデルの使用例
+#### Observableモデルの使用例（WWDC23スタイル）
 
 ```swift
-// ObservableBaseを使用したモデルクラス
-class UserModel: ObservableBase {
-    @Published var name = "Guest"
-    @Published var age = 0
-    @Published var isLoggedIn = false
+// Observableプロトコルを使用したモデルクラス
+class UserModel: Observable {
+    var name = "Guest" {
+        didSet { notifyChange() }
+    }
+    var age = 0 {
+        didSet { notifyChange() }
+    }
+    var isLoggedIn = false {
+        didSet { notifyChange() }
+    }
     
     func login(name: String) {
         self.name = name
@@ -244,28 +247,37 @@ class UserModel: ObservableBase {
 
 // Viewでの使用
 struct UserView: View {
-    @StateObject private var user = UserModel()
+    @Environment(UserModel.self) var user: UserModel?
     @State private var inputName = ""
     
     var body: some View {
-        VStack {
-            Text("User: \(user.name)")
-                .foregroundColor(user.isLoggedIn ? .green : .red)
-            
-            if !user.isLoggedIn {
-                HStack {
-                    TextField("Name", text: $inputName)
-                    Button("Login") {
-                        user.login(name: inputName)
+        if let user = user {
+            VStack {
+                Text("User: \(user.name)")
+                    .foregroundColor(user.isLoggedIn ? .green : .red)
+                
+                if !user.isLoggedIn {
+                    HStack {
+                        TextField("Name", text: $inputName)
+                        Button("Login") {
+                            user.login(name: inputName)
+                        }
                     }
                 }
-            }
-            
-            Button("Age++") {
-                user.age += 1  // @Publishedにより自動的にUI更新
+                
+                Button("Age++") {
+                    user.age += 1  // didSetにより手動でUI更新
+                }
             }
         }
     }
+}
+
+// アプリケーションの起動
+let userModel = UserModel()
+SwiftTUI.run {
+    UserView()
+        .environment(userModel)
 }
 ```
 
@@ -733,7 +745,7 @@ echo -e "\t\nq" | swift run ButtonFocusTest 2>&1 | tail -30
 
 ### ObservableModelTestの動作確認
 
-ObservableModelTestはSwiftTUIの高度な状態管理機能を確認するサンプルです：
+ObservableModelTestはSwiftTUIの状態管理機能（WWDC23スタイル）を確認するサンプルです：
 
 ```bash
 swift run ObservableModelTest
@@ -741,19 +753,16 @@ swift run ObservableModelTest
 # 操作方法
 Tab - ボタン間の移動
 Enter/Space - ボタンのクリック
-文字入力 - TextFieldへの入力
-Backspace - 文字の削除
 q/ESC - プログラムの終了
 
 # 確認できる機能
-- @StateObjectによるObservableObjectの所有
-- @Publishedプロパティの自動変更通知
-- ObservableBaseクラスの使用
+- Observableプロトコルの実装
+- didSetでのnotifyChange()による手動変更通知
 - @Environmentによる環境値の参照
-- .environment()モディファイアによる環境値設定
+- .environment()モディファイアによるObservableインスタンスの設定
 ```
 
-このテストでは、シンプルなカウンターモデルを使用して、ObservableObjectの変更が自動的にUIに反映されることを確認できます。
+このテストでは、シンプルなカウンターモデルを使用して、Observable の変更が手動通知により自動的にUIに反映されることを確認できます。
 
 ### トラブルシューティング
 
