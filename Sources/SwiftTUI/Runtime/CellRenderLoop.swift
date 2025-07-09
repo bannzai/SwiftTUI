@@ -89,6 +89,9 @@ public enum CellRenderLoop {
             dump(cellBuffer)
         }
         
+        // レンダリング完了をFocusManagerに通知
+        FocusManager.shared.finishRerendering()
+        
         return cellBuffer
     }
     
