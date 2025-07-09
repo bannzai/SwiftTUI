@@ -6,6 +6,7 @@ internal class FocusManager {
     
     private var focusableViews: [FocusableViewInfo] = []
     private var currentFocusIndex: Int? = nil
+    private var isRerendering = false
     
     private init() {}
     
@@ -30,8 +31,8 @@ internal class FocusManager {
             // 以前フォーカスされていたViewが再登録された場合、フォーカスを復元
             currentFocusIndex = newIndex
             updateFocusState()
-        } else if currentFocusIndex == nil && !focusableViews.isEmpty {
-            // 最初のViewにフォーカスを設定
+        } else if currentFocusIndex == nil && !focusableViews.isEmpty && !isRerendering {
+            // 再レンダリング中でない場合のみ、最初のViewにフォーカスを設定
             currentFocusIndex = 0
             updateFocusState()
         }
@@ -120,12 +121,29 @@ internal class FocusManager {
     func reset() {
         focusableViews.removeAll()
         currentFocusIndex = nil
+        isRerendering = false
+    }
+    
+    /// レンダリング完了を通知
+    func finishRerendering() {
+        isRerendering = false
+        // 保存されたフォーカスIDに基づいてフォーカスを復元
+        if let focusedID = savedFocusID,
+           let index = focusableViews.firstIndex(where: { $0.id == focusedID }) {
+            currentFocusIndex = index
+            updateFocusState()
+        } else if currentFocusIndex == nil && !focusableViews.isEmpty {
+            // フォーカスが設定されていない場合は最初のViewにフォーカス
+            currentFocusIndex = 0
+            updateFocusState()
+        }
     }
     
     private var savedFocusID: String?
     
     /// レンダリング前の準備（現在のフォーカスIDを保持してViewリストをクリア）
     func prepareForRerender() {
+        isRerendering = true
         // 現在フォーカスされているViewのIDを保持
         if let index = currentFocusIndex,
            index < focusableViews.count {
