@@ -34,7 +34,7 @@ internal class ButtonLayoutManager {
     func prepareForRerender() {
         queue.sync {
             // \u3059\u3079\u3066\u306eButtonLayoutView\u306e\u30d5\u30a9\u30fc\u30ab\u30b9\u72b6\u614b\u3092\u30ea\u30bb\u30c3\u30c8
-            for (_, layoutView) in buttonLayouts {
+            for (id, layoutView) in buttonLayouts {
                 layoutView.setFocused(false)
             }
         }
