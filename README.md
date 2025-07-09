@@ -508,6 +508,24 @@ Reset - すべてをリセット
    - Count++ → Count-- → Toggle Message → Reset → Count++（循環）
 3. フォーカスされたボタンは緑色で強調表示されます
 4. Enter または Space キーでフォーカスされたボタンを実行できます
+5. Tab キーを4回押すと最初のボタンに循環して戻ります（他のボタンのフォーカスは解除されます）
+
+#### Tab循環の動作確認
+
+Tab キーの循環動作を自動的にテストできます：
+
+```bash
+# Tab キーを4回押して循環動作を確認
+{ sleep 2; echo -e "\t"; sleep 1; echo -e "\t"; sleep 1; echo -e "\t"; sleep 1; echo -e "\t"; sleep 2; echo -e "q"; } | swift run ButtonFocusTest
+
+# 期待される動作：
+# 1. Count++ (初期フォーカス)
+# 2. Count-- (1回目のTab)  
+# 3. Toggle Message (2回目のTab)
+# 4. Reset (3回目のTab)
+# 5. Count++ (4回目のTab - 循環)
+# すべての遷移で、1つのボタンのみが緑色で表示される
+```
 
 #### Tabキーナビゲーションのデバッグ
 
@@ -526,7 +544,9 @@ swift run MinimalButtonTest
 - `ButtonLayoutManager`がButtonLayoutViewインスタンスを管理
   - 再レンダリング時に`prepareForRerender()`ですべてのボタンのフォーカス状態をリセット
 - `FocusManager`がフォーカス可能なViewを追跡
-- `CellRenderLoop`がレンダリング前に両マネージャーを準備
+  - 再レンダリング中は`isRerendering`フラグで自動フォーカスを抑制
+  - `finishRerendering()`ですべてのビューが登録された後にフォーカスを復元
+- `CellRenderLoop`がレンダリング前に両マネージャーを準備し、レンダリング後に完了を通知
 
 ### ListTestの動作確認
 

@@ -296,8 +296,15 @@ SwiftTUI.run(App())
    - CellRenderLoop.buildFrame()でFocusManagerとButtonLayoutManagerを準備
    - ButtonContainerがButtonLayoutManager経由でLayoutViewを取得
    - ViewRendererがButtonContainerを適切に処理
+   - CellRenderLoop.buildFrame()の最後でFocusManager.finishRerendering()を呼び出し
 
-3. **注意点**
+3. **FocusManagerの再レンダリング処理**
+   - `isRerendering`フラグで再レンダリング中の状態を管理
+   - 再レンダリング中は最初のビューへの自動フォーカスをスキップ
+   - `finishRerendering()`で保存されたフォーカスIDに基づいてフォーカスを復元
+   - これにより、Tab循環時に複数のボタンがフォーカス状態になる問題を防ぐ
+
+4. **注意点**
    - ButtonLayoutViewインスタンスはアプリケーションのライフサイクル全体で保持
    - メモリリークの可能性があるため、将来的には適切なクリーンアップが必要
 
