@@ -31,8 +31,8 @@ struct CounterView: View {
                 
                 Text("Count: \(counter.count)")
                     .foregroundColor(counter.count > 0 ? .green : .red)
-                    .padding()
                     .border()
+                    .padding()
                 
                 HStack(spacing: 2) {
                     Button("-") {
@@ -62,6 +62,9 @@ struct CounterView: View {
 
 // Observableインスタンスを作成してEnvironmentで渡す
 let counter = CounterModel()
+
+// デバッグモードを無効化
+CellRenderLoop.DEBUG = false
 
 // グローバルキーハンドラーでqキーで終了できるようにする
 GlobalKeyHandler.handler = { event in

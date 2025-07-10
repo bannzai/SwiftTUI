@@ -56,6 +56,11 @@ let package = Package(
     .executable(name: "StandardObservableTest", targets: ["StandardObservableTest"]),
     .executable(name: "MinimalObservableTest", targets: ["MinimalObservableTest"]),
     .executable(name: "MinimalEnvTest", targets: ["MinimalEnvTest"]),
+    .executable(name: "DebugObservableTest", targets: ["DebugObservableTest"]),
+    .executable(name: "SimpleObservableCounterTest", targets: ["SimpleObservableCounterTest"]),
+    .executable(name: "BorderDebugTest", targets: ["BorderDebugTest"]),
+    .executable(name: "MinimalBorderTest", targets: ["MinimalBorderTest"]),
+    .executable(name: "SimpleBorderTest", targets: ["SimpleBorderTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -355,6 +360,26 @@ let package = Package(
     ),
     .executableTarget(
       name: "MinimalEnvTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "DebugObservableTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleObservableCounterTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "BorderDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalBorderTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleBorderTest",
       dependencies: ["SwiftTUI"]
     )
   ]

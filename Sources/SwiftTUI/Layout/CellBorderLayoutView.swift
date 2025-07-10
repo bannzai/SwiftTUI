@@ -20,24 +20,44 @@ internal struct CellBorderLayoutView: CellLayoutView {
         let childNode = child.makeNode()
         node.insert(child: childNode)
         
+        // Don't recalculate the child here - let the parent handle it
+        
         return node
     }
     
     func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
-        // 子ビューのサイズを取得
-        let node = makeNode()
-        if YGNodeLayoutGetWidth(node.rawPtr) == 0 {
-            node.calculate(width: 80)
+        // First, paint the child to a temporary buffer to get its actual size
+        var tempBuffer = CellBuffer(width: buffer.width, height: buffer.height)
+        
+        if let cellChild = child as? CellLayoutView {
+            cellChild.paintCells(origin: (0, 0), into: &tempBuffer)
+        } else {
+            let adapter = CellLayoutAdapter(child)
+            adapter.paintCells(origin: (0, 0), into: &tempBuffer)
         }
-        // Float値の安全な変換
-        let widthFloat = YGNodeLayoutGetWidth(node.rawPtr)
-        let heightFloat = YGNodeLayoutGetHeight(node.rawPtr)
         
-        // NaNやInfiniteのチェック
-        guard widthFloat.isFinite && heightFloat.isFinite else { return }
+        // Find the actual content bounds
+        var minX = Int.max
+        var maxX = 0
+        var minY = Int.max
+        var maxY = 0
         
-        let width = Int(widthFloat.rounded())
-        let height = Int(heightFloat.rounded())
+        for row in 0..<tempBuffer.height {
+            for col in 0..<tempBuffer.width {
+                if let cell = tempBuffer.getCell(row: row, col: col), cell.character != " " || cell.backgroundColor != nil {
+                    minX = min(minX, col)
+                    maxX = max(maxX, col)
+                    minY = min(minY, row)
+                    maxY = max(maxY, row)
+                }
+            }
+        }
+        
+        // Calculate border dimensions
+        let contentWidth = maxX >= minX ? maxX - minX + 1 : 0
+        let contentHeight = maxY >= minY ? maxY - minY + 1 : 0
+        let width = contentWidth + 2  // Add 2 for border
+        let height = contentHeight + 2  // Add 2 for border
         
         // ボーダーを描画
         bufferDrawBorder(
@@ -50,15 +70,15 @@ internal struct CellBorderLayoutView: CellLayoutView {
             into: &buffer
         )
         
-        // 子ビューを描画（padding分のオフセット付き）
+        // Copy the content from temp buffer to the main buffer inside the border
         let childOrigin = (x: origin.x + 1, y: origin.y + 1)
         
-        if let cellChild = child as? CellLayoutView {
-            cellChild.paintCells(origin: childOrigin, into: &buffer)
-        } else {
-            // 従来のLayoutViewの場合はアダプターを使用
-            let adapter = CellLayoutAdapter(child)
-            adapter.paintCells(origin: childOrigin, into: &buffer)
+        for row in 0..<contentHeight {
+            for col in 0..<contentWidth {
+                if let cell = tempBuffer.getCell(row: row, col: col) {
+                    buffer.setCell(row: childOrigin.y + row, col: childOrigin.x + col, cell: cell)
+                }
+            }
         }
     }
     
