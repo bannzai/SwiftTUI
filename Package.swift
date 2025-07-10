@@ -61,6 +61,10 @@ let package = Package(
     .executable(name: "BorderDebugTest", targets: ["BorderDebugTest"]),
     .executable(name: "MinimalBorderTest", targets: ["MinimalBorderTest"]),
     .executable(name: "SimpleBorderTest", targets: ["SimpleBorderTest"]),
+    .executable(name: "StringInterpolationTest", targets: ["StringInterpolationTest"]),
+    .executable(name: "MinimalCountTest", targets: ["MinimalCountTest"]),
+    .executable(name: "TextInterpolationDebugTest", targets: ["TextInterpolationDebugTest"]),
+    .executable(name: "VStackTextTest", targets: ["VStackTextTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -380,6 +384,22 @@ let package = Package(
     ),
     .executableTarget(
       name: "SimpleBorderTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "StringInterpolationTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalCountTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "TextInterpolationDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "VStackTextTest",
       dependencies: ["SwiftTUI"]
     )
   ]

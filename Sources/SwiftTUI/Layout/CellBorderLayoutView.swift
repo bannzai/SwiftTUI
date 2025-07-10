@@ -41,7 +41,6 @@ internal struct CellBorderLayoutView: CellLayoutView {
         var maxX = 0
         var minY = Int.max
         var maxY = 0
-        
         for row in 0..<tempBuffer.height {
             for col in 0..<tempBuffer.width {
                 if let cell = tempBuffer.getCell(row: row, col: col), cell.character != " " || cell.backgroundColor != nil {
@@ -73,10 +72,15 @@ internal struct CellBorderLayoutView: CellLayoutView {
         // Copy the content from temp buffer to the main buffer inside the border
         let childOrigin = (x: origin.x + 1, y: origin.y + 1)
         
+        // Copy from the found content area, not from (0,0)
         for row in 0..<contentHeight {
             for col in 0..<contentWidth {
-                if let cell = tempBuffer.getCell(row: row, col: col) {
-                    buffer.setCell(row: childOrigin.y + row, col: childOrigin.x + col, cell: cell)
+                let srcRow = minY + row
+                let srcCol = minX + col
+                if let cell = tempBuffer.getCell(row: srcRow, col: srcCol) {
+                    let dstRow = childOrigin.y + row
+                    let dstCol = childOrigin.x + col
+                    buffer.setCell(row: dstRow, col: dstCol, cell: cell)
                 }
             }
         }
