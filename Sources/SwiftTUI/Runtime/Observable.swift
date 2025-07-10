@@ -1,5 +1,30 @@
 import Foundation
 
+// TODO: SwiftTUI独自のObservable廃止計画
+//
+// 現在SwiftTUI独自のObservableを実装している理由：
+// 1. 標準の@Observable（Observation framework）はSwift 5.9+でのみ利用可能
+// 2. @Observableマクロは手動実装が不可能（マクロによる自動生成のみ）
+// 3. 古いSwiftバージョンのサポートが必要
+// 4. TUI環境での動作確認が必要
+//
+// 将来的な移行計画：
+// - Swift 5.9+が広く普及し、古いバージョンのサポートが不要になった時点で移行
+// - または、標準Observableの手動実装方法が提供された場合に移行
+// - 移行時はSwiftTUI.Observableを削除し、標準のObservation.Observableのみを使用
+//
+// 移行時の作業：
+// 1. このファイル（Observable.swift）を削除
+// 2. Environment.swiftからswiftTUIObservableType関連を削除
+// 3. EnvironmentValues.swiftからobservables辞書を削除
+// 4. すべてのテストコードを標準@Observableに移行
+// 5. CLAUDE.mdのデュアルObservableサポートの記載を更新
+//
+// 現在の使用状況：
+// - ほぼすべてのテストでSwiftTUI Observableを使用
+// - StandardObservableTestで標準@Observableの動作確認済み
+// - 両方のObservableが@Environmentで正常に動作することを確認済み
+
 /// SwiftTUI独自のObservableプロトコル
 ///
 /// ## 背景と設計判断

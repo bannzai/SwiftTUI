@@ -45,6 +45,7 @@ public struct Environment<Value> {
     /// 環境値の取得方法
     private enum Source {
         case keyPath(KeyPath<EnvironmentValues, Value>)
+        // TODO: 将来的に削除予定 - 標準@Observableへの完全移行時
         case swiftTUIObservableType(Observable.Type)
         #if canImport(Observation)
         case standardObservableType(any Observation.Observable.Type)
@@ -59,6 +60,7 @@ public struct Environment<Value> {
     }
     
     /// SwiftTUIのObservable型を指定して初期化
+    // TODO: 将来的に削除予定 - 標準@Observableへの完全移行時
     public init<T>(_ type: T.Type) where T: Observable, Value == T? {
         self.source = .swiftTUIObservableType(type)
     }
@@ -76,6 +78,7 @@ public struct Environment<Value> {
         case .keyPath(let keyPath):
             return EnvironmentValues.current[keyPath: keyPath]
         case .swiftTUIObservableType(let type):
+            // TODO: 将来的に削除予定 - 標準@Observableへの完全移行時
             // SwiftTUI Observable型の場合、EnvironmentValuesから取得
             let key = ObjectIdentifier(type)
             if let observable = EnvironmentValues.current.observables[key] {
@@ -239,6 +242,7 @@ public extension View {
     }
     
     /// SwiftTUIのObservable型を環境に設定
+    // TODO: 将来的に削除予定 - 標準@Observableへの完全移行時
     ///
     /// 使用例：
     /// ```swift

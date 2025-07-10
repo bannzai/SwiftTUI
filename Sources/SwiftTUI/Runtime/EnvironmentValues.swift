@@ -23,6 +23,7 @@ public struct EnvironmentValues {
     private var storage: [ObjectIdentifier: Any] = [:]
     
     /// SwiftTUI Observable型のストレージ
+    // TODO: 将来的に削除予定 - 標準@Observableへの完全移行時
     internal var observables: [ObjectIdentifier: Observable] = [:]
     
     /// 標準Observable型のストレージ（AnyObservableBoxで保持）
