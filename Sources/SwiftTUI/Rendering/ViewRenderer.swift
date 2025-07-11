@@ -12,6 +12,11 @@ internal struct ViewRenderer {
             return renderModifiedContent(view)
         }
         
+        // EnvironmentWrapperの特別扱い
+        if typeName.hasPrefix("EnvironmentWrapper<") {
+            return renderPrimitiveView(view)
+        }
+        
         // プリミティブViewの場合（Body == Never）
         if V.Body.self == Never.self {
             return renderPrimitiveView(view)
@@ -43,6 +48,9 @@ internal struct ViewRenderer {
             // 型名でButtonContainerを検出
             let viewTypeName = String(describing: type(of: view))
             if viewTypeName.hasPrefix("ButtonContainer<") {
+                if CellRenderLoop.DEBUG {
+                    print("[ViewRenderer] Detected ButtonContainer, calling renderButtonContainer")
+                }
                 return renderButtonContainer(view)
             }
             
@@ -78,6 +86,11 @@ internal struct ViewRenderer {
             }
             
             
+            // EnvironmentWrapperの処理
+            if let wrapper = view as? EnvironmentWrapperProtocol {
+                return wrapper.layoutView
+            }
+            
             // _layoutViewプロパティを持つViewの処理
             // VStackやHStackは_layoutViewプロパティを持っている
             // Mirrorで_layoutViewプロパティを探す
@@ -95,10 +108,19 @@ internal struct ViewRenderer {
     
     /// ButtonContainerの変換
     private static func renderButtonContainer<V: View>(_ view: V) -> any LayoutView {
-        // Mirror経由で_layoutViewを呼び出す
+        // Mirror経由で_layoutViewプロパティを直接取得
         let mirror = Mirror(reflecting: view)
         
-        // action, label, idを取得
+        // _layoutViewプロパティを探す
+        if let layoutViewChild = mirror.children.first(where: { $0.label == "_layoutView" }),
+           let layoutView = layoutViewChild.value as? any LayoutView {
+            if CellRenderLoop.DEBUG {
+                print("[ViewRenderer] Found _layoutView in ButtonContainer: \(type(of: layoutView))")
+            }
+            return layoutView
+        }
+        
+        // フォールバック: action, label, idを取得して新規作成
         var action: (() -> Void)?
         var label: (any View)?
         var id: String?
@@ -136,9 +158,15 @@ internal struct ViewRenderer {
         let valueMirror = Mirror(reflecting: valueChild.value)
         var views: [LegacyAnyView] = []
         
-        for child in valueMirror.children {
+        for (index, child) in valueMirror.children.enumerated() {
             if let childView = child.value as? any View {
+                if CellRenderLoop.DEBUG {
+                    print("[ViewRenderer] TupleView child \(index): \(type(of: childView))")
+                }
                 let layoutView = renderView(childView)
+                if CellRenderLoop.DEBUG {
+                    print("[ViewRenderer]   -> LayoutView: \(type(of: layoutView))")
+                }
                 views.append(LegacyAnyView(layoutView))
             }
         }
@@ -240,10 +268,20 @@ internal struct ViewRenderer {
                let content = contentChild.value as? any View {
                 let spacing = mirror.children.first(where: { $0.label == "spacing" })?.value as? Int ?? 0
                 let contentLayoutView = renderView(content)
+                // DEBUG
+                if CellRenderLoop.DEBUG {
+                    print("[ViewRenderer] Rendering HStack with content type: \(type(of: contentLayoutView))")
+                }
                 return CellFlexStack(.row, spacing: Float(spacing)) {
                     if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
+                        if CellRenderLoop.DEBUG {
+                            print("[ViewRenderer] HStack contains TupleLayoutView with \(tupleLayoutView.views.count) views")
+                        }
                         return tupleLayoutView.views
                     } else {
+                        if CellRenderLoop.DEBUG {
+                            print("[ViewRenderer] HStack contains single view: \(type(of: contentLayoutView))")
+                        }
                         return [LegacyAnyView(contentLayoutView)]
                     }
                 }

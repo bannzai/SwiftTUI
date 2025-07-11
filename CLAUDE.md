@@ -107,12 +107,27 @@ struct ContentView: LayoutView {
 - [x] ProgressView
 - [x] Slider
 
-**フェーズ5 - 高度な状態管理**（計画中）
-- [ ] ~@ObservedObject~ Observable
-- [ ] ~@StateObject~ Observable
-- [ ] ~@EnvironmentObject~ Observable
-- [ ] Observable
-- [ ] @Environment
+**フェーズ5 - 高度な状態管理**（完了）
+- [x] Observable（WWDC23スタイル）
+- [x] @Environment
+- [x] EnvironmentValues
+
+**重要な設計方針**：
+1. **デュアルObservableサポート**：
+   - SwiftTUI独自のObservable（全Swiftバージョン対応）
+   - Swift標準の@Observable（Swift 5.9+、Observation framework）
+   - 両方のObservableは同じ@Environmentで使用可能
+
+2. **WWDC23 Observableパターンの採用**：
+   - 手動通知: `didSet { notifyChange() }`（SwiftTUI Observable）
+   - 自動追跡: `@Observable`マクロ（標準Observable）
+   
+3. **実装しない機能**（Combineベースの旧パターン）：
+   - StateObject
+   - Published
+   - ObservableObject
+   - ObservedObject
+   - EnvironmentObject
 
 **フェーズ6 - 追加Modifier**（計画中）
 - [ ] .opacity()
@@ -307,6 +322,38 @@ SwiftTUI.run(App())
 4. **注意点**
    - ButtonLayoutViewインスタンスはアプリケーションのライフサイクル全体で保持
    - メモリリークの可能性があるため、将来的には適切なクリーンアップが必要
+
+### 最近の修正事項
+
+#### EnvironmentWrapperの無限ループ修正（2025年7月）
+- **問題**: `.environment()`モディファイアを使用するとプログラムがハングする
+- **原因**: EnvironmentWrapperLayoutViewがmakeNode()内で毎回contentLayoutViewを作成していた
+- **解決**: `ensureContentLayoutView()`メソッドを追加し、contentLayoutViewを一度だけ作成するように修正
+
+#### PaddingLayoutViewのレイアウト計算修正（2025年7月）
+- **問題**: VStackに`.padding()`を適用するとサイズが(w0×h0)になる
+- **原因**: paint()メソッドで新しいノードを作成し、レイアウト計算をしていなかった
+- **解決**: 
+  - structからclassに変更し、calculatedNodeをキャッシュ
+  - CellLayoutViewプロトコルを実装
+  - レイアウト計算のフォールバック処理を追加
+
+#### CellBorderLayoutViewのレンダリング修正（2025年7月）
+- **問題**: `.border()`モディファイアを使用すると、子ビューのコンテンツが表示されない
+- **原因**: 子ビューのサイズ計算とコンテンツのコピー処理が不適切だった
+- **解決**:
+  - 子ビューを一時バッファにレンダリングして実際のサイズを検出
+  - コンテンツの境界に基づいてボーダーサイズを計算
+  - 一時バッファから最終バッファの適切な位置にコンテンツをコピー
+  - これにより`Text("Hello").border()`のような使用方法が正しく動作するようになった
+
+#### CellBorderLayoutViewの追加修正（2025年7月）
+- **問題**: `.padding().border()`の組み合わせで、ボーダー内のコンテンツが表示されない
+- **原因**: 一時バッファ内のコンテンツが(0,0)から始まると仮定していたが、PaddingLayoutViewはオフセットを追加する
+- **解決**:
+  - 一時バッファ内の実際のコンテンツ位置(minX, minY)を検出
+  - コンテンツをコピーする際、(0,0)からではなく実際の位置からコピー
+  - これにより`Text("Hello").padding().border()`が正しく動作するようになった
 
 ### その他
 - /tmpにスクリプトファイルを作らないでください

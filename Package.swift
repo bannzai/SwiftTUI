@@ -48,6 +48,23 @@ let package = Package(
     .executable(name: "AlertTest", targets: ["AlertTest"]),
     .executable(name: "MinimalButtonTest", targets: ["MinimalButtonTest"]),
     .executable(name: "SimpleButtonActionTest", targets: ["SimpleButtonActionTest"]),
+    .executable(name: "ObservableModelTest", targets: ["ObservableModelTest"]),
+    .executable(name: "SimpleButtonHStackTest", targets: ["SimpleButtonHStackTest"]),
+    .executable(name: "DebugButtonTest", targets: ["DebugButtonTest"]),
+    .executable(name: "MinimalHStackButtonTest", targets: ["MinimalHStackButtonTest"]),
+    .executable(name: "SimpleObservableTest", targets: ["SimpleObservableTest"]),
+    .executable(name: "StandardObservableTest", targets: ["StandardObservableTest"]),
+    .executable(name: "MinimalObservableTest", targets: ["MinimalObservableTest"]),
+    .executable(name: "MinimalEnvTest", targets: ["MinimalEnvTest"]),
+    .executable(name: "DebugObservableTest", targets: ["DebugObservableTest"]),
+    .executable(name: "SimpleObservableCounterTest", targets: ["SimpleObservableCounterTest"]),
+    .executable(name: "BorderDebugTest", targets: ["BorderDebugTest"]),
+    .executable(name: "MinimalBorderTest", targets: ["MinimalBorderTest"]),
+    .executable(name: "SimpleBorderTest", targets: ["SimpleBorderTest"]),
+    .executable(name: "StringInterpolationTest", targets: ["StringInterpolationTest"]),
+    .executable(name: "MinimalCountTest", targets: ["MinimalCountTest"]),
+    .executable(name: "TextInterpolationDebugTest", targets: ["TextInterpolationDebugTest"]),
+    .executable(name: "VStackTextTest", targets: ["VStackTextTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -307,6 +324,82 @@ let package = Package(
     ),
     .executableTarget(
       name: "SimpleButtonActionTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "ObservableModelTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleButtonHStackTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "DebugButtonTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalHStackButtonTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "DebugHStackButton",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SingleButtonDebug",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleObservableTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "StandardObservableTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalObservableTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalEnvTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "DebugObservableTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleObservableCounterTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "BorderDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalBorderTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "SimpleBorderTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "StringInterpolationTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "MinimalCountTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "TextInterpolationDebugTest",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "VStackTextTest",
       dependencies: ["SwiftTUI"]
     )
   ]

@@ -173,4 +173,14 @@ internal protocol FocusableView: AnyObject {
     
     /// キーボードイベントを処理
     func handleKeyEvent(_ event: KeyboardEvent) -> Bool
+    
+    /// 再レンダリング前の準備（オプション）
+    func prepareForRerender()
+}
+
+// デフォルト実装を提供
+extension FocusableView {
+    func prepareForRerender() {
+        // デフォルトでは何もしない
+    }
 }

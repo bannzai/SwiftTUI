@@ -7,6 +7,7 @@ final class CellFlexStack: CellLayoutView {
     private let children: [LegacyAnyView]
     private let spacing: Float
     private var calculatedNode: YogaNode?
+    private var childNodes: [YogaNode] = []
     
     init(_ axis: Axis, spacing: Float = 0, @LegacyViewBuilder _ c: () -> [LegacyAnyView]) {
         self.axis = axis
@@ -24,20 +25,45 @@ final class CellFlexStack: CellLayoutView {
             n.setGap(spacing, axis == .column ? .column : .row)
         }
         
-        children.forEach { n.insert(child: $0.makeNode()) }
+        // DEBUG
+        if CellRenderLoop.DEBUG {
+            print("[CellFlexStack] makeNode called, axis: \(axis), children count: \(children.count)")
+        }
+        
+        // 子ノードを作成して保持
+        childNodes = children.enumerated().map { index, child in
+            if CellRenderLoop.DEBUG {
+                print("[CellFlexStack]   Creating child \(index), type: \(type(of: child))")
+            }
+            let node = child.makeNode()
+            n.insert(child: node)
+            if CellRenderLoop.DEBUG {
+                print("[CellFlexStack]   Child \(index) node created: \(node.rawPtr)")
+            }
+            return node
+        }
+        
         self.calculatedNode = n
         return n
     }
     
     // MARK: Paint Cells
     func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
-        // Use the calculated node if available, otherwise create a new one
-        let node = calculatedNode ?? makeNode()
+        // Use the calculated node if available
+        guard let node = calculatedNode else {
+            // ノードが存在しない場合は何も描画しない
+            if CellRenderLoop.DEBUG {
+                print("[CellFlexStack] WARNING: No calculated node available")
+            }
+            return
+        }
         
-        // If we don't have layout information, we need to calculate it
+        // レイアウトが計算されていない場合も描画しない
         if YGNodeLayoutGetWidth(node.rawPtr) == 0 {
-            // Fallback: calculate with a default width
-            node.calculate(width: 80)
+            if CellRenderLoop.DEBUG {
+                print("[CellFlexStack] WARNING: Layout width is 0, skipping paint")
+            }
+            return
         }
         
         // Paint children at their calculated positions
@@ -59,13 +85,16 @@ final class CellFlexStack: CellLayoutView {
             // 子ビューを取得
             let child = children[i]
             
-            if let cellChild = child as? CellLayoutView {
-                cellChild.paintCells(origin: childOrigin, into: &buffer)
-            } else {
-                // 従来のLayoutViewの場合はアダプターを使用
-                let adapter = CellLayoutAdapter(child)
-                adapter.paintCells(origin: childOrigin, into: &buffer)
+            // DEBUG
+            if CellRenderLoop.DEBUG {
+                let width = YGNodeLayoutGetWidth(raw)
+                let height = YGNodeLayoutGetHeight(raw)
+                print("[CellFlexStack] Painting child \(i) at (\(childOrigin.x), \(childOrigin.y)), size: \(width)x\(height)")
+                print("[CellFlexStack]   Child type: \(type(of: child))")
             }
+            
+            // LegacyAnyViewは常にCellLayoutViewを実装している
+            child.paintCells(origin: childOrigin, into: &buffer)
         }
     }
     

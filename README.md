@@ -77,6 +77,11 @@ swift run PickerTest              # ドロップダウン選択
 swift run ProgressViewTest        # 進捗表示（5秒後に自動終了）
 swift run SliderTest              # 値選択スライダー
 swift run AlertTest               # 警告ダイアログ
+
+# Observable/状態管理のテスト
+swift run ObservableModelTest     # SwiftTUI Observableと@Environmentの動作確認
+swift run SimpleObservableTest    # シンプルなSwiftTUI Observableパターンのテスト
+swift run StandardObservableTest  # Swift標準@Observableマクロのテスト（Swift 5.9+）
 ```
 
 ### 現在サポートされているコンポーネント
@@ -118,6 +123,16 @@ swift run AlertTest               # 警告ダイアログ
 - **`@State`**: 値の変更を監視し、自動的に再レンダリング
 - **`@Binding`**: 親Viewから渡された値への参照
 - **`Binding.constant(_:)`**: 読み取り専用のBinding
+
+#### Observableシステム（WWDC23スタイル）
+- **`Observable`**: 変更通知をサポートするプロトコル
+- **`notifyChange()`**: 手動で変更を通知するメソッド
+
+#### 環境値
+- **`@Environment`**: View階層を通じて伝播される値
+- **`EnvironmentValues`**: 環境値のコンテナ
+- **`.environment()`**: 環境値を設定するモディファイア
+- **`.disabled()`**: isEnabled環境値を設定
 
 ### コード例
 
@@ -208,6 +223,140 @@ struct CounterView: View {
 // アプリケーションの起動（State対応版）
 SwiftTUI.run {
     CounterView()
+}
+```
+
+#### Observableモデルの使用例（WWDC23スタイル）
+
+```swift
+// Observableプロトコルを使用したモデルクラス
+class UserModel: Observable {
+    var name = "Guest" {
+        didSet { notifyChange() }
+    }
+    var age = 0 {
+        didSet { notifyChange() }
+    }
+    var isLoggedIn = false {
+        didSet { notifyChange() }
+    }
+    
+    func login(name: String) {
+        self.name = name
+        self.isLoggedIn = true
+    }
+}
+
+// Viewでの使用
+struct UserView: View {
+    @Environment(UserModel.self) var user: UserModel?
+    @State private var inputName = ""
+    
+    var body: some View {
+        if let user = user {
+            VStack {
+                Text("User: \(user.name)")
+                    .foregroundColor(user.isLoggedIn ? .green : .red)
+                
+                if !user.isLoggedIn {
+                    HStack {
+                        TextField("Name", text: $inputName)
+                        Button("Login") {
+                            user.login(name: inputName)
+                        }
+                    }
+                }
+                
+                Button("Age++") {
+                    user.age += 1  // didSetにより手動でUI更新
+                }
+            }
+        }
+    }
+}
+
+// アプリケーションの起動
+let userModel = UserModel()
+SwiftTUI.run {
+    UserView()
+        .environment(userModel)
+}
+```
+
+#### Swift標準@Observableマクロの使用例（Swift 5.9+）
+
+SwiftTUIは、Swift 5.9以降で利用可能な標準の`@Observable`マクロもサポートしています：
+
+```swift
+import SwiftTUI
+import Observation
+
+// Swift標準の@Observableマクロを使用
+@Observable
+class ProductModel {
+    var name = "Product"
+    var price = 0.0
+    var inStock = true
+    
+    func updatePrice(to newPrice: Double) {
+        price = newPrice
+    }
+}
+
+// Viewでの使用（SwiftTUI Observableと同じ方法）
+struct ProductView: View {
+    @Environment(ProductModel.self) var product: ProductModel?
+    
+    var body: some View {
+        if let product = product {
+            VStack {
+                Text("\(product.name)")
+                    .bold()
+                Text("Price: $\(product.price)")
+                    .foregroundColor(product.inStock ? .white : .red)
+                
+                Button("Update Price") {
+                    product.updatePrice(to: product.price + 10.0)
+                }
+            }
+        }
+    }
+}
+
+// アプリケーションの起動
+let product = ProductModel()
+SwiftTUI.run {
+    ProductView()
+        .environment(product)
+}
+```
+
+**Observable パターンの選択**
+- **SwiftTUI Observable**: `didSet { notifyChange() }`パターンを使用。全てのSwiftバージョンで動作
+- **標準 @Observable**: Swift 5.9+で利用可能。プロパティの変更が自動的に追跡される
+
+#### 環境値の使用例
+
+```swift
+struct ThemedView: View {
+    @Environment(\.foregroundColor) var themeColor
+    @Environment(\.isEnabled) var isEnabled
+    
+    var body: some View {
+        Text("Themed Text")
+            .foregroundColor(isEnabled ? themeColor : .white)
+    }
+}
+
+// 環境値を設定して使用
+struct ParentView: View {
+    var body: some View {
+        VStack {
+            ThemedView()
+                .environment(\.foregroundColor, .cyan)
+                .disabled(false)
+        }
+    }
 }
 ```
 
@@ -648,6 +797,93 @@ echo -e "\t\nq" | swift run ButtonFocusTest 2>&1 | tail -30
 - ターミナルの表示が崩れた場合は `reset` コマンドでリセット
 - ANSIエスケープシーケンスを確認したい場合は `cat -v` を使用
 
+### ObservableModelTestの動作確認
+
+ObservableModelTestはSwiftTUIの状態管理機能（WWDC23スタイル）を確認するサンプルです：
+
+```bash
+swift run ObservableModelTest
+
+# 操作方法
+Tab - ボタン間の移動
+Enter/Space - ボタンのクリック
+q/ESC - プログラムの終了
+
+# 確認できる機能
+- Observableプロトコルの実装
+- didSetでのnotifyChange()による手動変更通知
+- @Environmentによる環境値の参照
+- .environment()モディファイアによるObservableインスタンスの設定
+```
+
+このテストでは、シンプルなカウンターモデルを使用して、Observable の変更が手動通知により自動的にUIに反映されることを確認できます。
+
+### SimpleObservableTestの動作確認
+
+SimpleObservableTestはObservableパターンの基本的な使い方を確認するサンプルです：
+
+```bash
+swift run SimpleObservableTest
+
+# 操作方法
+Tab - Updateボタンへフォーカス
+Enter/Space - Updateボタンのクリック
+q/ESC - プログラムの終了
+
+# 確認できる機能
+- MessageModelのObservable実装
+- didSetでのnotifyChange()呼び出し
+- Updateボタンクリックによる動的な状態変更
+- @Environmentを通じたObservableインスタンスの共有
+```
+
+このテストでは、メッセージとカウントを持つシンプルなモデルを使用して、
+ボタンクリックによる状態変更がUIに反映されることを確認できます。
+
+### Observable実装の動作確認
+
+SwiftTUIは、WWDC23スタイルのObservableパターンをサポートしています：
+
+#### 基本的な使い方
+
+```swift
+// Observableクラスの定義
+class UserModel: Observable {
+    var name = "Guest" {
+        didSet { notifyChange() }
+    }
+    var age = 0 {
+        didSet { notifyChange() }
+    }
+}
+
+// Viewでの使用
+struct ContentView: View {
+    @Environment(UserModel.self) var userModel: UserModel?
+    
+    var body: some View {
+        if let userModel = userModel {
+            Text("\(userModel.name), age: \(userModel.age)")
+        } else {
+            Text("No user model")
+        }
+    }
+}
+
+// アプリケーションの起動
+let userModel = UserModel()
+SwiftTUI.run(
+    ContentView()
+        .environment(userModel)
+)
+```
+
+#### 重要なポイント
+
+1. **手動通知パターン**: `didSet { notifyChange() }` で変更を通知
+2. **@Environment経由の参照**: Observable型は@Environmentで取得（Optional型として）
+3. **.environment()での設定**: Observableインスタンスを環境に注入
+
 ### トラブルシューティング
 
 #### プログラムがすぐに終了してしまう場合
@@ -657,6 +893,13 @@ echo -e "\t\nq" | swift run ButtonFocusTest 2>&1 | tail -30
 
 1. SwiftTUIの最新バージョンを使用していることを確認
 2. `SwiftTUI.run()` を使用してアプリケーションを起動していることを確認
+
+#### Observable実装で表示されない場合
+
+最新バージョンで修正済みですが、以下の点を確認してください：
+
+1. **padding問題（修正済み）**: VStackに`.padding()`を適用するとサイズが0になる問題は修正されました
+2. **Environment無限ループ（修正済み）**: `.environment()`使用時のハング問題は修正されました
 
 #### ビルドエラーが発生する場合
 
