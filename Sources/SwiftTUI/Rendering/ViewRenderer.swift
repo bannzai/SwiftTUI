@@ -38,6 +38,9 @@ internal struct ViewRenderer {
         case let text as Text:
             return text._layoutView
             
+        case let textField as TextField:
+            return textField._layoutView
+            
         case let spacer as Spacer:
             return spacer._layoutView
             
