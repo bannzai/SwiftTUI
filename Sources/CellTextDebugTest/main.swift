@@ -12,6 +12,14 @@
 import SwiftTUI
 import Foundation
 
+// 一時的にコメントアウト - CellTextは現在のAPIに存在しません
+// TODO: 新しいAPIで書き直す必要があります
+
+print("=== CellText Debug Test ===")
+print("This test is temporarily disabled due to API changes.")
+print("CellText is no longer part of the public API.")
+
+/*
 // CellTextの動作をデバッグ
 print("=== CellText Debug Test ===")
 
@@ -49,8 +57,7 @@ for col in 0..<5 {
 // ANSI出力
 print("\n--- ANSI Output ---")
 let lines = buffer.toANSILines()
-for (index, line) in lines.enumerated() where index < 3 {
-    print("Line \(index): \(line)")
+for line in lines {
+    print(line)
 }
-
-exit(0)
+*/

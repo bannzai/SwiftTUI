@@ -1070,6 +1070,40 @@ swift run AlertTest
 このドキュメント化により、各テストプログラムの目的と期待される動作が明確になり、
 新しい開発者がコードベースを理解しやすくなっています。
 
+### ユニットテスト
+
+SwiftTUIにはユニットテストが含まれています。テストはXCTestフレームワークを使用して書かれています。
+
+#### テストの実行
+
+```bash
+# すべてのテストを実行
+swift test
+
+# 特定のテストクラスを実行
+swift test --filter SwiftTUITests.TextTests
+
+# 特定のテストメソッドを実行
+swift test --filter SwiftTUITests.TextTests.testTextBasic
+```
+
+#### テストの内容
+
+- **TextTests**: Text viewの基本的な動作をテスト
+  - 基本的なテキスト表示
+  - 特殊文字、Unicode、改行の処理
+  - 文字列補間のサポート
+
+- **TextModifierTests**: Text viewのモディファイアをテスト
+  - `.padding()`, `.border()`, `.bold()`
+  - `.foregroundColor()`, `.background()`
+  - モディファイアの連鎖
+
+- **CompositeViewTests**: 複合ビューの動作をテスト
+  - VStack, HStackでのテキスト配置
+  - ネストされたスタック
+  - スペーシングのサポート
+
 #### 全テストプログラムの一括実行
 
 `scripts/all-test.sh`を使用すると、すべてのテストプログラムを順番に実行できます：

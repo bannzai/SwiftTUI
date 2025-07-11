@@ -10,7 +10,7 @@ struct DebugHStackButton: View {
                 .foregroundColor(.cyan)
             
             Text("Expected output: [ Click Me ]")
-                .foregroundColor(.gray)
+                .foregroundColor(.white)
             
             HStack {
                 Text("[")
@@ -24,7 +24,7 @@ struct DebugHStackButton: View {
             
             Text("")
             Text("Press Tab to focus button, Enter to click")
-                .foregroundColor(.gray)
+                .foregroundColor(.white)
         }
         .padding()
     }

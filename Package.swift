@@ -401,6 +401,10 @@ let package = Package(
     .executableTarget(
       name: "VStackTextTest",
       dependencies: ["SwiftTUI"]
+    ),
+    .testTarget(
+      name: "SwiftTUITests",
+      dependencies: ["SwiftTUI"]
     )
   ]
 )
