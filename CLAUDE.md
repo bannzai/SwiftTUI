@@ -129,14 +129,6 @@ struct ContentView: LayoutView {
    - ObservedObject
    - EnvironmentObject
 
-**フェーズ6 - 追加Modifier**（計画中）
-- [ ] .opacity()
-- [ ] .disabled()
-- [ ] ~.hidden()~ 不要
-- [ ] .overlay()
-- [ ] ~.clipShape()~ 不要
-- [ ] ~.animation()~ 不要
-
 ## 技術アーキテクチャ（内部）
 
 ### 現在の状態（リファクタリング対象）
