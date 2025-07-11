@@ -29,6 +29,8 @@ struct MinimalView: View {
                     model.count += 1
                     print("Count incremented to: \(model.count)")
                 }
+            } else {
+                Text("Model not found")
             }
         }
         .padding()
