@@ -1104,6 +1104,24 @@ swift test --filter SwiftTUITests.TextTests.testTextBasic
   - ネストされたスタック
   - スペーシングのサポート
 
+- **SpacerTests**: Spacerビューの動作をテスト
+  - 基本的なSpacer動作（単体では何も表示しない）
+  - VStack内での垂直方向の拡張
+  - HStack内での水平方向の拡張
+  - 複数Spacerでの均等なスペース分配
+  - ネストされたSpacer
+  - エッジケース（スペースなし、最小高さ）
+
+- **TextFieldTests**: TextFieldビューの動作をテスト
+  - 基本的なTextField表示（空のテキスト、初期値あり）
+  - @Bindingの動作（親子関係、値の反映）
+  - プレースホルダーの表示/非表示（長いプレースホルダー、空のプレースホルダー）
+  - ボーダー構造の検証（Unicode box drawing characters）
+  - サイズとレイアウト（コンテンツに応じたサイズ調整）
+  - VStack内での複数TextField
+  - エッジケース（特殊文字、複数バインディング）
+  - フレームモディファイアとの組み合わせ
+
 #### 全テストプログラムの一括実行
 
 `scripts/all-test.sh`を使用すると、すべてのテストプログラムを順番に実行できます：
