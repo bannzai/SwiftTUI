@@ -268,15 +268,16 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（17テスト）
+### 実装済みテスト（26テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
+- [x] **SpacerTests** (9テスト) - 基本動作、VStack/HStack内での拡張、複数Spacer、エッジケース
 
 ### 今後の実装計画
 
 #### フェーズ1: コアコンポーネントテスト（優先度: 高）
-- [ ] **SpacerTests**
+- [x] **SpacerTests** ✅
   - Spacerの基本動作
   - VStack内でのSpacer（垂直方向の拡張）
   - HStack内でのSpacer（水平方向の拡張）

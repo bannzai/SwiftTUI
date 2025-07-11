@@ -1082,9 +1082,11 @@ swift test
 
 # 特定のテストクラスを実行
 swift test --filter SwiftTUITests.TextTests
+swift test --filter SwiftTUITests.SpacerTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
+swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApart
 ```
 
 #### テストの内容
@@ -1103,6 +1105,12 @@ swift test --filter SwiftTUITests.TextTests.testTextBasic
   - VStack, HStackでのテキスト配置
   - ネストされたスタック
   - スペーシングのサポート
+
+- **SpacerTests**: Spacerビューの動作をテスト
+  - 基本的なSpacer動作（単体では何も表示しない）
+  - VStack内での垂直方向の拡張
+  - HStack内での水平方向の拡張
+  - 複数Spacerでの均等なスペース分配
 
 #### 全テストプログラムの一括実行
 
