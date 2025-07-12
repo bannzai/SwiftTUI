@@ -1135,6 +1135,16 @@ swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApa
   - ネストされたスタック内での複数ボタン配置
   - エッジケース（空ラベル、長いラベル、複数行ラベル）
 
+- **BindingTests**: @Bindingプロパティラッパーの動作をテスト
+  - 親子View間のバインディング同期（TextField、Toggle）
+  - 複数の子Viewで同じBindingを共有
+  - ネストされたView階層でのBinding伝播
+  - Binding.constantによる読み取り専用バインディング（異なる型のサポート）
+  - カスタムBindingによる値の変換（温度変換）と検証（範囲制限）
+  - 異なるViewタイプでのBinding動作（Slider、Picker）
+  - Optional値の処理（nil/非nil値の変換）
+  - projectedValueの動作（Bindingの再取得）
+
 - **FrameModifierTests**: .frame()モディファイアの動作をテスト
   - 幅制約のみのテスト（短いテキスト、長いテキスト、パディング）
   - 高さ制約のみのテスト（少ない行数、多い行数、余白）

@@ -305,7 +305,7 @@ SwiftTUI.run(App())
   - @Stateプロパティの初期値
   - 状態変更による再レンダリング
   - 複数の@State変数の管理
-- [ ] **BindingTests**
+- [x] **BindingTests** ✅
   - 親子コンポーネント間のバインディング
   - TextFieldとの統合
   - カスタムBindingの作成
@@ -453,7 +453,7 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（78テスト）
+### 実装済みテスト（90テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
@@ -462,6 +462,7 @@ SwiftTUI.run(App())
 - [x] **ButtonTests** (11テスト) - 基本表示、パディング、フォーカス、レイアウト、エッジケース
 - [x] **FrameModifierTests** (16テスト) - 幅制約、高さ制約、組み合わせ、レイアウト、エッジケース
 - [x] **StateTests** (12テスト) - 初期値、複数@State、ネスト独立性、Binding変換、エッジケース
+- [x] **BindingTests** (12テスト) - 親子同期、Binding.constant、カスタムBinding、型変換、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
 - [x] **ButtonTests** ✅ - Buttonビューのテスト
@@ -486,7 +487,7 @@ SwiftTUI.run(App())
   - 複数の@Stateプロパティ
   - ネストされたView間での独立性
 
-- [ ] **BindingTests** - @Bindingのテスト
+- [x] **BindingTests** ✅ - @Bindingのテスト
   - 親子間での値の同期
   - 双方向バインディング
   - Binding.constantの動作
