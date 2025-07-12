@@ -453,13 +453,14 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（50テスト）
+### 実装済みテスト（66テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
 - [x] **SpacerTests** (9テスト) - 基本動作、VStack/HStack内での拡張、複数Spacer、エッジケース
 - [x] **TextFieldTests** (13テスト) - 基本表示、@Binding、プレースホルダー、ボーダー、レイアウト
 - [x] **ButtonTests** (11テスト) - 基本表示、パディング、フォーカス、レイアウト、エッジケース
+- [x] **FrameModifierTests** (16テスト) - 幅制約、高さ制約、組み合わせ、レイアウト、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
 - [x] **ButtonTests** ✅ - Buttonビューのテスト
@@ -470,7 +471,7 @@ SwiftTUI.run(App())
   - VStack/HStack内での配置
 
 ### Phase 2 - Modifierのテスト  
-- [ ] **FrameModifierTests** - .frame()モディファイアのテスト
+- [x] **FrameModifierTests** ✅ - .frame()モディファイアのテスト
   - 幅制約の適用
   - 高さ制約の適用
   - 幅と高さ両方の制約
