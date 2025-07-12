@@ -316,7 +316,7 @@ SwiftTUI.run(App())
   - EnvironmentValuesの伝播
 
 #### フェーズ4: 動的リストテスト（優先度: 中）
-- [ ] **ForEachTests**
+- [x] **ForEachTests** ✅
   - Range based ForEach
   - Identifiable配列のForEach
   - KeyPath指定のForEach
@@ -453,7 +453,7 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（104テスト）
+### 実装済みテスト（122テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
@@ -464,6 +464,7 @@ SwiftTUI.run(App())
 - [x] **StateTests** (12テスト) - 初期値、複数@State、ネスト独立性、Binding変換、エッジケース
 - [x] **BindingTests** (12テスト) - 親子同期、Binding.constant、カスタムBinding、型変換、エッジケース
 - [x] **EnvironmentTests** (14テスト) - 環境値伝播、Observable統合、カスタムキー、エッジケース
+- [x] **ForEachTests** (18テスト) - Range/Identifiable/KeyPath ForEach、ネスト、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
 - [x] **ButtonTests** ✅ - Buttonビューのテスト
@@ -500,7 +501,7 @@ SwiftTUI.run(App())
   - カスタム環境値
 
 ### Phase 4 - 動的リストのテスト
-- [ ] **ForEachTests** - ForEachのテスト
+- [x] **ForEachTests** ✅ - ForEachのテスト
   - Identifiable配列での動作
   - Rangeでの動作
   - KeyPath（id: \.self）での動作
