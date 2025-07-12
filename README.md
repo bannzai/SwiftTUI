@@ -1083,10 +1083,14 @@ swift test
 # 特定のテストクラスを実行
 swift test --filter SwiftTUITests.TextTests
 swift test --filter SwiftTUITests.SpacerTests
+swift test --filter SwiftTUITests.BindingTests
+swift test --filter SwiftTUITests.EnvironmentTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
 swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApart
+swift test --filter SwiftTUITests.EnvironmentTests.testEnvironmentForegroundColor
+swift test --filter SwiftTUITests.EnvironmentTests.testSwiftTUIObservableInEnvironment
 ```
 
 #### テストの内容
