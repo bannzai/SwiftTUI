@@ -1124,6 +1124,17 @@ swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApa
   - エッジケース（特殊文字、複数バインディング）
   - フレームモディファイアとの組み合わせ
 
+- **ButtonTests**: Buttonビューの動作をテスト
+  - 基本的なButton表示（文字列ラベル、カスタムViewラベル）
+  - ボーダー構造の検証（Unicode box drawing characters）
+  - パディングの検証（左右上下のパディング）
+  - フォーカス状態の表示（デフォルトで非フォーカス）
+  - VStack/HStack内での配置
+  - 複数ボタンの水平配置（HStack）
+  - フレームモディファイアとの組み合わせ
+  - ネストされたスタック内での複数ボタン配置
+  - エッジケース（空ラベル、長いラベル、複数行ラベル）
+
 #### 全テストプログラムの一括実行
 
 `scripts/all-test.sh`を使用すると、すべてのテストプログラムを順番に実行できます：

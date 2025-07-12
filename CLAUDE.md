@@ -453,15 +453,16 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（39テスト）
+### 実装済みテスト（50テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
 - [x] **SpacerTests** (9テスト) - 基本動作、VStack/HStack内での拡張、複数Spacer、エッジケース
 - [x] **TextFieldTests** (13テスト) - 基本表示、@Binding、プレースホルダー、ボーダー、レイアウト
+- [x] **ButtonTests** (11テスト) - 基本表示、パディング、フォーカス、レイアウト、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
-- [ ] **ButtonTests** - Buttonビューのテスト
+- [x] **ButtonTests** ✅ - Buttonビューのテスト
   - Labelの表示
   - フォーカス状態の表示（緑枠、選択色）
   - 非フォーカス状態の表示（白枠）
