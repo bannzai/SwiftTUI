@@ -1083,10 +1083,14 @@ swift test
 # 特定のテストクラスを実行
 swift test --filter SwiftTUITests.TextTests
 swift test --filter SwiftTUITests.SpacerTests
+swift test --filter SwiftTUITests.BindingTests
+swift test --filter SwiftTUITests.EnvironmentTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
 swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApart
+swift test --filter SwiftTUITests.EnvironmentTests.testEnvironmentForegroundColor
+swift test --filter SwiftTUITests.EnvironmentTests.testSwiftTUIObservableInEnvironment
 ```
 
 #### テストの内容
@@ -1144,6 +1148,15 @@ swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApa
   - 異なるViewタイプでのBinding動作（Slider、Picker）
   - Optional値の処理（nil/非nil値の変換）
   - projectedValueの動作（Bindingの再取得）
+
+- **EnvironmentTests**: @Environmentプロパティラッパーの動作をテスト
+  - 基本的な環境値の取得（foregroundColor、isEnabled、fontSize）
+  - View階層での環境値の伝播（親子関係、値の上書き、深いネスト）
+  - SwiftTUI Observable型の環境設定と取得
+  - 標準@Observable型の環境設定と取得（Swift 5.9+）
+  - SwiftTUIとStandard Observableの混在使用
+  - カスタム環境キーの定義とアクセス
+  - エッジケース（複数環境値、disabled()メソッド、条件付きView）
 
 - **FrameModifierTests**: .frame()モディファイアの動作をテスト
   - 幅制約のみのテスト（短いテキスト、長いテキスト、パディング）

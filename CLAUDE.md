@@ -309,7 +309,7 @@ SwiftTUI.run(App())
   - 親子コンポーネント間のバインディング
   - TextFieldとの統合
   - カスタムBindingの作成
-- [ ] **EnvironmentTests**
+- [x] **EnvironmentTests** ✅
   - @Environmentによる値の取得
   - SwiftTUI Observableとの統合
   - 標準@Observableとの統合
@@ -453,7 +453,7 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（90テスト）
+### 実装済みテスト（104テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
@@ -463,6 +463,7 @@ SwiftTUI.run(App())
 - [x] **FrameModifierTests** (16テスト) - 幅制約、高さ制約、組み合わせ、レイアウト、エッジケース
 - [x] **StateTests** (12テスト) - 初期値、複数@State、ネスト独立性、Binding変換、エッジケース
 - [x] **BindingTests** (12テスト) - 親子同期、Binding.constant、カスタムBinding、型変換、エッジケース
+- [x] **EnvironmentTests** (14テスト) - 環境値伝播、Observable統合、カスタムキー、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
 - [x] **ButtonTests** ✅ - Buttonビューのテスト
@@ -492,7 +493,7 @@ SwiftTUI.run(App())
   - 双方向バインディング
   - Binding.constantの動作
 
-- [ ] **EnvironmentTests** - @Environmentのテスト
+- [x] **EnvironmentTests** ✅ - @Environmentのテスト
   - 環境値の取得
   - .environment()での値の設定
   - ネストされたView階層での伝播
