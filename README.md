@@ -1145,6 +1145,15 @@ swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApa
   - Optional値の処理（nil/非nil値の変換）
   - projectedValueの動作（Bindingの再取得）
 
+- **EnvironmentTests**: @Environmentプロパティラッパーの動作をテスト
+  - 基本的な環境値の取得（foregroundColor、isEnabled、fontSize）
+  - View階層での環境値の伝播（親子関係、値の上書き、深いネスト）
+  - SwiftTUI Observable型の環境設定と取得
+  - 標準@Observable型の環境設定と取得（Swift 5.9+）
+  - SwiftTUIとStandard Observableの混在使用
+  - カスタム環境キーの定義とアクセス
+  - エッジケース（複数環境値、disabled()メソッド、条件付きView）
+
 - **FrameModifierTests**: .frame()モディファイアの動作をテスト
   - 幅制約のみのテスト（短いテキスト、長いテキスト、パディング）
   - 高さ制約のみのテスト（少ない行数、多い行数、余白）
