@@ -1135,6 +1135,14 @@ swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApa
   - ネストされたスタック内での複数ボタン配置
   - エッジケース（空ラベル、長いラベル、複数行ラベル）
 
+- **FrameModifierTests**: .frame()モディファイアの動作をテスト
+  - 幅制約のみのテスト（短いテキスト、長いテキスト、パディング）
+  - 高さ制約のみのテスト（少ない行数、多い行数、余白）
+  - 幅と高さ両方の制約（収まる場合、超える場合）
+  - 他のモディファイアとの組み合わせ（padding、border、複数frame）
+  - VStack/HStack内でのframe動作
+  - エッジケース（ゼロサイズ、非常に大きなサイズ）
+
 #### 全テストプログラムの一括実行
 
 `scripts/all-test.sh`を使用すると、すべてのテストプログラムを順番に実行できます：
