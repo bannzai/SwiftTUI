@@ -1085,12 +1085,15 @@ swift test --filter SwiftTUITests.TextTests
 swift test --filter SwiftTUITests.SpacerTests
 swift test --filter SwiftTUITests.BindingTests
 swift test --filter SwiftTUITests.EnvironmentTests
+swift test --filter SwiftTUITests.ForEachTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
 swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApart
 swift test --filter SwiftTUITests.EnvironmentTests.testEnvironmentForegroundColor
 swift test --filter SwiftTUITests.EnvironmentTests.testSwiftTUIObservableInEnvironment
+swift test --filter SwiftTUITests.ForEachTests.testForEachRangeBasic
+swift test --filter SwiftTUITests.ForEachTests.testForEachIdentifiableBasic
 ```
 
 #### テストの内容
@@ -1157,6 +1160,15 @@ swift test --filter SwiftTUITests.EnvironmentTests.testSwiftTUIObservableInEnvir
   - SwiftTUIとStandard Observableの混在使用
   - カスタム環境キーの定義とアクセス
   - エッジケース（複数環境値、disabled()メソッド、条件付きView）
+
+- **ForEachTests**: ForEach動的リスト生成の動作をテスト
+  - Range-based ForEach（ForEachRange）の基本動作とエッジケース
+  - Identifiable配列でのForEach動作（空配列、単一要素、複数要素）
+  - KeyPath ID（id: \.self）での文字列・整数配列処理
+  - カスタムKeyPath（id: \.username）での構造体配列処理
+  - ネストされたForEach（二重ループ）の動作確認
+  - 複雑なレイアウト（VStack+ForEach+padding+border）との組み合わせ
+  - エッジケース（大きな数値Range、重複ID、HStack内での使用）
 
 - **FrameModifierTests**: .frame()モディファイアの動作をテスト
   - 幅制約のみのテスト（短いテキスト、長いテキスト、パディング）
