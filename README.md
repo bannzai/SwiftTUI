@@ -1082,9 +1082,11 @@ swift test
 
 # 特定のテストクラスを実行
 swift test --filter SwiftTUITests.TextTests
+swift test --filter SwiftTUITests.SpacerTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
+swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApart
 ```
 
 #### テストの内容
