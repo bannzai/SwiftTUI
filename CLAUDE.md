@@ -450,3 +450,91 @@ SwiftTUI.run(App())
 - /tmpにスクリプトファイルを作らないでください
 - ./tmp/に動作確認ようのスクリプトファイルを作りましょう
 - ですが、まずは直接書くようにしてください。そうでないとコンソールにスクリプトの内容が出力されず、私がスクリプトの内容を確認できないからです
+
+## ユニットテスト TODO
+
+### 実装済みテスト（39テスト）
+- [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
+- [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
+- [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
+- [x] **SpacerTests** (9テスト) - 基本動作、VStack/HStack内での拡張、複数Spacer、エッジケース
+- [x] **TextFieldTests** (13テスト) - 基本表示、@Binding、プレースホルダー、ボーダー、レイアウト
+
+### Phase 1 - 基本コンポーネントのテスト
+- [ ] **ButtonTests** - Buttonビューのテスト
+  - Labelの表示
+  - フォーカス状態の表示（緑枠、選択色）
+  - 非フォーカス状態の表示（白枠）
+  - action実行の検証
+  - VStack/HStack内での配置
+
+### Phase 2 - Modifierのテスト  
+- [ ] **FrameModifierTests** - .frame()モディファイアのテスト
+  - 幅制約の適用
+  - 高さ制約の適用
+  - 幅と高さ両方の制約
+  - テキストの切り詰め表示
+  - 他のモディファイアとの組み合わせ
+
+### Phase 3 - State管理のテスト
+- [ ] **StateTests** - @Stateプロパティラッパーのテスト
+  - 初期値の表示
+  - 値の更新と再レンダリング
+  - 複数の@Stateプロパティ
+  - ネストされたView間での独立性
+
+- [ ] **BindingTests** - @Bindingのテスト
+  - 親子間での値の同期
+  - 双方向バインディング
+  - Binding.constantの動作
+
+- [ ] **EnvironmentTests** - @Environmentのテスト
+  - 環境値の取得
+  - .environment()での値の設定
+  - ネストされたView階層での伝播
+  - カスタム環境値
+
+### Phase 4 - 動的リストのテスト
+- [ ] **ForEachTests** - ForEachのテスト
+  - Identifiable配列での動作
+  - Rangeでの動作
+  - KeyPath（id: \.self）での動作
+  - 空の配列での動作
+
+- [ ] **ListTests** - Listビューのテスト
+  - 項目の表示と自動区切り線
+  - 空のリスト
+  - 単一項目のリスト
+  - ForEachとの組み合わせ
+
+- [ ] **ScrollViewTests** - ScrollViewのテスト
+  - コンテンツのクリッピング
+  - スクロールバーの表示
+  - frame制約との組み合わせ
+
+### Phase 5 - インタラクティブコンポーネントのテスト
+- [ ] **ToggleTests** - Toggleビューのテスト
+  - オン/オフ状態の表示
+  - @Bindingでの状態管理
+  - ラベルの表示
+
+- [ ] **PickerTests** - Pickerビューのテスト
+  - 選択肢の表示
+  - 現在の選択値
+  - @Bindingでの選択管理
+
+- [ ] **SliderTests** - Sliderビューのテスト
+  - 値の範囲と現在値
+  - @Bindingでの値管理
+  - ラベルとパーセンテージ表示
+
+### Phase 6 - その他のコンポーネントのテスト
+- [ ] **AlertTests** - Alertのテスト
+  - .alert()モディファイアの動作
+  - isPresentedバインディング
+  - メッセージ表示
+
+- [ ] **ProgressViewTests** - ProgressViewのテスト
+  - 不確定進捗の表示（スピナー）
+  - 確定進捗の表示（バー）
+  - ラベル表示

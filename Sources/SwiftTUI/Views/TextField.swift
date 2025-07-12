@@ -23,7 +23,7 @@ public struct TextField: View {
 }
 
 /// TextFieldのLayoutView実装
-internal class TextFieldLayoutView: LayoutView, FocusableView {
+internal class TextFieldLayoutView: LayoutView, CellLayoutView, FocusableView {
     let placeholder: String
     let text: Binding<String>
     let id: String
@@ -108,6 +108,72 @@ internal class TextFieldLayoutView: LayoutView, FocusableView {
     
     func render(into buffer: inout [String]) {
         // LayoutViewプロトコルの要件
+    }
+    
+    // MARK: - CellLayoutView
+    
+    func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
+        let displayText = text.wrappedValue.isEmpty ? placeholder : text.wrappedValue
+        let isPlaceholder = text.wrappedValue.isEmpty
+        
+        // 枠線の色（フォーカス時は青、非フォーカス時は白）
+        let borderColor = isFocused ? Color.blue : Color.white
+        
+        // テキストの色（プレースホルダーは白）
+        let textColor = isPlaceholder ? Color.white : nil
+        
+        // 上の枠線
+        buffer.setCell(row: origin.y, col: origin.x, cell: Cell(character: "┌", foregroundColor: borderColor))
+        for i in 1...(displayText.count + 2) {
+            buffer.setCell(row: origin.y, col: origin.x + i, cell: Cell(character: "─", foregroundColor: borderColor))
+        }
+        buffer.setCell(row: origin.y, col: origin.x + displayText.count + 3, cell: Cell(character: "┐", foregroundColor: borderColor))
+        
+        // テキスト行
+        buffer.setCell(row: origin.y + 1, col: origin.x, cell: Cell(character: "│", foregroundColor: borderColor))
+        buffer.setCell(row: origin.y + 1, col: origin.x + 1, cell: Cell(character: " "))
+        
+        if isFocused && !isPlaceholder {
+            // カーソル位置でテキストを分割して表示
+            for (index, char) in displayText.enumerated() {
+                if index == cursorPosition {
+                    // カーソル位置は反転表示（背景色を設定）
+                    buffer.setCell(row: origin.y + 1, col: origin.x + 2 + index, 
+                                  cell: Cell(character: char, 
+                                            foregroundColor: Color.black,
+                                            backgroundColor: Color.white))
+                } else {
+                    buffer.setCell(row: origin.y + 1, col: origin.x + 2 + index, 
+                                  cell: Cell(character: char,
+                                            foregroundColor: textColor))
+                }
+            }
+            
+            // カーソルが文字列の最後にある場合
+            if cursorPosition == displayText.count {
+                buffer.setCell(row: origin.y + 1, col: origin.x + 2 + cursorPosition,
+                              cell: Cell(character: " ",
+                                        foregroundColor: Color.black,
+                                        backgroundColor: Color.white))
+            }
+        } else {
+            // 通常のテキスト表示
+            for (index, char) in displayText.enumerated() {
+                buffer.setCell(row: origin.y + 1, col: origin.x + 2 + index, 
+                              cell: Cell(character: char,
+                                        foregroundColor: textColor))
+            }
+        }
+        
+        buffer.setCell(row: origin.y + 1, col: origin.x + displayText.count + 2, cell: Cell(character: " "))
+        buffer.setCell(row: origin.y + 1, col: origin.x + displayText.count + 3, cell: Cell(character: "│", foregroundColor: borderColor))
+        
+        // 下の枠線
+        buffer.setCell(row: origin.y + 2, col: origin.x, cell: Cell(character: "└", foregroundColor: borderColor))
+        for i in 1...(displayText.count + 2) {
+            buffer.setCell(row: origin.y + 2, col: origin.x + i, cell: Cell(character: "─", foregroundColor: borderColor))
+        }
+        buffer.setCell(row: origin.y + 2, col: origin.x + displayText.count + 3, cell: Cell(character: "┘", foregroundColor: borderColor))
     }
     
     // MARK: - FocusableView
