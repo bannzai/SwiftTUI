@@ -1143,6 +1143,14 @@ swift test --filter SwiftTUITests.SpacerTests.testSpacerInVStackPushesContentApa
   - VStack/HStack内でのframe動作
   - エッジケース（ゼロサイズ、非常に大きなサイズ）
 
+- **StateTests**: @Stateプロパティラッパーの動作をテスト
+  - 初期値の表示（文字列、整数、Bool、カスタム型）
+  - 複数の@Stateプロパティ（独立性、異なる型の組み合わせ）
+  - ネストされたView間での@State独立性
+  - 同一Viewの複数インスタンスでの独立した状態
+  - @Bindingへの変換（projectedValue: $state）
+  - エッジケース（空文字列、Optional値、配列）
+
 #### 全テストプログラムの一括実行
 
 `scripts/all-test.sh`を使用すると、すべてのテストプログラムを順番に実行できます：

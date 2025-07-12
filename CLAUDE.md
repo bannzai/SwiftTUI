@@ -453,7 +453,7 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（66テスト）
+### 実装済みテスト（78テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
@@ -461,6 +461,7 @@ SwiftTUI.run(App())
 - [x] **TextFieldTests** (13テスト) - 基本表示、@Binding、プレースホルダー、ボーダー、レイアウト
 - [x] **ButtonTests** (11テスト) - 基本表示、パディング、フォーカス、レイアウト、エッジケース
 - [x] **FrameModifierTests** (16テスト) - 幅制約、高さ制約、組み合わせ、レイアウト、エッジケース
+- [x] **StateTests** (12テスト) - 初期値、複数@State、ネスト独立性、Binding変換、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
 - [x] **ButtonTests** ✅ - Buttonビューのテスト
@@ -479,7 +480,7 @@ SwiftTUI.run(App())
   - 他のモディファイアとの組み合わせ
 
 ### Phase 3 - State管理のテスト
-- [ ] **StateTests** - @Stateプロパティラッパーのテスト
+- [x] **StateTests** ✅ - @Stateプロパティラッパーのテスト
   - 初期値の表示
   - 値の更新と再レンダリング
   - 複数の@Stateプロパティ
