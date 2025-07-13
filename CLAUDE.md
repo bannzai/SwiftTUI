@@ -355,7 +355,7 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（134テスト）
+### 実装済みテスト（151テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
@@ -368,6 +368,7 @@ SwiftTUI.run(App())
 - [x] **EnvironmentTests** (14テスト) - 環境値伝播、Observable統合、カスタムキー、エッジケース
 - [x] **ForEachTests** (18テスト) - Range/Identifiable/KeyPath ForEach、ネスト、エッジケース
 - [x] **ListTests** (12テスト) - 基本List表示、セパレーター、ForEach組み合わせ、エッジケース
+- [x] **ScrollViewTests** (17テスト) - 基本スクロール、クリッピング、スクロールバー、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
 - [x] **ButtonTests** ✅ - Buttonビューのテスト
@@ -410,16 +411,19 @@ SwiftTUI.run(App())
   - KeyPath（id: \.self）での動作
   - 空の配列での動作
 
-- [ ] **ListTests** - Listビューのテスト
+- [x] **ListTests** ✅ - Listビューのテスト
   - 項目の表示と自動区切り線
   - 空のリスト
   - 単一項目のリスト
   - ForEachとの組み合わせ
 
-- [ ] **ScrollViewTests** - ScrollViewのテスト
-  - コンテンツのクリッピング
-  - スクロールバーの表示
-  - frame制約との組み合わせ
+- [x] **ScrollViewTests** ✅ - ScrollViewのテスト
+  - 基本スクロール機能（垂直・水平・両方向）
+  - 固定ビューポート（3行×5文字）でのクリッピング
+  - スクロールバー表示設定（showsIndicators）
+  - 大きなコンテンツでの動作
+  - ネストされたViewとVStack内配置
+  - 既知の制限：.frame()モディファイア無視、グローバル状態共有
 
 ### Phase 5 - インタラクティブコンポーネントのテスト
 - [ ] **ToggleTests** - Toggleビューのテスト

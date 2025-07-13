@@ -1087,6 +1087,7 @@ swift test --filter SwiftTUITests.BindingTests
 swift test --filter SwiftTUITests.EnvironmentTests
 swift test --filter SwiftTUITests.ForEachTests
 swift test --filter SwiftTUITests.ListTests
+swift test --filter SwiftTUITests.ScrollViewTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
@@ -1097,6 +1098,8 @@ swift test --filter SwiftTUITests.ForEachTests.testForEachRangeBasic
 swift test --filter SwiftTUITests.ForEachTests.testForEachIdentifiableBasic
 swift test --filter SwiftTUITests.ListTests.testListBasicDisplay
 swift test --filter SwiftTUITests.ListTests.testListWithForEachRange
+swift test --filter SwiftTUITests.ScrollViewTests.testScrollViewBasicVertical
+swift test --filter SwiftTUITests.ScrollViewTests.testScrollViewContentClipping
 ```
 
 #### テストの内容
@@ -1181,6 +1184,15 @@ swift test --filter SwiftTUITests.ListTests.testListWithForEachRange
   - ネストされたView（VStack内のList、List内のVStack）
   - エッジケース（長いコンテンツ、VStack内での配置）
   - 注意：List実装には既知の制限（中間項目の消失）があり、テストで考慮済み
+
+- **ScrollViewTests**: ScrollViewスクロール可能コンテナの動作をテスト
+  - 基本スクロール機能（垂直、水平、両方向、スクロール不要、空コンテンツ）
+  - フレーム制約とクリッピング（固定ビューポート3行×5文字、長いテキストの切り詰め）
+  - スクロールバー表示（showsIndicators設定、大きなコンテンツでの動作）
+  - ANSIエスケープシーケンス処理（色付きテキストの保持）
+  - エッジケース（単一行、ネストされたView、VStack内配置、複数インスタンス）
+  - 注意：現在の実装は固定ビューポートサイズで、.frame()モディファイアは無視される
+  - グローバル状態管理により複数ScrollView間で状態が共有される制限あり
 
 - **FrameModifierTests**: .frame()モディファイアの動作をテスト
   - 幅制約のみのテスト（短いテキスト、長いテキスト、パディング）
