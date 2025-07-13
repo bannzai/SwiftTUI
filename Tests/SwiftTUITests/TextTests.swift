@@ -1,9 +1,9 @@
-import XCTest
+import Testing
 @testable import SwiftTUI
 
-final class TextTests: SwiftTUITestCase {
+@Suite struct TextTests {
     
-    func testTextBasic() {
+    @Test func textBasic() {
         // Given
         let text = Text("Hello, World")
         
@@ -11,10 +11,10 @@ final class TextTests: SwiftTUITestCase {
         let output = TestRenderer.render(text)
         
         // Then
-        assertRenderedOutput(text, equals: "Hello, World")
+        expectRenderedOutput(text, equals: "Hello, World")
     }
     
-    func testTextWithExclamation() {
+    @Test func textWithExclamation() {
         // Given
         let text = Text("Hello, World!")
         
@@ -22,10 +22,10 @@ final class TextTests: SwiftTUITestCase {
         let output = TestRenderer.render(text)
         
         // Then
-        assertRenderedOutput(text, equals: "Hello, World!")
+        expectRenderedOutput(text, equals: "Hello, World!")
     }
     
-    func testTextWithStringInterpolation() {
+    @Test func textWithStringInterpolation() {
         // Given
         let name = "SwiftTUI"
         let text = Text("Welcome to \(name)!")
@@ -34,10 +34,10 @@ final class TextTests: SwiftTUITestCase {
         let output = TestRenderer.render(text)
         
         // Then
-        assertRenderedOutput(text, equals: "Welcome to SwiftTUI!")
+        expectRenderedOutput(text, equals: "Welcome to SwiftTUI!")
     }
     
-    func testTextEmpty() {
+    @Test func textEmpty() {
         // Given
         let text = Text("")
         
@@ -45,10 +45,10 @@ final class TextTests: SwiftTUITestCase {
         let output = TestRenderer.render(text)
         
         // Then
-        assertRenderedOutput(text, equals: "")
+        expectRenderedOutput(text, equals: "")
     }
     
-    func testTextWithSpecialCharacters() {
+    @Test func textWithSpecialCharacters() {
         // Given
         let text = Text("Hello @#$%^&*()!")
         
@@ -56,10 +56,10 @@ final class TextTests: SwiftTUITestCase {
         let output = TestRenderer.render(text)
         
         // Then
-        assertRenderedOutput(text, equals: "Hello @#$%^&*()!")
+        expectRenderedOutput(text, equals: "Hello @#$%^&*()!")
     }
     
-    func testTextWithUnicode() {
+    @Test func textWithUnicode() {
         // Given
         let text = Text("こんにちは 👋")
         
@@ -67,10 +67,10 @@ final class TextTests: SwiftTUITestCase {
         let output = TestRenderer.render(text)
         
         // Then
-        assertRenderedOutput(text, equals: "こんにちは 👋")
+        expectRenderedOutput(text, equals: "こんにちは 👋")
     }
     
-    func testTextWithNewlines() {
+    @Test func textWithNewlines() {
         // Given
         let text = Text("Line 1\nLine 2")
         
@@ -79,6 +79,6 @@ final class TextTests: SwiftTUITestCase {
         
         // Then
         // Note: Text viewは改行を含む場合、1行として表示される
-        assertRenderedOutput(text, equals: "Line 1\nLine 2")
+        expectRenderedOutput(text, equals: "Line 1\nLine 2")
     }
 }
