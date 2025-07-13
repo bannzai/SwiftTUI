@@ -355,7 +355,7 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（181テスト）
+### 実装済みテスト（200テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
@@ -371,6 +371,7 @@ SwiftTUI.run(App())
 - [x] **ListTests** (12テスト) - 基本List表示、セパレーター、ForEach組み合わせ、エッジケース
 - [x] **ScrollViewTests** (17テスト) - 基本スクロール、クリッピング、スクロールバー、エッジケース
 - [x] **PickerTests** (15テスト) - ドロップダウン選択、ラベル表示、フォーカス、エッジケース
+- [x] **SliderTests** (19テスト) - 値調整スライダー、範囲設定、@Binding、フォーカス、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
 - [x] **ButtonTests** ✅ - Buttonビューのテスト
