@@ -5,14 +5,14 @@
 //  Tests for Spacer view behavior
 //
 
-import XCTest
+import Testing
 @testable import SwiftTUI
 
-final class SpacerTests: SwiftTUITestCase {
+@Suite struct SpacerTests {
     
     // MARK: - Basic Spacer Tests
     
-    func testSpacerAlone() {
+    @Test func spacerAlone() {
         // Given
         let spacer = Spacer()
         
@@ -22,12 +22,12 @@ final class SpacerTests: SwiftTUITestCase {
         // Then
         // Spacer alone should render nothing visible
         let trimmed = output.trimmingCharacters(in: .whitespacesAndNewlines)
-        XCTAssertTrue(trimmed.isEmpty, "Spacer alone should not render any visible content")
+        #expect(trimmed.isEmpty, "Spacer alone should not render any visible content")
     }
     
     // MARK: - VStack with Spacer Tests
     
-    func testSpacerInVStackPushesContentApart() {
+    @Test func spacerInVStackPushesContentApart() {
         // Given
         let view = VStack {
             Text("Top")
@@ -59,17 +59,17 @@ final class SpacerTests: SwiftTUITestCase {
             }
         }
         
-        XCTAssertNotEqual(topIndex, -1, "Top text should be found")
-        XCTAssertNotEqual(bottomIndex, -1, "Bottom text should be found")
+        #expect(topIndex != -1, "Top text should be found")
+        #expect(bottomIndex != -1, "Bottom text should be found")
         
         // The actual rendered content might be smaller than the buffer height
         // Just verify that Bottom comes after Top
         if topIndex != -1 && bottomIndex != -1 {
-            XCTAssertGreaterThan(bottomIndex, topIndex, "Bottom should be below Top")
+            #expect(bottomIndex > topIndex, "Bottom should be below Top")
         }
     }
     
-    func testSpacerInVStackWithMinHeight() {
+    @Test func spacerInVStackWithMinHeight() {
         // Given - VStack with specific height
         let view = VStack {
             Text("A")
@@ -82,13 +82,13 @@ final class SpacerTests: SwiftTUITestCase {
         let lines = output.components(separatedBy: "\n").filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
         
         // Then
-        XCTAssertTrue(lines.first?.contains("A") ?? false, "First element should be at top")
-        XCTAssertTrue(lines.last?.contains("B") ?? false, "Last element should be at bottom")
+        #expect(lines.first?.contains("A") ?? false, "First element should be at top")
+        #expect(lines.last?.contains("B") ?? false, "Last element should be at bottom")
     }
     
     // MARK: - HStack with Spacer Tests
     
-    func testSpacerInHStackPushesContentApart() {
+    @Test func spacerInHStackPushesContentApart() {
         // Given
         let view = HStack {
             Text("Left")
@@ -101,8 +101,8 @@ final class SpacerTests: SwiftTUITestCase {
         
         // Then
         // Check that Left is on the left side and Right is on the right side
-        XCTAssertTrue(output.contains("Left"), "Left text should be present")
-        XCTAssertTrue(output.contains("Right"), "Right text should be present")
+        #expect(output.contains("Left"), "Left text should be present")
+        #expect(output.contains("Right"), "Right text should be present")
         
         // Find the line containing both texts
         let lines = output.components(separatedBy: "\n")
@@ -115,13 +115,13 @@ final class SpacerTests: SwiftTUITestCase {
                 let leftEnd = line.distance(from: line.startIndex, to: leftRange.upperBound)
                 let rightStart = line.distance(from: line.startIndex, to: rightRange.lowerBound)
                 
-                XCTAssertGreaterThan(rightStart - leftEnd, 5, "Spacer should create horizontal space")
+                #expect(rightStart - leftEnd > 5, "Spacer should create horizontal space")
                 break
             }
         }
     }
     
-    func testSpacerInHStackAlignItems() {
+    @Test func spacerInHStackAlignItems() {
         // Given
         let view = HStack {
             Text("Start")
@@ -134,13 +134,13 @@ final class SpacerTests: SwiftTUITestCase {
         
         // Then
         let line = output.trimmingCharacters(in: .whitespacesAndNewlines)
-        XCTAssertTrue(line.hasPrefix("Start"), "Start should be at the beginning")
-        XCTAssertTrue(line.hasSuffix("End"), "End should be at the end")
+        #expect(line.hasPrefix("Start"), "Start should be at the beginning")
+        #expect(line.hasSuffix("End"), "End should be at the end")
     }
     
     // MARK: - Multiple Spacers Tests
     
-    func testMultipleSpacersInHStack() {
+    @Test func multipleSpacersInHStack() {
         // Given
         let view = HStack {
             Text("A")
@@ -154,9 +154,9 @@ final class SpacerTests: SwiftTUITestCase {
         let output = TestRenderer.render(view, width: 30, height: 3)
         
         // Then
-        XCTAssertTrue(output.contains("A"), "A should be present")
-        XCTAssertTrue(output.contains("B"), "B should be present")
-        XCTAssertTrue(output.contains("C"), "C should be present")
+        #expect(output.contains("A"), "A should be present")
+        #expect(output.contains("B"), "B should be present")
+        #expect(output.contains("C"), "C should be present")
         
         // Find the line with all texts
         let lines = output.components(separatedBy: "\n")
@@ -173,13 +173,13 @@ final class SpacerTests: SwiftTUITestCase {
                 
                 // B should be roughly in the middle
                 let expectedMiddle = (aIndex + cIndex) / 2
-                XCTAssertLessThanOrEqual(abs(bIndex - expectedMiddle), 2, "B should be approximately centered")
+                #expect(abs(bIndex - expectedMiddle) <= 2, "B should be approximately centered")
                 break
             }
         }
     }
     
-    func testMultipleSpacersInVStack() {
+    @Test func multipleSpacersInVStack() {
         // Given
         let view = VStack {
             Text("1")
@@ -201,7 +201,7 @@ final class SpacerTests: SwiftTUITestCase {
             }
         }
         
-        XCTAssertEqual(indices.count, 3, "Should find all three texts")
+        #expect(indices.count == 3, "Should find all three texts")
         
         if indices.count == 3 {
             // Check that spacers distribute space evenly
@@ -209,13 +209,13 @@ final class SpacerTests: SwiftTUITestCase {
             let gap2 = indices[2] - indices[1]
             
             // Gaps should be roughly equal (within 1 line tolerance)
-            XCTAssertLessThanOrEqual(abs(gap1 - gap2), 1, "Spacers should distribute space evenly")
+            #expect(abs(gap1 - gap2) <= 1, "Spacers should distribute space evenly")
         }
     }
     
     // MARK: - Edge Cases
     
-    func testSpacerWithNoSpace() {
+    @Test func spacerWithNoSpace() {
         // Given - HStack with no extra space
         let view = HStack {
             Text("VeryLongTextHere")
@@ -228,11 +228,11 @@ final class SpacerTests: SwiftTUITestCase {
         
         // Then
         // Even with no space, content should still render
-        XCTAssertTrue(output.contains("VeryLongTextHere"), "Long text should be present")
-        XCTAssertTrue(output.contains("More"), "Second text should be present")
+        #expect(output.contains("VeryLongTextHere"), "Long text should be present")
+        #expect(output.contains("More"), "Second text should be present")
     }
     
-    func testNestedSpacers() {
+    @Test func nestedSpacers() {
         // Given
         let view = VStack {
             Text("Top")
@@ -250,9 +250,9 @@ final class SpacerTests: SwiftTUITestCase {
         let output = TestRenderer.render(view, width: 20, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Top"), "Top should be present")
-        XCTAssertTrue(output.contains("Bottom"), "Bottom should be present")
-        XCTAssertTrue(output.contains("L") && output.contains("R"), "HStack content should be present")
+        #expect(output.contains("Top"), "Top should be present")
+        #expect(output.contains("Bottom"), "Bottom should be present")
+        #expect(output.contains("L") && output.contains("R"), "HStack content should be present")
         
         // Verify vertical spacing
         let lines = output.components(separatedBy: "\n")
@@ -266,14 +266,14 @@ final class SpacerTests: SwiftTUITestCase {
         
         // Just verify the order and that there's some spacing
         if topIdx != -1 && bottomIdx != -1 {
-            XCTAssertGreaterThan(bottomIdx, topIdx, "Bottom should be below Top")
-            XCTAssertGreaterThan(bottomIdx - topIdx, 1, "Should have some vertical spacing")
+            #expect(bottomIdx > topIdx, "Bottom should be below Top")
+            #expect(bottomIdx - topIdx > 1, "Should have some vertical spacing")
         }
         
         // Verify the HStack is between Top and Bottom
         if topIdx != -1 && middleIdx != -1 && bottomIdx != -1 {
-            XCTAssertGreaterThan(middleIdx, topIdx, "HStack should be below Top")
-            XCTAssertLessThan(middleIdx, bottomIdx, "HStack should be above Bottom")
+            #expect(middleIdx > topIdx, "HStack should be below Top")
+            #expect(middleIdx < bottomIdx, "HStack should be above Bottom")
         }
     }
 }
