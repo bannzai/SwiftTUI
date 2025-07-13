@@ -355,13 +355,14 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（151テスト）
+### 実装済みテスト（166テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
 - [x] **SpacerTests** (9テスト) - 基本動作、VStack/HStack内での拡張、複数Spacer、エッジケース
 - [x] **TextFieldTests** (13テスト) - 基本表示、@Binding、プレースホルダー、ボーダー、レイアウト
 - [x] **ButtonTests** (11テスト) - 基本表示、パディング、フォーカス、レイアウト、エッジケース
+- [x] **ToggleTests** (15テスト) - ON/OFF表示、@Binding、複数トグル、フォーカス、エッジケース
 - [x] **FrameModifierTests** (16テスト) - 幅制約、高さ制約、組み合わせ、レイアウト、エッジケース
 - [x] **StateTests** (12テスト) - 初期値、複数@State、ネスト独立性、Binding変換、エッジケース
 - [x] **BindingTests** (12テスト) - 親子同期、Binding.constant、カスタムBinding、型変換、エッジケース
@@ -426,10 +427,11 @@ SwiftTUI.run(App())
   - 既知の制限：.frame()モディファイア無視、グローバル状態共有
 
 ### Phase 5 - インタラクティブコンポーネントのテスト
-- [ ] **ToggleTests** - Toggleビューのテスト
-  - オン/オフ状態の表示
-  - @Bindingでの状態管理
-  - ラベルの表示
+- [x] **ToggleTests** ✅ - Toggleビューのテスト
+  - OFF状態 [ ] とON状態 [✓] の表示
+  - @Bindingでの状態管理（親子間バインディング）
+  - ラベル表示と複数トグルの独立動作
+  - フォーカス管理と複雑なレイアウト内での動作
 
 - [ ] **PickerTests** - Pickerビューのテスト
   - 選択肢の表示
