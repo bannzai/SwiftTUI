@@ -1086,6 +1086,7 @@ swift test --filter SwiftTUITests.SpacerTests
 swift test --filter SwiftTUITests.BindingTests
 swift test --filter SwiftTUITests.EnvironmentTests
 swift test --filter SwiftTUITests.ForEachTests
+swift test --filter SwiftTUITests.ListTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
@@ -1094,6 +1095,8 @@ swift test --filter SwiftTUITests.EnvironmentTests.testEnvironmentForegroundColo
 swift test --filter SwiftTUITests.EnvironmentTests.testSwiftTUIObservableInEnvironment
 swift test --filter SwiftTUITests.ForEachTests.testForEachRangeBasic
 swift test --filter SwiftTUITests.ForEachTests.testForEachIdentifiableBasic
+swift test --filter SwiftTUITests.ListTests.testListBasicDisplay
+swift test --filter SwiftTUITests.ListTests.testListWithForEachRange
 ```
 
 #### テストの内容
@@ -1169,6 +1172,15 @@ swift test --filter SwiftTUITests.ForEachTests.testForEachIdentifiableBasic
   - ネストされたForEach（二重ループ）の動作確認
   - 複雑なレイアウト（VStack+ForEach+padding+border）との組み合わせ
   - エッジケース（大きな数値Range、重複ID、HStack内での使用）
+
+- **ListTests**: List自動区切り線付きリスト表示の動作をテスト
+  - 基本的なList表示（静的コンテンツ、空List、単一/複数項目）
+  - セパレーター自動挿入の動作（項目間の区切り線、最後の項目後は挿入なし）
+  - ForEachとの組み合わせ（Range、Identifiable、KeyPath ID対応）
+  - モディファイアとの組み合わせ（padding、border）
+  - ネストされたView（VStack内のList、List内のVStack）
+  - エッジケース（長いコンテンツ、VStack内での配置）
+  - 注意：List実装には既知の制限（中間項目の消失）があり、テストで考慮済み
 
 - **FrameModifierTests**: .frame()モディファイアの動作をテスト
   - 幅制約のみのテスト（短いテキスト、長いテキスト、パディング）
