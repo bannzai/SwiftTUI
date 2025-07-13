@@ -1090,6 +1090,7 @@ swift test --filter SwiftTUITests.ListTests
 swift test --filter SwiftTUITests.ScrollViewTests
 swift test --filter SwiftTUITests.ToggleTests
 swift test --filter SwiftTUITests.PickerTests
+swift test --filter SwiftTUITests.SliderTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
@@ -1104,6 +1105,8 @@ swift test --filter SwiftTUITests.ScrollViewTests.testScrollViewBasicVertical
 swift test --filter SwiftTUITests.ScrollViewTests.testScrollViewContentClipping
 swift test --filter SwiftTUITests.PickerTests.testPickerBasicStringOptions
 swift test --filter SwiftTUITests.PickerTests.testPickerFocusDisplay
+swift test --filter SwiftTUITests.SliderTests.testSliderBasicDisplay
+swift test --filter SwiftTUITests.SliderTests.testSliderBinding
 ```
 
 #### テストの内容
@@ -1169,6 +1172,14 @@ swift test --filter SwiftTUITests.PickerTests.testPickerFocusDisplay
   - 特殊文字・絵文字での動作（Unicode文字、括弧等の特殊記号）
   - 注意：Int型Pickerでsignal 11クラッシュが発生するため、現在はString型のみでテスト実装
   - TestRenderer互換性問題により、独自の`renderPicker`ヘルパーメソッドを使用
+
+- **SliderTests**: Slider値調整コンポーネントの動作をテスト
+  - 基本表示機能（ラベル: [バー] 値 形式、範囲に応じた表示、異なる型のサポート）
+  - @Binding値管理（初期値の反映、値の更新と同期、複数スライダーの独立管理）
+  - 範囲とステップ機能（カスタム範囲、ステップ指定、境界値での動作）
+  - フォーカス管理（フォーカス状態での枠線表示、サイズ計算、複数Sliderの独立管理）
+  - エッジケース（極小値・極大値、ゼロ範囲回避、長いラベル、特殊文字・絵文字）
+  - TestRenderer互換性問題により、独自の`renderSlider`ヘルパーメソッドを使用
 
 - **BindingTests**: @Bindingプロパティラッパーの動作をテスト
   - 親子View間のバインディング同期（TextField、Toggle）
