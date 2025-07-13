@@ -1092,6 +1092,7 @@ swift test --filter SwiftTUITests.ToggleTests
 swift test --filter SwiftTUITests.PickerTests
 swift test --filter SwiftTUITests.SliderTests
 swift test --filter SwiftTUITests.AlertTests
+swift test --filter SwiftTUITests.ProgressViewTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
@@ -1110,6 +1111,8 @@ swift test --filter SwiftTUITests.SliderTests.testSliderBasicDisplay
 swift test --filter SwiftTUITests.SliderTests.testSliderBinding
 swift test --filter SwiftTUITests.AlertTests.testAlertBasicDisplay
 swift test --filter SwiftTUITests.AlertTests.testAlertModifierShowing
+swift test --filter SwiftTUITests.ProgressViewTests.testProgressViewIndeterminateBasic
+swift test --filter SwiftTUITests.ProgressViewTests.testProgressViewDeterminateWithLabel
 ```
 
 #### テストの内容
@@ -1190,6 +1193,13 @@ swift test --filter SwiftTUITests.AlertTests.testAlertModifierShowing
   - モディファイア動作（.alert()でのコンテンツ切り替え、アラート表示時のコンテンツ隠蔽）
   - エッジケース（長いタイトル・メッセージ、メッセージなし、特殊文字・絵文字）
   - 独自の`renderAlert`ヘルパーメソッドでdirect alert testing対応
+
+- **ProgressViewTests**: ProgressView進捗表示コンポーネントの動作をテスト
+  - 基本表示機能（不確定進捗スピナー、確定進捗バー、ラベル付き/なし）
+  - 進捗値管理（0-100%表示、範囲外値のクランプ、カスタムtotal値、パーセンテージ計算）
+  - スタイル・レイアウト（20文字固定幅バー、塗りつぶし█と空白░の正確な比率、要素間スペーシング）
+  - エッジケース（0%/100%進捗、特殊文字・絵文字ラベル）
+  - スピナーアニメーション文字（⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏）の確認
 
 - **BindingTests**: @Bindingプロパティラッパーの動作をテスト
   - 親子View間のバインディング同期（TextField、Toggle）
