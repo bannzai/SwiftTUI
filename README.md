@@ -1088,6 +1088,7 @@ swift test --filter SwiftTUITests.EnvironmentTests
 swift test --filter SwiftTUITests.ForEachTests
 swift test --filter SwiftTUITests.ListTests
 swift test --filter SwiftTUITests.ScrollViewTests
+swift test --filter SwiftTUITests.ToggleTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
@@ -1147,6 +1148,15 @@ swift test --filter SwiftTUITests.ScrollViewTests.testScrollViewContentClipping
   - フレームモディファイアとの組み合わせ
   - ネストされたスタック内での複数ボタン配置
   - エッジケース（空ラベル、長いラベル、複数行ラベル）
+
+- **ToggleTests**: Toggleビューの動作をテスト
+  - 基本表示機能（OFF状態 [ ]、ON状態 [✓]、ラベル表示）
+  - 複数トグルの独立動作（各トグルが独立した状態を保持）
+  - @Binding状態管理（親子コンポーネント間のバインディング、初期値の反映）
+  - 複数の独立したバインディング（複数のトグルが異なるバインディングを持つ）
+  - フォーカス管理（フォーカス可能表示、レイアウト内でのサイズ計算）
+  - エッジケース（空ラベル、長いラベル、特殊文字・絵文字）
+  - VStack内での複雑なレイアウト（他のコンポーネントとの組み合わせ）
 
 - **BindingTests**: @Bindingプロパティラッパーの動作をテスト
   - 親子View間のバインディング同期（TextField、Toggle）
