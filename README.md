@@ -1091,6 +1091,7 @@ swift test --filter SwiftTUITests.ScrollViewTests
 swift test --filter SwiftTUITests.ToggleTests
 swift test --filter SwiftTUITests.PickerTests
 swift test --filter SwiftTUITests.SliderTests
+swift test --filter SwiftTUITests.AlertTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
@@ -1107,6 +1108,8 @@ swift test --filter SwiftTUITests.PickerTests.testPickerBasicStringOptions
 swift test --filter SwiftTUITests.PickerTests.testPickerFocusDisplay
 swift test --filter SwiftTUITests.SliderTests.testSliderBasicDisplay
 swift test --filter SwiftTUITests.SliderTests.testSliderBinding
+swift test --filter SwiftTUITests.AlertTests.testAlertBasicDisplay
+swift test --filter SwiftTUITests.AlertTests.testAlertModifierShowing
 ```
 
 #### テストの内容
@@ -1180,6 +1183,13 @@ swift test --filter SwiftTUITests.SliderTests.testSliderBinding
   - フォーカス管理（フォーカス状態での枠線表示、サイズ計算、複数Sliderの独立管理）
   - エッジケース（極小値・極大値、ゼロ範囲回避、長いラベル、特殊文字・絵文字）
   - TestRenderer互換性問題により、独自の`renderSlider`ヘルパーメソッドを使用
+
+- **AlertTests**: Alert表示コンポーネントの動作をテスト
+  - 基本表示機能（赤い警告枠、タイトル表示、OKボタン、中央寄せ）
+  - @Binding表示制御（isPresentedでの表示/非表示、dismissアクションでの状態変更）
+  - モディファイア動作（.alert()でのコンテンツ切り替え、アラート表示時のコンテンツ隠蔽）
+  - エッジケース（長いタイトル・メッセージ、メッセージなし、特殊文字・絵文字）
+  - 独自の`renderAlert`ヘルパーメソッドでdirect alert testing対応
 
 - **BindingTests**: @Bindingプロパティラッパーの動作をテスト
   - 親子View間のバインディング同期（TextField、Toggle）
