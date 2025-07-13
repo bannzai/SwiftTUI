@@ -266,104 +266,6 @@ SwiftTUI.run(App())
 - 大規模なView階層のレンダリングのパフォーマンステスト
 - ターミナル出力の統合テスト
 
-## ユニットテスト TODO
-
-### 実装済みテスト（26テスト）
-- [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
-- [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
-- [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
-- [x] **SpacerTests** (9テスト) - 基本動作、VStack/HStack内での拡張、複数Spacer、エッジケース
-
-### 今後の実装計画
-
-#### フェーズ1: コアコンポーネントテスト（優先度: 高）
-- [x] **SpacerTests** ✅
-  - Spacerの基本動作
-  - VStack内でのSpacer（垂直方向の拡張）
-  - HStack内でのSpacer（水平方向の拡張）
-  - 複数Spacerの挙動
-- [ ] **TextFieldTests**
-  - テキスト入力と表示
-  - @Bindingによる双方向バインディング
-  - プレースホルダーの表示
-  - フレーム制限内でのテキスト表示
-- [ ] **ButtonTests**
-  - ボタンのレンダリング
-  - アクション実行の確認
-  - フォーカス状態の管理
-  - Tabキーナビゲーション
-
-#### フェーズ2: Modifierテスト（優先度: 高）
-- [ ] **FrameModifierTests**
-  - width指定のみ
-  - height指定のみ
-  - width/height両方指定
-  - 他のモディファイアとの組み合わせ
-
-#### フェーズ3: 状態管理テスト（優先度: 高）
-- [ ] **StateTests**
-  - @Stateプロパティの初期値
-  - 状態変更による再レンダリング
-  - 複数の@State変数の管理
-- [x] **BindingTests** ✅
-  - 親子コンポーネント間のバインディング
-  - TextFieldとの統合
-  - カスタムBindingの作成
-- [x] **EnvironmentTests** ✅
-  - @Environmentによる値の取得
-  - SwiftTUI Observableとの統合
-  - 標準@Observableとの統合
-  - EnvironmentValuesの伝播
-
-#### フェーズ4: 動的リストテスト（優先度: 中）
-- [x] **ForEachTests** ✅
-  - Range based ForEach
-  - Identifiable配列のForEach
-  - KeyPath指定のForEach
-  - 動的な要素の追加/削除
-- [ ] **ListTests**
-  - 基本的なリスト表示
-  - セパレーターの自動挿入
-  - ForEachとの組み合わせ
-- [ ] **ScrollViewTests**
-  - 垂直スクロール
-  - 水平スクロール
-  - コンテンツサイズの計算
-
-#### フェーズ5: インタラクティブコンポーネントテスト（優先度: 中）
-- [ ] **ToggleTests**
-  - On/Off状態の切り替え
-  - @Bindingによる状態管理
-  - ラベル表示
-- [ ] **PickerTests**
-  - 選択肢の表示
-  - 選択状態の管理
-  - @Bindingによる選択値の同期
-- [ ] **SliderTests**
-  - 値の範囲設定
-  - 現在値の表示
-  - @Bindingによる値の更新
-
-#### フェーズ6: 表示コンポーネントテスト（優先度: 低）
-- [ ] **AlertTests**
-  - アラートの表示/非表示
-  - ボタンアクション
-  - @Bindingによる表示制御
-- [ ] **ProgressViewTests**
-  - 進捗表示
-  - 不確定進捗表示
-  - カスタムラベル
-
-### 実装順序の推奨
-1. **フェーズ1-3を優先的に実装**
-   - 基本機能の安定性確保
-   - 最も使用頻度の高い機能のカバレッジ向上
-2. **フェーズ4-5を次に実装**
-   - より複雑な機能のテスト
-   - 実際のアプリケーションで必要な機能
-3. **フェーズ6は最後に実装**
-   - 使用頻度が比較的低い機能
-   - 補助的な表示コンポーネント
 
 ## してはいけないこと
 
@@ -453,7 +355,7 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（122テスト）
+### 実装済みテスト（134テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
@@ -465,6 +367,7 @@ SwiftTUI.run(App())
 - [x] **BindingTests** (12テスト) - 親子同期、Binding.constant、カスタムBinding、型変換、エッジケース
 - [x] **EnvironmentTests** (14テスト) - 環境値伝播、Observable統合、カスタムキー、エッジケース
 - [x] **ForEachTests** (18テスト) - Range/Identifiable/KeyPath ForEach、ネスト、エッジケース
+- [x] **ListTests** (12テスト) - 基本List表示、セパレーター、ForEach組み合わせ、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
 - [x] **ButtonTests** ✅ - Buttonビューのテスト
