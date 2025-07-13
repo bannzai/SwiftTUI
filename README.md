@@ -1089,6 +1089,7 @@ swift test --filter SwiftTUITests.ForEachTests
 swift test --filter SwiftTUITests.ListTests
 swift test --filter SwiftTUITests.ScrollViewTests
 swift test --filter SwiftTUITests.ToggleTests
+swift test --filter SwiftTUITests.PickerTests
 
 # 特定のテストメソッドを実行
 swift test --filter SwiftTUITests.TextTests.testTextBasic
@@ -1101,6 +1102,8 @@ swift test --filter SwiftTUITests.ListTests.testListBasicDisplay
 swift test --filter SwiftTUITests.ListTests.testListWithForEachRange
 swift test --filter SwiftTUITests.ScrollViewTests.testScrollViewBasicVertical
 swift test --filter SwiftTUITests.ScrollViewTests.testScrollViewContentClipping
+swift test --filter SwiftTUITests.PickerTests.testPickerBasicStringOptions
+swift test --filter SwiftTUITests.PickerTests.testPickerFocusDisplay
 ```
 
 #### テストの内容
@@ -1157,6 +1160,15 @@ swift test --filter SwiftTUITests.ScrollViewTests.testScrollViewContentClipping
   - フォーカス管理（フォーカス可能表示、レイアウト内でのサイズ計算）
   - エッジケース（空ラベル、長いラベル、特殊文字・絵文字）
   - VStack内での複雑なレイアウト（他のコンポーネントとの組み合わせ）
+
+- **PickerTests**: Pickerドロップダウン選択コンポーネントの動作をテスト
+  - 基本表示機能（ラベル: [選択値 ▼] 形式、String型選択肢での表示）
+  - @Binding選択管理（選択値の初期表示、状態管理、複数バインディング）
+  - フォーカス管理（フォーカス状態の表示、複数Pickerの独立管理）
+  - エッジケース（空選択肢配列、単一選択肢、長いラベル・選択肢名）
+  - 特殊文字・絵文字での動作（Unicode文字、括弧等の特殊記号）
+  - 注意：Int型Pickerでsignal 11クラッシュが発生するため、現在はString型のみでテスト実装
+  - TestRenderer互換性問題により、独自の`renderPicker`ヘルパーメソッドを使用
 
 - **BindingTests**: @Bindingプロパティラッパーの動作をテスト
   - 親子View間のバインディング同期（TextField、Toggle）

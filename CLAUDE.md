@@ -355,7 +355,7 @@ SwiftTUI.run(App())
 
 ## ユニットテスト TODO
 
-### 実装済みテスト（166テスト）
+### 実装済みテスト（181テスト）
 - [x] **TextTests** (7テスト) - 基本的なText表示、特殊文字、改行、文字列補間
 - [x] **TextModifierTests** (6テスト) - padding、border、bold、foregroundColor、background、連鎖
 - [x] **CompositeViewTests** (4テスト) - VStack、HStack、ネストされたスタック、スペーシング
@@ -370,6 +370,7 @@ SwiftTUI.run(App())
 - [x] **ForEachTests** (18テスト) - Range/Identifiable/KeyPath ForEach、ネスト、エッジケース
 - [x] **ListTests** (12テスト) - 基本List表示、セパレーター、ForEach組み合わせ、エッジケース
 - [x] **ScrollViewTests** (17テスト) - 基本スクロール、クリッピング、スクロールバー、エッジケース
+- [x] **PickerTests** (15テスト) - ドロップダウン選択、ラベル表示、フォーカス、エッジケース
 
 ### Phase 1 - 基本コンポーネントのテスト
 - [x] **ButtonTests** ✅ - Buttonビューのテスト
@@ -433,10 +434,12 @@ SwiftTUI.run(App())
   - ラベル表示と複数トグルの独立動作
   - フォーカス管理と複雑なレイアウト内での動作
 
-- [ ] **PickerTests** - Pickerビューのテスト
-  - 選択肢の表示
-  - 現在の選択値
-  - @Bindingでの選択管理
+- [x] **PickerTests** ✅ - Pickerビューのテスト
+  - ドロップダウン選択UI（ラベル: [選択値 ▼]）
+  - String型でのBasic表示とBinding管理
+  - フォーカス状態の管理（TestRendererとの互換性問題あり）
+  - 空選択肢、単一選択肢、長いラベル、特殊文字等のエッジケース
+  - 注意：Int型Pickerでsignal 11クラッシュ、将来の調査が必要
 
 - [ ] **SliderTests** - Sliderビューのテスト
   - 値の範囲と現在値
