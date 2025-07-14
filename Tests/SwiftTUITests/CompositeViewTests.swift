@@ -1,9 +1,9 @@
-import XCTest
+import Testing
 @testable import SwiftTUI
 
-final class CompositeViewTests: SwiftTUITestCase {
+@Suite struct CompositeViewTests {
     
-    func testTextInVStack() {
+    @Test func textInVStack() {
         // Given
         let view = VStack {
             Text("Line 1")
@@ -18,13 +18,13 @@ final class CompositeViewTests: SwiftTUITestCase {
             .filter { !$0.isEmpty }
         
         // Then
-        XCTAssertEqual(lines.count, 3)
-        XCTAssertEqual(lines[0], "Line 1")
-        XCTAssertEqual(lines[1], "Line 2")
-        XCTAssertEqual(lines[2], "Line 3")
+        #expect(lines.count == 3)
+        #expect(lines[0] == "Line 1")
+        #expect(lines[1] == "Line 2")
+        #expect(lines[2] == "Line 3")
     }
     
-    func testTextInHStack() {
+    @Test func textInHStack() {
         // Given
         let view = HStack {
             Text("Hello")
@@ -37,10 +37,10 @@ final class CompositeViewTests: SwiftTUITestCase {
         
         // Then
         // HStackは横に並べるので、同じ行に表示される
-        XCTAssertTrue(normalized.contains("Hello") && normalized.contains("World"))
+        #expect(normalized.contains("Hello") && normalized.contains("World"))
     }
     
-    func testTextInVStackWithSpacing() {
+    @Test func textInVStackWithSpacing() {
         // Given
         let view = VStack(spacing: 2) {
             Text("First")
@@ -53,17 +53,17 @@ final class CompositeViewTests: SwiftTUITestCase {
         // Then
         // Just verify both texts are rendered and in correct order
         // TODO: Once VStack spacing is properly implemented, verify actual spacing
-        XCTAssertTrue(output.contains("First"))
-        XCTAssertTrue(output.contains("Second"))
+        #expect(output.contains("First"))
+        #expect(output.contains("Second"))
         
         // Verify order
         if let firstRange = output.range(of: "First"),
            let secondRange = output.range(of: "Second") {
-            XCTAssertLessThan(firstRange.lowerBound, secondRange.lowerBound)
+            #expect(firstRange.lowerBound < secondRange.lowerBound)
         }
     }
     
-    func testNestedStacks() {
+    @Test func nestedStacks() {
         // Given
         let view = VStack {
             Text("Header")
@@ -78,9 +78,9 @@ final class CompositeViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(view)
         
         // Then
-        XCTAssertTrue(output.contains("Header"))
-        XCTAssertTrue(output.contains("Left"))
-        XCTAssertTrue(output.contains("Right"))
-        XCTAssertTrue(output.contains("Footer"))
+        #expect(output.contains("Header"))
+        #expect(output.contains("Left"))
+        #expect(output.contains("Right"))
+        #expect(output.contains("Footer"))
     }
 }

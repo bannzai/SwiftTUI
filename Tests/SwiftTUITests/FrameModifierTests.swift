@@ -5,14 +5,14 @@
 //  Tests for frame modifier behavior
 //
 
-import XCTest
+import Testing
 @testable import SwiftTUI
 
-final class FrameModifierTests: SwiftTUITestCase {
+@Suite struct FrameModifierTests {
     
     // MARK: - Width Constraint Tests
     
-    func testFrameWithWidthOnly() {
+    @Test func frameWithWidthOnly() {
         // Given
         let text = Text("Hello")
             .frame(width: 10)
@@ -22,16 +22,16 @@ final class FrameModifierTests: SwiftTUITestCase {
         
         // Then
         let lines = output.components(separatedBy: "\n").filter { !$0.isEmpty }
-        XCTAssertTrue(output.contains("Hello"), "Text should be visible")
+        #expect(output.contains("Hello"), "Text should be visible")
         
         // Check if text is constrained to width
         if let textLine = lines.first(where: { $0.contains("Hello") }) {
             // Frame should limit the content area
-            XCTAssertTrue(textLine.count <= 30, "Line should not exceed container width")
+            #expect(textLine.count <= 30, "Line should not exceed container width")
         }
     }
     
-    func testFrameWithWidthShorterThanText() {
+    @Test func frameWithWidthShorterThanText() {
         // Given
         let text = Text("This is a very long text")
             .frame(width: 10)
@@ -41,10 +41,10 @@ final class FrameModifierTests: SwiftTUITestCase {
         
         // Then
         // Text should be visible but potentially truncated
-        XCTAssertTrue(output.contains("This"), "At least part of text should be visible")
+        #expect(output.contains("This"), "At least part of text should be visible")
     }
     
-    func testFrameWithWidthLongerThanText() {
+    @Test func frameWithWidthLongerThanText() {
         // Given
         let text = Text("Hi")
             .frame(width: 20)
@@ -53,13 +53,13 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(text, width: 30, height: 5)
         
         // Then
-        XCTAssertTrue(output.contains("Hi"), "Text should be visible")
+        #expect(output.contains("Hi"), "Text should be visible")
         // The frame should provide space even if text is shorter
     }
     
     // MARK: - Height Constraint Tests
     
-    func testFrameWithHeightOnly() {
+    @Test func frameWithHeightOnly() {
         // Given
         let vstack = VStack {
             Text("Line 1")
@@ -74,13 +74,13 @@ final class FrameModifierTests: SwiftTUITestCase {
         // Then
         // With height constraint of 2, only first 2 lines might be visible
         let lines = output.components(separatedBy: "\n").filter { !$0.isEmpty }
-        XCTAssertTrue(output.contains("Line 1"), "First line should be visible")
+        #expect(output.contains("Line 1"), "First line should be visible")
         
         // Count non-empty lines
-        XCTAssertLessThanOrEqual(lines.count, 10, "Should not exceed container height")
+        #expect(lines.count <= 10, "Should not exceed container height")
     }
     
-    func testFrameWithHeightSmallerThanContent() {
+    @Test func frameWithHeightSmallerThanContent() {
         // Given
         let vstack = VStack {
             Text("A")
@@ -95,12 +95,12 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(vstack, width: 20, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("A"), "First item should be visible")
-        XCTAssertTrue(output.contains("B"), "Second item should be visible")
+        #expect(output.contains("A"), "First item should be visible")
+        #expect(output.contains("B"), "Second item should be visible")
         // C, D, E might be clipped due to height constraint
     }
     
-    func testFrameWithHeightLargerThanContent() {
+    @Test func frameWithHeightLargerThanContent() {
         // Given
         let text = Text("Single line")
             .frame(height: 5)
@@ -109,13 +109,13 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(text, width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Single line"), "Text should be visible")
+        #expect(output.contains("Single line"), "Text should be visible")
         // Frame provides vertical space even if content is smaller
     }
     
     // MARK: - Combined Width and Height Tests
     
-    func testFrameWithBothWidthAndHeight() {
+    @Test func frameWithBothWidthAndHeight() {
         // Given
         let text = Text("Constrained")
             .frame(width: 15, height: 3)
@@ -124,10 +124,10 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(text, width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Constrained"), "Text should be visible")
+        #expect(output.contains("Constrained"), "Text should be visible")
     }
     
-    func testFrameWithContentExceedingBothDimensions() {
+    @Test func frameWithContentExceedingBothDimensions() {
         // Given
         let vstack = VStack {
             Text("This is a very long line of text")
@@ -143,12 +143,12 @@ final class FrameModifierTests: SwiftTUITestCase {
         // Then
         // Should show at least partial content within constraints
         let lines = output.components(separatedBy: "\n").filter { !$0.isEmpty }
-        XCTAssertGreaterThan(lines.count, 0, "Should have some visible content")
+        #expect(lines.count > 0, "Should have some visible content")
     }
     
     // MARK: - Modifier Combination Tests
     
-    func testFrameWithPadding() {
+    @Test func frameWithPadding() {
         // Given
         let text = Text("Padded")
             .padding()
@@ -158,11 +158,11 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(text, width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Padded"), "Text should be visible")
+        #expect(output.contains("Padded"), "Text should be visible")
         // Padding should be applied within the frame
     }
     
-    func testFrameWithBorder() {
+    @Test func frameWithBorder() {
         // Given
         let text = Text("Bordered")
             .border()
@@ -172,11 +172,11 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(text, width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Bordered"), "Text should be visible")
+        #expect(output.contains("Bordered"), "Text should be visible")
         // Border should be within frame constraints
     }
     
-    func testMultipleFrameModifiers() {
+    @Test func multipleFrameModifiers() {
         // Given
         let text = Text("Multi")
             .frame(width: 20)
@@ -186,13 +186,13 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(text, width: 30, height: 5)
         
         // Then
-        XCTAssertTrue(output.contains("Multi"), "Text should be visible")
+        #expect(output.contains("Multi"), "Text should be visible")
         // The inner (last) frame should take precedence
     }
     
     // MARK: - Layout Context Tests
     
-    func testFrameInVStack() {
+    @Test func frameInVStack() {
         // Given
         let vstack = VStack {
             Text("Top")
@@ -205,9 +205,9 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(vstack, width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Top"), "Top text should be visible")
-        XCTAssertTrue(output.contains("Middle with frame"), "Framed text should be visible")
-        XCTAssertTrue(output.contains("Bottom"), "Bottom text should be visible")
+        #expect(output.contains("Top"), "Top text should be visible")
+        #expect(output.contains("Middle with frame"), "Framed text should be visible")
+        #expect(output.contains("Bottom"), "Bottom text should be visible")
         
         // Verify vertical order
         let lines = output.components(separatedBy: "\n")
@@ -228,12 +228,12 @@ final class FrameModifierTests: SwiftTUITestCase {
         }
         
         if topIndex != -1 && middleIndex != -1 && bottomIndex != -1 {
-            XCTAssertLessThan(topIndex, middleIndex, "Top should be above middle")
-            XCTAssertLessThan(middleIndex, bottomIndex, "Middle should be above bottom")
+            #expect(topIndex < middleIndex, "Top should be above middle")
+            #expect(middleIndex < bottomIndex, "Middle should be above bottom")
         }
     }
     
-    func testFrameInHStack() {
+    @Test func frameInHStack() {
         // Given
         let hstack = HStack {
             Text("Left")
@@ -246,9 +246,9 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(hstack, width: 40, height: 5)
         
         // Then
-        XCTAssertTrue(output.contains("Left"), "Left text should be visible")
-        XCTAssertTrue(output.contains("Center"), "Center text should be visible")
-        XCTAssertTrue(output.contains("Right"), "Right text should be visible")
+        #expect(output.contains("Left"), "Left text should be visible")
+        #expect(output.contains("Center"), "Center text should be visible")
+        #expect(output.contains("Right"), "Right text should be visible")
         
         // Find the line containing all three
         let lines = output.components(separatedBy: "\n")
@@ -267,18 +267,18 @@ final class FrameModifierTests: SwiftTUITestCase {
                 let centerPos = line.distance(from: line.startIndex, to: centerRange.lowerBound)
                 let rightPos = line.distance(from: line.startIndex, to: rightRange.lowerBound)
                 
-                XCTAssertLessThan(leftPos, centerPos, "Left should be before center")
-                XCTAssertLessThan(centerPos, rightPos, "Center should be before right")
+                #expect(leftPos < centerPos, "Left should be before center")
+                #expect(centerPos < rightPos, "Center should be before right")
                 break
             }
         }
         
-        XCTAssertTrue(foundHorizontalLayout, "Items should be laid out horizontally")
+        #expect(foundHorizontalLayout, "Items should be laid out horizontally")
     }
     
     // MARK: - Edge Cases
     
-    func testFrameWithZeroWidth() {
+    @Test func frameWithZeroWidth() {
         // Given
         let text = Text("Hidden?")
             .frame(width: 0)
@@ -289,12 +289,12 @@ final class FrameModifierTests: SwiftTUITestCase {
         // Then
         // With 0 width, content might not be visible
         // This behavior depends on implementation
-        let hasVisibleContent = output.contains("Hidden?")
+        _ = output.contains("Hidden?")
         // Just verify it doesn't crash
-        XCTAssertNotNil(output, "Should not crash with zero width")
+        #expect(output != nil, "Should not crash with zero width")
     }
     
-    func testFrameWithZeroHeight() {
+    @Test func frameWithZeroHeight() {
         // Given
         let text = Text("Invisible?")
             .frame(height: 0)
@@ -305,10 +305,10 @@ final class FrameModifierTests: SwiftTUITestCase {
         // Then
         // With 0 height, content might not be visible
         // Just verify it doesn't crash
-        XCTAssertNotNil(output, "Should not crash with zero height")
+        #expect(output != nil, "Should not crash with zero height")
     }
     
-    func testFrameWithVeryLargeSize() {
+    @Test func frameWithVeryLargeSize() {
         // Given
         let text = Text("Small text")
             .frame(width: 1000, height: 1000)
@@ -317,7 +317,7 @@ final class FrameModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(text, width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Small text"), "Text should still be visible")
+        #expect(output.contains("Small text"), "Text should still be visible")
         // Frame should be constrained by container size
     }
 }

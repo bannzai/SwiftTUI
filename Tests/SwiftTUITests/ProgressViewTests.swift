@@ -5,11 +5,11 @@
 //  Tests for ProgressView component with determinate and indeterminate progress display
 //
 
-import XCTest
+import Testing
 @testable import SwiftTUI
 import yoga
 
-final class ProgressViewTests: SwiftTUITestCase {
+@Suite struct ProgressViewTests {
     
     // MARK: - Helper Methods
     
@@ -17,7 +17,7 @@ final class ProgressViewTests: SwiftTUITestCase {
     private func renderProgressView(_ progressView: ProgressView) -> String {
         let progressLayoutView = progressView._layoutView
         guard let cellLayoutView = progressLayoutView as? CellLayoutView else {
-            XCTFail("ProgressViewLayoutView should implement CellLayoutView")
+            Issue.record("ProgressViewLayoutView should implement CellLayoutView")
             return ""
         }
         
@@ -35,7 +35,7 @@ final class ProgressViewTests: SwiftTUITestCase {
     
     // MARK: - Basic Display Tests
     
-    func testProgressViewIndeterminateBasic() {
+    @Test func progressViewIndeterminateBasic() {
         // Given - Indeterminate progress without label
         let progressView = ProgressView()
         
@@ -45,12 +45,12 @@ final class ProgressViewTests: SwiftTUITestCase {
         // Then - Should show spinner character
         let spinnerChars = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
         let containsSpinner = spinnerChars.contains { output.contains($0) }
-        XCTAssertTrue(containsSpinner, "Should show one of the spinner characters")
-        XCTAssertFalse(output.contains("["), "Should not show progress bar")
-        XCTAssertFalse(output.contains("%"), "Should not show percentage")
+        #expect(containsSpinner, "Should show one of the spinner characters")
+        #expect(!output.contains("["), "Should not show progress bar")
+        #expect(!output.contains("%"), "Should not show percentage")
     }
     
-    func testProgressViewIndeterminateWithLabel() {
+    @Test func progressViewIndeterminateWithLabel() {
         // Given - Indeterminate progress with label
         let progressView = ProgressView("Loading...")
         
@@ -58,13 +58,13 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output = renderProgressView(progressView)
         
         // Then - Should show label and spinner
-        XCTAssertTrue(output.contains("Loading..."), "Should show label")
+        #expect(output.contains("Loading..."), "Should show label")
         let spinnerChars = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
         let containsSpinner = spinnerChars.contains { output.contains($0) }
-        XCTAssertTrue(containsSpinner, "Should show spinner character after label")
+        #expect(containsSpinner, "Should show spinner character after label")
     }
     
-    func testProgressViewDeterminateBasic() {
+    @Test func progressViewDeterminateBasic() {
         // Given - Determinate progress without label (50%)
         let progressView = ProgressView(value: 0.5, total: 1.0)
         
@@ -72,14 +72,14 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output = renderProgressView(progressView)
         
         // Then - Should show progress bar and percentage
-        XCTAssertTrue(output.contains("["), "Should show progress bar start")
-        XCTAssertTrue(output.contains("]"), "Should show progress bar end")
-        XCTAssertTrue(output.contains("█"), "Should show filled portion")
-        XCTAssertTrue(output.contains("░"), "Should show empty portion")
-        XCTAssertTrue(output.contains("50%"), "Should show 50% progress")
+        #expect(output.contains("["), "Should show progress bar start")
+        #expect(output.contains("]"), "Should show progress bar end")
+        #expect(output.contains("█"), "Should show filled portion")
+        #expect(output.contains("░"), "Should show empty portion")
+        #expect(output.contains("50%"), "Should show 50% progress")
     }
     
-    func testProgressViewDeterminateWithLabel() {
+    @Test func progressViewDeterminateWithLabel() {
         // Given - Determinate progress with label
         let progressView = ProgressView(value: 0.75, total: 1.0, label: "Download")
         
@@ -87,13 +87,13 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output = renderProgressView(progressView)
         
         // Then - Should show label, progress bar, and percentage
-        XCTAssertTrue(output.contains("Download"), "Should show label")
-        XCTAssertTrue(output.contains("["), "Should show progress bar")
-        XCTAssertTrue(output.contains("]"), "Should show progress bar")
-        XCTAssertTrue(output.contains("75%"), "Should show 75% progress")
+        #expect(output.contains("Download"), "Should show label")
+        #expect(output.contains("["), "Should show progress bar")
+        #expect(output.contains("]"), "Should show progress bar")
+        #expect(output.contains("75%"), "Should show 75% progress")
     }
     
-    func testProgressViewSpinnerAnimation() {
+    @Test func progressViewSpinnerAnimation() {
         // Given - Indeterminate progress to check spinner chars
         let progressView = ProgressView("Spinning")
         
@@ -108,12 +108,12 @@ final class ProgressViewTests: SwiftTUITestCase {
                 foundCount += 1
             }
         }
-        XCTAssertEqual(foundCount, 1, "Should contain exactly one spinner character")
+        #expect(foundCount == 1, "Should contain exactly one spinner character")
     }
     
     // MARK: - Progress Value Tests
     
-    func testProgressViewValueRange() {
+    @Test func progressViewValueRange() {
         // Given - Different progress values
         let progress0 = ProgressView(value: 0.0, label: "Start")
         let progress50 = ProgressView(value: 0.5, label: "Half")
@@ -125,12 +125,12 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output100 = renderProgressView(progress100)
         
         // Then
-        XCTAssertTrue(output0.contains("0%"), "Should show 0%")
-        XCTAssertTrue(output50.contains("50%"), "Should show 50%")
-        XCTAssertTrue(output100.contains("100%"), "Should show 100%")
+        #expect(output0.contains("0%"), "Should show 0%")
+        #expect(output50.contains("50%"), "Should show 50%")
+        #expect(output100.contains("100%"), "Should show 100%")
     }
     
-    func testProgressViewValueClamping() {
+    @Test func progressViewValueClamping() {
         // Given - Values outside 0-1 range
         let progressNegative = ProgressView(value: -0.5, label: "Negative")
         let progressOverflow = ProgressView(value: 1.5, label: "Overflow")
@@ -140,18 +140,18 @@ final class ProgressViewTests: SwiftTUITestCase {
         let outputOverflow = renderProgressView(progressOverflow)
         
         // Then - Should clamp to 0% and 100%
-        XCTAssertTrue(outputNegative.contains("0%"), "Should clamp negative to 0%")
-        XCTAssertTrue(outputOverflow.contains("100%"), "Should clamp overflow to 100%")
+        #expect(outputNegative.contains("0%"), "Should clamp negative to 0%")
+        #expect(outputOverflow.contains("100%"), "Should clamp overflow to 100%")
         
         // Check bar rendering
         let negativeBar = outputNegative.components(separatedBy: "[").last?.components(separatedBy: "]").first ?? ""
-        XCTAssertFalse(negativeBar.contains("█"), "Negative progress should have empty bar")
+        #expect(!negativeBar.contains("█"), "Negative progress should have empty bar")
         
         let overflowBar = outputOverflow.components(separatedBy: "[").last?.components(separatedBy: "]").first ?? ""
-        XCTAssertFalse(overflowBar.contains("░"), "Overflow progress should have full bar")
+        #expect(!overflowBar.contains("░"), "Overflow progress should have full bar")
     }
     
-    func testProgressViewCustomTotal() {
+    @Test func progressViewCustomTotal() {
         // Given - Custom total values
         let progress1 = ProgressView(value: 50, total: 100, label: "Steps")
         let progress2 = ProgressView(value: 3, total: 10, label: "Items")
@@ -161,11 +161,11 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output2 = renderProgressView(progress2)
         
         // Then
-        XCTAssertTrue(output1.contains("50%"), "Should calculate 50/100 = 50%")
-        XCTAssertTrue(output2.contains("30%"), "Should calculate 3/10 = 30%")
+        #expect(output1.contains("50%"), "Should calculate 50/100 = 50%")
+        #expect(output2.contains("30%"), "Should calculate 3/10 = 30%")
     }
     
-    func testProgressViewProgressCalculation() {
+    @Test func progressViewProgressCalculation() {
         // Given - Various progress calculations
         let progress1 = ProgressView(value: 1, total: 3) // 33.33...%
         let progress2 = ProgressView(value: 2, total: 3) // 66.66...%
@@ -177,15 +177,15 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output3 = renderProgressView(progress3)
         
         // Then - Should round to nearest percent
-        XCTAssertTrue(output1.contains("33%"), "Should show 33% for 1/3")
-        XCTAssertTrue(output2.contains("67%"), "Should show 67% for 2/3")
+        #expect(output1.contains("33%"), "Should show 33% for 1/3")
+        #expect(output2.contains("67%"), "Should show 67% for 2/3")
         // 1/8 = 0.125 = 12.5%, which rounds to 12% with %.0f format
-        XCTAssertTrue(output3.contains("12%") || output3.contains("13%"), "Should show 12% or 13% for 1/8")
+        #expect(output3.contains("12%") || output3.contains("13%"), "Should show 12% or 13% for 1/8")
     }
     
     // MARK: - Style and Layout Tests
     
-    func testProgressViewBarRendering() {
+    @Test func progressViewBarRendering() {
         // Given - Progress at 25% (5 filled, 15 empty out of 20)
         let progressView = ProgressView(value: 0.25, label: "Quarter")
         
@@ -196,13 +196,13 @@ final class ProgressViewTests: SwiftTUITestCase {
         if let barContent = output.components(separatedBy: "[").last?.components(separatedBy: "]").first {
             let filledCount = barContent.filter { $0 == "█" }.count
             let emptyCount = barContent.filter { $0 == "░" }.count
-            XCTAssertEqual(filledCount, 5, "Should have 5 filled blocks for 25%")
-            XCTAssertEqual(emptyCount, 15, "Should have 15 empty blocks for 25%")
-            XCTAssertEqual(filledCount + emptyCount, 20, "Should have total 20 blocks")
+            #expect(filledCount == 5, "Should have 5 filled blocks for 25%")
+            #expect(emptyCount == 15, "Should have 15 empty blocks for 25%")
+            #expect(filledCount + emptyCount == 20, "Should have total 20 blocks")
         }
     }
     
-    func testProgressViewWidthCalculation() {
+    @Test func progressViewWidthCalculation() {
         // Given - Different configurations
         let indeterminate = ProgressView()
         let indeterminateLabel = ProgressView("Test")
@@ -216,17 +216,17 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output4 = renderProgressView(determinateLabel)
         
         // Then - Check content exists and is appropriately sized
-        XCTAssertTrue(output1.count > 0, "Indeterminate should render something")
-        XCTAssertTrue(output2.contains("Test "), "Should show label with space before spinner")
-        XCTAssertTrue(output3.contains("[") && output3.contains("]"), "Should show progress bar")
-        XCTAssertTrue(output4.contains("Test ["), "Should show label before progress bar")
+        #expect(output1.count > 0, "Indeterminate should render something")
+        #expect(output2.contains("Test "), "Should show label with space before spinner")
+        #expect(output3.contains("[") && output3.contains("]"), "Should show progress bar")
+        #expect(output4.contains("Test ["), "Should show label before progress bar")
         
         // Verify relative sizes
-        XCTAssertGreaterThan(output2.count, output1.count, "Label version should be longer")
-        XCTAssertGreaterThan(output4.count, output3.count, "Label version should be longer")
+        #expect(output2.count > output1.count, "Label version should be longer")
+        #expect(output4.count > output3.count, "Label version should be longer")
     }
     
-    func testProgressViewLabelSpacing() {
+    @Test func progressViewLabelSpacing() {
         // Given - Progress with label
         let progressView = ProgressView(value: 0.5, label: "Progress")
         
@@ -234,13 +234,13 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output = renderProgressView(progressView)
         
         // Then - Check spacing
-        XCTAssertTrue(output.contains("Progress ["), "Should have space between label and bar")
-        XCTAssertTrue(output.contains("] 50%"), "Should have space between bar and percentage")
+        #expect(output.contains("Progress ["), "Should have space between label and bar")
+        #expect(output.contains("] 50%"), "Should have space between bar and percentage")
     }
     
     // MARK: - Edge Cases Tests
     
-    func testProgressViewZeroProgress() {
+    @Test func progressViewZeroProgress() {
         // Given - 0% progress
         let progressView = ProgressView(value: 0.0, label: "Empty")
         
@@ -248,14 +248,14 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output = renderProgressView(progressView)
         
         // Then
-        XCTAssertTrue(output.contains("0%"), "Should show 0%")
+        #expect(output.contains("0%"), "Should show 0%")
         if let barContent = output.components(separatedBy: "[").last?.components(separatedBy: "]").first {
-            XCTAssertFalse(barContent.contains("█"), "Should have no filled blocks")
-            XCTAssertEqual(barContent.filter { $0 == "░" }.count, 20, "Should have all 20 empty blocks")
+            #expect(!barContent.contains("█"), "Should have no filled blocks")
+            #expect(barContent.filter { $0 == "░" }.count == 20, "Should have all 20 empty blocks")
         }
     }
     
-    func testProgressViewFullProgress() {
+    @Test func progressViewFullProgress() {
         // Given - 100% progress
         let progressView = ProgressView(value: 1.0, label: "Complete")
         
@@ -263,14 +263,14 @@ final class ProgressViewTests: SwiftTUITestCase {
         let output = renderProgressView(progressView)
         
         // Then
-        XCTAssertTrue(output.contains("100%"), "Should show 100%")
+        #expect(output.contains("100%"), "Should show 100%")
         if let barContent = output.components(separatedBy: "[").last?.components(separatedBy: "]").first {
-            XCTAssertFalse(barContent.contains("░"), "Should have no empty blocks")
-            XCTAssertEqual(barContent.filter { $0 == "█" }.count, 20, "Should have all 20 filled blocks")
+            #expect(!barContent.contains("░"), "Should have no empty blocks")
+            #expect(barContent.filter { $0 == "█" }.count == 20, "Should have all 20 filled blocks")
         }
     }
     
-    func testProgressViewSpecialCharacters() {
+    @Test func progressViewSpecialCharacters() {
         // Given - Special characters in labels
         let progressEmoji = ProgressView(value: 0.8, label: "📦 Package")
         let progressSpecial = ProgressView("⚡️ Lightning <Fast>")
@@ -280,11 +280,11 @@ final class ProgressViewTests: SwiftTUITestCase {
         let outputSpecial = renderProgressView(progressSpecial)
         
         // Then
-        XCTAssertTrue(outputEmoji.contains("📦 Package"), "Should show emoji in label")
-        XCTAssertTrue(outputEmoji.contains("80%"), "Should show percentage with emoji label")
-        XCTAssertTrue(outputSpecial.contains("⚡️ Lightning <Fast>"), "Should show special characters")
+        #expect(outputEmoji.contains("📦 Package"), "Should show emoji in label")
+        #expect(outputEmoji.contains("80%"), "Should show percentage with emoji label")
+        #expect(outputSpecial.contains("⚡️ Lightning <Fast>"), "Should show special characters")
         let spinnerChars = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
         let containsSpinner = spinnerChars.contains { outputSpecial.contains($0) }
-        XCTAssertTrue(containsSpinner, "Should show spinner with special label")
+        #expect(containsSpinner, "Should show spinner with special label")
     }
 }

@@ -8,14 +8,14 @@
 //  and ignores .frame() modifiers
 //
 
-import XCTest
+import Testing
 @testable import SwiftTUI
 
-final class ScrollViewTests: SwiftTUITestCase {
+@Suite struct ScrollViewTests {
     
     // MARK: - Basic Scroll Functionality Tests
     
-    func testScrollViewBasicVertical() {
+    @Test func scrollViewBasicVertical() {
         // Given - Vertical ScrollView with fixed 3-line viewport
         struct TestView: View {
             var body: some View {
@@ -35,14 +35,14 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then - Should show first 3 lines due to fixed viewport
-        XCTAssertTrue(output.contains("L1"), "Should show first line")
-        XCTAssertTrue(output.contains("L2"), "Should show second line")
-        XCTAssertTrue(output.contains("L3"), "Should show third line")
-        XCTAssertFalse(output.contains("L4"), "Should not show fourth line (clipped)")
-        XCTAssertFalse(output.contains("L5"), "Should not show fifth line (clipped)")
+        #expect(output.contains("L1"), "Should show first line")
+        #expect(output.contains("L2"), "Should show second line")
+        #expect(output.contains("L3"), "Should show third line")
+        #expect(!output.contains("L4"), "Should not show fourth line (clipped)")
+        #expect(!output.contains("L5"), "Should not show fifth line (clipped)")
     }
     
-    func testScrollViewBasicHorizontal() {
+    @Test func scrollViewBasicHorizontal() {
         // Given - Horizontal ScrollView with fixed 5-char viewport
         struct TestView: View {
             var body: some View {
@@ -59,11 +59,11 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then - Should show only first 5 characters
-        XCTAssertTrue(output.contains("ABCDE"), "Should show first 5 chars")
-        XCTAssertFalse(output.contains("FG"), "Should not show chars beyond viewport")
+        #expect(output.contains("ABCDE"), "Should show first 5 chars")
+        #expect(!output.contains("FG"), "Should not show chars beyond viewport")
     }
     
-    func testScrollViewBothAxes() {
+    @Test func scrollViewBothAxes() {
         // Given - ScrollView with both axes enabled
         struct TestView: View {
             var body: some View {
@@ -82,13 +82,13 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then - Should clip to 3x5 viewport
-        XCTAssertTrue(output.contains("12345"), "Should show first line")
-        XCTAssertTrue(output.contains("67890"), "Should show second line")
-        XCTAssertTrue(output.contains("ABCDE"), "Should show third line")
-        XCTAssertFalse(output.contains("FGHIJ"), "Should not show fourth line")
+        #expect(output.contains("12345"), "Should show first line")
+        #expect(output.contains("67890"), "Should show second line")
+        #expect(output.contains("ABCDE"), "Should show third line")
+        #expect(!output.contains("FGHIJ"), "Should not show fourth line")
     }
     
-    func testScrollViewNoScroll() {
+    @Test func scrollViewNoScroll() {
         // Given - Content smaller than viewport
         struct TestView: View {
             var body: some View {
@@ -102,10 +102,10 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Hi"), "Should show all content")
+        #expect(output.contains("Hi"), "Should show all content")
     }
     
-    func testScrollViewEmptyContent() {
+    @Test func scrollViewEmptyContent() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -119,12 +119,12 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then
-        XCTAssertNotNil(output, "Should render empty ScrollView")
+        #expect(output != nil, "Should render empty ScrollView")
     }
     
     // MARK: - Frame Constraints and Clipping Tests
     
-    func testScrollViewIgnoresFrameModifier() {
+    @Test func scrollViewIgnoresFrameModifier() {
         // Given - .frame() modifier is ignored by ScrollView
         struct TestView: View {
             var body: some View {
@@ -144,13 +144,13 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 20)
         
         // Then - Still shows only 3 lines
-        XCTAssertTrue(output.contains("A"), "Should show A")
-        XCTAssertTrue(output.contains("B"), "Should show B")
-        XCTAssertTrue(output.contains("C"), "Should show C")
-        XCTAssertFalse(output.contains("D"), "Should not show D")
+        #expect(output.contains("A"), "Should show A")
+        #expect(output.contains("B"), "Should show B")
+        #expect(output.contains("C"), "Should show C")
+        #expect(!output.contains("D"), "Should not show D")
     }
     
-    func testScrollViewContentClipping() {
+    @Test func scrollViewContentClipping() {
         // Given - Long text that exceeds 5-char width
         struct TestView: View {
             var body: some View {
@@ -168,14 +168,14 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Hello"), "Should show Hello completely")
-        XCTAssertTrue(output.contains("World"), "Should show World")
-        XCTAssertFalse(output.contains("!"), "Should not show exclamation mark")
-        XCTAssertTrue(output.contains("12345"), "Should show first 5 digits")
-        XCTAssertFalse(output.contains("678"), "Should not show last 3 digits")
+        #expect(output.contains("Hello"), "Should show Hello completely")
+        #expect(output.contains("World"), "Should show World")
+        #expect(!output.contains("!"), "Should not show exclamation mark")
+        #expect(output.contains("12345"), "Should show first 5 digits")
+        #expect(!output.contains("678"), "Should not show last 3 digits")
     }
     
-    func testScrollViewHorizontalClipping() {
+    @Test func scrollViewHorizontalClipping() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -189,11 +189,11 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("12345"), "Should show first 5 chars")
-        XCTAssertFalse(output.contains("67890"), "Should not show last 5 chars")
+        #expect(output.contains("12345"), "Should show first 5 chars")
+        #expect(!output.contains("67890"), "Should not show last 5 chars")
     }
     
-    func testScrollViewANSIHandling() {
+    @Test func scrollViewANSIHandling() {
         // Given - Content with color modifiers
         struct TestView: View {
             var body: some View {
@@ -211,14 +211,14 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then - TestRenderer strips ANSI, but text remains
-        XCTAssertTrue(output.contains("R"), "Should show R")
-        XCTAssertTrue(output.contains("G"), "Should show G")
-        XCTAssertTrue(output.contains("B"), "Should show B")
+        #expect(output.contains("R"), "Should show R")
+        #expect(output.contains("G"), "Should show G")
+        #expect(output.contains("B"), "Should show B")
     }
     
     // MARK: - Scrollbar Display Tests
     
-    func testScrollViewIndicatorsShown() {
+    @Test func scrollViewIndicatorsShown() {
         // Given - Default showsIndicators = true
         struct TestView: View {
             var body: some View {
@@ -236,13 +236,13 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then - Content is shown (scrollbar rendering is internal)
-        XCTAssertTrue(output.contains("0"), "Should show 0")
-        XCTAssertTrue(output.contains("1"), "Should show 1")
-        XCTAssertTrue(output.contains("2"), "Should show 2")
-        XCTAssertFalse(output.contains("3"), "Should not show 3")
+        #expect(output.contains("0"), "Should show 0")
+        #expect(output.contains("1"), "Should show 1")
+        #expect(output.contains("2"), "Should show 2")
+        #expect(!output.contains("3"), "Should not show 3")
     }
     
-    func testScrollViewIndicatorsHidden() {
+    @Test func scrollViewIndicatorsHidden() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -261,13 +261,13 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("A"), "Should show A")
-        XCTAssertTrue(output.contains("B"), "Should show B")
-        XCTAssertTrue(output.contains("C"), "Should show C")
-        XCTAssertFalse(output.contains("D"), "Should not show D")
+        #expect(output.contains("A"), "Should show A")
+        #expect(output.contains("B"), "Should show B")
+        #expect(output.contains("C"), "Should show C")
+        #expect(!output.contains("D"), "Should not show D")
     }
     
-    func testScrollViewWithLargeContent() {
+    @Test func scrollViewWithLargeContent() {
         // Given - Content much larger than viewport
         struct TestView: View {
             var body: some View {
@@ -285,16 +285,16 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then - Shows only first 3 items
-        XCTAssertTrue(output.contains("L0"), "Should show L0")
-        XCTAssertTrue(output.contains("L1"), "Should show L1")
-        XCTAssertTrue(output.contains("L2"), "Should show L2")
-        XCTAssertFalse(output.contains("L3"), "Should not show L3")
-        XCTAssertFalse(output.contains("L49"), "Should not show L49")
+        #expect(output.contains("L0"), "Should show L0")
+        #expect(output.contains("L1"), "Should show L1")
+        #expect(output.contains("L2"), "Should show L2")
+        #expect(!output.contains("L3"), "Should not show L3")
+        #expect(!output.contains("L49"), "Should not show L49")
     }
     
     // MARK: - Edge Cases Tests
     
-    func testScrollViewSingleLine() {
+    @Test func scrollViewSingleLine() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -308,10 +308,10 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("One"), "Should show single line")
+        #expect(output.contains("One"), "Should show single line")
     }
     
-    func testScrollViewNestedViews() {
+    @Test func scrollViewNestedViews() {
         // Given - Complex nested structure
         struct TestView: View {
             var body: some View {
@@ -333,14 +333,14 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 30, height: 15)
         
         // Then
-        XCTAssertTrue(output.contains("Top"), "Should show top")
-        XCTAssertTrue(output.contains("L"), "Should show L")
-        XCTAssertTrue(output.contains("R"), "Should show R")
-        XCTAssertTrue(output.contains("Bot"), "Should show bottom")
-        XCTAssertFalse(output.contains("Hidden"), "Should not show hidden")
+        #expect(output.contains("Top"), "Should show top")
+        #expect(output.contains("L"), "Should show L")
+        #expect(output.contains("R"), "Should show R")
+        #expect(output.contains("Bot"), "Should show bottom")
+        #expect(!output.contains("Hidden"), "Should not show hidden")
     }
     
-    func testScrollViewInVStack() {
+    @Test func scrollViewInVStack() {
         // Given - ScrollView inside VStack
         struct TestView: View {
             var body: some View {
@@ -365,15 +365,15 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 15)
         
         // Then
-        XCTAssertTrue(output.contains("Title"), "Should show title")
-        XCTAssertTrue(output.contains("S1"), "Should show S1")
-        XCTAssertTrue(output.contains("S2"), "Should show S2")
-        XCTAssertTrue(output.contains("S3"), "Should show S3")
-        XCTAssertFalse(output.contains("S4"), "Should not show S4")
-        XCTAssertTrue(output.contains("Footer"), "Should show footer")
+        #expect(output.contains("Title"), "Should show title")
+        #expect(output.contains("S1"), "Should show S1")
+        #expect(output.contains("S2"), "Should show S2")
+        #expect(output.contains("S3"), "Should show S3")
+        #expect(!output.contains("S4"), "Should not show S4")
+        #expect(output.contains("Footer"), "Should show footer")
     }
     
-    func testScrollViewWithSpacing() {
+    @Test func scrollViewWithSpacing() {
         // Given - VStack with spacing inside ScrollView
         struct TestView: View {
             var body: some View {
@@ -391,12 +391,12 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("A"), "Should show A")
-        XCTAssertTrue(output.contains("B"), "Should show B")
+        #expect(output.contains("A"), "Should show A")
+        #expect(output.contains("B"), "Should show B")
         // C might be clipped due to spacing taking up lines
     }
     
-    func testScrollViewMultipleInstances() {
+    @Test func scrollViewMultipleInstances() {
         // Given - Multiple ScrollViews (affected by global state issue)
         struct TestView: View {
             var body: some View {
@@ -416,7 +416,7 @@ final class ScrollViewTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 20, height: 10)
         
         // Then - Both should render, but may share state
-        XCTAssertTrue(output.contains("SV1"), "Should show SV1")
-        XCTAssertTrue(output.contains("SV2"), "Should show SV2")
+        #expect(output.contains("SV1"), "Should show SV1")
+        #expect(output.contains("SV2"), "Should show SV2")
     }
 }

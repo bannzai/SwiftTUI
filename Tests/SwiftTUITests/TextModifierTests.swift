@@ -1,9 +1,9 @@
-import XCTest
+import Testing
 @testable import SwiftTUI
 
-final class TextModifierTests: SwiftTUITestCase {
+@Suite struct TextModifierTests {
     
-    func testTextWithPadding() {
+    @Test func textWithPadding() {
         // Given
         let text = Text("Hello").padding()
         
@@ -12,10 +12,10 @@ final class TextModifierTests: SwiftTUITestCase {
         
         // Then
         // paddingは周りに空白を追加するが、normalizeOutputで除去される
-        assertRenderedOutput(text, equals: "Hello")
+        expectRenderedOutput(text, equals: "Hello")
     }
     
-    func testTextWithBorder() {
+    @Test func textWithBorder() {
         // Given
         let text = Text("Hello").border()
         
@@ -25,12 +25,12 @@ final class TextModifierTests: SwiftTUITestCase {
         
         // Then
         // ボーダーは特殊文字で描画される
-        XCTAssertTrue(normalized.contains("┌") && normalized.contains("┐"))
-        XCTAssertTrue(normalized.contains("└") && normalized.contains("┘"))
-        XCTAssertTrue(normalized.contains("Hello"))
+        #expect(normalized.contains("┌") && normalized.contains("┐"))
+        #expect(normalized.contains("└") && normalized.contains("┘"))
+        #expect(normalized.contains("Hello"))
     }
     
-    func testTextWithPaddingAndBorder() {
+    @Test func textWithPaddingAndBorder() {
         // Given
         let text = Text("Hello").padding().border()
         
@@ -39,10 +39,10 @@ final class TextModifierTests: SwiftTUITestCase {
         
         // Then
         // パディングとボーダーが適用される
-        XCTAssertTrue(output.contains("Hello"))
+        #expect(output.contains("Hello"))
     }
     
-    func testTextWithForegroundColor() {
+    @Test func textWithForegroundColor() {
         // Given
         let text = Text("Colored Text").foregroundColor(.green)
         
@@ -51,10 +51,10 @@ final class TextModifierTests: SwiftTUITestCase {
         
         // Then
         // ANSIエスケープシーケンスは除去されるので、テキストのみが残る
-        assertRenderedOutput(text, equals: "Colored Text")
+        expectRenderedOutput(text, equals: "Colored Text")
     }
     
-    func testTextBold() {
+    @Test func textBold() {
         // Given
         let text = Text("Bold Text").bold()
         
@@ -63,10 +63,10 @@ final class TextModifierTests: SwiftTUITestCase {
         
         // Then
         // boldスタイルはANSIエスケープシーケンスで実装されるため、除去後はテキストのみ
-        assertRenderedOutput(text, equals: "Bold Text")
+        expectRenderedOutput(text, equals: "Bold Text")
     }
     
-    func testTextChainedModifiers() {
+    @Test func textChainedModifiers() {
         // Given
         let text = Text("Styled")
             .bold()
@@ -77,6 +77,6 @@ final class TextModifierTests: SwiftTUITestCase {
         let output = TestRenderer.render(text)
         
         // Then
-        assertRenderedOutput(text, equals: "Styled")
+        expectRenderedOutput(text, equals: "Styled")
     }
 }

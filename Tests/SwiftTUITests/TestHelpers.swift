@@ -1,4 +1,4 @@
-import XCTest
+import Testing
 @testable import SwiftTUI
 import yoga
 
@@ -44,28 +44,26 @@ class TestRenderer {
     }
 }
 
-/// テスト用の基底クラス
-class SwiftTUITestCase: XCTestCase {
-    /// レンダリング結果から空白行を除去して比較しやすくする
-    func normalizeOutput(_ output: String) -> String {
-        let lines = output.components(separatedBy: "\n")
-        // 空白行を除去し、各行の末尾の空白を削除
-        let nonEmptyLines = lines
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }
-        return nonEmptyLines.joined(separator: "\n")
-    }
+// MARK: - Swift Testing Support
+
+/// レンダリング結果から空白行を除去して比較しやすくする（Swift Testing用）
+func normalizeOutput(_ output: String) -> String {
+    let lines = output.components(separatedBy: "\n")
+    // 空白行を除去し、各行の末尾の空白を削除
+    let nonEmptyLines = lines
+        .map { $0.trimmingCharacters(in: .whitespaces) }
+        .filter { !$0.isEmpty }
+    return nonEmptyLines.joined(separator: "\n")
+}
+
+/// 期待値と実際の出力を比較（Swift Testing用）
+func expectRenderedOutput<V: View>(_ view: V, equals expected: String, 
+                                   sourceLocation: SourceLocation = #_sourceLocation) {
+    let output = TestRenderer.render(view)
+    let normalizedOutput = normalizeOutput(output)
+    let normalizedExpected = normalizeOutput(expected)
     
-    /// 期待値と実際の出力を比較
-    func assertRenderedOutput<V: View>(_ view: V, equals expected: String, 
-                                       file: StaticString = #file, 
-                                       line: UInt = #line) {
-        let output = TestRenderer.render(view)
-        let normalizedOutput = normalizeOutput(output)
-        let normalizedExpected = normalizeOutput(expected)
-        
-        XCTAssertEqual(normalizedOutput, normalizedExpected, 
-                      "Rendered output does not match expected", 
-                      file: file, line: line)
-    }
+    #expect(normalizedOutput == normalizedExpected, 
+           "Rendered output does not match expected",
+           sourceLocation: sourceLocation)
 }

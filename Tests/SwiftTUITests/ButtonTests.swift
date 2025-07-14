@@ -5,14 +5,14 @@
 //  Tests for Button view behavior
 //
 
-import XCTest
+import Testing
 @testable import SwiftTUI
 
-final class ButtonTests: SwiftTUITestCase {
+@Suite struct ButtonTests {
     
     // MARK: - Basic Rendering Tests
     
-    func testButtonWithStringLabel() {
+    @Test func buttonWithStringLabel() {
         // Given
         let button = Button("Click Me") {
             // Action will be tested separately
@@ -23,16 +23,16 @@ final class ButtonTests: SwiftTUITestCase {
         
         // Then
         // Button should have border and show label text
-        XCTAssertTrue(output.contains("Click Me"), "Button label should be visible")
-        XCTAssertTrue(output.contains("┌"), "Should have top left corner")
-        XCTAssertTrue(output.contains("┐"), "Should have top right corner")
-        XCTAssertTrue(output.contains("└"), "Should have bottom left corner")
-        XCTAssertTrue(output.contains("┘"), "Should have bottom right corner")
-        XCTAssertTrue(output.contains("│"), "Should have side borders")
-        XCTAssertTrue(output.contains("─"), "Should have horizontal borders")
+        #expect(output.contains("Click Me"), "Button label should be visible")
+        #expect(output.contains("┌"), "Should have top left corner")
+        #expect(output.contains("┐"), "Should have top right corner")
+        #expect(output.contains("└"), "Should have bottom left corner")
+        #expect(output.contains("┘"), "Should have bottom right corner")
+        #expect(output.contains("│"), "Should have side borders")
+        #expect(output.contains("─"), "Should have horizontal borders")
     }
     
-    func testButtonWithCustomViewLabel() {
+    @Test func buttonWithCustomViewLabel() {
         // Given
         let button = Button(action: {}) {
             VStack {
@@ -45,9 +45,9 @@ final class ButtonTests: SwiftTUITestCase {
         let output = TestRenderer.render(button, width: 20, height: 8)
         
         // Then
-        XCTAssertTrue(output.contains("Save"), "First text should be visible")
-        XCTAssertTrue(output.contains("File"), "Second text should be visible")
-        XCTAssertTrue(output.contains("┌"), "Should have border")
+        #expect(output.contains("Save"), "First text should be visible")
+        #expect(output.contains("File"), "Second text should be visible")
+        #expect(output.contains("┌"), "Should have border")
         
         // Verify Save appears before File (vertical layout)
         let lines = output.components(separatedBy: "\n")
@@ -64,11 +64,11 @@ final class ButtonTests: SwiftTUITestCase {
         }
         
         if saveIndex != -1 && fileIndex != -1 {
-            XCTAssertLessThan(saveIndex, fileIndex, "Save should appear above File")
+            #expect(saveIndex < fileIndex, "Save should appear above File")
         }
     }
     
-    func testButtonPadding() {
+    @Test func buttonPadding() {
         // Given
         let button = Button("OK") {
             // Action
@@ -88,7 +88,7 @@ final class ButtonTests: SwiftTUITestCase {
             }
         }
         
-        XCTAssertNotNil(okLine, "Should find line with OK")
+        #expect(okLine != nil, "Should find line with OK")
         
         if let okLine = okLine {
             // Check padding (Yoga calculates final padding, not necessarily 3)
@@ -102,14 +102,14 @@ final class ButtonTests: SwiftTUITestCase {
             
             // Button implementation adds padding, but Yoga might adjust it
             // Let's just verify there is some padding
-            XCTAssertGreaterThanOrEqual(leadingSpaces, 1, "Should have left padding")
-            XCTAssertGreaterThanOrEqual(trailingSpaces, 1, "Should have right padding")
+            #expect(leadingSpaces >= 1, "Should have left padding")
+            #expect(trailingSpaces >= 1, "Should have right padding")
         }
     }
     
     // MARK: - Focus State Tests
     
-    func testUnfocusedButtonHasWhiteBorder() {
+    @Test func unfocusedButtonHasWhiteBorder() {
         // Given
         let button = Button("Test") {
             // Action
@@ -121,14 +121,14 @@ final class ButtonTests: SwiftTUITestCase {
         // Then
         // By default, button should not be focused
         // TestRenderer strips ANSI codes, so we just verify structure
-        XCTAssertTrue(output.contains("┌"), "Should have border")
-        XCTAssertTrue(output.contains("Test"), "Should show label")
+        #expect(output.contains("┌"), "Should have border")
+        #expect(output.contains("Test"), "Should show label")
         // Note: Can't test colors directly as ANSI codes are stripped
     }
     
     // MARK: - Layout Tests
     
-    func testButtonInVStack() {
+    @Test func buttonInVStack() {
         // Given
         let stack = VStack {
             Text("Title")
@@ -161,12 +161,12 @@ final class ButtonTests: SwiftTUITestCase {
         
         // Verify vertical ordering
         if titleIndex != -1 && clickIndex != -1 && footerIndex != -1 {
-            XCTAssertLessThan(titleIndex, clickIndex, "Title should be above button")
-            XCTAssertLessThan(clickIndex, footerIndex, "Button should be above footer")
+            #expect(titleIndex < clickIndex, "Title should be above button")
+            #expect(clickIndex < footerIndex, "Button should be above footer")
         }
     }
     
-    func testMultipleButtonsInHStack() {
+    @Test func multipleButtonsInHStack() {
         // Given
         let stack = HStack {
             Button("OK") {
@@ -181,8 +181,8 @@ final class ButtonTests: SwiftTUITestCase {
         let output = TestRenderer.render(stack, width: 40, height: 5)
         
         // Then
-        XCTAssertTrue(output.contains("OK"), "OK button should be visible")
-        XCTAssertTrue(output.contains("Cancel"), "Cancel button should be visible")
+        #expect(output.contains("OK"), "OK button should be visible")
+        #expect(output.contains("Cancel"), "Cancel button should be visible")
         
         // Find the line containing both buttons
         let lines = output.components(separatedBy: "\n")
@@ -198,15 +198,15 @@ final class ButtonTests: SwiftTUITestCase {
                 let okPos = line.distance(from: line.startIndex, to: okRange.lowerBound)
                 let cancelPos = line.distance(from: line.startIndex, to: cancelRange.lowerBound)
                 
-                XCTAssertLessThan(okPos, cancelPos, "OK should appear before Cancel")
+                #expect(okPos < cancelPos, "OK should appear before Cancel")
                 break
             }
         }
         
-        XCTAssertTrue(buttonsOnSameLine, "Buttons should be on the same line in HStack")
+        #expect(buttonsOnSameLine, "Buttons should be on the same line in HStack")
     }
     
-    func testButtonWithFrameModifier() {
+    @Test func buttonWithFrameModifier() {
         // Given
         let button = Button("Wide Button") {
             // Action
@@ -227,7 +227,7 @@ final class ButtonTests: SwiftTUITestCase {
             }
         }
         
-        XCTAssertNotNil(topBorderLine, "Should find top border")
+        #expect(topBorderLine != nil, "Should find top border")
         
         if let topBorder = topBorderLine {
             // Measure the width from ┌ to ┐
@@ -238,14 +238,14 @@ final class ButtonTests: SwiftTUITestCase {
                 let width = endPos - startPos + 1
                 
                 // Should be close to frame width (allowing for some variation)
-                XCTAssertGreaterThanOrEqual(width, 20, "Button should have minimum width")
+                #expect(width >= 20, "Button should have minimum width")
             }
         }
     }
     
     // MARK: - Nested Button Tests
     
-    func testNestedButtonsInStacks() {
+    @Test func nestedButtonsInStacks() {
         // Given
         let view = VStack {
             HStack {
@@ -262,10 +262,10 @@ final class ButtonTests: SwiftTUITestCase {
         let output = TestRenderer.render(view, width: 40, height: 15)
         
         // Then
-        XCTAssertTrue(output.contains("A"), "Button A should be visible")
-        XCTAssertTrue(output.contains("B"), "Button B should be visible")
-        XCTAssertTrue(output.contains("C"), "Button C should be visible")
-        XCTAssertTrue(output.contains("D"), "Button D should be visible")
+        #expect(output.contains("A"), "Button A should be visible")
+        #expect(output.contains("B"), "Button B should be visible")
+        #expect(output.contains("C"), "Button C should be visible")
+        #expect(output.contains("D"), "Button D should be visible")
         
         // Verify layout structure
         let lines = output.components(separatedBy: "\n")
@@ -282,13 +282,13 @@ final class ButtonTests: SwiftTUITestCase {
         }
         
         if firstRowIndex != -1 && secondRowIndex != -1 {
-            XCTAssertLessThan(firstRowIndex, secondRowIndex, "First row should be above second row")
+            #expect(firstRowIndex < secondRowIndex, "First row should be above second row")
         }
     }
     
     // MARK: - Edge Cases
     
-    func testButtonWithEmptyLabel() {
+    @Test func buttonWithEmptyLabel() {
         // Given
         let button = Button("") {
             // Action
@@ -299,11 +299,11 @@ final class ButtonTests: SwiftTUITestCase {
         
         // Then
         // Should still render border even with empty label
-        XCTAssertTrue(output.contains("┌"), "Should have top border")
-        XCTAssertTrue(output.contains("└"), "Should have bottom border")
+        #expect(output.contains("┌"), "Should have top border")
+        #expect(output.contains("└"), "Should have bottom border")
     }
     
-    func testButtonWithLongLabel() {
+    @Test func buttonWithLongLabel() {
         // Given
         let button = Button("This is a very long button label") {
             // Action
@@ -313,11 +313,11 @@ final class ButtonTests: SwiftTUITestCase {
         let output = TestRenderer.render(button, width: 50, height: 5)
         
         // Then
-        XCTAssertTrue(output.contains("This is a very long button label"), "Long label should be fully visible")
-        XCTAssertTrue(output.contains("┌"), "Should have border")
+        #expect(output.contains("This is a very long button label"), "Long label should be fully visible")
+        #expect(output.contains("┌"), "Should have border")
     }
     
-    func testButtonWithMultilineLabel() {
+    @Test func buttonWithMultilineLabel() {
         // Given
         let button = Button(action: {}) {
             VStack {
@@ -331,9 +331,9 @@ final class ButtonTests: SwiftTUITestCase {
         let output = TestRenderer.render(button, width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Line 1"), "First line should be visible")
-        XCTAssertTrue(output.contains("Line 2"), "Second line should be visible")
-        XCTAssertTrue(output.contains("Line 3"), "Third line should be visible")
+        #expect(output.contains("Line 1"), "First line should be visible")
+        #expect(output.contains("Line 2"), "Second line should be visible")
+        #expect(output.contains("Line 3"), "Third line should be visible")
         
         // All lines should be within border
         let lines = output.components(separatedBy: "\n")
@@ -349,7 +349,7 @@ final class ButtonTests: SwiftTUITestCase {
             }
         }
         
-        XCTAssertTrue(hasTopBorder, "Should have complete top border")
-        XCTAssertTrue(hasBottomBorder, "Should have complete bottom border")
+        #expect(hasTopBorder, "Should have complete top border")
+        #expect(hasBottomBorder, "Should have complete bottom border")
     }
 }

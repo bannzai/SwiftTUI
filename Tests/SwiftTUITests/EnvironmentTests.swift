@@ -5,17 +5,17 @@
 //  Tests for @Environment property wrapper and environment value propagation
 //
 
-import XCTest
+import Testing
 @testable import SwiftTUI
 #if canImport(Observation)
 import Observation
 #endif
 
-final class EnvironmentTests: SwiftTUITestCase {
+@Suite struct EnvironmentTests {
     
     // MARK: - Basic Environment Value Tests
     
-    func testEnvironmentForegroundColor() {
+    @Test func environmentForegroundColor() {
         // Given
         struct TestView: View {
             @Environment(\.foregroundColor) var textColor
@@ -37,7 +37,7 @@ final class EnvironmentTests: SwiftTUITestCase {
         let defaultOutput = TestRenderer.render(TestView(), width: 30, height: 5)
         
         // Then
-        XCTAssertTrue(defaultOutput.contains("Color: White"), "Should show default color (white)")
+        #expect(defaultOutput.contains("Color: White"), "Should show default color (white)")
         
         // When - with red color
         let redOutput = TestRenderer.render(
@@ -47,10 +47,10 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(redOutput.contains("Color: Red"), "Should show red color")
+        #expect(redOutput.contains("Color: Red"), "Should show red color")
     }
     
-    func testEnvironmentIsEnabled() {
+    @Test func environmentIsEnabled() {
         // Given
         struct TestView: View {
             @Environment(\.isEnabled) var isEnabled
@@ -64,7 +64,7 @@ final class EnvironmentTests: SwiftTUITestCase {
         let enabledOutput = TestRenderer.render(TestView(), width: 30, height: 5)
         
         // Then
-        XCTAssertTrue(enabledOutput.contains("Enabled: Yes"), "Should be enabled by default")
+        #expect(enabledOutput.contains("Enabled: Yes"), "Should be enabled by default")
         
         // When - disabled
         let disabledOutput = TestRenderer.render(
@@ -74,10 +74,10 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(disabledOutput.contains("Enabled: No"), "Should be disabled")
+        #expect(disabledOutput.contains("Enabled: No"), "Should be disabled")
     }
     
-    func testMultipleEnvironmentValues() {
+    @Test func multipleEnvironmentValues() {
         // Given
         struct TestView: View {
             @Environment(\.foregroundColor) var color
@@ -102,17 +102,17 @@ final class EnvironmentTests: SwiftTUITestCase {
         let output = TestRenderer.render(customModifier, width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Color: Blue"), "Should have blue color")
+        #expect(output.contains("Color: Blue"), "Should have blue color")
         
         // Bool値の出力は "true" または "false" として文字列化される
-        XCTAssertTrue(output.contains("Enabled: false") || output.contains("Enabled: 0"), 
+        #expect(output.contains("Enabled: false") || output.contains("Enabled: 0"), 
                      "Should be disabled (output: \(output))")
-        XCTAssertTrue(output.contains("Font: 20"), "Should have font size 20")
+        #expect(output.contains("Font: 20"), "Should have font size 20")
     }
     
     // MARK: - View Hierarchy Propagation Tests
     
-    func testEnvironmentPropagationToChild() {
+    @Test func environmentPropagationToChild() {
         // Given
         struct ChildView: View {
             @Environment(\.foregroundColor) var color
@@ -139,11 +139,11 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(output.contains("Parent"), "Should show parent text")
-        XCTAssertTrue(output.contains("Child: Yellow"), "Child should inherit yellow color")
+        #expect(output.contains("Parent"), "Should show parent text")
+        #expect(output.contains("Child: Yellow"), "Child should inherit yellow color")
     }
     
-    func testEnvironmentOverrideInChild() {
+    @Test func environmentOverrideInChild() {
         // Given
         struct ChildView: View {
             @Environment(\.foregroundColor) var color
@@ -173,11 +173,11 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(output.contains("Parent: Red"), "Parent should have red color")
-        XCTAssertTrue(output.contains("Child: Green"), "Child should override with green")
+        #expect(output.contains("Parent: Red"), "Parent should have red color")
+        #expect(output.contains("Child: Green"), "Child should override with green")
     }
     
-    func testDeepNestedEnvironmentPropagation() {
+    @Test func deepNestedEnvironmentPropagation() {
         // Given
         struct Level3View: View {
             @Environment(\.fontSize) var fontSize
@@ -213,14 +213,14 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(output.contains("Level1"), "Should show level 1")
-        XCTAssertTrue(output.contains("Level2"), "Should show level 2")
-        XCTAssertTrue(output.contains("Level3: 24"), "Level 3 should inherit font size")
+        #expect(output.contains("Level1"), "Should show level 1")
+        #expect(output.contains("Level2"), "Should show level 2")
+        #expect(output.contains("Level3: 24"), "Level 3 should inherit font size")
     }
     
     // MARK: - SwiftTUI Observable Integration Tests
     
-    func testSwiftTUIObservableInEnvironment() {
+    @Test func swiftTUIObservableInEnvironment() {
         // Given
         class TestModel: Observable {
             var value = "Initial" {
@@ -244,7 +244,7 @@ final class EnvironmentTests: SwiftTUITestCase {
         let noModelOutput = TestRenderer.render(TestView(), width: 30, height: 5)
         
         // Then
-        XCTAssertTrue(noModelOutput.contains("No model"), "Should show no model")
+        #expect(noModelOutput.contains("No model"), "Should show no model")
         
         // When - with model
         let model = TestModel()
@@ -255,10 +255,10 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(withModelOutput.contains("Value: Initial"), "Should show model value")
+        #expect(withModelOutput.contains("Value: Initial"), "Should show model value")
     }
     
-    func testMultipleObservablesInEnvironment() {
+    @Test func multipleObservablesInEnvironment() {
         // Given
         class UserModel: Observable {
             var name = "John" {
@@ -296,14 +296,14 @@ final class EnvironmentTests: SwiftTUITestCase {
         let output = TestRenderer.render(customModifier, width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("User: John"), "Should show user name")
-        XCTAssertTrue(output.contains("Theme: Dark"), "Should show theme")
+        #expect(output.contains("User: John"), "Should show user name")
+        #expect(output.contains("Theme: Dark"), "Should show theme")
     }
     
     // MARK: - Standard Observable Integration Tests (Swift 5.9+)
     
     #if canImport(Observation)
-    func testStandardObservableInEnvironment() {
+    @Test func standardObservableInEnvironment() {
         // Given
         struct TestView: View {
             @Environment(TestStandardModel.self) var model: TestStandardModel?
@@ -326,10 +326,10 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(output.contains("Message: Hello Standard"), "Should show standard model message")
+        #expect(output.contains("Message: Hello Standard"), "Should show standard model message")
     }
     
-    func testMixedObservableTypes() {
+    @Test func mixedObservableTypes() {
         // Given - SwiftTUI Observable
         class SwiftTUIModel: Observable {
             var value = "SwiftTUI" {
@@ -367,14 +367,14 @@ final class EnvironmentTests: SwiftTUITestCase {
         let output = TestRenderer.render(customModifier, width: 40, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("SwiftTUI: SwiftTUI"), "Should show SwiftTUI model")
-        XCTAssertTrue(output.contains("Standard: Standard"), "Should show standard model")
+        #expect(output.contains("SwiftTUI: SwiftTUI"), "Should show SwiftTUI model")
+        #expect(output.contains("Standard: Standard"), "Should show standard model")
     }
     #endif
     
     // MARK: - Custom Environment Value Tests
     
-    func testCustomEnvironmentKey() {
+    @Test func customEnvironmentKey() {
         // Given - Custom environment key
         struct ThemeKey: EnvironmentKey {
             static let defaultValue = "Light"
@@ -404,7 +404,7 @@ final class EnvironmentTests: SwiftTUITestCase {
         let defaultOutput = TestRenderer.render(TestView(), width: 30, height: 5)
         
         // Then
-        XCTAssertTrue(defaultOutput.contains("Theme: Light"), "Should show default theme")
+        #expect(defaultOutput.contains("Theme: Light"), "Should show default theme")
         
         // When - custom value
         let customView = EnvironmentModifier(content: TestView()) { env in
@@ -413,12 +413,12 @@ final class EnvironmentTests: SwiftTUITestCase {
         let customOutput = TestRenderer.render(customView, width: 30, height: 5)
         
         // Then
-        XCTAssertTrue(customOutput.contains("Theme: Dark"), "Should show custom theme")
+        #expect(customOutput.contains("Theme: Dark"), "Should show custom theme")
     }
     
     // MARK: - Edge Cases
     
-    func testEnvironmentChaining() {
+    @Test func environmentChaining() {
         // Given
         struct TestView: View {
             @Environment(\.foregroundColor) var color
@@ -438,11 +438,11 @@ final class EnvironmentTests: SwiftTUITestCase {
         let output = TestRenderer.render(customModifier, width: 50, height: 5)
         
         // Then
-        XCTAssertTrue(output.contains("Color: Green"), "Should have green color")
-        XCTAssertTrue(output.contains("Enabled: false"), "Should be disabled")
+        #expect(output.contains("Color: Green"), "Should have green color")
+        #expect(output.contains("Enabled: false"), "Should be disabled")
     }
     
-    func testDisabledModifier() {
+    @Test func disabledModifier() {
         // Given
         struct TestView: View {
             @Environment(\.isEnabled) var isEnabled
@@ -471,11 +471,11 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(output.contains("Parent: Disabled"), "Parent should be disabled")
-        XCTAssertTrue(output.contains("Child: Disabled"), "Child should inherit disabled state")
+        #expect(output.contains("Parent: Disabled"), "Parent should be disabled")
+        #expect(output.contains("Child: Disabled"), "Child should inherit disabled state")
     }
     
-    func testEnvironmentWithConditionalView() {
+    @Test func environmentWithConditionalView() {
         // Given
         struct TestView: View {
             @Environment(\.foregroundColor) var color
@@ -498,7 +498,7 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(primaryOutput.contains("Primary: Blue"), "Primary should have blue color")
+        #expect(primaryOutput.contains("Primary: Blue"), "Primary should have blue color")
         
         // When - alternate view
         let alternateOutput = TestRenderer.render(
@@ -508,7 +508,7 @@ final class EnvironmentTests: SwiftTUITestCase {
         )
         
         // Then
-        XCTAssertTrue(alternateOutput.contains("Alternate: Blue"), "Alternate should have blue color")
+        #expect(alternateOutput.contains("Alternate: Blue"), "Alternate should have blue color")
     }
 }
 
