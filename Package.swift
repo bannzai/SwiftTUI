@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -76,7 +76,10 @@ let package = Package(
       dependencies: [
         .product(name: "yoga", package: "yoga")
       ],
-      path: "Sources/SwiftTUI"
+      path: "Sources/SwiftTUI",
+      swiftSettings: [
+        .unsafeFlags(["-Xfrontend", "-disable-availability-checking"])
+      ]
     ),
     .executableTarget(
       name: "ExampleApp",
@@ -404,10 +407,7 @@ let package = Package(
     ),
     .testTarget(
       name: "SwiftTUITests",
-      dependencies: ["SwiftTUI"],
-      swiftSettings: [
-        .enableExperimentalFeature("StrictConcurrency")
-      ]
+      dependencies: ["SwiftTUI"]
     )
   ]
 )
