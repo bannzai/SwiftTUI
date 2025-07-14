@@ -76,10 +76,7 @@ let package = Package(
       dependencies: [
         .product(name: "yoga", package: "yoga")
       ],
-      path: "Sources/SwiftTUI",
-      swiftSettings: [
-        .unsafeFlags(["-Xfrontend", "-disable-availability-checking"])
-      ]
+      path: "Sources/SwiftTUI"
     ),
     .executableTarget(
       name: "ExampleApp",

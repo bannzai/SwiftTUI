@@ -5,14 +5,14 @@
 //  Tests for ForEach and ForEachRange dynamic list generation
 //
 
-import Testing
+import XCTest
 @testable import SwiftTUI
 
-@Suite struct ForEachTests {
+final class ForEachTests: SwiftTUITestCase {
     
     // MARK: - Range-based ForEach Tests
     
-    @Test func forEachRangeBasic() {
+    func testForEachRangeBasic() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -28,13 +28,13 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Item 0"), "Should show first item")
-        #expect(output.contains("Item 1"), "Should show second item")
-        #expect(output.contains("Item 2"), "Should show third item")
-        #expect(!output.contains("Item 3"), "Should not show fourth item")
+        XCTAssertTrue(output.contains("Item 0"), "Should show first item")
+        XCTAssertTrue(output.contains("Item 1"), "Should show second item")
+        XCTAssertTrue(output.contains("Item 2"), "Should show third item")
+        XCTAssertFalse(output.contains("Item 3"), "Should not show fourth item")
     }
     
-    @Test func forEachRangeEmpty() {
+    func testForEachRangeEmpty() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -52,12 +52,12 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Before"), "Should show text before ForEach")
-        #expect(output.contains("After"), "Should show text after ForEach")
-        #expect(!output.contains("Item"), "Should not show any items")
+        XCTAssertTrue(output.contains("Before"), "Should show text before ForEach")
+        XCTAssertTrue(output.contains("After"), "Should show text after ForEach")
+        XCTAssertFalse(output.contains("Item"), "Should not show any items")
     }
     
-    @Test func forEachRangeLarge() {
+    func testForEachRangeLarge() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -74,12 +74,12 @@ import Testing
         
         // Then
         for i in 0..<5 {
-            #expect(output.contains("N\(i)"), "Should show item \(i)")
+            XCTAssertTrue(output.contains("N\(i)"), "Should show item \(i)")
         }
-        #expect(!output.contains("N5"), "Should not show item 5")
+        XCTAssertFalse(output.contains("N5"), "Should not show item 5")
     }
     
-    @Test func forEachRangeInHStack() {
+    func testForEachRangeInHStack() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -95,14 +95,14 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 5)
         
         // Then
-        #expect(output.contains("[0]"), "Should show first item")
-        #expect(output.contains("[1]"), "Should show second item")
-        #expect(output.contains("[2]"), "Should show third item")
+        XCTAssertTrue(output.contains("[0]"), "Should show first item")
+        XCTAssertTrue(output.contains("[1]"), "Should show second item")
+        XCTAssertTrue(output.contains("[2]"), "Should show third item")
     }
     
     // MARK: - Identifiable Array ForEach Tests
     
-    @Test func forEachIdentifiableBasic() {
+    func testForEachIdentifiableBasic() {
         // Given
         struct Item: Identifiable {
             let id: Int
@@ -129,12 +129,12 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Apple"), "Should show Apple")
-        #expect(output.contains("Banana"), "Should show Banana")
-        #expect(output.contains("Cherry"), "Should show Cherry")
+        XCTAssertTrue(output.contains("Apple"), "Should show Apple")
+        XCTAssertTrue(output.contains("Banana"), "Should show Banana")
+        XCTAssertTrue(output.contains("Cherry"), "Should show Cherry")
     }
     
-    @Test func forEachIdentifiableEmpty() {
+    func testForEachIdentifiableEmpty() {
         // Given
         struct Item: Identifiable {
             let id: Int
@@ -159,11 +159,11 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Start"), "Should show Start")
-        #expect(output.contains("End"), "Should show End")
+        XCTAssertTrue(output.contains("Start"), "Should show Start")
+        XCTAssertTrue(output.contains("End"), "Should show End")
     }
     
-    @Test func forEachIdentifiableSingle() {
+    func testForEachIdentifiableSingle() {
         // Given
         struct Item: Identifiable {
             let id: Int
@@ -186,11 +186,11 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 40, height: 5)
         
         // Then
-        #expect(output.contains("ID: 42"), "Should show item ID")
-        #expect(output.contains("Name: OnlyItem"), "Should show item name")
+        XCTAssertTrue(output.contains("ID: 42"), "Should show item ID")
+        XCTAssertTrue(output.contains("Name: OnlyItem"), "Should show item name")
     }
     
-    @Test func forEachIdentifiableWithModifiers() {
+    func testForEachIdentifiableWithModifiers() {
         // Given
         struct Person: Identifiable {
             let id: String
@@ -218,13 +218,13 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 40, height: 15)
         
         // Then
-        #expect(output.contains("Alice (25)"), "Should show Alice with age")
-        #expect(output.contains("Bob (30)"), "Should show Bob with age")
+        XCTAssertTrue(output.contains("Alice (25)"), "Should show Alice with age")
+        XCTAssertTrue(output.contains("Bob (30)"), "Should show Bob with age")
     }
     
     // MARK: - KeyPath ID ForEach Tests
     
-    @Test func forEachStringArrayWithSelf() {
+    func testForEachStringArrayWithSelf() {
         // Given
         struct TestView: View {
             let words = ["Hello", "World", "SwiftTUI"]
@@ -242,12 +242,12 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Hello"), "Should show Hello")
-        #expect(output.contains("World"), "Should show World")
-        #expect(output.contains("SwiftTUI"), "Should show SwiftTUI")
+        XCTAssertTrue(output.contains("Hello"), "Should show Hello")
+        XCTAssertTrue(output.contains("World"), "Should show World")
+        XCTAssertTrue(output.contains("SwiftTUI"), "Should show SwiftTUI")
     }
     
-    @Test func forEachIntArrayWithSelf() {
+    func testForEachIntArrayWithSelf() {
         // Given
         struct TestView: View {
             let numbers = [10, 20, 30, 40]
@@ -265,13 +265,13 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 15)
         
         // Then
-        #expect(output.contains("Number: 10"), "Should show first number")
-        #expect(output.contains("Number: 20"), "Should show second number")
-        #expect(output.contains("Number: 30"), "Should show third number")
-        #expect(output.contains("Number: 40"), "Should show fourth number")
+        XCTAssertTrue(output.contains("Number: 10"), "Should show first number")
+        XCTAssertTrue(output.contains("Number: 20"), "Should show second number")
+        XCTAssertTrue(output.contains("Number: 30"), "Should show third number")
+        XCTAssertTrue(output.contains("Number: 40"), "Should show fourth number")
     }
     
-    @Test func forEachEmptyArrayWithSelf() {
+    func testForEachEmptyArrayWithSelf() {
         // Given
         struct TestView: View {
             let items: [String] = []
@@ -291,11 +291,11 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Before"), "Should show Before")
-        #expect(output.contains("After"), "Should show After")
+        XCTAssertTrue(output.contains("Before"), "Should show Before")
+        XCTAssertTrue(output.contains("After"), "Should show After")
     }
     
-    @Test func forEachCustomKeyPath() {
+    func testForEachCustomKeyPath() {
         // Given
         struct User {
             let username: String
@@ -321,13 +321,13 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 50, height: 10)
         
         // Then
-        #expect(output.contains("alice: alice@example.com"), "Should show alice")
-        #expect(output.contains("bob: bob@example.com"), "Should show bob")
+        XCTAssertTrue(output.contains("alice: alice@example.com"), "Should show alice")
+        XCTAssertTrue(output.contains("bob: bob@example.com"), "Should show bob")
     }
     
     // MARK: - Nested ForEach Tests
     
-    @Test func nestedForEach() {
+    func testNestedForEach() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -347,13 +347,13 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("0,0"), "Should show (0,0)")
-        #expect(output.contains("0,1"), "Should show (0,1)")
-        #expect(output.contains("1,0"), "Should show (1,0)")
-        #expect(output.contains("1,1"), "Should show (1,1)")
+        XCTAssertTrue(output.contains("0,0"), "Should show (0,0)")
+        XCTAssertTrue(output.contains("0,1"), "Should show (0,1)")
+        XCTAssertTrue(output.contains("1,0"), "Should show (1,0)")
+        XCTAssertTrue(output.contains("1,1"), "Should show (1,1)")
     }
     
-    @Test func forEachWithDifferentTypes() {
+    func testForEachWithDifferentTypes() {
         // Given - Simplify test to avoid timeout
         struct TestView: View {
             let items = ["A", "B"]
@@ -372,14 +372,14 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Items:"), "Should show Items label")
-        #expect(output.contains("A"), "Should show A")
-        #expect(output.contains("B"), "Should show B")
+        XCTAssertTrue(output.contains("Items:"), "Should show Items label")
+        XCTAssertTrue(output.contains("A"), "Should show A")
+        XCTAssertTrue(output.contains("B"), "Should show B")
     }
     
     // MARK: - Complex Layout Tests
     
-    @Test func forEachInComplexLayout() {
+    func testForEachInComplexLayout() {
         // Given
         struct Item: Identifiable {
             let id: Int
@@ -415,16 +415,16 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 40, height: 20)
         
         // Then
-        #expect(output.contains("Items List"), "Should show title")
-        #expect(output.contains("First"), "Should show first title")
-        #expect(output.contains("Description 1"), "Should show first description")
-        #expect(output.contains("Second"), "Should show second title")
-        #expect(output.contains("Description 2"), "Should show second description")
+        XCTAssertTrue(output.contains("Items List"), "Should show title")
+        XCTAssertTrue(output.contains("First"), "Should show first title")
+        XCTAssertTrue(output.contains("Description 1"), "Should show first description")
+        XCTAssertTrue(output.contains("Second"), "Should show second title")
+        XCTAssertTrue(output.contains("Description 2"), "Should show second description")
     }
     
     // MARK: - Edge Cases
     
-    @Test func forEachRangeWithLargeNumbers() {
+    func testForEachRangeWithLargeNumbers() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -440,13 +440,13 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Large: 100"), "Should show 100")
-        #expect(output.contains("Large: 101"), "Should show 101")
-        #expect(output.contains("Large: 102"), "Should show 102")
-        #expect(!output.contains("Large: 103"), "Should not show 103")
+        XCTAssertTrue(output.contains("Large: 100"), "Should show 100")
+        XCTAssertTrue(output.contains("Large: 101"), "Should show 101")
+        XCTAssertTrue(output.contains("Large: 102"), "Should show 102")
+        XCTAssertFalse(output.contains("Large: 103"), "Should not show 103")
     }
     
-    @Test func forEachWithDuplicateIdentifiers() {
+    func testForEachWithDuplicateIdentifiers() {
         // Given - Testing with duplicate values in id: \.self
         struct TestView: View {
             let items = ["A", "B", "A", "C"]  // "A" appears twice
@@ -465,12 +465,12 @@ import Testing
         
         // Then
         // Note: ForEach behavior with duplicate IDs may vary
-        #expect(output.contains("Item: A"), "Should show A")
-        #expect(output.contains("Item: B"), "Should show B")
-        #expect(output.contains("Item: C"), "Should show C")
+        XCTAssertTrue(output.contains("Item: A"), "Should show A")
+        XCTAssertTrue(output.contains("Item: B"), "Should show B")
+        XCTAssertTrue(output.contains("Item: C"), "Should show C")
     }
     
-    @Test func forEachSingleItemInHStack() {
+    func testForEachSingleItemInHStack() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -488,8 +488,8 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 5)
         
         // Then
-        #expect(output.contains("Start"), "Should show Start")
-        #expect(output.contains("Only0"), "Should show single item")
-        #expect(output.contains("End"), "Should show End")
+        XCTAssertTrue(output.contains("Start"), "Should show Start")
+        XCTAssertTrue(output.contains("Only0"), "Should show single item")
+        XCTAssertTrue(output.contains("End"), "Should show End")
     }
 }

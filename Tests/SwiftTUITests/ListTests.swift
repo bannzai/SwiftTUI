@@ -5,14 +5,14 @@
 //  Tests for List component with automatic separator insertion
 //
 
-import Testing
+import XCTest
 @testable import SwiftTUI
 
-@Suite struct ListTests {
+final class ListTests: SwiftTUITestCase {
     
     // MARK: - Basic List Display Tests
     
-    @Test func listBasicDisplay() {
+    func testListBasicDisplay() {
         // Given - Note: List has a known issue where middle items disappear in multi-item lists
         struct TestView: View {
             var body: some View {
@@ -27,8 +27,8 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("First Item"), "Should show first item")
-        #expect(output.contains("Last Item"), "Should show last item")
+        XCTAssertTrue(output.contains("First Item"), "Should show first item")
+        XCTAssertTrue(output.contains("Last Item"), "Should show last item")
         
         // Check for separator by verifying there are blank lines between items
         let lines = output.components(separatedBy: "\n")
@@ -36,12 +36,12 @@ import Testing
         let lastIndex = lines.firstIndex { $0.contains("Last Item") }
         
         if let firstIdx = firstIndex, let lastIdx = lastIndex {
-            #expect(firstIdx < lastIdx, "First Item should appear before Last Item")
-            #expect(lastIdx - firstIdx > 1, "Should have space/separator between items")
+            XCTAssertLessThan(firstIdx, lastIdx, "First Item should appear before Last Item")
+            XCTAssertGreaterThan(lastIdx - firstIdx, 1, "Should have space/separator between items")
         }
     }
     
-    @Test func listEmpty() {
+    func testListEmpty() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -59,11 +59,11 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Before List"), "Should show text before List")
-        #expect(output.contains("After List"), "Should show text after List")
+        XCTAssertTrue(output.contains("Before List"), "Should show text before List")
+        XCTAssertTrue(output.contains("After List"), "Should show text after List")
     }
     
-    @Test func listSingleItem() {
+    func testListSingleItem() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -77,12 +77,12 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Only Item"), "Should show single item")
+        XCTAssertTrue(output.contains("Only Item"), "Should show single item")
         // Single item should not have separator after it
-        #expect(!output.contains("─"), "Should not show separator for single item")
+        XCTAssertFalse(output.contains("─"), "Should not show separator for single item")
     }
     
-    @Test func listMultipleItems() {
+    func testListMultipleItems() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -104,8 +104,8 @@ import Testing
         print("=== End Output ===")
         
         // Then
-        #expect(output.contains("Item A"), "Should show first item")
-        #expect(output.contains("Item B"), "Should show second item")
+        XCTAssertTrue(output.contains("Item A"), "Should show first item")
+        XCTAssertTrue(output.contains("Item B"), "Should show second item")
         
         // Check for separator by verifying there are blank lines between items
         let lines = output.components(separatedBy: "\n")
@@ -113,14 +113,14 @@ import Testing
         let itemBIndex = lines.firstIndex { $0.contains("Item B") }
         
         if let aIndex = itemAIndex, let bIndex = itemBIndex {
-            #expect(aIndex < bIndex, "Item A should appear before Item B")
-            #expect(bIndex - aIndex > 1, "Should have space/separator between items")
+            XCTAssertLessThan(aIndex, bIndex, "Item A should appear before Item B")
+            XCTAssertGreaterThan(bIndex - aIndex, 1, "Should have space/separator between items")
         }
     }
     
     // MARK: - Separator Behavior Tests
     
-    @Test func listSeparatorInsertion() {
+    func testListSeparatorInsertion() {
         // Given - Test with two items due to known issue with middle items
         struct TestView: View {
             var body: some View {
@@ -135,8 +135,8 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 15)
         
         // Then
-        #expect(output.contains("Alpha"), "Should show Alpha")
-        #expect(output.contains("Omega"), "Should show Omega")
+        XCTAssertTrue(output.contains("Alpha"), "Should show Alpha")
+        XCTAssertTrue(output.contains("Omega"), "Should show Omega")
         
         // Check for separator by verifying there are blank lines between items
         let lines = output.components(separatedBy: "\n")
@@ -144,12 +144,12 @@ import Testing
         let omegaIndex = lines.firstIndex { $0.contains("Omega") }
         
         if let aIndex = alphaIndex, let oIndex = omegaIndex {
-            #expect(aIndex < oIndex, "Alpha should appear before Omega")
-            #expect(oIndex - aIndex > 1, "Should have space/separator between items")
+            XCTAssertLessThan(aIndex, oIndex, "Alpha should appear before Omega")
+            XCTAssertGreaterThan(oIndex - aIndex, 1, "Should have space/separator between items")
         }
     }
     
-    @Test func listNoSeparatorAfterLastItem() {
+    func testListNoSeparatorAfterLastItem() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -172,9 +172,9 @@ import Testing
         print("=== End Output ===")
         
         // Then
-        #expect(output.contains("First"), "Should show first item")
-        #expect(output.contains("Last"), "Should show last item")
-        #expect(output.contains("After List"), "Should show text after list")
+        XCTAssertTrue(output.contains("First"), "Should show first item")
+        XCTAssertTrue(output.contains("Last"), "Should show last item")
+        XCTAssertTrue(output.contains("After List"), "Should show text after list")
         
         // There should be separator between First and Last, but proper spacing
         let lines = output.components(separatedBy: "\n")
@@ -184,17 +184,17 @@ import Testing
         
         // Verify items appear in correct order with proper spacing
         if let fIndex = firstIndex, let lIndex = lastIndex {
-            #expect(fIndex < lIndex, "First should appear before Last")
-            #expect(lIndex - fIndex > 1, "Should have space/separator between First and Last")
+            XCTAssertLessThan(fIndex, lIndex, "First should appear before Last")
+            XCTAssertGreaterThan(lIndex - fIndex, 1, "Should have space/separator between First and Last")
         }
         
         // Verify "After List" appears after the list items
         if let lIndex = lastIndex, let aIndex = afterListIndex {
-            #expect(lIndex < aIndex, "Last item should appear before After List")
+            XCTAssertLessThan(lIndex, aIndex, "Last item should appear before After List")
         }
     }
     
-    @Test func listSeparatorWithModifiers() {
+    func testListSeparatorWithModifiers() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -211,8 +211,8 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 40, height: 15)
         
         // Then
-        #expect(output.contains("Item 1"), "Should show first item")
-        #expect(output.contains("Item 2"), "Should show second item")
+        XCTAssertTrue(output.contains("Item 1"), "Should show first item")
+        XCTAssertTrue(output.contains("Item 2"), "Should show second item")
         
         // Check for separator by verifying there are blank lines between items
         let lines = output.components(separatedBy: "\n")
@@ -220,14 +220,14 @@ import Testing
         let item2Index = lines.firstIndex { $0.contains("Item 2") }
         
         if let idx1 = item1Index, let idx2 = item2Index {
-            #expect(idx1 < idx2, "Item 1 should appear before Item 2")
-            #expect(idx2 - idx1 > 1, "Should have space/separator between items")
+            XCTAssertLessThan(idx1, idx2, "Item 1 should appear before Item 2")
+            XCTAssertGreaterThan(idx2 - idx1, 1, "Should have space/separator between items")
         }
     }
     
     // MARK: - ForEach Combination Tests
     
-    @Test func listWithForEachRange() {
+    func testListWithForEachRange() {
         // Given - Note: List + ForEach has known issues with middle items disappearing
         struct TestView: View {
             var body: some View {
@@ -243,11 +243,11 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 15)
         
         // Then - Only testing first item due to known List + ForEach issues
-        #expect(output.contains("Dynamic Item 0"), "Should show first dynamic item")
+        XCTAssertTrue(output.contains("Dynamic Item 0"), "Should show first dynamic item")
         // Note: "Dynamic Item 1" may not appear due to known issues
     }
     
-    @Test func listWithForEachIdentifiable() {
+    func testListWithForEachIdentifiable() {
         // Given - Note: List + ForEach has known issues 
         struct Item: Identifiable {
             let id: Int
@@ -272,10 +272,10 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then - Only testing single item due to known List + ForEach issues
-        #expect(output.contains("Apple"), "Should show Apple")
+        XCTAssertTrue(output.contains("Apple"), "Should show Apple")
     }
     
-    @Test func listWithForEachKeyPath() {
+    func testListWithForEachKeyPath() {
         // Given - Note: List + ForEach has known issues
         struct TestView: View {
             let fruits = ["Orange"]
@@ -293,10 +293,10 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then - Only testing single item due to known List + ForEach issues
-        #expect(output.contains("Fruit: Orange"), "Should show Orange")
+        XCTAssertTrue(output.contains("Fruit: Orange"), "Should show Orange")
     }
     
-    @Test func listWithEmptyForEach() {
+    func testListWithEmptyForEach() {
         // Given
         struct TestView: View {
             let emptyItems: [String] = []
@@ -318,14 +318,14 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Start"), "Should show Start")
-        #expect(output.contains("End"), "Should show End")
-        #expect(!output.contains("─"), "Should not show separators for empty list")
+        XCTAssertTrue(output.contains("Start"), "Should show Start")
+        XCTAssertTrue(output.contains("End"), "Should show End")
+        XCTAssertFalse(output.contains("─"), "Should not show separators for empty list")
     }
     
     // MARK: - Edge Cases Tests
     
-    @Test func listWithNestedViews() {
+    func testListWithNestedViews() {
         // Given - Note: List has known issues with multiple items
         struct TestView: View {
             var body: some View {
@@ -346,10 +346,10 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 40, height: 20)
         
         // Then - Only testing first and last items due to known issues
-        #expect(output.contains("Title 1"), "Should show first title")
-        #expect(output.contains("Subtitle 1"), "Should show first subtitle")
-        #expect(output.contains("Title 2"), "Should show second title")
-        #expect(output.contains("Subtitle 2"), "Should show second subtitle")
+        XCTAssertTrue(output.contains("Title 1"), "Should show first title")
+        XCTAssertTrue(output.contains("Subtitle 1"), "Should show first subtitle")
+        XCTAssertTrue(output.contains("Title 2"), "Should show second title")
+        XCTAssertTrue(output.contains("Subtitle 2"), "Should show second subtitle")
         
         // Check for separator by verifying structure between nested views
         let lines = output.components(separatedBy: "\n")
@@ -357,12 +357,12 @@ import Testing
         let title2Index = lines.firstIndex { $0.contains("Title 2") }
         
         if let t1Index = title1Index, let t2Index = title2Index {
-            #expect(t1Index < t2Index, "Title 1 should appear before Title 2")
-            #expect(t2Index - t1Index > 2, "Should have space/separator between nested views")
+            XCTAssertLessThan(t1Index, t2Index, "Title 1 should appear before Title 2")
+            XCTAssertGreaterThan(t2Index - t1Index, 2, "Should have space/separator between nested views")
         }
     }
     
-    @Test func listWithLongContent() {
+    func testListWithLongContent() {
         // Given - Note: List has known issues with multiple items
         struct TestView: View {
             var body: some View {
@@ -377,8 +377,8 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 50, height: 20)
         
         // Then
-        #expect(output.contains("very long text"), "Should show long text")
-        #expect(output.contains("moderately long"), "Should show moderate text")
+        XCTAssertTrue(output.contains("very long text"), "Should show long text")
+        XCTAssertTrue(output.contains("moderately long"), "Should show moderate text")
         
         // Check for separator by verifying there are blank lines between items
         let lines = output.components(separatedBy: "\n")
@@ -386,12 +386,12 @@ import Testing
         let moderateTextIndex = lines.firstIndex { $0.contains("moderately long") }
         
         if let longIdx = longTextIndex, let modIdx = moderateTextIndex {
-            #expect(longIdx < modIdx, "Long text should appear before moderate text")
-            #expect(modIdx - longIdx > 1, "Should have space/separator between items")
+            XCTAssertLessThan(longIdx, modIdx, "Long text should appear before moderate text")
+            XCTAssertGreaterThan(modIdx - longIdx, 1, "Should have space/separator between items")
         }
     }
     
-    @Test func listInVStack() {
+    func testListInVStack() {
         // Given - Note: List has known issues with multiple items
         struct TestView: View {
             var body: some View {
@@ -418,10 +418,10 @@ import Testing
         print("=== End Output ===")
         
         // Then
-        #expect(output.contains("Header"), "Should show header")
-        #expect(output.contains("List Item 1"), "Should show first list item")
-        #expect(output.contains("List Item 2"), "Should show second list item")
-        #expect(output.contains("Footer"), "Should show footer")
+        XCTAssertTrue(output.contains("Header"), "Should show header")
+        XCTAssertTrue(output.contains("List Item 1"), "Should show first list item")
+        XCTAssertTrue(output.contains("List Item 2"), "Should show second list item")
+        XCTAssertTrue(output.contains("Footer"), "Should show footer")
         
         // Check for separator by verifying there are blank lines between list items
         let lines = output.components(separatedBy: "\n")
@@ -429,8 +429,8 @@ import Testing
         let item2Index = lines.firstIndex { $0.contains("List Item 2") }
         
         if let idx1 = item1Index, let idx2 = item2Index {
-            #expect(idx1 < idx2, "List Item 1 should appear before List Item 2")
-            #expect(idx2 - idx1 > 1, "Should have space/separator between list items")
+            XCTAssertLessThan(idx1, idx2, "List Item 1 should appear before List Item 2")
+            XCTAssertGreaterThan(idx2 - idx1, 1, "Should have space/separator between list items")
         }
     }
 }
