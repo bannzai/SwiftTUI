@@ -33,6 +33,28 @@ struct MyApp {
 
 プロジェクトには複数のサンプルが含まれています：
 
+#### TUI初心者向けドキュメント
+
+SwiftTUIの仕組みを理解するための3段階のドキュメントが用意されています：
+
+1. **入門編** (`SwiftTUI-Beginner.md`)
+   - TUIとは何か、SwiftTUIの基本概念
+   - セルという概念と画面更新の仕組み
+
+2. **中級編** (`SwiftTUI-Intermediate.md`)
+   - レンダリングシステムの詳細（CellRenderLoop、差分更新）
+   - イベント処理とフォーカス管理
+   - @State、@Binding、Observableによる状態管理
+
+3. **詳細編** (`SwiftTUI-Advanced.md`)
+   - Yogaレイアウトエンジンの統合
+   - セルベースレンダリングの実装詳細
+   - ターミナルのraw mode制御とプロセス管理
+
+これらのドキュメントは、TUIやシェル、プロセスの知識を段階的に学びながら、SwiftTUIがどのようにSwiftUIのような宣言的インタフェースをターミナル上で実現しているかを理解できるよう構成されています。
+
+#### サンプルプログラム
+
 ```bash
 # シンプルなテキスト表示
 swift run SimpleTest

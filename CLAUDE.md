@@ -459,3 +459,83 @@ SwiftTUI.run(App())
   - 不確定進捗の表示（スピナー）
   - 確定進捗の表示（バー）
   - ラベル表示
+
+## TUI初心者向けコメント追加プロジェクト（2025年7月）
+
+SwiftTUIのコードベースにTUI初心者向けの詳細なコメントを追加するプロジェクトを実施しました。
+
+### Phase 1 - 基本的な流れの理解（完了）
+
+最重要な5つのファイルに詳細コメントを追加：
+
+1. **SwiftTUI+Run.swift**
+   - アプリケーション起動の詳細な流れ
+   - TUIとは何かの説明
+   - GlobalKeyHandlerの使い方
+   - LayoutViewWrapperの役割
+   - ANSIエスケープシーケンスの説明
+
+2. **View.swift**
+   - Viewプロトコルの基本概念
+   - associatedtypeの説明
+   - @ViewBuilderの使い方と利点
+   - プリミティブViewとBody = Neverの関係
+   - Never型がViewプロトコルに適合する理由
+
+3. **Text.swift**
+   - 最もシンプルなView実装の詳細
+   - モディファイアパターンの仕組み
+   - メソッドチェーンでイミュータブルな変更を実現
+   - 内部的なLayoutViewへの変換プロセス
+
+4. **CellRenderLoop.swift**
+   - レンダリングエンジンの中心的な役割
+   - セルベースレンダリングの概念
+   - mount()からscheduleRedraw()の流れ
+   - 差分更新アルゴリズムの詳細
+   - ANSIエスケープシーケンスヘルパーメソッド
+
+5. **State.swift**
+   - @Stateプロパティラッパーの仕組み
+   - なぜBoxクラス（参照型）を使うのかの説明
+   - @Bindingによる親子間のデータ共有
+   - 自動再レンダリングのメカニズム
+   - Binding.constantの使い方
+
+### 今後の計画
+
+**Phase 2 - レンダリングシステム**（未実施）
+- ViewRenderer.swift - View→LayoutView変換
+- LayoutView.swift - レイアウトプロトコル
+- Cell.swift & CellBuffer.swift - セルベースレンダリング
+- VStack.swift & HStack.swift - レイアウトコンテナ
+
+**Phase 3 - 入力とインタラクション**（未実施）
+- InputLoop.swift - キーボード入力処理
+- Keyboard.swift - キーイベント定義
+- Button.swift - インタラクティブコンポーネント
+- TextField.swift - テキスト入力
+- FocusManager.swift - フォーカス管理
+
+### ドキュメント作成
+
+プロジェクトの理解を助けるため、3段階のドキュメントを作成：
+
+1. **SwiftTUI-Beginner.md** - 入門編
+   - TUIの基本概念とSwiftTUIの仕組み
+   - セルという概念と画面更新の仕組み
+   - 初めてのSwiftTUIアプリ
+
+2. **SwiftTUI-Intermediate.md** - 中級編
+   - レンダリングシステムの詳細（CellRenderLoop、差分更新）
+   - イベント処理とフォーカス管理
+   - @State、@Binding、Observableによる状態管理
+   - カスタムコンポーネントの作成
+
+3. **SwiftTUI-Advanced.md** - 詳細編
+   - Yogaレイアウトエンジンの統合
+   - セルベースレンダリングの実装詳細
+   - ターミナルのraw mode制御とプロセス管理
+   - パフォーマンス最適化のテクニック
+
+これらのドキュメントとコメントにより、TUI初心者でもSwiftTUIの仕組みを段階的に理解できるようになりました。
