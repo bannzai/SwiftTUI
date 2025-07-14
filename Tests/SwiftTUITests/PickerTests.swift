@@ -5,11 +5,11 @@
 //  Tests for Picker component with dropdown selection functionality
 //
 
-import XCTest
+import Testing
 @testable import SwiftTUI
 import yoga
 
-final class PickerTests: SwiftTUITestCase {
+@Suite struct PickerTests {
     
     // MARK: - Helper Methods
     
@@ -17,7 +17,7 @@ final class PickerTests: SwiftTUITestCase {
     private func renderPicker<SelectionValue: Hashable>(_ picker: Picker<SelectionValue>) -> String {
         let pickerLayoutView = picker._layoutView
         guard let cellLayoutView = pickerLayoutView as? CellLayoutView else {
-            XCTFail("PickerLayoutView should implement CellLayoutView")
+            Issue.record("PickerLayoutView should implement CellLayoutView")
             return ""
         }
         
@@ -43,7 +43,7 @@ final class PickerTests: SwiftTUITestCase {
     
     // MARK: - Basic Display Tests
     
-    func testPickerBasicStringOptions() {
+    @Test func pickerBasicStringOptions() {
         // Given - Picker with string options using Binding.constant
         let picker = Picker("Color", selection: .constant("Blue"), options: ["Red", "Green", "Blue"])
         
@@ -51,15 +51,15 @@ final class PickerTests: SwiftTUITestCase {
         let output = renderPicker(picker)
         
         // Then - Should show label, current selection, and dropdown arrow
-        XCTAssertTrue(output.contains("Color"), "Should show label")
-        XCTAssertTrue(output.contains("Blue"), "Should show current selection")
-        XCTAssertTrue(output.contains("▼"), "Should show dropdown arrow")
+        #expect(output.contains("Color"), "Should show label")
+        #expect(output.contains("Blue"), "Should show current selection")
+        #expect(output.contains("▼"), "Should show dropdown arrow")
     }
     
     // Note: Int type picker tests are temporarily disabled due to signal 11 crash
     // TODO: Investigate and fix Int type picker crash issue
     
-    func testPickerInitialSelection() {
+    @Test func pickerInitialSelection() {
         // Given - Picker with different initial selection
         let colorPicker = Picker("Color", selection: .constant("Green"), options: ["Red", "Green", "Blue"])
         
@@ -67,10 +67,10 @@ final class PickerTests: SwiftTUITestCase {
         let colorOutput = renderPicker(colorPicker)
         
         // Then
-        XCTAssertTrue(colorOutput.contains("Green"), "Should show initial color selection")
+        #expect(colorOutput.contains("Green"), "Should show initial color selection")
     }
     
-    func testPickerLabelDisplay() {
+    @Test func pickerLabelDisplay() {
         // Given - Pickers with different labels
         let picker1 = Picker("First Option", selection: .constant("A"), options: ["A", "B", "C"])
         let picker2 = Picker("Second Choice", selection: .constant("X"), options: ["X", "Y", "Z"])
@@ -80,13 +80,13 @@ final class PickerTests: SwiftTUITestCase {
         let output2 = renderPicker(picker2)
         
         // Then
-        XCTAssertTrue(output1.contains("First Option"), "Should show first label")
-        XCTAssertTrue(output2.contains("Second Choice"), "Should show second label")
-        XCTAssertTrue(output1.contains("A"), "Should show first selection")
-        XCTAssertTrue(output2.contains("X"), "Should show second selection")
+        #expect(output1.contains("First Option"), "Should show first label")
+        #expect(output2.contains("Second Choice"), "Should show second label")
+        #expect(output1.contains("A"), "Should show first selection")
+        #expect(output2.contains("X"), "Should show second selection")
     }
     
-    func testPickerMultipleOptions() {
+    @Test func pickerMultipleOptions() {
         // Given - Picker with multiple options
         let picker = Picker("Language", selection: .constant("Swift"), options: ["Swift", "Python", "JavaScript", "Rust", "Go"])
         
@@ -94,15 +94,15 @@ final class PickerTests: SwiftTUITestCase {
         let output = renderPicker(picker)
         
         // Then
-        XCTAssertTrue(output.contains("Language"), "Should show label")
-        XCTAssertTrue(output.contains("Swift"), "Should show current selection")
-        XCTAssertTrue(output.contains(":"), "Should have colon separator")
-        XCTAssertTrue(output.contains("["), "Should have bracket")
+        #expect(output.contains("Language"), "Should show label")
+        #expect(output.contains("Swift"), "Should show current selection")
+        #expect(output.contains(":"), "Should have colon separator")
+        #expect(output.contains("["), "Should have bracket")
     }
     
     // MARK: - Binding Selection Management Tests
     
-    func testPickerBinding() {
+    @Test func pickerBinding() {
         // Given - Picker with binding to constant value
         let picker = Picker("Option", selection: .constant("Beta"), options: ["Alpha", "Beta", "Gamma"])
         
@@ -110,12 +110,12 @@ final class PickerTests: SwiftTUITestCase {
         let output = renderPicker(picker)
         
         // Then
-        XCTAssertTrue(output.contains("Beta"), "Should show bound selection")
-        XCTAssertTrue(output.contains("Option"), "Should show picker label")
-        XCTAssertTrue(output.contains("▼"), "Should show dropdown arrow")
+        #expect(output.contains("Beta"), "Should show bound selection")
+        #expect(output.contains("Option"), "Should show picker label")
+        #expect(output.contains("▼"), "Should show dropdown arrow")
     }
     
-    func testPickerSelectionReflection() {
+    @Test func pickerSelectionReflection() {
         // Given - Picker with constant selection
         let picker = Picker("Fruit", selection: .constant("Apple"), options: ["Apple", "Banana", "Orange"])
         
@@ -123,11 +123,11 @@ final class PickerTests: SwiftTUITestCase {
         let output = renderPicker(picker)
         
         // Then
-        XCTAssertTrue(output.contains("Apple"), "Should show current fruit selection")
-        XCTAssertTrue(output.contains("Fruit"), "Should show picker label")
+        #expect(output.contains("Apple"), "Should show current fruit selection")
+        #expect(output.contains("Fruit"), "Should show picker label")
     }
     
-    func testPickerMultipleBindings() {
+    @Test func pickerMultipleBindings() {
         // Given - Multiple pickers with independent bindings
         let themePicker = Picker("Theme", selection: .constant("Dark"), options: ["Light", "Dark", "Auto"])
         
@@ -135,11 +135,11 @@ final class PickerTests: SwiftTUITestCase {
         let themeOutput = renderPicker(themePicker)
         
         // Then
-        XCTAssertTrue(themeOutput.contains("Theme"), "Should show theme label")
-        XCTAssertTrue(themeOutput.contains("Dark"), "Should show theme selection")
+        #expect(themeOutput.contains("Theme"), "Should show theme label")
+        #expect(themeOutput.contains("Dark"), "Should show theme selection")
     }
     
-    func testPickerBindingTypes() {
+    @Test func pickerBindingTypes() {
         // Given - Picker with string binding
         let stringPicker = Picker("String", selection: .constant("Option2"), options: ["Option1", "Option2", "Option3"])
         
@@ -147,12 +147,12 @@ final class PickerTests: SwiftTUITestCase {
         let stringOutput = renderPicker(stringPicker)
         
         // Then
-        XCTAssertTrue(stringOutput.contains("Option2"), "Should show string selection")
+        #expect(stringOutput.contains("Option2"), "Should show string selection")
     }
     
     // MARK: - Focus Management Tests
     
-    func testPickerFocusDisplay() {
+    @Test func pickerFocusDisplay() {
         // Given - Picker that can be focused
         let picker = Picker("Focusable", selection: .constant("Default"), options: ["Default", "Other"])
         
@@ -160,11 +160,11 @@ final class PickerTests: SwiftTUITestCase {
         let output = renderPicker(picker)
         
         // Then - Basic display (focus state not testable in static test)
-        XCTAssertTrue(output.contains("Focusable"), "Should show label")
-        XCTAssertTrue(output.contains("Default"), "Should show selection")
+        #expect(output.contains("Focusable"), "Should show label")
+        #expect(output.contains("Default"), "Should show selection")
     }
     
-    func testPickerFocusSize() {
+    @Test func pickerFocusSize() {
         // Given - Picker size calculation
         let picker = Picker("Test", selection: .constant("Test"), options: ["Test", "Other"])
         
@@ -172,11 +172,11 @@ final class PickerTests: SwiftTUITestCase {
         let output = renderPicker(picker)
         
         // Then - Test that picker renders correctly
-        XCTAssertTrue(output.contains("Test"), "Should show picker label and selection")
-        XCTAssertFalse(output.isEmpty, "Should produce some output")
+        #expect(output.contains("Test"), "Should show picker label and selection")
+        #expect(!output.isEmpty, "Should produce some output")
     }
     
-    func testPickerMultipleFocus() {
+    @Test func pickerMultipleFocus() {
         // Given - Multiple pickers (test that each renders independently)
         let picker1 = Picker("First", selection: .constant("A"), options: ["A", "B", "C"])
         let picker2 = Picker("Second", selection: .constant("X"), options: ["X", "Y", "Z"])
@@ -188,14 +188,14 @@ final class PickerTests: SwiftTUITestCase {
         let output3 = renderPicker(picker3)
         
         // Then - All pickers should render correctly
-        XCTAssertTrue(output1.contains("First"), "Should show First")
-        XCTAssertTrue(output2.contains("Second"), "Should show Second")
-        XCTAssertTrue(output3.contains("Third"), "Should show Third")
+        #expect(output1.contains("First"), "Should show First")
+        #expect(output2.contains("Second"), "Should show Second")
+        #expect(output3.contains("Third"), "Should show Third")
     }
     
     // MARK: - Edge Cases Tests
     
-    func testPickerEmptyOptions() {
+    @Test func pickerEmptyOptions() {
         // Given - Picker with empty options array
         let picker = Picker("Empty", selection: .constant(""), options: [String]())
         
@@ -203,10 +203,10 @@ final class PickerTests: SwiftTUITestCase {
         let output = renderPicker(picker)
         
         // Then - Should still show label and structure
-        XCTAssertTrue(output.contains("Empty"), "Should show label even with empty options")
+        #expect(output.contains("Empty"), "Should show label even with empty options")
     }
     
-    func testPickerSingleOption() {
+    @Test func pickerSingleOption() {
         // Given - Picker with single option
         let picker = Picker("Single", selection: .constant("Only"), options: ["Only"])
         
@@ -214,12 +214,12 @@ final class PickerTests: SwiftTUITestCase {
         let output = renderPicker(picker)
         
         // Then
-        XCTAssertTrue(output.contains("Single"), "Should show label")
-        XCTAssertTrue(output.contains("Only"), "Should show single option")
-        XCTAssertTrue(output.contains("▼"), "Should still show dropdown arrow")
+        #expect(output.contains("Single"), "Should show label")
+        #expect(output.contains("Only"), "Should show single option")
+        #expect(output.contains("▼"), "Should still show dropdown arrow")
     }
     
-    func testPickerLongLabels() {
+    @Test func pickerLongLabels() {
         // Given - Picker with long labels and options
         let picker = Picker("This is a very long picker label", 
                            selection: .constant("Very Long Option Name"), 
@@ -229,11 +229,11 @@ final class PickerTests: SwiftTUITestCase {
         let output = renderPicker(picker)
         
         // Then - Check for parts that should be present (long text may be truncated)
-        XCTAssertTrue(output.contains("very long picker label"), "Should show long label")
-        XCTAssertTrue(output.contains("Very Long"), "Should show part of long option")
+        #expect(output.contains("very long picker label"), "Should show long label")
+        #expect(output.contains("Very Long"), "Should show part of long option")
     }
     
-    func testPickerSpecialCharacters() {
+    @Test func pickerSpecialCharacters() {
         // Given - Picker with special characters and emoji
         let emojiPicker = Picker("🎨 Theme", selection: .constant("🎉"), options: ["🎉", "🚀", "💻"])
         let specialPicker = Picker("Special [Chars]", selection: .constant("Option (1)"), options: ["Option (1)", "Option {2}", "Option [3]"])
@@ -243,9 +243,9 @@ final class PickerTests: SwiftTUITestCase {
         let specialOutput = renderPicker(specialPicker)
         
         // Then
-        XCTAssertTrue(emojiOutput.contains("🎨 Theme"), "Should show emoji in label")
-        XCTAssertTrue(emojiOutput.contains("🎉"), "Should show emoji selection")
-        XCTAssertTrue(specialOutput.contains("Special [Chars]"), "Should show special characters in label")
-        XCTAssertTrue(specialOutput.contains("Option (1)"), "Should show special characters in option")
+        #expect(emojiOutput.contains("🎨 Theme"), "Should show emoji in label")
+        #expect(emojiOutput.contains("🎉"), "Should show emoji selection")
+        #expect(specialOutput.contains("Special [Chars]"), "Should show special characters in label")
+        #expect(specialOutput.contains("Option (1)"), "Should show special characters in option")
     }
 }
