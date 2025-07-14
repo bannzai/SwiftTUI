@@ -5,11 +5,11 @@
 //  Tests for Alert component with modal-like display and dismiss functionality
 //
 
-import Testing
+import XCTest
 @testable import SwiftTUI
 import yoga
 
-@Suite struct AlertTests {
+final class AlertTests: SwiftTUITestCase {
     
     // MARK: - Helper Methods
     
@@ -17,7 +17,7 @@ import yoga
     private func renderAlert(_ alert: Alert) -> String {
         let alertLayoutView = alert._layoutView
         guard let cellLayoutView = alertLayoutView as? CellLayoutView else {
-            Issue.record("AlertLayoutView should implement CellLayoutView")
+            XCTFail("AlertLayoutView should implement CellLayoutView")
             return ""
         }
         
@@ -48,7 +48,7 @@ import yoga
     
     // MARK: - Basic Display Tests
     
-    @Test func alertBasicDisplay() {
+    func testAlertBasicDisplay() {
         // Given - Alert with title only
         var dismissed = false
         let alert = Alert(title: "Test Alert", dismiss: {
@@ -59,15 +59,15 @@ import yoga
         let output = renderAlert(alert)
         
         // Then - Should show alert structure with title
-        #expect(output.contains("Test Alert"), "Should show alert title")
-        #expect(output.contains("╔"), "Should show top left corner")
-        #expect(output.contains("╗"), "Should show top right corner")
-        #expect(output.contains("╚"), "Should show bottom left corner")
-        #expect(output.contains("╝"), "Should show bottom right corner")
-        #expect(output.contains("[ OK ]"), "Should show OK button")
+        XCTAssertTrue(output.contains("Test Alert"), "Should show alert title")
+        XCTAssertTrue(output.contains("╔"), "Should show top left corner")
+        XCTAssertTrue(output.contains("╗"), "Should show top right corner")
+        XCTAssertTrue(output.contains("╚"), "Should show bottom left corner")
+        XCTAssertTrue(output.contains("╝"), "Should show bottom right corner")
+        XCTAssertTrue(output.contains("[ OK ]"), "Should show OK button")
     }
     
-    @Test func alertWithMessage() {
+    func testAlertWithMessage() {
         // Given - Alert with title and message
         var dismissed = false
         let alert = Alert(title: "Warning", message: "This is a warning message", dismiss: {
@@ -78,14 +78,14 @@ import yoga
         let output = renderAlert(alert)
         
         // Then - Should show both title and message
-        #expect(output.contains("Warning"), "Should show alert title")
-        #expect(output.contains("This is a warning message"), "Should show message")
-        #expect(output.contains("╟"), "Should show separator line")
-        #expect(output.contains("╢"), "Should show separator line end")
-        #expect(output.contains("[ OK ]"), "Should show OK button")
+        XCTAssertTrue(output.contains("Warning"), "Should show alert title")
+        XCTAssertTrue(output.contains("This is a warning message"), "Should show message")
+        XCTAssertTrue(output.contains("╟"), "Should show separator line")
+        XCTAssertTrue(output.contains("╢"), "Should show separator line end")
+        XCTAssertTrue(output.contains("[ OK ]"), "Should show OK button")
     }
     
-    @Test func alertBorderAndColors() {
+    func testAlertBorderAndColors() {
         // Given - Alert to check border structure
         var dismissed = false
         let alert = Alert(title: "Error", dismiss: {
@@ -97,19 +97,19 @@ import yoga
         
         // Then - Should have complete border structure
         // Top border
-        #expect(output.contains("╔"), "Should have top left corner")
-        #expect(output.contains("═"), "Should have horizontal double lines")
-        #expect(output.contains("╗"), "Should have top right corner")
+        XCTAssertTrue(output.contains("╔"), "Should have top left corner")
+        XCTAssertTrue(output.contains("═"), "Should have horizontal double lines")
+        XCTAssertTrue(output.contains("╗"), "Should have top right corner")
         
         // Side borders
-        #expect(output.contains("║"), "Should have vertical double lines")
+        XCTAssertTrue(output.contains("║"), "Should have vertical double lines")
         
         // Bottom border
-        #expect(output.contains("╚"), "Should have bottom left corner")
-        #expect(output.contains("╝"), "Should have bottom right corner")
+        XCTAssertTrue(output.contains("╚"), "Should have bottom left corner")
+        XCTAssertTrue(output.contains("╝"), "Should have bottom right corner")
     }
     
-    @Test func alertCenterAlignment() {
+    func testAlertCenterAlignment() {
         // Given - Alert with short title to test centering
         var dismissed = false
         let alert = Alert(title: "OK", dismiss: {
@@ -125,12 +125,12 @@ import yoga
             let beforeOK = titleLine.components(separatedBy: "OK").first ?? ""
             let afterOK = titleLine.components(separatedBy: "OK").last ?? ""
             // Both sides should have padding (spaces)
-            #expect(beforeOK.contains(" "), "Should have padding before title")
-            #expect(afterOK.contains(" "), "Should have padding after title")
+            XCTAssertTrue(beforeOK.contains(" "), "Should have padding before title")
+            XCTAssertTrue(afterOK.contains(" "), "Should have padding after title")
         }
     }
     
-    @Test func alertOKButton() {
+    func testAlertOKButton() {
         // Given - Alert to test OK button display
         var dismissed = false
         let alert = Alert(title: "Confirm", dismiss: {
@@ -142,21 +142,21 @@ import yoga
         let lines = output.components(separatedBy: "\n").filter { !$0.isEmpty }
         
         // Then - Should show centered OK button
-        #expect(output.contains("[ OK ]"), "Should show OK button")
+        XCTAssertTrue(output.contains("[ OK ]"), "Should show OK button")
         
         // Check button is centered
         if let buttonLine = lines.first(where: { $0.contains("[ OK ]") }) {
             let beforeButton = buttonLine.components(separatedBy: "[ OK ]").first ?? ""
             let afterButton = buttonLine.components(separatedBy: "[ OK ]").last ?? ""
             // Both sides should have padding
-            #expect(beforeButton.contains(" "), "Should have padding before button")
-            #expect(afterButton.contains(" "), "Should have padding after button")
+            XCTAssertTrue(beforeButton.contains(" "), "Should have padding before button")
+            XCTAssertTrue(afterButton.contains(" "), "Should have padding after button")
         }
     }
     
     // MARK: - Binding State Management Tests
     
-    @Test func alertModifierShowing() {
+    func testAlertModifierShowing() {
         // Given - View with alert modifier where isPresented is true
         struct TestView: View {
             @State var showAlert = true
@@ -171,12 +171,12 @@ import yoga
         let output = renderWithAlertModifier(TestView())
         
         // Then - Should show alert, not content
-        #expect(output.contains("Test Alert"), "Should show alert title")
-        #expect(output.contains("[ OK ]"), "Should show OK button")
-        #expect(!output.contains("Content"), "Should not show content when alert is visible")
+        XCTAssertTrue(output.contains("Test Alert"), "Should show alert title")
+        XCTAssertTrue(output.contains("[ OK ]"), "Should show OK button")
+        XCTAssertFalse(output.contains("Content"), "Should not show content when alert is visible")
     }
     
-    @Test func alertModifierHidden() {
+    func testAlertModifierHidden() {
         // Given - View with alert modifier where isPresented is false
         struct TestView: View {
             @State var showAlert = false
@@ -191,12 +191,12 @@ import yoga
         let output = renderWithAlertModifier(TestView())
         
         // Then - Should show content, not alert
-        #expect(output.contains("Content"), "Should show content")
-        #expect(!output.contains("Test Alert"), "Should not show alert")
-        #expect(!output.contains("[ OK ]"), "Should not show OK button")
+        XCTAssertTrue(output.contains("Content"), "Should show content")
+        XCTAssertFalse(output.contains("Test Alert"), "Should not show alert")
+        XCTAssertFalse(output.contains("[ OK ]"), "Should not show OK button")
     }
     
-    @Test func alertDismissBinding() {
+    func testAlertDismissBinding() {
         // Given - Alert with dismiss action
         var wasDisssed = false
         let alert = Alert(title: "Dismiss Test", dismiss: {
@@ -209,10 +209,10 @@ import yoga
         }
         
         // Then
-        #expect(wasDisssed, "Dismiss action should be called")
+        XCTAssertTrue(wasDisssed, "Dismiss action should be called")
     }
     
-    @Test func alertMultipleIndependent() {
+    func testAlertMultipleIndependent() {
         // Given - View with multiple independent alerts
         struct TestView: View {
             @State var showInfo = false
@@ -233,13 +233,13 @@ import yoga
         let output = renderWithAlertModifier(TestView())
         
         // Then - Should show warning alert (last one wins in current implementation)
-        #expect(output.contains("Warning!"), "Should show warning alert")
-        #expect(!output.contains("Information"), "Should not show info alert")
+        XCTAssertTrue(output.contains("Warning!"), "Should show warning alert")
+        XCTAssertFalse(output.contains("Information"), "Should not show info alert")
     }
     
     // MARK: - Modifier Behavior Tests
     
-    @Test func alertOverContent() {
+    func testAlertOverContent() {
         // Given - Complex content with alert
         struct TestView: View {
             @State var showAlert = true
@@ -261,12 +261,12 @@ import yoga
         let output = renderWithAlertModifier(TestView())
         
         // Then - Should only show alert
-        #expect(output.contains("Override"), "Should show alert")
-        #expect(!output.contains("Title"), "Should not show content title")
-        #expect(!output.contains("Content line 1"), "Should not show content")
+        XCTAssertTrue(output.contains("Override"), "Should show alert")
+        XCTAssertFalse(output.contains("Title"), "Should not show content title")
+        XCTAssertFalse(output.contains("Content line 1"), "Should not show content")
     }
     
-    @Test func alertContentSwitch() {
+    func testAlertContentSwitch() {
         // Given - View that can switch between content and alert
         struct TestView: View {
             let showAlert: Bool
@@ -283,14 +283,14 @@ import yoga
         let alertOutput = renderWithAlertModifier(TestView(showAlert: true))
         
         // Then
-        #expect(contentOutput.contains("Normal Content"), "Should show content when alert is hidden")
-        #expect(!contentOutput.contains("Alert!"), "Should not show alert when hidden")
+        XCTAssertTrue(contentOutput.contains("Normal Content"), "Should show content when alert is hidden")
+        XCTAssertFalse(contentOutput.contains("Alert!"), "Should not show alert when hidden")
         
-        #expect(alertOutput.contains("Alert!"), "Should show alert when visible")
-        #expect(!alertOutput.contains("Normal Content"), "Should not show content when alert is visible")
+        XCTAssertTrue(alertOutput.contains("Alert!"), "Should show alert when visible")
+        XCTAssertFalse(alertOutput.contains("Normal Content"), "Should not show content when alert is visible")
     }
     
-    @Test func alertNestedViews() {
+    func testAlertNestedViews() {
         // Given - Nested views with alert at different levels
         struct ChildView: View {
             @Binding var showAlert: Bool
@@ -318,17 +318,17 @@ import yoga
         let output = renderWithAlertModifier(ParentView())
         
         // Then
-        #expect(output.contains("Parent Alert"), "Should show alert")
+        XCTAssertTrue(output.contains("Parent Alert"), "Should show alert")
         // Check that VStack content is not shown (Parent text should only appear in alert title)
         let lines = output.components(separatedBy: "\n")
         let parentTextLines = lines.filter { $0.contains("Parent") && !$0.contains("Parent Alert") }
-        #expect(parentTextLines.isEmpty, "Should not show standalone Parent text from content")
-        #expect(!output.contains("Show Alert"), "Should not show child button")
+        XCTAssertTrue(parentTextLines.isEmpty, "Should not show standalone Parent text from content")
+        XCTAssertFalse(output.contains("Show Alert"), "Should not show child button")
     }
     
     // MARK: - Edge Cases Tests
     
-    @Test func alertLongTitle() {
+    func testAlertLongTitle() {
         // Given - Alert with long title
         var dismissed = false
         let alert = Alert(
@@ -340,17 +340,17 @@ import yoga
         let output = renderAlert(alert)
         
         // Then
-        #expect(output.contains("This is a very long alert title"), "Should show full long title")
-        #expect(output.contains("[ OK ]"), "Should still show OK button")
+        XCTAssertTrue(output.contains("This is a very long alert title"), "Should show full long title")
+        XCTAssertTrue(output.contains("[ OK ]"), "Should still show OK button")
         
         // Check that border expands to accommodate
         let lines = output.components(separatedBy: "\n").filter { !$0.isEmpty }
         if let titleLine = lines.first(where: { $0.contains("This is a very long") }) {
-            #expect(titleLine.contains("║"), "Should have proper borders even with long title")
+            XCTAssertTrue(titleLine.contains("║"), "Should have proper borders even with long title")
         }
     }
     
-    @Test func alertLongMessage() {
+    func testAlertLongMessage() {
         // Given - Alert with long message
         var dismissed = false
         let alert = Alert(
@@ -363,12 +363,12 @@ import yoga
         let output = renderAlert(alert)
         
         // Then
-        #expect(output.contains("Notice"), "Should show title")
-        #expect(output.contains("This is a very long message"), "Should show long message")
-        #expect(output.contains("[ OK ]"), "Should show OK button")
+        XCTAssertTrue(output.contains("Notice"), "Should show title")
+        XCTAssertTrue(output.contains("This is a very long message"), "Should show long message")
+        XCTAssertTrue(output.contains("[ OK ]"), "Should show OK button")
     }
     
-    @Test func alertNoMessage() {
+    func testAlertNoMessage() {
         // Given - Alert without message
         var dismissed = false
         let alert = Alert(title: "Simple", dismiss: { dismissed = true })
@@ -378,14 +378,14 @@ import yoga
         let lines = output.components(separatedBy: "\n").filter { !$0.isEmpty }
         
         // Then
-        #expect(output.contains("Simple"), "Should show title")
-        #expect(output.contains("[ OK ]"), "Should show OK button")
+        XCTAssertTrue(output.contains("Simple"), "Should show title")
+        XCTAssertTrue(output.contains("[ OK ]"), "Should show OK button")
         
         // Should be more compact without message
-        #expect(lines.count <= 7, "Should have compact layout without message")
+        XCTAssertLessThanOrEqual(lines.count, 7, "Should have compact layout without message")
     }
     
-    @Test func alertSpecialCharacters() {
+    func testAlertSpecialCharacters() {
         // Given - Alert with special characters and emoji
         var dismissed = false
         let alert = Alert(
@@ -398,9 +398,9 @@ import yoga
         let output = renderAlert(alert)
         
         // Then
-        #expect(output.contains("⚠️ Warning!"), "Should show emoji in title")
-        #expect(output.contains("Special chars: <>&\"'"), "Should show special characters")
-        #expect(output.contains("🎉"), "Should show emoji in message")
-        #expect(output.contains("[ OK ]"), "Should show OK button")
+        XCTAssertTrue(output.contains("⚠️ Warning!"), "Should show emoji in title")
+        XCTAssertTrue(output.contains("Special chars: <>&\"'"), "Should show special characters")
+        XCTAssertTrue(output.contains("🎉"), "Should show emoji in message")
+        XCTAssertTrue(output.contains("[ OK ]"), "Should show OK button")
     }
 }

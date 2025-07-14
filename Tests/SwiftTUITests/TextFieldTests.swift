@@ -5,14 +5,14 @@
 //  Tests for TextField view behavior
 //
 
-import Testing
+import XCTest
 @testable import SwiftTUI
 
-@Suite struct TextFieldTests {
+final class TextFieldTests: SwiftTUITestCase {
     
     // MARK: - Basic TextField Tests
     
-    @Test func textFieldWithEmptyText() {
+    func testTextFieldWithEmptyText() {
         // Given
         var text = ""
         let binding = Binding(
@@ -27,13 +27,13 @@ import Testing
         
         // Then
         // Should show placeholder "Enter text" in a bordered box
-        #expect(output.contains("Enter text"), "Placeholder should be visible when text is empty")
-        #expect(output.contains("┌"), "Should have top border")
-        #expect(output.contains("└"), "Should have bottom border")
-        #expect(output.contains("│"), "Should have side borders")
+        XCTAssertTrue(output.contains("Enter text"), "Placeholder should be visible when text is empty")
+        XCTAssertTrue(output.contains("┌"), "Should have top border")
+        XCTAssertTrue(output.contains("└"), "Should have bottom border")
+        XCTAssertTrue(output.contains("│"), "Should have side borders")
     }
     
-    @Test func textFieldWithInitialText() {
+    func testTextFieldWithInitialText() {
         // Given
         var text = "Hello"
         let binding = Binding(
@@ -47,13 +47,13 @@ import Testing
         
         // Then
         // Should show the actual text, not placeholder
-        #expect(output.contains("Hello"), "Initial text should be displayed")
-        #expect(!output.contains("Placeholder"), "Placeholder should not be visible when text exists")
+        XCTAssertTrue(output.contains("Hello"), "Initial text should be displayed")
+        XCTAssertFalse(output.contains("Placeholder"), "Placeholder should not be visible when text exists")
     }
     
     // MARK: - @Binding Tests
     
-    @Test func textFieldBindingReflectsChanges() {
+    func testTextFieldBindingReflectsChanges() {
         // Given
         struct TestContainer: View {
             @State var text = "Initial"
@@ -72,11 +72,11 @@ import Testing
         let output = TestRenderer.render(container, width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Initial"), "TextField should show initial value")
-        #expect(output.contains("Value: Initial"), "Text should reflect the bound value")
+        XCTAssertTrue(output.contains("Initial"), "TextField should show initial value")
+        XCTAssertTrue(output.contains("Value: Initial"), "Text should reflect the bound value")
     }
     
-    @Test func textFieldBindingWithParentChildRelationship() {
+    func testTextFieldBindingWithParentChildRelationship() {
         // Given
         struct ChildView: View {
             @Binding var text: String
@@ -103,13 +103,13 @@ import Testing
         let output = TestRenderer.render(parent, width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Parent: Shared"), "Parent should display shared text")
-        #expect(output.contains("Shared"), "TextField should display shared text")
+        XCTAssertTrue(output.contains("Parent: Shared"), "Parent should display shared text")
+        XCTAssertTrue(output.contains("Shared"), "TextField should display shared text")
     }
     
     // MARK: - Placeholder Tests
     
-    @Test func placeholderVisibility() {
+    func testPlaceholderVisibility() {
         // Given
         var emptyText = ""
         var filledText = "Content"
@@ -131,12 +131,12 @@ import Testing
         let filledOutput = TestRenderer.render(filledField, width: 25, height: 5)
         
         // Then
-        #expect(emptyOutput.contains("Empty placeholder"), "Placeholder should show when text is empty")
-        #expect(!filledOutput.contains("Filled placeholder"), "Placeholder should not show when text exists")
-        #expect(filledOutput.contains("Content"), "Actual text should show instead of placeholder")
+        XCTAssertTrue(emptyOutput.contains("Empty placeholder"), "Placeholder should show when text is empty")
+        XCTAssertFalse(filledOutput.contains("Filled placeholder"), "Placeholder should not show when text exists")
+        XCTAssertTrue(filledOutput.contains("Content"), "Actual text should show instead of placeholder")
     }
     
-    @Test func longPlaceholder() {
+    func testLongPlaceholder() {
         // Given
         var text = ""
         let binding = Binding(
@@ -149,12 +149,12 @@ import Testing
         let output = TestRenderer.render(textField, width: 50, height: 5)
         
         // Then
-        #expect(output.contains("This is a very long placeholder text"), "Long placeholder should be displayed")
+        XCTAssertTrue(output.contains("This is a very long placeholder text"), "Long placeholder should be displayed")
     }
     
     // MARK: - Border and Style Tests
     
-    @Test func textFieldBorderStructure() {
+    func testTextFieldBorderStructure() {
         // Given
         var text = "Test"
         let binding = Binding(
@@ -185,14 +185,14 @@ import Testing
             }
         }
         
-        #expect(topBorderFound, "Should have top border with corners")
-        #expect(bottomBorderFound, "Should have bottom border with corners")
-        #expect(sideBordersCount >= 1, "Should have side borders")
+        XCTAssertTrue(topBorderFound, "Should have top border with corners")
+        XCTAssertTrue(bottomBorderFound, "Should have bottom border with corners")
+        XCTAssertGreaterThanOrEqual(sideBordersCount, 1, "Should have side borders")
     }
     
     // MARK: - Size and Layout Tests
     
-    @Test func textFieldSizeAdaptsToContent() {
+    func testTextFieldSizeAdaptsToContent() {
         // Given
         var shortText = "Hi"
         var longText = "This is a longer text"
@@ -215,11 +215,11 @@ import Testing
         
         // Then
         // Just verify both render correctly
-        #expect(shortOutput.contains("Hi"), "Short text should be displayed")
-        #expect(longOutput.contains("This is a longer text"), "Long text should be displayed")
+        XCTAssertTrue(shortOutput.contains("Hi"), "Short text should be displayed")
+        XCTAssertTrue(longOutput.contains("This is a longer text"), "Long text should be displayed")
     }
     
-    @Test func textFieldInVStack() {
+    func testTextFieldInVStack() {
         // Given
         var text1 = "First"
         var text2 = "Second"
@@ -242,8 +242,8 @@ import Testing
         let output = TestRenderer.render(stack, width: 30, height: 10)
         
         // Then
-        #expect(output.contains("First"), "First TextField should be visible")
-        #expect(output.contains("Second"), "Second TextField should be visible")
+        XCTAssertTrue(output.contains("First"), "First TextField should be visible")
+        XCTAssertTrue(output.contains("Second"), "Second TextField should be visible")
         
         // Verify they are stacked vertically
         let lines = output.components(separatedBy: "\n")
@@ -260,13 +260,13 @@ import Testing
         }
         
         if firstIndex != -1 && secondIndex != -1 {
-            #expect(secondIndex > firstIndex, "Second field should be below first field")
+            XCTAssertGreaterThan(secondIndex, firstIndex, "Second field should be below first field")
         }
     }
     
     // MARK: - Edge Cases
     
-    @Test func emptyPlaceholder() {
+    func testEmptyPlaceholder() {
         // Given
         var text = "Content"
         let binding = Binding(
@@ -279,10 +279,10 @@ import Testing
         let output = TestRenderer.render(textField, width: 20, height: 5)
         
         // Then
-        #expect(output.contains("Content"), "Should display content even with empty placeholder")
+        XCTAssertTrue(output.contains("Content"), "Should display content even with empty placeholder")
     }
     
-    @Test func textFieldWithSpecialCharacters() {
+    func testTextFieldWithSpecialCharacters() {
         // Given
         var text = "Hello @#$% World!"
         let binding = Binding(
@@ -295,11 +295,11 @@ import Testing
         let output = TestRenderer.render(textField, width: 30, height: 5)
         
         // Then
-        #expect(output.contains("Hello"), "Should display text with special characters")
-        #expect(output.contains("World!"), "Should display text with special characters")
+        XCTAssertTrue(output.contains("Hello"), "Should display text with special characters")
+        XCTAssertTrue(output.contains("World!"), "Should display text with special characters")
     }
     
-    @Test func multipleTextFieldsWithDifferentBindings() {
+    func testMultipleTextFieldsWithDifferentBindings() {
         // Given
         var name = "John"
         var email = "john@example.com"
@@ -322,13 +322,13 @@ import Testing
         let output = TestRenderer.render(form, width: 40, height: 10)
         
         // Then
-        #expect(output.contains("John"), "Name field should show its value")
-        #expect(output.contains("john@example.com"), "Email field should show its value")
+        XCTAssertTrue(output.contains("John"), "Name field should show its value")
+        XCTAssertTrue(output.contains("john@example.com"), "Email field should show its value")
     }
     
     // MARK: - Frame Modifier Tests
     
-    @Test func textFieldWithFrameModifier() {
+    func testTextFieldWithFrameModifier() {
         // Given
         var text = "Framed"
         let binding = Binding(
@@ -343,6 +343,6 @@ import Testing
         
         // Then
         // TextField should still render (frame implementation may vary)
-        #expect(output.contains("Framed"), "TextField with frame should still display text")
+        XCTAssertTrue(output.contains("Framed"), "TextField with frame should still display text")
     }
 }

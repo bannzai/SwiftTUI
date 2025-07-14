@@ -5,14 +5,14 @@
 //  Tests for @State property wrapper behavior
 //
 
-import Testing
+import XCTest
 @testable import SwiftTUI
 
-@Suite struct StateTests {
+final class StateTests: SwiftTUITestCase {
     
     // MARK: - Initial Value Tests
     
-    @Test func stateWithStringInitialValue() {
+    func testStateWithStringInitialValue() {
         // Given
         struct TestView: View {
             @State private var text = "Hello"
@@ -26,10 +26,10 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 5)
         
         // Then
-        #expect(output.contains("Value: Hello"), "Initial string value should be displayed")
+        XCTAssertTrue(output.contains("Value: Hello"), "Initial string value should be displayed")
     }
     
-    @Test func stateWithIntegerInitialValue() {
+    func testStateWithIntegerInitialValue() {
         // Given
         struct TestView: View {
             @State private var count = 42
@@ -43,10 +43,10 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 5)
         
         // Then
-        #expect(output.contains("Count: 42"), "Initial integer value should be displayed")
+        XCTAssertTrue(output.contains("Count: 42"), "Initial integer value should be displayed")
     }
     
-    @Test func stateWithBoolInitialValue() {
+    func testStateWithBoolInitialValue() {
         // Given
         struct TestView: View {
             @State private var isEnabled = true
@@ -60,10 +60,10 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 5)
         
         // Then
-        #expect(output.contains("Enabled: Yes"), "Initial boolean value should be displayed")
+        XCTAssertTrue(output.contains("Enabled: Yes"), "Initial boolean value should be displayed")
     }
     
-    @Test func stateWithCustomTypeInitialValue() {
+    func testStateWithCustomTypeInitialValue() {
         // Given
         struct User {
             let name: String
@@ -85,13 +85,13 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Name: John"), "Custom type name should be displayed")
-        #expect(output.contains("Age: 30"), "Custom type age should be displayed")
+        XCTAssertTrue(output.contains("Name: John"), "Custom type name should be displayed")
+        XCTAssertTrue(output.contains("Age: 30"), "Custom type age should be displayed")
     }
     
     // MARK: - Multiple @State Properties Tests
     
-    @Test func multipleStateProperties() {
+    func testMultipleStateProperties() {
         // Given
         struct TestView: View {
             @State private var firstName = "Jane"
@@ -111,9 +111,9 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("First: Jane"), "First state property should be displayed")
-        #expect(output.contains("Last: Doe"), "Last state property should be displayed")
-        #expect(output.contains("Age: 25"), "Age state property should be displayed")
+        XCTAssertTrue(output.contains("First: Jane"), "First state property should be displayed")
+        XCTAssertTrue(output.contains("Last: Doe"), "Last state property should be displayed")
+        XCTAssertTrue(output.contains("Age: 25"), "Age state property should be displayed")
         
         // Verify ordering
         let lines = output.components(separatedBy: "\n")
@@ -134,12 +134,12 @@ import Testing
         }
         
         if firstIndex != -1 && lastIndex != -1 && ageIndex != -1 {
-            #expect(firstIndex < lastIndex, "First should appear before Last")
-            #expect(lastIndex < ageIndex, "Last should appear before Age")
+            XCTAssertLessThan(firstIndex, lastIndex, "First should appear before Last")
+            XCTAssertLessThan(lastIndex, ageIndex, "Last should appear before Age")
         }
     }
     
-    @Test func mixedTypeStateProperties() {
+    func testMixedTypeStateProperties() {
         // Given
         struct TestView: View {
             @State private var title = "Dashboard"
@@ -161,15 +161,15 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Dashboard"), "String state should be displayed")
-        #expect(output.contains("Items: 0"), "Int state should be displayed")
-        #expect(output.contains("Active: false"), "Bool state should be displayed")
-        #expect(output.contains("Progress: 50%"), "Double state should be displayed")
+        XCTAssertTrue(output.contains("Dashboard"), "String state should be displayed")
+        XCTAssertTrue(output.contains("Items: 0"), "Int state should be displayed")
+        XCTAssertTrue(output.contains("Active: false"), "Bool state should be displayed")
+        XCTAssertTrue(output.contains("Progress: 50%"), "Double state should be displayed")
     }
     
     // MARK: - Nested View Independence Tests
     
-    @Test func nestedViewStateIndependence() {
+    func testNestedViewStateIndependence() {
         // Given
         struct ChildView: View {
             @State private var childValue = "Child"
@@ -194,11 +194,11 @@ import Testing
         let output = TestRenderer.render(ParentView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Parent: Parent"), "Parent state should be displayed")
-        #expect(output.contains("Child: Child"), "Child state should be displayed")
+        XCTAssertTrue(output.contains("Parent: Parent"), "Parent state should be displayed")
+        XCTAssertTrue(output.contains("Child: Child"), "Child state should be displayed")
     }
     
-    @Test func multipleInstancesOfSameView() {
+    func testMultipleInstancesOfSameView() {
         // Given
         struct CounterView: View {
             @State private var count = 0
@@ -224,14 +224,14 @@ import Testing
         
         // Then
         // Each instance should have its own independent state
-        #expect(output.contains("First: 0"), "First counter should show 0")
-        #expect(output.contains("Second: 0"), "Second counter should show 0")
-        #expect(output.contains("Third: 0"), "Third counter should show 0")
+        XCTAssertTrue(output.contains("First: 0"), "First counter should show 0")
+        XCTAssertTrue(output.contains("Second: 0"), "Second counter should show 0")
+        XCTAssertTrue(output.contains("Third: 0"), "Third counter should show 0")
     }
     
     // MARK: - Binding Tests
     
-    @Test func stateProjectedValueBinding() {
+    func testStateProjectedValueBinding() {
         // Given
         struct ChildView: View {
             @Binding var text: String
@@ -256,13 +256,13 @@ import Testing
         let output = TestRenderer.render(ParentView(), width: 40, height: 10)
         
         // Then
-        #expect(output.contains("State: Hello Binding"), "State value should be displayed")
-        #expect(output.contains("Bound: Hello Binding"), "Bound value should match state")
+        XCTAssertTrue(output.contains("State: Hello Binding"), "State value should be displayed")
+        XCTAssertTrue(output.contains("Bound: Hello Binding"), "Bound value should match state")
     }
     
     // MARK: - Edge Cases
     
-    @Test func stateWithEmptyString() {
+    func testStateWithEmptyString() {
         // Given
         struct TestView: View {
             @State private var empty = ""
@@ -279,11 +279,11 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Empty: ''"), "Empty string should be displayed")
-        #expect(output.contains("Length: 0"), "Empty string length should be 0")
+        XCTAssertTrue(output.contains("Empty: ''"), "Empty string should be displayed")
+        XCTAssertTrue(output.contains("Length: 0"), "Empty string length should be 0")
     }
     
-    @Test func stateWithOptionalValue() {
+    func testStateWithOptionalValue() {
         // Given
         struct TestView: View {
             @State private var optionalText: String? = nil
@@ -301,11 +301,11 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Text: nil"), "Nil optional should show 'nil'")
-        #expect(output.contains("Number: 42"), "Non-nil optional should show value")
+        XCTAssertTrue(output.contains("Text: nil"), "Nil optional should show 'nil'")
+        XCTAssertTrue(output.contains("Number: 42"), "Non-nil optional should show value")
     }
     
-    @Test func stateWithArray() {
+    func testStateWithArray() {
         // Given
         struct TestView: View {
             @State private var items = ["Apple", "Banana", "Cherry"]
@@ -324,9 +324,9 @@ import Testing
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        #expect(output.contains("Count: 3"), "Array count should be displayed")
-        #expect(output.contains("- Apple"), "First item should be displayed")
-        #expect(output.contains("- Banana"), "Second item should be displayed")
-        #expect(output.contains("- Cherry"), "Third item should be displayed")
+        XCTAssertTrue(output.contains("Count: 3"), "Array count should be displayed")
+        XCTAssertTrue(output.contains("- Apple"), "First item should be displayed")
+        XCTAssertTrue(output.contains("- Banana"), "Second item should be displayed")
+        XCTAssertTrue(output.contains("- Cherry"), "Third item should be displayed")
     }
 }
