@@ -44,9 +44,9 @@ class TestRenderer {
     }
 }
 
-/// Swift Testingヘルパー関数とユーティリティ
+// MARK: - Swift Testing Support
 
-/// レンダリング結果から空白行を除去して比較しやすくする
+/// レンダリング結果から空白行を除去して比較しやすくする（Swift Testing用）
 func normalizeOutput(_ output: String) -> String {
     let lines = output.components(separatedBy: "\n")
     // 空白行を除去し、各行の末尾の空白を削除
@@ -56,7 +56,7 @@ func normalizeOutput(_ output: String) -> String {
     return nonEmptyLines.joined(separator: "\n")
 }
 
-/// 期待値と実際の出力を比較
+/// 期待値と実際の出力を比較（Swift Testing用）
 func expectRenderedOutput<V: View>(_ view: V, equals expected: String, 
                                    sourceLocation: SourceLocation = #_sourceLocation) {
     let output = TestRenderer.render(view)
