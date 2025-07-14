@@ -5,14 +5,14 @@
 //  Tests for @Binding property wrapper behavior
 //
 
-import XCTest
+import Testing
 @testable import SwiftTUI
 
-final class BindingTests: SwiftTUITestCase {
+@Suite struct BindingTests {
     
     // MARK: - Parent-Child Sync Tests
     
-    func testBindingWithTextField() {
+    @Test func bindingWithTextField() {
         // Given
         struct ParentView: View {
             @State private var text = "Initial"
@@ -29,12 +29,12 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(ParentView(), width: 40, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Parent: Initial"), "Parent should show initial state value")
-        XCTAssertTrue(output.contains("Initial"), "TextField should show bound value")
+        #expect(output.contains("Parent: Initial"), "Parent should show initial state value")
+        #expect(output.contains("Initial"), "TextField should show bound value")
         // Note: TextFieldのボーダー内にもInitialが表示される
     }
     
-    func testBindingWithToggle() {
+    @Test func bindingWithToggle() {
         // Given
         struct ParentView: View {
             @State private var isOn = true
@@ -51,12 +51,12 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(ParentView(), width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("State: ON"), "Parent should show ON state")
-        XCTAssertTrue(output.contains("Switch"), "Toggle label should be visible")
-        XCTAssertTrue(output.contains("[✓]"), "Toggle should show checked state")
+        #expect(output.contains("State: ON"), "Parent should show ON state")
+        #expect(output.contains("Switch"), "Toggle label should be visible")
+        #expect(output.contains("[✓]"), "Toggle should show checked state")
     }
     
-    func testMultipleChildrenSharingBinding() {
+    @Test func multipleChildrenSharingBinding() {
         // Given
         struct ChildView: View {
             @Binding var value: String
@@ -83,12 +83,12 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(ParentView(), width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Child1: Shared"), "First child should show shared value")
-        XCTAssertTrue(output.contains("Child2: Shared"), "Second child should show shared value")
-        XCTAssertTrue(output.contains("Child3: Shared"), "Third child should show shared value")
+        #expect(output.contains("Child1: Shared"), "First child should show shared value")
+        #expect(output.contains("Child2: Shared"), "Second child should show shared value")
+        #expect(output.contains("Child3: Shared"), "Third child should show shared value")
     }
     
-    func testNestedBindingPropagation() {
+    @Test func nestedBindingPropagation() {
         // Given
         struct GrandchildView: View {
             @Binding var text: String
@@ -124,14 +124,14 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(ParentView(), width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Parent: Nested"), "Parent should show value")
-        XCTAssertTrue(output.contains("Child: Nested"), "Child should show bound value")
-        XCTAssertTrue(output.contains("Grandchild: Nested"), "Grandchild should show bound value")
+        #expect(output.contains("Parent: Nested"), "Parent should show value")
+        #expect(output.contains("Child: Nested"), "Child should show bound value")
+        #expect(output.contains("Grandchild: Nested"), "Grandchild should show bound value")
     }
     
     // MARK: - Binding.constant Tests
     
-    func testBindingConstant() {
+    @Test func bindingConstant() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -147,9 +147,9 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 40, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Fixed"), "Constant binding should show fixed value")
-        XCTAssertTrue(output.contains("Always On"), "First toggle label should be visible")
-        XCTAssertTrue(output.contains("Always Off"), "Second toggle label should be visible")
+        #expect(output.contains("Fixed"), "Constant binding should show fixed value")
+        #expect(output.contains("Always On"), "First toggle label should be visible")
+        #expect(output.contains("Always Off"), "Second toggle label should be visible")
         // Toggle states should be fixed
         let lines = output.components(separatedBy: "\n")
         var foundOnToggle = false
@@ -164,11 +164,11 @@ final class BindingTests: SwiftTUITestCase {
             }
         }
         
-        XCTAssertTrue(foundOnToggle, "Always On toggle should be checked")
-        XCTAssertTrue(foundOffToggle, "Always Off toggle should be unchecked")
+        #expect(foundOnToggle, "Always On toggle should be checked")
+        #expect(foundOffToggle, "Always Off toggle should be unchecked")
     }
     
-    func testBindingConstantWithDifferentTypes() {
+    @Test func bindingConstantWithDifferentTypes() {
         // Given
         struct TestView: View {
             var body: some View {
@@ -185,15 +185,15 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("String: Hello"), "Constant string binding should work")
-        XCTAssertTrue(output.contains("Int: 42"), "Constant int binding should work")
-        XCTAssertTrue(output.contains("Bool: Yes"), "Constant bool binding should work")
-        XCTAssertTrue(output.contains("Double: 3.14"), "Constant double binding should work")
+        #expect(output.contains("String: Hello"), "Constant string binding should work")
+        #expect(output.contains("Int: 42"), "Constant int binding should work")
+        #expect(output.contains("Bool: Yes"), "Constant bool binding should work")
+        #expect(output.contains("Double: 3.14"), "Constant double binding should work")
     }
     
     // MARK: - Custom Binding Tests
     
-    func testCustomBindingWithTransformation() {
+    @Test func customBindingWithTransformation() {
         // Given
         struct ParentView: View {
             @State private var celsius: Double = 25.0
@@ -217,11 +217,11 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(ParentView(), width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Celsius: 25°C"), "Celsius value should be displayed")
-        XCTAssertTrue(output.contains("Fahrenheit: 77°F"), "Fahrenheit conversion should be correct")
+        #expect(output.contains("Celsius: 25°C"), "Celsius value should be displayed")
+        #expect(output.contains("Fahrenheit: 77°F"), "Fahrenheit conversion should be correct")
     }
     
-    func testCustomBindingWithValidation() {
+    @Test func customBindingWithValidation() {
         // Given
         struct ParentView: View {
             @State private var internalValue = 5
@@ -245,12 +245,12 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(ParentView(), width: 30, height: 5)
         
         // Then
-        XCTAssertTrue(output.contains("Clamped: 5"), "Clamped value should be displayed")
+        #expect(output.contains("Clamped: 5"), "Clamped value should be displayed")
     }
     
     // MARK: - Binding with Different View Types
     
-    func testBindingWithSlider() {
+    @Test func bindingWithSlider() {
         // Given
         struct ParentView: View {
             @State private var value = 0.5
@@ -267,11 +267,11 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(ParentView(), width: 40, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Value: 50%"), "Value should show 50%")
+        #expect(output.contains("Value: 50%"), "Value should show 50%")
         // Note: Sliderは値のみを表示するシンプルなUI
     }
     
-    func testBindingWithPicker() {
+    @Test func bindingWithPicker() {
         // Given
         struct ParentView: View {
             @State private var selection = "Red"
@@ -289,13 +289,13 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(ParentView(), width: 40, height: 15)
         
         // Then
-        XCTAssertTrue(output.contains("Selected: Red"), "Selected value should be displayed")
+        #expect(output.contains("Selected: Red"), "Selected value should be displayed")
         // Note: Pickerは現在選択されている値のみを表示するシンプルなUI
     }
     
     // MARK: - Edge Cases
     
-    func testBindingWithOptional() {
+    @Test func bindingWithOptional() {
         // Given
         struct ParentView: View {
             @State private var optionalText: String? = "Hello"
@@ -319,11 +319,11 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(ParentView(), width: 40, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Optional: Hello"), "Optional value should be displayed")
-        XCTAssertTrue(output.contains("Hello"), "TextField should show non-nil value")
+        #expect(output.contains("Optional: Hello"), "Optional value should be displayed")
+        #expect(output.contains("Hello"), "TextField should show non-nil value")
     }
     
-    func testBindingProjectedValue() {
+    @Test func bindingProjectedValue() {
         // Given
         struct TestView: View {
             @State private var value = "Test"
@@ -344,7 +344,7 @@ final class BindingTests: SwiftTUITestCase {
         let output = TestRenderer.render(TestView(), width: 30, height: 10)
         
         // Then
-        XCTAssertTrue(output.contains("Value1: Test"), "First binding should work")
-        XCTAssertTrue(output.contains("Value2: Test"), "Projected value should return same binding")
+        #expect(output.contains("Value1: Test"), "First binding should work")
+        #expect(output.contains("Value2: Test"), "Projected value should return same binding")
     }
 }
