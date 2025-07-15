@@ -53,6 +53,34 @@ SwiftTUIの仕組みを理解するための3段階のドキュメントが用�
 
 これらのドキュメントは、TUIやシェル、プロセスの知識を段階的に学びながら、SwiftTUIがどのようにSwiftUIのような宣言的インタフェースをターミナル上で実現しているかを理解できるよう構成されています。
 
+#### ソースコードのコメントを読む
+
+SwiftTUIのソースコードには、TUI初心者向けの詳細なコメントが追加されています。以下の順序で読むことをお勧めします：
+
+**Phase 1: 基本的なコンポーネント（完了済み）**
+1. `Sources/SwiftTUI/Views/Text.swift` - 基本的なテキスト表示
+2. `Sources/SwiftTUI/Views/VStack.swift` / `HStack.swift` - レイアウトコンテナ
+3. `Sources/SwiftTUI/Views/Spacer.swift` - 余白の管理
+4. `Sources/SwiftTUI/Views/TextField.swift` - テキスト入力
+5. `Sources/SwiftTUI/Views/Button.swift` - インタラクティブボタン
+
+**Phase 2: レンダリングシステム（詳細コメント追加済み）**
+1. `Sources/SwiftTUI/Rendering/ViewRenderer.swift` - ViewからLayoutViewへの変換
+2. `Sources/SwiftTUI/Layout/LayoutView.swift` - レイアウトプロトコル
+3. `Sources/SwiftTUI/Layout/CellLayoutView.swift` - セルベース描画
+4. `Sources/SwiftTUI/Runtime/Cell.swift` - セル管理の核心
+
+**Phase 3: インタラクティブ機能（詳細コメント追加済み）**
+1. `Sources/SwiftTUI/Input/InputLoop.swift` - キーボード入力処理
+2. `Sources/SwiftTUI/Input/Keyboard.swift` - キーイベント定義
+3. `Sources/SwiftTUI/Runtime/FocusManager.swift` - フォーカス管理
+
+各ファイルには以下の情報が含まれています：
+- TUI初心者向けの概念説明
+- 技術用語の解説（raw mode、ESCシーケンスなど）
+- 処理の流れをステップバイステップで説明
+- 実装の特徴や注意点
+
 #### サンプルプログラム
 
 ```bash

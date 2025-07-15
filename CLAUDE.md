@@ -353,6 +353,21 @@ SwiftTUI.run(App())
 - ./tmp/に動作確認ようのスクリプトファイルを作りましょう
 - ですが、まずは直接書くようにしてください。そうでないとコンソールにスクリプトの内容が出力されず、私がスクリプトの内容を確認できないからです
 
+## コメント追加プロジェクトの進捗
+
+### 完了したPhase
+- **Phase 1**: 基本コンポーネント（Text, VStack, HStack, Spacer, TextField, Button）- 完了
+- **Phase 2**: レンダリングシステム（ViewRenderer, LayoutView, CellLayoutView, Cell）- 完了
+- **Phase 3**: インタラクティブ機能（InputLoop, Keyboard, FocusManager）- 完了
+
+### 追加されたコメントの特徴
+- TUI初心者向けの詳細な解説（日本語）
+- 技術用語の説明（raw mode、ESCシーケンス、Yogaレイアウトなど）
+- 処理の流れをステップバイステップで説明
+- 実装の特徴や注意点を明記
+
+これらのコメントにより、TUI/shell/プロセス初心者でもSwiftTUIの実装を理解しやすくなりました
+
 ## ユニットテスト TODO
 
 ### 実装済みテスト（231テスト）
