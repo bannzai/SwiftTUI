@@ -33,7 +33,8 @@ public final class YogaNode {
   public func flexDirection(_ d: YGFlexDirection) { YGNodeStyleSetFlexDirection(raw, d) }
   public func padding(all v: Float)               { YGNodeStyleSetPadding(raw, YGEdge.all, v) }
   public func setSize(width w: Float, height h: Float) {
-    YGNodeStyleSetWidth(raw,  w); YGNodeStyleSetHeight(raw, h)
+    YGNodeStyleSetWidth(raw,  w)
+    YGNodeStyleSetHeight(raw, h)
   }
   public func setMinHeight(_ h: Float)            { YGNodeStyleSetMinHeight(raw, h) }
 
@@ -41,8 +42,8 @@ public final class YogaNode {
   public func calculate(width: Float = .nan, height: Float = .nan) {
     YGNodeCalculateLayout(raw, width, height, YGDirection.LTR)
   }
-  public var frame:(x:Int,y:Int,w:Int,h:Int) {
-    func s(_ v: Float)->Int{ v.isFinite ? Int(v) : 0 }
+  public var frame: (x: Int, y: Int, w: Int, h: Int) {
+    func s(_ v: Float) -> Int { v.isFinite ? Int(v) : 0 }
     return (s(YGNodeLayoutGetLeft(raw)), s(YGNodeLayoutGetTop(raw)),
             s(YGNodeLayoutGetWidth(raw)), s(YGNodeLayoutGetHeight(raw)))
   }
