@@ -1,23 +1,78 @@
+/// Button：TUIのインタラクティブボタンコンポーネント
+///
+/// キーボード操作でアクションを実行できるボタンです。
+/// SwiftUIと同様のインターフェイスを提供します。
+///
+/// 使用例：
+/// ```swift
+/// Button("OK") {
+///     print("ボタンが押されました")
+/// }
+/// ```
+///
+/// TUI初心者向け解説：
+/// - GUIと違いマウスクリックではなくキーボードで操作
+/// - Tabキーでフォーカス移動、Enter/Spaceで決定
+/// - フォーカス状態は色で表現（緑色の枠）
+///
+/// 実装の特徴：
+/// - フォーカス管理はFocusManagerと連携
+/// - ButtonContainerを介してLayoutViewをキャッシュ
+/// - 再レンダリング時も状態を保持
+
 import Foundation
 import yoga
 
 /// SwiftUIライクなButton
 public struct Button<Label: View>: View {
+    /// ボタンが押されたときに実行されるアクション
     private let action: () -> Void
+    
+    /// ボタンに表示されるラベル（Textなど）
     private let label: Label
+    
+    /// ボタンを一意に識別するID
+    /// FocusManagerでのフォーカス管理に使用
     private let id = UUID().uuidString
     
+    /// ボタンのイニシャライザ
+    ///
+    /// - Parameters:
+    ///   - action: ボタンが押されたときのアクション
+    ///   - label: ボタンのラベルを生成するクロージャ
+    ///
+    /// @ViewBuilderの説明：
+    /// - 複数のViewを返せる特殊なクロージャ
+    /// - if文やForEachも使用可能
     public init(action: @escaping () -> Void, @ViewBuilder label: () -> Label) {
         self.action = action
         self.label = label()
     }
     
+    /// Buttonのbodyプロパティ
+    ///
+    /// ButtonContainerを返すことで、
+    /// フォーカス管理とLayoutViewのキャッシュを実現
     public var body: some View {
         ButtonContainer(action: action, label: label, id: id)
     }
 }
 
 // Stringラベル用の便利初期化（修正版）
+/// Buttonの便利なイニシャライザ（文字列ラベル用）
+///
+/// SwiftUIと同様の簡潔な書き方を提供します。
+///
+/// 使用例：
+/// ```swift
+/// Button("OK") {
+///     print("OKボタンが押されました")
+/// }
+/// ```
+///
+/// where節の説明：
+/// - Label == Text のときのみこのイニシャライザが使用可能
+/// - 型安全にコンパイル時に判定される
 public extension Button where Label == Text {
     init(_ title: String, action: @escaping () -> Void) {
         self.action = action
@@ -26,10 +81,25 @@ public extension Button where Label == Text {
 }
 
 /// Buttonのコンテナビュー（フォーカス管理のため）
+///
+/// ButtonContainerの役割：
+/// 1. ButtonLayoutViewのインスタンスをキャッシュ
+/// 2. 再レンダリング時に同じインスタンスを再利用
+/// 3. フォーカス状態を保持
+///
+/// TUI初心者向け解説：
+/// - SwiftUIではViewは値型で毎回再作成される
+/// - フォーカス状態などは失われてしまう
+/// - ButtonContainerがLayoutViewをキャッシュして状態を保持
 internal struct ButtonContainer<Content: View>: View {
     let action: () -> Void
     let label: Content
+    
+    /// 計算されたID（Textラベルの場合はテキストを含む）
     private let computedId: String
+    
+    /// キャッシュされたLayoutView
+    /// ButtonLayoutManagerが管理し、再レンダリング時も保持
     private let cachedLayoutView: any LayoutView
     
     var id: String { computedId }
@@ -37,11 +107,19 @@ internal struct ButtonContainer<Content: View>: View {
     init(action: @escaping () -> Void, label: Content, id: String) {
         self.action = action
         self.label = label
+        
         // Textラベルの場合、そのテキストをIDとして使用
+        // これにより同じテキストのボタンは同じIDを持つ
+        //
+        // Mirrorの説明：
+        // - SwiftのリフレクションAPI
+        // - 型の内部構造を調査できる
+        // - Textのcontentプロパティを取得
         if let textLabel = label as? Text {
             let mirror = Mirror(reflecting: textLabel)
             if let textChild = mirror.children.first(where: { $0.label == "content" }),
                let text = textChild.value as? String {
+                // "Button-OK" のような形式でIDを生成
                 self.computedId = "Button-\(text)"
             } else {
                 self.computedId = id
@@ -51,6 +129,8 @@ internal struct ButtonContainer<Content: View>: View {
         }
         
         // LayoutViewをキャッシュ
+        // ButtonLayoutManagerはシングルトンで、
+        // すべてのButtonLayoutViewを管理
         self.cachedLayoutView = ButtonLayoutManager.shared.getOrCreate(
             id: computedId,
             action: action,
@@ -58,29 +138,72 @@ internal struct ButtonContainer<Content: View>: View {
         )
     }
     
+    /// ButtonContainerはプリミティブView
+    /// bodyプロパティを持たず、直接LayoutViewに変換される
     public typealias Body = Never
     
+    /// ViewRendererが使用する内部プロパティ
+    /// キャッシュされたLayoutViewを返す
     internal var _layoutView: any LayoutView {
         return cachedLayoutView
     }
 }
 
 /// ButtonのLayoutView実装
+///
+/// ボタンの実際の描画とイベント処理を担当するクラス。
+/// 複数のプロトコルを実装：
+/// - LayoutView: レイアウト計算
+/// - CellLayoutView: セルベース描画
+/// - FocusableView: フォーカス管理
+///
+/// TUI初心者向け解説：
+/// - classを使用（参照型）で状態を保持
+/// - フォーカス状態によって表示が変わる
+/// - キーボードイベントを処理してアクションを実行
 internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, FocusableView {
+    /// ボタンが押されたときのアクション
     let action: () -> Void
-    let label: Content
-    let id: String
-    private var isFocused = false
-    private var labelLayoutView: any LayoutView
-    private var yogaNode: YogaNode?  // Yogaノードを保持
     
+    /// ボタンのラベル（TextなどのView）
+    let label: Content
+    
+    /// ボタンの一意識別子
+    let id: String
+    
+    /// 現在のフォーカス状態
+    /// trueのとき緑色の枠で表示
+    private var isFocused = false
+    
+    /// ラベルのLayoutView
+    /// ラベルを描画可能な形式に変換
+    private var labelLayoutView: any LayoutView
+    
+    /// Yogaノードを保持
+    /// レイアウト計算結果をキャッシュ
+    private var yogaNode: YogaNode?
+    
+    /// ButtonLayoutViewのイニシャライザ
+    ///
+    /// ボタンの表示と動作に必要な情報を初期化します。
+    ///
+    /// - Parameters:
+    ///   - action: ボタン押下時のアクション
+    ///   - label: ボタンのラベル
+    ///   - id: ボタンの一意識別子
     init(action: @escaping () -> Void, label: Content, id: String) {
         self.action = action
         self.label = label
         self.id = id
+        // ラベルをLayoutViewに変換
+        // ViewRendererが適切な型に変換
         self.labelLayoutView = ViewRenderer.renderView(label)
     }
     
+    /// デイニシャライザ
+    ///
+    /// ボタンが破棄されるときにクリーンアップを実行。
+    /// FocusManagerから登録を解除してメモリリークを防ぐ。
     deinit {
         // FocusManagerから削除
         FocusManager.shared.unregister(id: id)
@@ -88,11 +211,24 @@ internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, Focu
     
     // MARK: - LayoutView
     
+    /// Yogaノードの作成
+    ///
+    /// ボタンのレイアウト情報を設定します。
+    /// YogaはFacebook製のレイアウトエンジンで、
+    /// Flexboxアルゴリズムでレイアウトを計算します。
+    ///
+    /// TUI初心者向け解説：
+    /// - Yogaノード = レイアウト情報を持つオブジェクト
+    /// - パディング、サイズ、位置などを管理
+    /// - 子要素（ラベル）を含むツリー構造
     func makeNode() -> YogaNode {
         // 毎回新しいノードを作成
         let node = YogaNode()
         
         // HStack内でサイズがゼロになる問題を回避するため、フレックス設定を追加
+        // フレックス設定の説明：
+        // - setFlexShrink(0): コンテナが小さいときでも縮まない
+        // - setFlexGrow(0): コンテナが大きいときでも拡大しない
         node.setFlexShrink(0)  // 縮小を禁止
         node.setFlexGrow(0)    // 拡大を禁止
         
@@ -100,16 +236,20 @@ internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, Focu
         self.labelLayoutView = ViewRenderer.renderView(label)
         
         // labelNodeを子として追加
+        // ボタンの中にラベルが表示される
         let labelNode = labelLayoutView.makeNode()
         node.insert(child: labelNode)
         
         // ボタンのパディングを設定
+        // パディング = 枠線とテキストの間の余白
+        // 左右: 3文字分、上下: 1文字分
         node.setPadding(3, .left)
         node.setPadding(3, .right)
         node.setPadding(1, .top)
         node.setPadding(1, .bottom)
         
         // ノードを保存
+        // paintCellsで描画時に参照する
         self.yogaNode = node
         
         // DEBUG
@@ -122,14 +262,21 @@ internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, Focu
         return node
     }
     
+    /// 文字列バッファへの描画（互換性のため）
+    ///
+    /// CellLayoutViewのデフォルト実装を使用して、
+    /// セルベース描画を文字列バッファに変換します。
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
         // paint時にFocusManagerに登録
+        // これによりTabキーでフォーカス可能になる
         FocusManager.shared.register(self, id: id)
         
         // CellLayoutViewのデフォルト実装を使用
+        // 一旦CellBufferに描画してからStringに変換
         var cellBuffer = CellBuffer(width: 200, height: 100)
         paintCells(origin: origin, into: &cellBuffer)
         
+        // CellBufferをANSIエスケープ付き文字列に変換
         let lines = cellBuffer.toANSILines()
         for (index, line) in lines.enumerated() {
             let row = origin.y + index
@@ -145,11 +292,23 @@ internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, Focu
     
     // MARK: - CellLayoutView
     
+    /// セルバッファへの描画（メインの描画メソッド）
+    ///
+    /// ボタンの枠線、背景、ラベルをセル単位で描画します。
+    /// フォーカス状態によって色が変わります。
+    ///
+    /// 描画の流れ：
+    /// 1. フォーカス状態に応じた色を決定
+    /// 2. 枠線を描画（┌─┐│ │└─┘）
+    /// 3. 背景色を塗る（フォーカス時）
+    /// 4. ラベルを中央に描画
     func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
         // paintCells時にFocusManagerに登録
         FocusManager.shared.register(self, id: id)
         
         // フォーカス時の色設定
+        // フォーカスあり: 緑色の枠、緑色の背景、黒文字
+        // フォーカスなし: 白色の枠、背景なし、白文字
         let borderColor: Color = isFocused ? .green : .white
         let fillColor: Color? = isFocused ? .green : nil
         let textColor: Color = isFocused ? .black : .white
@@ -253,17 +412,36 @@ internal class ButtonLayoutView<Content: View>: LayoutView, CellLayoutView, Focu
     
     // MARK: - FocusableView
     
+    /// フォーカス状態の設定
+    ///
+    /// FocusManagerから呼ばれ、フォーカス状態を更新します。
+    /// フォーカス状態が変わると再描画が必要です。
     func setFocused(_ focused: Bool) {
         isFocused = focused
     }
     
-    // 再レンダリング時の準備
+    /// 再レンダリング時の準備
+    ///
+    /// ButtonLayoutManagerから呼ばれ、
+    /// 次のレンダリングに備えて状態をクリアします。
     func prepareForRerender() {
         // ノードをクリアして、次のmakeNode()で新しく作成されるようにする
         // self.yogaNode = nil
         // TODO: これを有効にするとハングする問題がある
     }
     
+    /// キーボードイベントの処理
+    ///
+    /// フォーカスがあるときのみキーイベントを処理します。
+    /// EnterまたはSpaceキーでアクションを実行します。
+    ///
+    /// - Parameter event: キーボードイベント
+    /// - Returns: イベントを処理したかtrue
+    ///
+    /// TUI初心者向け解説：
+    /// - GUIではマウスクリックでボタンを押す
+    /// - TUIではEnterまたはSpaceキーでボタンを押す
+    /// - Tabキーで次のボタンに移動
     func handleKeyEvent(_ event: KeyboardEvent) -> Bool {
         guard isFocused else { return false }
         

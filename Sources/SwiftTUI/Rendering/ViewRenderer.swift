@@ -1,28 +1,64 @@
+/// ViewRenderer：SwiftUIライクなViewを描画可能な形式に変換するエンジン
+/// 
+/// このファイルは、SwiftTUIの変換エンジンの中心部分です。
+/// 宣言的に定義されたView階層を、実際にターミナルに描画可能な
+/// LayoutView階層に変換します。
+/// 
+/// 変換の流れ：
+/// 1. View（SwiftUI風の宣言的定義） 
+/// 2. → ViewRenderer（このファイル）
+/// 3. → LayoutView（Yogaレイアウト + 描画ロジック）
+/// 4. → CellBuffer（実際の画面表示）
+/// 
+/// 重要な概念：
+/// - プリミティブView：Text、Button等の基本的なView（Body == Never）
+/// - コンポジットView：VStack、HStack等の他のViewを含むView
+/// - ModifiedContent：モディファイアが適用されたView
+
 import Foundation
-import yoga
+import yoga  // Flexboxレイアウトエンジン
 
 /// ViewからLayoutViewへの変換を行う内部レンダラー
+/// 
+/// structを使う理由：
+/// - 状態を持たない純粋な変換処理
+/// - すべてのメソッドがstatic
 internal struct ViewRenderer {
     
-    /// ViewをLayoutViewに変換
+    /// ViewをLayoutViewに変換するメインエントリーポイント
+    /// 
+    /// このメソッドがView階層を再帰的に処理し、
+    /// 適切なLayoutViewに変換します。
+    /// 
+    /// - Parameter view: 変換対象のView
+    /// - Returns: 描画可能なLayoutView
     static func renderView<V: View>(_ view: V) -> any LayoutView {
-        // 型名を確認してModifiedContentを特別扱い
+        // 型名を取得（リフレクションによる型判定）
+        // Swiftではジェネリック型の情報が実行時に失われるため、
+        // 文字列での型名判定を使用
         let typeName = String(describing: type(of: view))
+        
+        // ModifiedContentの特別扱い
+        // ModifiedContent<Content, Modifier>は、モディファイアが
+        // 適用されたViewを表す特殊な型
         if typeName.hasPrefix("ModifiedContent<") {
             return renderModifiedContent(view)
         }
         
         // EnvironmentWrapperの特別扱い
+        // 環境値が設定されたViewのラッパー
         if typeName.hasPrefix("EnvironmentWrapper<") {
             return renderPrimitiveView(view)
         }
         
-        // プリミティブViewの場合（Body == Never）
+        // プリミティブViewの判定
+        // Body == Neverは、そのView自体が最終的なコンテンツであることを示す
         if V.Body.self == Never.self {
             return renderPrimitiveView(view)
         }
         
-        // bodyを持つViewの場合
+        // コンポジットViewの場合
+        // bodyプロパティを再帰的に処理
         return renderView(view.body)
     }
     
@@ -353,78 +389,132 @@ internal struct ViewRenderer {
     }
     
     /// ModifiedContentの変換
+    /// 
+    /// ModifiedContentはモディファイアが適用されたViewを表す内部型です。
+    /// 
+    /// 例：Text("Hello").padding() の結果は
+    /// ModifiedContent<Text, PaddingModifier> 型になります。
+    /// 
+    /// 処理の流れ：
+    /// 1. Mirrorでcontent（元のView）とmodifierを取得
+    /// 2. contentを先にLayoutViewに変換
+    /// 3. modifierの種類に応じて適切なラッパーLayoutViewを作成
+    /// 4. モディファイアが適用されたLayoutViewを返す
+    /// 
+    /// TUI初心者向け解説：
+    /// - モディファイアはデコレーターパターンの一種
+    /// - 元のViewをラップして新しい機能を追加
+    /// - .padding()や.border()などのメソッド呼び出しがモディファイアを生成
     private static func renderModifiedContent<V: View>(_ view: V) -> any LayoutView {
-        // ModifiedContentはbodyを持つViewなので、bodyを経由する必要がある
-        // しかし、ModifiedContentのbodyはmodifierのbodyを呼び出す
-        // ここでは直接処理する
-        
-        // Mirror経由でcontent と modifier にアクセス
+        // Mirrorを使ってModifiedContentの内部構造にアクセス
+        // ModifiedContentは以下の2つのプロパティを持つ：
+        // - content: モディファイアが適用される元のView
+        // - modifier: 適用されるモディファイア
         let mirror = Mirror(reflecting: view)
         
+        // contentとmodifierを取得
         guard let contentChild = mirror.children.first(where: { $0.label == "content" }),
               let modifierChild = mirror.children.first(where: { $0.label == "modifier" }) else {
+            // エラーケース：必要なプロパティが見つからない
             return EmptyView._LayoutView()
         }
         
-        // contentをLayoutViewに変換
+        // ステップ1: content（元のView）をLayoutViewに変換
+        // これがモディファイアの「中身」になる
         let contentView = contentChild.value as? any View ?? EmptyView()
         let contentLayoutView = renderView(contentView)
         
-        // modifierの型を判定して適切なLayoutViewを返す
+        // ステップ2: modifierの型を文字列で判定
+        // Swiftのジェネリック型情報は実行時に失われるため、
+        // 文字列での型名マッチングを使用
         let modifierTypeName = String(describing: type(of: modifierChild.value))
         
+        // 各モディファイアの処理
+        // modifierの種類に応じて、適切なラッパーLayoutViewを作成
+        
         if modifierTypeName.contains("PaddingModifier") {
-            // PaddingModifierの処理
+            // .padding() モディファイアの処理
+            // パディング（余白）をViewの周囲に追加
             let paddingMirror = Mirror(reflecting: modifierChild.value)
+            
+            // edges: パディングを適用する方向（.all, .top, .leadingなど）
             let edges = paddingMirror.children.first(where: { $0.label == "edges" })?.value as? Edge.Set ?? .all
+            
+            // length: パディングのサイズ（文字数）
             let length = paddingMirror.children.first(where: { $0.label == "length" })?.value as? Int ?? 1
             
-            // 全方向の場合は既存のPaddingLayoutViewを使用
+            // 適切なLayoutViewを選択
             if edges == .all {
+                // 全方向パディング（デフォルト）
                 return PaddingLayoutView(inset: Float(length), child: contentLayoutView)
             } else {
-                // 方向指定の場合はDirectionalPaddingLayoutViewを使用
+                // 方向指定パディング（.padding(.top, 2)など）
                 return DirectionalPaddingLayoutView(edges: edges, length: Float(length), child: contentLayoutView)
             }
         } else if modifierTypeName.contains("BorderModifier") {
-            // BorderModifierの処理
-            // セルベースレンダリングを使用
+            // .border() モディファイアの処理
+            // Viewの周囲に枠線を描画
+            // 
+            // TUIでのボーダーの実現：
+            // - ASCII文字で枠を描画（+, -, |）
+            // - Unicodeの罰線文字も使用可能（│, ─, ┌など）
             return CellBorderLayoutView(child: contentLayoutView)
         } else if modifierTypeName.contains("BackgroundModifier") {
-            // BackgroundModifierの処理
+            // .background() モディファイアの処理
+            // Viewの背景色を設定
             let bgMirror = Mirror(reflecting: modifierChild.value)
+            
+            // BackgroundModifierは内部にColor.ColorViewを持つ
             if let bgChild = bgMirror.children.first(where: { $0.label == "background" }),
                let colorView = bgChild.value as? Color.ColorView {
+                // Color.ColorViewから実際のColorを取得
                 let colorMirror = Mirror(reflecting: colorView)
                 if let colorChild = colorMirror.children.first(where: { $0.label == "color" }),
                    let color = colorChild.value as? Color {
-                    // セルベースレンダリングを使用
+                    // セルベースの背景色レンダリング
+                    // 各セルに背景色を設定してANSIエスケープで出力
                     return CellBackgroundLayoutView(color: color, child: contentLayoutView)
                 }
             }
         } else if modifierTypeName.contains("ForegroundColorModifier") {
-            // ForegroundColorModifierの処理
+            // .foregroundColor() モディファイアの処理
+            // テキストの文字色を設定
             let fgMirror = Mirror(reflecting: modifierChild.value)
             if let colorChild = fgMirror.children.first(where: { $0.label == "color" }),
                let color = colorChild.value as? Color {
+                // ForegroundColorLayoutViewは子Viewの文字色を変更
+                // ANSIエスケープシーケンスで色を指定
                 return ForegroundColorLayoutView(color: color, child: contentLayoutView)
             }
         } else if modifierTypeName.contains("FrameModifier") {
-            // FrameModifierの処理
+            // .frame() モディファイアの処理
+            // Viewのサイズを固定または制約
             let frameMirror = Mirror(reflecting: modifierChild.value)
+            
+            // width: 幅の制約（nilの場合は制約なし）
             let width = frameMirror.children.first(where: { $0.label == "width" })?.value as? Float
+            
+            // height: 高さの制約（nilの場合は制約なし）
             let height = frameMirror.children.first(where: { $0.label == "height" })?.value as? Float
+            
+            // alignment: フレーム内でのコンテンツの配置
             let alignment = frameMirror.children.first(where: { $0.label == "alignment" })?.value as? Alignment ?? .center
+            
             return FrameLayoutView(width: width, height: height, alignment: alignment, child: contentLayoutView)
         } else if modifierTypeName.contains("AlertModifier") {
-            // AlertModifierの処理
+            // .alert() モディファイアの処理
+            // モーダルなアラートダイアログを表示
             let alertMirror = Mirror(reflecting: modifierChild.value)
+            
+            // 必要な情報を取得
             if let _ = alertMirror.children.first(where: { $0.label == "_isPresented" }),
                let titleChild = alertMirror.children.first(where: { $0.label == "title" }),
                let messageChild = alertMirror.children.first(where: { $0.label == "message" }),
                let title = titleChild.value as? String {
                 let message = messageChild.value as? String
-                // Bindingの取得が複雑なので、直接AlertModifierから取得
+                
+                // AlertModifier型にキャストしてBindingを取得
+                // Mirror経由ではBindingの取得が難しいため
                 if let alertModifier = modifierChild.value as? AlertModifier {
                     return AlertModifierLayoutView(
                         content: contentLayoutView,
@@ -436,84 +526,169 @@ internal struct ViewRenderer {
             }
         }
         
-        // 未対応のmodifierはcontentをそのまま返す
+        // 未対応のモディファイアの場合
+        // モディファイアを無視して、元のViewをそのまま返す
+        // これにより、未実装のモディファイアでもアプリがクラッシュしない
         return contentLayoutView
     }
     
     /// ForEachExpandedの変換
+    /// 
+    /// ForEachが展開された後の内部表現を処理します。
+    /// 
+    /// ForEachの仕組み：
+    /// 1. ForEach { ... } で配列の各要素からViewを生成
+    /// 2. _ForEachExpandedに展開され、全Viewの配列を保持
+    /// 3. このメソッドで各ViewをLayoutViewに変換
+    /// 
+    /// 例：
+    /// ForEach(items) { item in Text(item.name) }
+    /// → [Text("A"), Text("B"), Text("C")...] のように展開される
+    /// 
+    /// - Parameter forEachExpanded: 展開されたForEachの内部表現
+    /// - Returns: 複数のViewを含むLayoutView
     private static func renderForEachExpanded(_ forEachExpanded: _ForEachExpandedProtocol) -> any LayoutView {
+        // 各ViewをLayoutViewに変換して配列に格納
         let views = forEachExpanded._views.map { view in
             LegacyAnyView(renderView(view))
         }
         
-        // 複数のViewをTupleLayoutViewでラップ
+        // 結果のView数に応じて適切なLayoutViewを返す
         if views.isEmpty {
+            // 空の配列の場合（ForEachのソースが空）
             return EmptyView._LayoutView()
         } else if views.count == 1 {
+            // 1つだけの場合は直接返す（最適化）
             return views[0]
         } else {
+            // 複数の場合はTupleLayoutViewでラップ
+            // VStackやList内で使われることが多い
             return TupleLayoutView(views: views)
         }
     }
     
     /// ScrollViewの処理
+    /// 
+    /// スクロール可能なコンテナを作成します。
+    /// 
+    /// ScrollViewの特徴：
+    /// - 大きなコンテンツを限られた領域で表示
+    /// - 矢印キーでスクロール操作
+    /// - スクロールバーの表示（オプション）
+    /// - 垂直/水平/両方向のスクロール対応
+    /// 
+    /// TUIでの実装上の制約：
+    /// - 固定サイズのビューポート（デフォルト: 3行×5文字）
+    /// - .frame()モディファイアは現在無視される
+    /// - グローバルなスクロール状態の共有（複数ScrollViewの問題）
+    /// 
+    /// - Parameter view: ScrollView型のView
+    /// - Returns: ScrollLayoutView
     private static func renderScrollView<V: View>(_ view: V) -> any LayoutView {
-        // ScrollViewは_layoutViewプロパティを持つはず
+        // 型安全なキャストを試みる
         if let scrollView = view as? ScrollView<AnyView> {
             return scrollView._layoutView
         }
         
-        // Mirror経由でプロパティにアクセス
+        // ジェネリック型の場合はMirrorでプロパティにアクセス
         let mirror = Mirror(reflecting: view)
+        
+        // ScrollViewの構成要素を取得
         if let axesChild = mirror.children.first(where: { $0.label == "axes" }),
-           let axes = axesChild.value as? Axis.Set,
+           let axes = axesChild.value as? Axis.Set,                           // スクロール方向
            let showsIndicatorsChild = mirror.children.first(where: { $0.label == "showsIndicators" }),
-           let showsIndicators = showsIndicatorsChild.value as? Bool,
+           let showsIndicators = showsIndicatorsChild.value as? Bool,         // スクロールバー表示
            let contentChild = mirror.children.first(where: { $0.label == "content" }),
-           let content = contentChild.value as? any View {
+           let content = contentChild.value as? any View {                    // スクロールするコンテンツ
+            
+            // コンテンツをLayoutViewに変換
             let contentLayoutView = renderView(content)
+            
+            // ScrollLayoutViewを作成
             return ScrollLayoutView(
-                axes: axes,
-                showsIndicators: showsIndicators,
+                axes: axes,                      // .vertical, .horizontal, [.vertical, .horizontal]
+                showsIndicators: showsIndicators, // true/false
                 child: contentLayoutView
             )
         }
         
-        // 未対応の場合はEmptyView
+        // エラーケース：必要な情報が取得できない
         return EmptyView._LayoutView()
     }
     
     /// Listの処理
+    /// 
+    /// リスト形式で項目を表示するViewを作成します。
+    /// 
+    /// Listの特徴：
+    /// - 各項目間に自動的にセパレータが挿入される
+    /// - ForEachと組み合わせて動的なリストを作成
+    /// - VStackと似ているが、リスト用のスタイリングが適用される
+    /// 
+    /// TUIでの実装：
+    /// - セパレータはハイフン文字の繰り返しで描画
+    /// - 各項目の間に自動的に挿入される
+    /// 
+    /// - Parameter view: List型のView
+    /// - Returns: ListLayoutView
     private static func renderList<V: View>(_ view: V) -> any LayoutView {
-        // Listは_layoutViewプロパティを持つはず
+        // 型安全なキャストを試みる
         if let list = view as? List<AnyView> {
             return list._layoutView
         }
         
-        // Mirror経由でcontentにアクセス
+        // ジェネリック型の場合はMirrorでcontentにアクセス
         let mirror = Mirror(reflecting: view)
         if let contentChild = mirror.children.first(where: { $0.label == "content" }),
            let content = contentChild.value as? any View {
+            // Listのコンテンツ（通常はForEach）をLayoutViewに変換
             let contentLayoutView = renderView(content)
+            
+            // ListLayoutViewはコンテンツをラップし、
+            // 各項目間にセパレータを挿入する
             return ListLayoutView(child: contentLayoutView)
         }
         
-        // 未対応の場合はEmptyView
+        // エラーケース：必要な情報が取得できない
         return EmptyView._LayoutView()
     }
 }
 
 // ViewにLayoutView変換機能を追加
+/// 
+/// このextensionにより、すべてのViewが_layoutViewプロパティを持つようになります。
+/// これは内部APIで、ユーザーコードからは直接使用しません。
 extension View {
     /// 内部使用：ViewをLayoutViewに変換
+    /// 
+    /// このプロパティは、Viewを実際にターミナルに描画可能な
+    /// LayoutViewに変換するためのブリッジです。
+    /// 
+    /// ViewRenderer.renderView()を呼び出し、
+    /// Viewの種類に応じた適切なLayoutViewを生成します。
     internal var _layoutView: any LayoutView {
         ViewRenderer.renderView(self)
     }
 }
 
 // TupleView用の内部LayoutView
+/// 
+/// TupleLayoutViewは、複数のViewをグループ化して保持するLayoutViewです。
+/// 
+/// 用途：
+/// - ViewBuilderが複数のViewを返す時に使用
+/// - ForEachの結果をラップする時に使用
+/// - VStackやHStackの子要素を保持
+/// 
+/// 注意点：
+/// - TupleLayoutView自体は配置を決定しない
+/// - 親のVStackやHStackが実際の配置を決定
+/// - デフォルトでは縦方向（column）に配置
 internal final class TupleLayoutView: LayoutView {
+    /// 保持するViewの配列（LegacyAnyViewでラップされた状態）
     let views: [LegacyAnyView]
+    
+    /// レイアウト計算後のYogaノード（キャッシュ）
     private var calculatedNode: YogaNode?
     
     init(views: [LegacyAnyView]) {
@@ -521,39 +696,51 @@ internal final class TupleLayoutView: LayoutView {
     }
     
     func makeNode() -> YogaNode {
-        // 複数のViewを配列として保持するだけ
-        // 実際の配置はVStackやHStackで決定される
+        // Yogaノードを作成
         let node = YogaNode()
+        
+        // デフォルトでは縦方向に配置
+        // 実際の配置方向は親（VStack/HStack）が上書きする
         node.flexDirection(.column)
+        
+        // 各子ViewのYogaノードを追加
         for view in views {
             node.insert(child: view.makeNode())
         }
+        
+        // レイアウト計算のためにノードをキャッシュ
         self.calculatedNode = node
         return node
     }
     
     func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
-        // Use the calculated node if available, otherwise create a new one
+        // キャッシュされたノードを使用、なければ新規作成
         let node = calculatedNode ?? makeNode()
         
-        // If we don't have layout information, we need to calculate it
+        // レイアウト情報がない場合は計算を実行
+        // これは通常、親がレイアウト計算を実行していない場合に発生
         if YGNodeLayoutGetWidth(node.rawPtr) == 0 {
-            // Fallback: calculate with a default width
+            // フォールバック: デフォルト幅で80文字で計算
             node.calculate(width: 80)
         }
         
-        // Paint children at their calculated positions
+        // 各子Viewを計算された位置に描画
         let cnt = Int(YGNodeGetChildCount(node.rawPtr))
         for i in 0..<cnt {
             guard let raw = YGNodeGetChild(node.rawPtr, Int(i)) else { continue }
-            let dx = Int(YGNodeLayoutGetLeft(raw))
-            let dy = Int(YGNodeLayoutGetTop(raw))
+            
+            // Yogaが計算した子要素の位置を取得
+            let dx = Int(YGNodeLayoutGetLeft(raw))   // Xオフセット
+            let dy = Int(YGNodeLayoutGetTop(raw))    // Yオフセット
+            
+            // 子Viewを適切な位置に描画
             views[i].paint(origin: (origin.x + dx, origin.y + dy), into: &buffer)
         }
     }
     
     func render(into buffer: inout [String]) {
-        // 各Viewをレンダリング
+        // 旧式のレンダリングメソッド（互換性のために保持）
+        // 各Viewを順番に文字列バッファにレンダリング
         for view in views {
             view.render(into: &buffer)
         }
