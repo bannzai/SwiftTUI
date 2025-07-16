@@ -14,9 +14,9 @@ final class BorderView<Content: LayoutView>: LayoutView {
     return n
   }
 
-  func paint(origin:(x:Int,y:Int), into buf:inout [String]) {
+  func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
     // 1. 子ビューを描画（padding分のオフセット付き）
-    child.paint(origin:(origin.x + 1, origin.y + 1), into:&buf)
+    child.paint(origin: (origin.x + 1, origin.y + 1), into: &buf)
     
     // 2. 描画されたコンテンツのサイズを推定
     // バッファを走査して実際に描画された範囲を検出
@@ -48,22 +48,22 @@ final class BorderView<Content: LayoutView>: LayoutView {
     bufferWrite(row: origin.y,
                 col: origin.x,
                 text: "┌" + horiz + "┐",
-                into:&buf)
+                into: &buf)
     
     bufferWrite(row: origin.y + contentLines + 1,
                 col: origin.x,
                 text: "└" + horiz + "┘",
-                into:&buf)
+                into: &buf)
     
     for yOff in 1...contentLines {
       bufferWrite(row: origin.y + yOff,
                   col: origin.x,
                   text: "│",
-                  into:&buf)
+                  into: &buf)
       bufferWrite(row: origin.y + yOff,
                   col: origin.x + maxWidth + 3,
                   text: "│",
-                  into:&buf)
+                  into: &buf)
     }
   }
 
