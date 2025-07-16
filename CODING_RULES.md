@@ -1,6 +1,9 @@
 
 ## Swift Coding Rule
-- 迷ったら標準的なルールにし違う
+
+重要: **Swift Coding Rule** の定める話はSwiftUIのインタフェースの話ではなくて、RenderLoopや内部のコードの話です。なので、SwiftTUIの公開するインタフェースであるSwiftUIのインタフェースは、SwiftUIのインタフェースに近づけてください
+
+- 迷ったら標準的なルールに従う
 - インデントは 1tab=2space 
 - 変数名は略さない
 - class,struct,enum,actor,property,funcには説明のためのコメントを入れる
