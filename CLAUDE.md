@@ -553,4 +553,10 @@ SwiftTUIのコードベースにTUI初心者向けの詳細なコメントを追
    - ターミナルのraw mode制御とプロセス管理
    - パフォーマンス最適化のテクニック
 
+4. **C-API-Guide.md** - C API詳細ガイド
+   - SwiftTUIで使用されているC由来のAPI、Darwin API、tty関連のシステムコール
+   - termios、ioctl、winsize、signal、atexit、read、fputs、fflush、exitの詳細解説
+   - 各APIの代替案と選択理由
+   - ファイルディスクリプタとターミナル制御の基礎知識
+
 これらのドキュメントとコメントにより、TUI初心者でもSwiftTUIの仕組みを段階的に理解できるようになりました。

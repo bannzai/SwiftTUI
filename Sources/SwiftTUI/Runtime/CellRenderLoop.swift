@@ -16,6 +16,9 @@
 import Foundation
 import yoga  // Flexboxレイアウトエンジン
 import Darwin  // ターミナル制御用のシステムコール
+// Darwin: macOS/iOS向けのシステムフレームワーク
+// ioctl、winsize構造体、STDOUT_FILENO定数などを提供
+// Linux版では<sys/ioctl.h>、<unistd.h>をインポート
 
 /// セルベースレンダリングをサポートする新しいRenderLoop
 /// 
@@ -145,8 +148,34 @@ public enum CellRenderLoop {
         }
         
         // 端末幅取得
+        // winsize構造体：ターミナルのサイズ情報を保持
+        // struct winsize {
+        //     unsigned short ws_row;     // 行数（文字単位）
+        //     unsigned short ws_col;     // 列数（文字単位）
+        //     unsigned short ws_xpixel;  // 横幅（ピクセル単位、通常0）
+        //     unsigned short ws_ypixel;  // 高さ（ピクセル単位、通常0）
+        // }
         var ws = winsize()
+        
+        // ioctl: I/O制御のシステムコール
+        // STDOUT_FILENO: 標準出力のファイルディスクリプタ（1）
+        // TIOCGWINSZ: "Terminal I/O Control Get WINdow SiZe"の略
+        //            ターミナルのウィンドウサイズを取得するリクエスト
+        // &ws: 結果を格納するwinsize構造体へのポインタ
+        //
+        // 代替案：
+        // 1. getenv("COLUMNS") / getenv("LINES"): 環境変数から取得
+        //    欠点：リアルタイムの変更が反映されない、設定されていない場合がある
+        // 2. tput cols / tput lines: 外部コマンド実行
+        //    欠点：プロセス起動のオーバーヘッド、移植性の問題
+        // 3. ANSI escape sequence (CSI 18 t): ターミナルに問い合わせ
+        //    欠点：非同期応答、すべてのターミナルでサポートされない
+        // 4. tcgetwinsize() (POSIX.1-2024): 新しいPOSIX標準関数
+        //    欠点：まだ広くサポートされていない
+        // 選択理由：ioctlは最も確実で高速、POSIXで広くサポートされている
         ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws)
+        
+        // デフォルト値（80×24）は伝統的なVT100ターミナルのサイズ
         let width = Float(ws.ws_col > 0 ? ws.ws_col : 80)
         let height = Int(ws.ws_row > 0 ? ws.ws_row : 24)
         
@@ -199,6 +228,23 @@ public enum CellRenderLoop {
         }
         
         // 出力バッファを強制的にフラッシュ（即座に画面に反映）
+        // fflush: 出力ストリームのバッファを強制的に書き出す
+        // stdout: 標準出力ストリーム（FILE*型）
+        //
+        // なぜ必要か：
+        // - printfやprintは内部バッファに溜めて効率化している
+        // - TUIでは即座に画面更新が必要
+        // - 行バッファリング（改行で自動フラッシュ）では不十分
+        //
+        // 代替案：
+        // 1. setbuf(stdout, NULL): バッファリング完全無効化
+        //    欠点：すべての出力が非効率になる
+        // 2. setvbuf(stdout, NULL, _IONBF, 0): 同上
+        // 3. write(STDOUT_FILENO, ...): 低レベルI/O（バッファなし）
+        //    欠点：文字列処理が面倒、エラー処理が複雑
+        // 4. fsync(STDOUT_FILENO): ディスクまで同期
+        //    欠点：ターミナル出力には過剰、パフォーマンス低下
+        // 選択理由：必要な時だけフラッシュする方が効率的で制御しやすい
         fflush(stdout)
         
         // 現在のバッファを保存（次回の差分検出用）
@@ -256,6 +302,7 @@ public enum CellRenderLoop {
         }
         
         // 出力を即座に反映
+        // 差分更新でも即座の反映が重要（ちらつき防止）
         fflush(stdout)
         
         // 現在のバッファを保存
@@ -333,6 +380,27 @@ public enum CellRenderLoop {
         fflush(stdout)
         
         // プロセスを正常終了（exit code: 0）
+        // exit: プロセスを終了させる標準ライブラリ関数
+        // 0: 正常終了を示す終了コード（EXIT_SUCCESS）
+        //
+        // exitの処理内容：
+        // 1. atexitで登録された関数を逆順で実行
+        // 2. すべてのストリームをフラッシュしてクローズ
+        // 3. tmpfile()で作成した一時ファイルを削除
+        // 4. _exit()を呼んでカーネルに制御を返す
+        //
+        // 代替案：
+        // 1. _exit(0) / _Exit(0): 即座にプロセス終了
+        //    欠点：クリーンアップ処理がスキップされる
+        //    利点：シグナルハンドラ内では安全
+        // 2. abort(): 異常終了（SIGABRT送信）
+        //    欠点：コアダンプ生成、異常終了扱い
+        // 3. quick_exit(): C11で追加された高速終了
+        //    欠点：サポートが限定的、at_quick_exitの登録が必要
+        // 4. return from main: main関数からの戻り
+        //    欠点：深いコールスタックからは使えない
+        // 選択理由：exit()は標準的で、必要なクリーンアップを実行し、
+        //         どこからでも呼び出せる
         exit(0)
     }
 }

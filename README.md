@@ -51,6 +51,12 @@ SwiftTUIの仕組みを理解するための3段階のドキュメントが用�
    - セルベースレンダリングの実装詳細
    - ターミナルのraw mode制御とプロセス管理
 
+4. **C API詳細ガイド** (`C-API-Guide.md`)
+   - SwiftTUIで使用されているC由来のAPI、Darwin API、tty関連のシステムコール
+   - termios、ioctl、winsize、signal、atexit、read、fputs、fflush、exitの詳細解説
+   - 各APIの代替案と選択理由
+   - ファイルディスクリプタとターミナル制御の基礎知識
+
 これらのドキュメントは、TUIやシェル、プロセスの知識を段階的に学びながら、SwiftTUIがどのようにSwiftUIのような宣言的インタフェースをターミナル上で実現しているかを理解できるよう構成されています。
 
 #### ソースコードのコメントを読む
