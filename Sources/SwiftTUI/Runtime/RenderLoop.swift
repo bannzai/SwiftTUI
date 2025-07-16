@@ -2,12 +2,16 @@
 import Foundation
 import yoga               // ←★ 追加：YGNodeGetChildCount などを使うため
 import Darwin   // ← ioctl 用
+// Darwin: macOS/iOS向けのシステムフレームワーク
+// winsize構造体、ioctl、STDOUT_FILENO、fflush、exit等を提供
 
 /// 描画ループ（Yoga → 行差分パッチ描画 + DEBUG ダンプ）
 // Sources/SwiftTUI/Runtime/RenderLoop.swift
 import Foundation
 import yoga
 import Darwin   // winsize, ioctl
+// winsize: ターミナルのサイズ情報を格納する構造体
+// ioctl: I/O制御のシステムコール（端末サイズ取得など）
 
 public enum RenderLoop {
   public static var DEBUG = false
@@ -38,6 +42,8 @@ public enum RenderLoop {
       var b:[String]=[]; root.render(into:&b); return b }
 
     // ① 端末幅取得 (fallback 80)
+    // winsize構造体とioctl呼び出しの詳細については
+    // CellRenderLoop.swiftのコメントを参照
     var ws=winsize(); ioctl(STDOUT_FILENO,TIOCGWINSZ,&ws)
     let width = Float(ws.ws_col>0 ? ws.ws_col : 80)
 
@@ -51,7 +57,10 @@ public enum RenderLoop {
   // --- draw routines --------------------------------------------------
   private static func fullRedraw(){
     print("\u{1B}[2J\u{1B}[H",terminator:"")
-    prev=buildFrame(); prev.forEach{print($0)}; fflush(stdout)
+    prev=buildFrame(); prev.forEach{print($0)}; 
+    // fflush: 出力バッファを強制的にフラッシュ
+    // TUIでは即座の画面更新が必要なため重要
+    fflush(stdout)
   }
   private static func incrementalRedraw(){
     let next=buildFrame()
@@ -62,7 +71,9 @@ public enum RenderLoop {
     }else if next.count<prev.count{
       for r in next.count..<prev.count{ mv(r); clr() }
     }
-    mv(next.count); prev=next; fflush(stdout)
+    mv(next.count); prev=next; 
+    // 差分更新後も即座にフラッシュ（ちらつき防止）
+    fflush(stdout)
   }
 
   // --- helpers --------------------------------------------------------
@@ -113,7 +124,9 @@ extension RenderLoop {
   public static func shutdown() {
     InputLoop.stop()             // ← raw-mode を確実に解除
     move( prev.count ); clear()
+    // 最後の画面更新を確実に反映
     fflush(stdout)
+    // プロセスを正常終了（詳細はCellRenderLoop.swiftのコメント参照）
     exit(0)
   }
 }
