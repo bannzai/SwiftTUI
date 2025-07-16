@@ -12,9 +12,21 @@ public struct LegacyText: LegacyView {
   public init(_ content: String) { self.content = content }
 
   // SwiftUI-like modifiers
-  public func color(_ c: Color)      -> Self { var s=self; s.fgColor=c; return s }
-  public func background(_ c: Color) -> Self { var s=self; s.bgColor=c; return s }
-  public func bold()                 -> Self { var s=self; s.style.insert(.bold); return s }
+  public func color(_ c: Color) -> Self { 
+    var s = self
+    s.fgColor = c
+    return s
+  }
+  public func background(_ c: Color) -> Self {
+    var s = self
+    s.bgColor = c
+    return s
+  }
+  public func bold() -> Self {
+    var s = self
+    s.style.insert(.bold)
+    return s
+  }
 }
 
 // ── LayoutView 適合 ───────────────────────────────────────
@@ -28,7 +40,7 @@ extension LegacyText: LayoutView {
     return n
   }
 
-  public func paint(origin:(x:Int,y:Int), into buf:inout [String]) {
+  public func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
     // 1) ANSI 付き全文字列を用意
     let styled = buildStyledText()
 
@@ -53,11 +65,11 @@ private extension LegacyText {
 
   /// ANSI エスケープ付き文字列生成
   func buildStyledText() -> String {
-    var codes:[String]=[]
-    if let fg=fgColor { codes.append(fg.fg) }
-    if let bg=bgColor { codes.append(bg.bg) }
+    var codes: [String] = []
+    if let fg = fgColor { codes.append(fg.fg) }
+    if let bg = bgColor { codes.append(bg.bg) }
     codes.append(contentsOf: style.sgr())
     guard codes.isEmpty == false else { return content }
-    return "\u{1B}[" + codes.joined(separator:";") + "m" + content + "\u{1B}[0m"
+    return "\u{1B}[" + codes.joined(separator: ";") + "m" + content + "\u{1B}[0m"
   }
 }
