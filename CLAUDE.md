@@ -566,3 +566,4 @@ SwiftTUIのコードベースにTUI初心者向けの詳細なコメントを追
 ## コーディングルール
 
 コーディングルールは @CODING_RULES.md に記載
+- swift-format format -i -p -r . を変更後に実行する
