@@ -30,7 +30,7 @@ enum InputLoop {
   /// DispatchSourceReadは、ファイルディスクリプタから
   /// データが読み取り可能になったときに通知するオブジェクト。
   /// キーボード入力を非同期で監視するために使用。
-  private static var src : DispatchSourceRead?
+  private static var src: DispatchSourceRead?
   
   /// 元のターミナル設定のバックアップ
   ///
@@ -61,7 +61,7 @@ enum InputLoop {
   ///
   /// キーボードイベントが発生したときに呼び出される
   /// クロージャを保存。ViewやButtonなどが登録する。
-  private static var currentEventHandler: ((KeyboardEvent)->Void)?
+  private static var currentEventHandler: ((KeyboardEvent) -> Void)?
 
   // ── public ────────────────────────────────────────────────────────
   /// キーボード入力監視を開始
@@ -71,7 +71,7 @@ enum InputLoop {
   /// 非同期監視を開始する。
   ///
   /// - Parameter eventHandler: キーイベント発生時のコールバック
-  static func start(eventHandler: @escaping (KeyboardEvent)->Void) {
+  static func start(eventHandler: @escaping (KeyboardEvent) -> Void) {
     currentEventHandler = eventHandler
 
     // ① raw-mode へ切り替え
@@ -271,7 +271,7 @@ enum InputLoop {
   /// 1. ESCシーケンス処理中かチェック
   /// 2. ESCキー（27）の開始処理
   /// 3. 通常キーの変換
-  private static func translate(byte: UInt8)->KeyboardEvent? {
+  private static func translate(byte: UInt8) -> KeyboardEvent? {
     // ESCシーケンスの処理
     // ESCバッファに内容がある = ESCシーケンス処理中
     if !escBuffer.isEmpty {
@@ -402,7 +402,7 @@ enum InputLoop {
 /// - 代替案：_exit(): より低レベル、atexitハンドラーをスキップ
 /// - 代替案：abort(): 異常終了扱い、コアダンプ生成
 /// - 選択理由：exit()は正常終了扱い、クリーンアップも実行
-@_cdecl("c_sigint") private func c_sigint(_ s:Int32){
+@_cdecl("c_sigint") private func c_sigint(_ s: Int32) {
   InputLoop.stop()  // ターミナル設定を復元
   exit(s)          // プログラムを終了（通常SIGINTは130で終了）
 }
