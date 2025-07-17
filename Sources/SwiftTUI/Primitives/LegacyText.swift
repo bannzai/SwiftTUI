@@ -12,7 +12,7 @@ public struct LegacyText: LegacyView {
   public init(_ content: String) { self.content = content }
 
   // SwiftUI-like modifiers
-  public func color(_ c: Color) -> Self { 
+  public func color(_ c: Color) -> Self {
     var s = self
     s.fgColor = c
     return s
@@ -45,26 +45,27 @@ extension LegacyText: LayoutView {
     let styled = buildStyledText()
 
     // 2) 共通ユーティリティで安全書き込み
-    bufferWrite(row: origin.y,
-                col: origin.x,
-                text: styled,
-                into: &buf)
+    bufferWrite(
+      row: origin.y,
+      col: origin.x,
+      text: styled,
+      into: &buf)
   }
 
 }
 
 // ── 内部ヘルパ ────────────────────────────────────────────
-private extension LegacyText {
+extension LegacyText {
 
   /// 表示セル幅（全角=2, それ以外=1 の簡易版）
-  func displayWidth() -> Int {
+  fileprivate func displayWidth() -> Int {
     content.unicodeScalars.reduce(0) { acc, scalar in
       acc + (scalar.value > 0xFF ? 2 : 1)
     }
   }
 
   /// ANSI エスケープ付き文字列生成
-  func buildStyledText() -> String {
+  fileprivate func buildStyledText() -> String {
     var codes: [String] = []
     if let fg = fgColor { codes.append(fg.fg) }
     if let bg = bgColor { codes.append(bg.bg) }

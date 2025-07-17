@@ -4,48 +4,48 @@ print("[SimpleObservableTest] Starting...")
 
 // Observable実装のテスト（WWDC23スタイル）
 class MessageModel: Observable {
-    var message = "Hello, Observable!" {
-        didSet { notifyChange() }
-    }
-    var count = 0 {
-        didSet { notifyChange() }
-    }
-    
-    func updateMessage() {
-        count += 1
-        message = "Updated \(count) times"
-    }
+  var message = "Hello, Observable!" {
+    didSet { notifyChange() }
+  }
+  var count = 0 {
+    didSet { notifyChange() }
+  }
+
+  func updateMessage() {
+    count += 1
+    message = "Updated \(count) times"
+  }
 }
 
 struct SimpleView: View {
-    @Environment(MessageModel.self) var model: MessageModel?
-    
-    var body: some View {
-        VStack(spacing: 1) {
-            if let model = model {
-                Text("Observable + Environment Test")
-                    .bold()
-                    .padding()
-                
-                Text(model.message)
-                    .foregroundColor(.green)
-                    .padding()
-                    .border()
-                
-                Text("Count: \(model.count)")
-                    .padding()
-                
-                Button("Update") {
-                    model.updateMessage()
-                }
-                .padding()
-            } else {
-                Text("No model in environment")
-                    .foregroundColor(.red)
-            }
+  @Environment(MessageModel.self) var model: MessageModel?
+
+  var body: some View {
+    VStack(spacing: 1) {
+      if let model = model {
+        Text("Observable + Environment Test")
+          .bold()
+          .padding()
+
+        Text(model.message)
+          .foregroundColor(.green)
+          .padding()
+          .border()
+
+        Text("Count: \(model.count)")
+          .padding()
+
+        Button("Update") {
+          model.updateMessage()
         }
         .padding()
+      } else {
+        Text("No model in environment")
+          .foregroundColor(.red)
+      }
     }
+    .padding()
+  }
 }
 
 // Test
@@ -55,14 +55,14 @@ print("[SimpleObservableTest] Model created")
 
 // グローバルキーハンドラーでqキーで終了できるようにする
 GlobalKeyHandler.handler = { event in
-    switch event.key {
-    case .character("q"):
-        print("\n[SimpleObservableTest] Exiting...")
-        CellRenderLoop.shutdown()
-        return true
-    default:
-        return false
-    }
+  switch event.key {
+  case .character("q"):
+    print("\n[SimpleObservableTest] Exiting...")
+    CellRenderLoop.shutdown()
+    return true
+  default:
+    return false
+  }
 }
 
 print("[SimpleObservableTest] Running SwiftTUI.run...")
@@ -71,6 +71,6 @@ print("[SimpleObservableTest] Running SwiftTUI.run...")
 CellRenderLoop.DEBUG = false
 
 SwiftTUI.run(
-    SimpleView()
-        .environment(model)
+  SimpleView()
+    .environment(model)
 )

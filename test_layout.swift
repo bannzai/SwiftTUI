@@ -32,5 +32,5 @@ print("Parent frame:", parent.frame)
 print("Child frame:", child.frame)
 
 if let raw = YGNodeGetChild(parent.rawPtr, 0) {
-    print("Child offset: dx=\(YGNodeLayoutGetLeft(raw)), dy=\(YGNodeLayoutGetTop(raw))")
+  print("Child offset: dx=\(YGNodeLayoutGetLeft(raw)), dy=\(YGNodeLayoutGetTop(raw))")
 }

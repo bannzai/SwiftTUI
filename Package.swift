@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
   name: "SwiftTUI",
   platforms: [
-    .macOS(.v14),
+    .macOS(.v14)
   ],
   products: [
     .library(name: "SwiftTUI", targets: ["SwiftTUI"]),
@@ -271,7 +271,7 @@ let package = Package(
       dependencies: ["SwiftTUI"]
     ),
     .executableTarget(
-      name: "ArrowKeyTest", 
+      name: "ArrowKeyTest",
       dependencies: ["SwiftTUI"]
     ),
     .executableTarget(
@@ -405,6 +405,6 @@ let package = Package(
     .testTarget(
       name: "SwiftTUITests",
       dependencies: ["SwiftTUI"]
-    )
+    ),
   ]
 )

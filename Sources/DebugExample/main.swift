@@ -8,8 +8,8 @@
 //
 // 実行方法: swift run DebugExample
 
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 print("DEBUG: DebugExample started")
 
@@ -24,16 +24,16 @@ print("Buffer: \(buffer1)")
 print("\nDEBUG: Test 2 - SwiftUI-like API")
 
 struct SimpleView: View {
-    var body: some View {
-        Text("Hello from SwiftUI-like API!")
-    }
+  var body: some View {
+    Text("Hello from SwiftUI-like API!")
+  }
 }
 
 // 5秒後に終了するようにスケジュール
 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-    print("\nDEBUG: Shutting down...")
-    RenderLoop.shutdown()
-    exit(0)
+  print("\nDEBUG: Shutting down...")
+  RenderLoop.shutdown()
+  exit(0)
 }
 
 // SwiftTUI.runを実行

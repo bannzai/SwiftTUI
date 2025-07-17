@@ -1,15 +1,14 @@
+import Darwin  // ← ioctl 用
+import Darwin  // winsize, ioctl
 //  Sources/SwiftTUI/Runtime/RenderLoop.swift
-import Foundation
-import yoga               // ←★ 追加：YGNodeGetChildCount などを使うため
-import Darwin   // ← ioctl 用
-// Darwin: macOS/iOS向けのシステムフレームワーク
-// winsize構造体、ioctl、STDOUT_FILENO、fflush、exit等を提供
-
 /// 描画ループ（Yoga → 行差分パッチ描画 + DEBUG ダンプ）
 // Sources/SwiftTUI/Runtime/RenderLoop.swift
 import Foundation
-import yoga
-import Darwin   // winsize, ioctl
+import yoga  // ←★ 追加：YGNodeGetChildCount などを使うため
+
+// Darwin: macOS/iOS向けのシステムフレームワーク
+// winsize構造体、ioctl、STDOUT_FILENO、fflush、exit等を提供
+
 // winsize: ターミナルのサイズ情報を格納する構造体
 // ioctl: I/O制御のシステムコール（端末サイズ取得など）
 
@@ -28,13 +27,13 @@ public enum RenderLoop {
     startInput()
   }
   public static func scheduleRedraw() {
-    guard !redrawPending else { 
-      return 
+    guard !redrawPending else {
+      return
     }
     redrawPending = true
-    rq.async { 
+    rq.async {
       incrementalRedraw()
-      redrawPending = false 
+      redrawPending = false
     }
   }
 
@@ -42,15 +41,15 @@ public enum RenderLoop {
   private static func buildFrame() -> [String] {
     // レンダリング前にFocusManagerを準備
     FocusManager.shared.prepareForRerender()
-    
-    guard let root = cachedRoot else { 
-      return [] 
+
+    guard let root = cachedRoot else {
+      return []
     }
 
     guard let lv = root as? LayoutView else {
       var b: [String] = []
       root.render(into: &b)
-      return b 
+      return b
     }
 
     // ① 端末幅取得 (fallback 80)
@@ -65,8 +64,8 @@ public enum RenderLoop {
 
     var buf: [String] = []
     lv.paint(origin: (0, 0), into: &buf)
-    if DEBUG { 
-      dump(buf, node) 
+    if DEBUG {
+      dump(buf, node)
     }
     return buf
   }
@@ -83,21 +82,21 @@ public enum RenderLoop {
   private static func incrementalRedraw() {
     let next = buildFrame()
     let common = min(prev.count, next.count)
-    for r in 0..<common where prev[r] != next[r] { 
+    for r in 0..<common where prev[r] != next[r] {
       mv(r)
       clr()
-      print(next[r], terminator: "") 
+      print(next[r], terminator: "")
     }
     if next.count > prev.count {
-      for r in prev.count..<next.count { 
+      for r in prev.count..<next.count {
         mv(r)
         clr()
-        print(next[r], terminator: "") 
+        print(next[r], terminator: "")
       }
     } else if next.count < prev.count {
-      for r in next.count..<prev.count { 
+      for r in next.count..<prev.count {
         mv(r)
-        clr() 
+        clr()
       }
     }
     mv(next.count)
@@ -107,17 +106,17 @@ public enum RenderLoop {
   }
 
   // --- helpers --------------------------------------------------------
-  private static func mv(_ r: Int) { 
-    print("\u{1B}[\(r + 1);1H", terminator: "") 
+  private static func mv(_ r: Int) {
+    print("\u{1B}[\(r + 1);1H", terminator: "")
   }
-  
-  private static func clr() { 
-    print("\u{1B}[2K", terminator: "") 
+
+  private static func clr() {
+    print("\u{1B}[2K", terminator: "")
   }
 
   private static func startInput() {
-    InputLoop.start { ev in 
-      _ = cachedRoot?.handle(event: ev) 
+    InputLoop.start { ev in
+      _ = cachedRoot?.handle(event: ev)
     }
   }
 
@@ -130,13 +129,14 @@ public enum RenderLoop {
 }
 
 // MARK: - Frame builder + DEBUG
-private extension RenderLoop {
+extension RenderLoop {
   // ---- debug helpers ---------------------------------------------------
-  static func dumpNode(_ n: YogaNode, indent: Int) {
+  fileprivate static func dumpNode(_ n: YogaNode, indent: Int) {
     let f = n.frame
-    print(String(repeating: " ", count: indent),
-          "frame:(\(f.x),\(f.y),\(f.w),\(f.h))")
-    let cnt = Int(YGNodeGetChildCount(n.rawPtr))       // ← yoga C-API
+    print(
+      String(repeating: " ", count: indent),
+      "frame:(\(f.x),\(f.y),\(f.w),\(f.h))")
+    let cnt = Int(YGNodeGetChildCount(n.rawPtr))  // ← yoga C-API
     for i in 0..<cnt {
       if let c = YGNodeGetChild(n.rawPtr, Int(i)) {
         dumpNode(YogaNode(raw: c), indent: indent + 2)
@@ -144,7 +144,7 @@ private extension RenderLoop {
     }
   }
 
-  static func dumpBuffer(_ b: [String]) {
+  fileprivate static func dumpBuffer(_ b: [String]) {
     print("===== buffer dump =====")
     for (i, l) in b.enumerated() { print(i, "[\(l)]") }
     print("-----------------------")
@@ -152,15 +152,14 @@ private extension RenderLoop {
 }
 
 // MARK: - ANSI helpers
-private extension RenderLoop {
-  static func move(_ r: Int) { print("\u{1B}[\(r + 1);1H", terminator: "") }
-  static func clear() { print("\u{1B}[2K", terminator: "") }
+extension RenderLoop {
+  fileprivate static func move(_ r: Int) { print("\u{1B}[\(r + 1);1H", terminator: "") }
+  fileprivate static func clear() { print("\u{1B}[2K", terminator: "") }
 }
-
 
 extension RenderLoop {
   public static func shutdown() {
-    InputLoop.stop()             // ← raw-mode を確実に解除
+    InputLoop.stop()  // ← raw-mode を確実に解除
     move(prev.count)
     clear()
     // 最後の画面更新を確実に反映

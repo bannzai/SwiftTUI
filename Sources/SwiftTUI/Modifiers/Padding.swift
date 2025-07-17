@@ -18,10 +18,10 @@ final class PaddingView<Content: LayoutView>: LayoutView {
   }
 
   func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
-    let n = makeNode()               // 座標取得用
+    let n = makeNode()  // 座標取得用
     if let raw = YGNodeGetChild(n.rawPtr, 0) {
       let dx = Int(YGNodeLayoutGetLeft(raw))
-      let dy = Int(YGNodeLayoutGetTop (raw))
+      let dy = Int(YGNodeLayoutGetTop(raw))
       child.paint(origin: (origin.x + dx, origin.y + dy), into: &buf)
     }
   }
@@ -30,8 +30,8 @@ final class PaddingView<Content: LayoutView>: LayoutView {
 }
 
 // Modifier
-public extension LayoutView {
-  func padding(_ inset: Float = 1) -> some LayoutView {
+extension LayoutView {
+  public func padding(_ inset: Float = 1) -> some LayoutView {
     PaddingView(inset, self)
   }
 }

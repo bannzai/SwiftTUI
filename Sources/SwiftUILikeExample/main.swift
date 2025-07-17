@@ -8,24 +8,24 @@
 //
 // 実行方法: swift run SwiftUILikeExample
 
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Text("Hello, SwiftTUI!")
-            Text("This is a VStack test")
-            Text("Third line of text")
-        }
+  var body: some View {
+    VStack {
+      Text("Hello, SwiftTUI!")
+      Text("This is a VStack test")
+      Text("Third line of text")
     }
+  }
 }
 
 @main
 struct SwiftUILikeExampleApp {
-    static func main() {
-        // デバッグモードを有効化
-        RenderLoop.DEBUG = true
-        SwiftTUI.run(ContentView())
-    }
+  static func main() {
+    // デバッグモードを有効化
+    RenderLoop.DEBUG = true
+    SwiftTUI.run(ContentView())
+  }
 }

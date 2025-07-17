@@ -8,18 +8,18 @@
 //
 // 実行方法: swift run SimpleTest
 
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 // VStackのテスト
 struct VStackTestView: View {
-    var body: some View {
-        VStack {
-            Text("First Line")
-            Text("Second Line")
-            Text("Third Line")
-        }
+  var body: some View {
+    VStack {
+      Text("First Line")
+      Text("Second Line")
+      Text("Third Line")
     }
+  }
 }
 
 // デバッグ出力を有効化

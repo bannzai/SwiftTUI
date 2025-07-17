@@ -42,17 +42,16 @@ bufferWriteCell(row: 0, col: 2, text: "C", into: &buffer)
 // 結果を出力
 print("\n--- Cell Contents ---")
 for col in 0..<5 {
-    if let cell = buffer.getCell(row: 0, col: col) {
-        print("Col \(col): '\(cell.character)' bg=\(String(describing: cell.backgroundColor))")
-    }
+  if let cell = buffer.getCell(row: 0, col: col) {
+    print("Col \(col): '\(cell.character)' bg=\(String(describing: cell.backgroundColor))")
+  }
 }
 
 print("\n--- ANSI Output ---")
 let lines = buffer.toANSILines()
 for (index, line) in lines.enumerated() {
-    print("Line \(index): \(line)")
-    print("Rendered: \(line)")
+  print("Line \(index): \(line)")
+  print("Rendered: \(line)")
 }
-
 
 exit(0)

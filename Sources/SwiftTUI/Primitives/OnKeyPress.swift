@@ -16,10 +16,12 @@ struct OnKeyPress<Content: LegacyView>: LegacyView {
   }
 }
 
-public extension LegacyView {
+extension LegacyView {
   /// 例: `.onKeyPress(.character("i")) { … }`
-  func onKeyPress(_ keys: KeyboardKey...,
-                  perform action: @escaping () -> Void) -> some LegacyView {
+  public func onKeyPress(
+    _ keys: KeyboardKey...,
+    perform action: @escaping () -> Void
+  ) -> some LegacyView {
     OnKeyPress(keys: keys, action: action, content: self)
   }
 }

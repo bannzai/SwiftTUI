@@ -12,16 +12,17 @@
 // 実行方法: swift run SimpleHStackTest
 
 import SwiftTUI
+
 struct SimpleHStackTestView: View {
-    var body: some View {
-        HStack {
-            Text("A").background(.red)
-            Text("B").background(.green)
-            Text("C").background(.blue)
-        }
+  var body: some View {
+    HStack {
+      Text("A").background(.red)
+      Text("B").background(.green)
+      Text("C").background(.blue)
     }
+  }
 }
 
 SwiftTUI.run {
-    SimpleHStackTestView()
+  SimpleHStackTestView()
 }
