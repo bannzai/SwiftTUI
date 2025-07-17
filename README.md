@@ -140,6 +140,21 @@ swift run SimpleObservableTest    # シンプルなSwiftTUI Observableパター�
 swift run StandardObservableTest  # Swift標準@Observableマクロのテスト（Swift 5.9+）
 ```
 
+#### コード品質の確認
+
+今回のリファクタリングでは、すべてのSwiftファイルがSwiftの標準的なコーディングスタイルに従うよう修正されました。以下のコマンドで、主要なサンプルが正常に動作することを確認できます：
+
+```bash
+# 基本的な動作確認
+swift run SimpleTest           # 修正されたLegacyTextの動作確認
+swift run SimplePaddingTest    # 修正されたPaddingの動作確認
+swift run ModifierTest         # 修正されたBorderの動作確認
+
+# 複雑なレイアウトの動作確認
+swift run SwiftUILikeExample   # 総合的な動作確認
+swift run InteractiveFormTest  # インタラクティブコンポーネントの動作確認
+```
+
 ### 現在サポートされているコンポーネント
 
 #### 基本コンポーネント

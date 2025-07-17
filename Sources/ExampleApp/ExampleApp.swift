@@ -1,5 +1,5 @@
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 final class DemoView: LayoutView {
 
@@ -10,13 +10,13 @@ final class DemoView: LayoutView {
       LegacyText("Right")
     }
     .padding(1)
-    .border()             // ← 枠を付ける
+    .border()  // ← 枠を付ける
 
     LegacyText("bottom").background(.blue).border()
   }
 
   func makeNode() -> YogaNode { body.makeNode() }
-  func paint(origin:(x:Int,y:Int), into buf:inout [String]) {
+  func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
     body.paint(origin: origin, into: &buf)
   }
   func render(into buffer: inout [String]) {}
@@ -30,12 +30,11 @@ struct ExampleApp {
   }
 }
 
-
 extension DemoView {
   func handle(event: KeyboardEvent) -> Bool {
     switch event.key {
     case .character("q"), .escape:
-      RenderLoop.shutdown()          // ← 安全終了
+      RenderLoop.shutdown()  // ← 安全終了
       return true
     default:
       return false

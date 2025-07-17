@@ -9,29 +9,29 @@
 //
 // How to run: swift run RealCellDebugTest
 
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 // 実際のSwiftTUIビューでのデバッグ
 struct RealCellDebugView: View {
-    var body: some View {
-        VStack {
-            Text("Single text with background:")
-            Text("RED").background(.red)
-            
-            Text("\nHStack with backgrounds:")
-            HStack {
-                Text("A").background(.red)
-                Text("B").background(.green) 
-                Text("C").background(.blue)
-            }
-        }
+  var body: some View {
+    VStack {
+      Text("Single text with background:")
+      Text("RED").background(.red)
+
+      Text("\nHStack with backgrounds:")
+      HStack {
+        Text("A").background(.red)
+        Text("B").background(.green)
+        Text("C").background(.blue)
+      }
     }
+  }
 }
 
 // デバッグモードを有効化
 CellRenderLoop.DEBUG = true
 
 SwiftTUI.run {
-    RealCellDebugView()
+  RealCellDebugView()
 }

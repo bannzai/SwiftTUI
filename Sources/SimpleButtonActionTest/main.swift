@@ -12,34 +12,34 @@
 import SwiftTUI
 
 struct SimpleButtonActionView: View {
-    @State private var count = 0
-    
-    var body: some View {
-        VStack {
-            Text("Count: \(count)")
-                .foregroundColor(.cyan)
-                .padding()
-            
-            Button("Increment") {
-                count += 1
-                print("[Action] Count incremented to: \(count)")
-            }
-            
-            Text("Tab: focus, Space/Enter: click, q: quit")
-                .foregroundColor(.white)
-        }
+  @State private var count = 0
+
+  var body: some View {
+    VStack {
+      Text("Count: \(count)")
+        .foregroundColor(.cyan)
+        .padding()
+
+      Button("Increment") {
+        count += 1
+        print("[Action] Count incremented to: \(count)")
+      }
+
+      Text("Tab: focus, Space/Enter: click, q: quit")
+        .foregroundColor(.white)
     }
+  }
 }
 
 // qキーで終了
 GlobalKeyHandler.handler = { event in
-    if event.key == .character("q") {
-        CellRenderLoop.shutdown()
-        return true
-    }
-    return false
+  if event.key == .character("q") {
+    CellRenderLoop.shutdown()
+    return true
+  }
+  return false
 }
 
 SwiftTUI.run {
-    SimpleButtonActionView()
+  SimpleButtonActionView()
 }

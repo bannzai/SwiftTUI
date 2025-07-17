@@ -1,11 +1,11 @@
 import SwiftTUI
 
 struct SingleButtonDebug: View {
-    var body: some View {
-        Button("Test") {
-            print("Clicked")
-        }
+  var body: some View {
+    Button("Test") {
+      print("Clicked")
     }
+  }
 }
 
 // デバッグフラグを有効化

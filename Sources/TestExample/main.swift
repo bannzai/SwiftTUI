@@ -2,7 +2,7 @@
 //
 // 期待される挙動:
 // 1. "TestExample starting..."というメッセージが出力される
-// 2. "Creating view..."というメッセージが出力される  
+// 2. "Creating view..."というメッセージが出力される
 // 3. "Starting SwiftTUI.run..."というメッセージが出力される
 // 4. "Simple Text Test"というテキストが画面に表示される
 // 5. ESCキーでプログラムが終了する
@@ -11,16 +11,16 @@
 //
 // 実行方法: swift run TestExample
 
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 print("TestExample starting...")
 
 // シンプルなテキストのみ
 struct SimpleTextView: View {
-    var body: some View {
-        Text("Simple Text Test")
-    }
+  var body: some View {
+    Text("Simple Text Test")
+  }
 }
 
 print("Creating view...")

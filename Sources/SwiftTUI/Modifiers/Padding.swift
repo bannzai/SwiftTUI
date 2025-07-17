@@ -6,7 +6,8 @@ final class PaddingView<Content: LayoutView>: LayoutView {
   private let child: Content
 
   init(_ inset: Float, _ child: Content) {
-    self.inset = inset; self.child = child
+    self.inset = inset
+    self.child = child
   }
 
   func makeNode() -> YogaNode {
@@ -16,12 +17,12 @@ final class PaddingView<Content: LayoutView>: LayoutView {
     return n
   }
 
-  func paint(origin:(x:Int,y:Int), into buf:inout [String]) {
-    let n = makeNode()               // 座標取得用
+  func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
+    let n = makeNode()  // 座標取得用
     if let raw = YGNodeGetChild(n.rawPtr, 0) {
       let dx = Int(YGNodeLayoutGetLeft(raw))
-      let dy = Int(YGNodeLayoutGetTop (raw))
-      child.paint(origin:(origin.x+dx, origin.y+dy), into:&buf)
+      let dy = Int(YGNodeLayoutGetTop(raw))
+      child.paint(origin: (origin.x + dx, origin.y + dy), into: &buf)
     }
   }
 
@@ -29,8 +30,8 @@ final class PaddingView<Content: LayoutView>: LayoutView {
 }
 
 // Modifier
-public extension LayoutView {
-  func padding(_ inset: Float = 1) -> some LayoutView {
+extension LayoutView {
+  public func padding(_ inset: Float = 1) -> some LayoutView {
     PaddingView(inset, self)
   }
 }

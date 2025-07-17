@@ -68,7 +68,7 @@ import Foundation
 /// // Environmentでの共有
 /// struct ContentView: View {
 ///     @Environment(UserModel.self) var userModel
-///     
+///
 ///     var body: some View {
 ///         Text("\(userModel.name), age: \(userModel.age)")
 ///     }
@@ -80,14 +80,14 @@ import Foundation
 ///     .environment(userModel))
 /// ```
 public protocol Observable: AnyObject {
-    /// 変更通知を送信
-    func notifyChange()
+  /// 変更通知を送信
+  func notifyChange()
 }
 
 /// Observableのデフォルト実装
-public extension Observable {
-    func notifyChange() {
-        // デフォルトではCellRenderLoopに再描画をスケジュール
-        CellRenderLoop.scheduleRedraw()
-    }
+extension Observable {
+  public func notifyChange() {
+    // デフォルトではCellRenderLoopに再描画をスケジュール
+    CellRenderLoop.scheduleRedraw()
+  }
 }

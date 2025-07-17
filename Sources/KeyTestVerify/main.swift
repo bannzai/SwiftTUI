@@ -14,8 +14,8 @@
 //
 // 実行方法: swift run KeyTestVerify
 
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 print("Key Test Verification")
 print("Testing global key handler...")
@@ -25,47 +25,47 @@ var testCount = 0
 
 // グローバルキーハンドラーを設定
 GlobalKeyHandler.handler = { event in
-    print("Key pressed: \(event.key)")
-    
-    switch event.key {
-    case .character("t"):
-        testCount += 1
-        print("Test count: \(testCount)")
-        return true
-    case .character("q"):
-        print("Quitting...")
-        RenderLoop.shutdown()
-        return true
-    default:
-        return false
-    }
+  print("Key pressed: \(event.key)")
+
+  switch event.key {
+  case .character("t"):
+    testCount += 1
+    print("Test count: \(testCount)")
+    return true
+  case .character("q"):
+    print("Quitting...")
+    RenderLoop.shutdown()
+    return true
+  default:
+    return false
+  }
 }
 
 struct TestView: View {
-    var body: some View {
-        VStack {
-            Text("Press 't' to test, 'q' to quit")
-                .foregroundColor(.cyan)
-            
-            Text("Test count: \(testCount)")
-                .foregroundColor(.green)
-        }
+  var body: some View {
+    VStack {
+      Text("Press 't' to test, 'q' to quit")
+        .foregroundColor(.cyan)
+
+      Text("Test count: \(testCount)")
+        .foregroundColor(.green)
     }
+  }
 }
 
 // 3秒後に自動的に't'キーをシミュレート
 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-    print("\nSimulating 't' key press...")
-    testCount += 1
-    RenderLoop.scheduleRedraw()
+  print("\nSimulating 't' key press...")
+  testCount += 1
+  RenderLoop.scheduleRedraw()
 }
 
 // 5秒後に終了
 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-    print("Auto-exiting...")
-    RenderLoop.shutdown()
+  print("Auto-exiting...")
+  RenderLoop.shutdown()
 }
 
 SwiftTUI.run {
-    TestView()
+  TestView()
 }

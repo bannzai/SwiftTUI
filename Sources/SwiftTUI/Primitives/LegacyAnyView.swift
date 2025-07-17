@@ -5,17 +5,21 @@ import yoga
 public struct LegacyAnyView: LegacyView, LayoutView, CellLayoutView {
 
   // クロージャ保持
-  private let _render : (inout [String]) -> Void
-  private let _handle : (KeyboardEvent) -> Bool
-  private let _make   : () -> YogaNode
-  private let _paint  : ((x: Int, y: Int), inout [String]) -> Void
-  private let _paintCells : ((x: Int, y: Int), inout CellBuffer) -> Void
+  private let _render: (inout [String]) -> Void
+  private let _handle: (KeyboardEvent) -> Bool
+  private let _make: () -> YogaNode
+  private let _paint: ((x: Int, y: Int), inout [String]) -> Void
+  private let _paintCells: ((x: Int, y: Int), inout CellBuffer) -> Void
 
   // --- イニシャライザ ---------------------------------------------------
   public init<V: LegacyView>(_ view: V) {
 
     // LegacyView→render/handle は以前と同じ
-    _render = { buf in var b = buf; view.render(into: &b); buf = b }
+    _render = { buf in
+      var b = buf
+      view.render(into: &b)
+      buf = b
+    }
     _handle = { ev in view.handle(event: ev) }
 
     if let lv = view as? LayoutView {
@@ -23,7 +27,7 @@ public struct LegacyAnyView: LegacyView, LayoutView, CellLayoutView {
       if DEBUG {
         print("[DEBUG] AnyView wraps LayoutView:", type(of: view))
       }
-      _make  = {
+      _make = {
         let n = lv.makeNode()
         if DEBUG {
           let f = n.frame
@@ -34,7 +38,7 @@ public struct LegacyAnyView: LegacyView, LayoutView, CellLayoutView {
       _paint = { origin, buf in
         lv.paint(origin: origin, into: &buf)
       }
-      
+
       // CellLayoutViewチェック
       if let clv = view as? CellLayoutView {
         _paintCells = { origin, buffer in
@@ -51,7 +55,7 @@ public struct LegacyAnyView: LegacyView, LayoutView, CellLayoutView {
       if DEBUG {
         print("[DEBUG] AnyView wraps NON-LayoutView:", type(of: view))
       }
-      _make  = { YogaNode() }                    // 幅0×高0
+      _make = { YogaNode() }  // 幅0×高0
       _paint = { _, _ in }
       _paintCells = { _, _ in }
     }
@@ -63,9 +67,11 @@ public struct LegacyAnyView: LegacyView, LayoutView, CellLayoutView {
 
   // LayoutView
   public func makeNode() -> YogaNode { _make() }
-  public func paint(origin: (x: Int, y: Int),
-                    into buf: inout [String]) { _paint(origin, &buf) }
-  
+  public func paint(
+    origin: (x: Int, y: Int),
+    into buf: inout [String]
+  ) { _paint(origin, &buf) }
+
   // CellLayoutView
   public func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
     _paintCells(origin, &buffer)

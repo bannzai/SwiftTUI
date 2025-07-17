@@ -12,26 +12,26 @@
 //
 // 実行方法: swift run MinimalListTest
 
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 struct MinimalListView: View {
-    var body: some View {
-        List {
-            VStack {
-                Text("Item 1")
-                Text("Item 2")
-            }
-        }
+  var body: some View {
+    List {
+      VStack {
+        Text("Item 1")
+        Text("Item 2")
+      }
     }
+  }
 }
 
 // 3秒後に自動終了
 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-    print("\nExiting...")
-    RenderLoop.shutdown()
+  print("\nExiting...")
+  RenderLoop.shutdown()
 }
 
 SwiftTUI.run {
-    MinimalListView()
+  MinimalListView()
 }

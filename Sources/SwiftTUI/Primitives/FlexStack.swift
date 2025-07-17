@@ -20,12 +20,12 @@ final class FlexStack: LayoutView {
   func makeNode() -> YogaNode {
     let n = YogaNode()
     n.flexDirection(axis == .column ? .column : .row)
-    
+
     // Set gap (spacing) if specified
     if spacing > 0 {
       n.setGap(spacing, axis == .column ? .column : .row)
     }
-    
+
     children.forEach { n.insert(child: $0.makeNode()) }
     self.calculatedNode = n
     return n
@@ -35,13 +35,13 @@ final class FlexStack: LayoutView {
   func paint(origin: (x: Int, y: Int), into buf: inout [String]) {
     // Use the calculated node if available, otherwise create a new one
     let node = calculatedNode ?? makeNode()
-    
+
     // If we don't have layout information, we need to calculate it
     if YGNodeLayoutGetWidth(node.rawPtr) == 0 {
       // Fallback: calculate with a default width
       node.calculate(width: 80)
     }
-    
+
     // Paint children at their calculated positions
     let cnt = Int(YGNodeGetChildCount(node.rawPtr))
     for i in 0..<cnt {
@@ -51,7 +51,7 @@ final class FlexStack: LayoutView {
       children[i].paint(origin: (origin.x + dx, origin.y + dy), into: &buf)
     }
   }
-  
+
   // MARK: Render
   func render(into buffer: inout [String]) {
     // Render each child
@@ -60,7 +60,6 @@ final class FlexStack: LayoutView {
     }
   }
 }
-
 
 // ---------- SwiftUI 風ラッパ ----------
 

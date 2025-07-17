@@ -5,6 +5,6 @@ public protocol LegacyView {
   func handle(event: KeyboardEvent) -> Bool
 }
 
-public extension LegacyView {
-  func handle(event: KeyboardEvent) -> Bool { false }
+extension LegacyView {
+  public func handle(event: KeyboardEvent) -> Bool { false }
 }

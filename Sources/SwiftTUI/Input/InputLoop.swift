@@ -17,8 +17,9 @@
 /// - Ctrl+Cなどの特殊キーも直接受け取る
 /// - echoがオフ（入力文字が画面に表示されない）
 
+import Darwin  // termios, signal
 import Foundation
-import Darwin        // termios, signal
+
 // Darwin: macOS/iOS向けのシステムフレームワーク
 // POSIX準拠のC APIを提供（Linux版では<termios.h>、<signal.h>をインポート）
 
@@ -30,8 +31,8 @@ enum InputLoop {
   /// DispatchSourceReadは、ファイルディスクリプタから
   /// データが読み取り可能になったときに通知するオブジェクト。
   /// キーボード入力を非同期で監視するために使用。
-  private static var src : DispatchSourceRead?
-  
+  private static var src: DispatchSourceRead?
+
   /// 元のターミナル設定のバックアップ
   ///
   /// termios構造体には、ターミナルの詳細な設定が含まれる：
@@ -49,19 +50,19 @@ enum InputLoop {
   ///   単純なキーボード入力処理には過剰
   /// 選択理由：termiosは最も直接的で軽量、POSIXで標準化されている
   private static var oldTerm = termios()
-  
+
   /// 標準入力のファイルディスクリプタ
   ///
   /// STDIN_FILENO = 0
   /// ファイルディスクリプタはUNIXでファイルやデバイスを
   /// 識別する整数。0は標準入力（キーボード）を表す。
   private static let fd = STDIN_FILENO
-  
+
   /// 現在のイベントハンドラー
   ///
   /// キーボードイベントが発生したときに呼び出される
   /// クロージャを保存。ViewやButtonなどが登録する。
-  private static var currentEventHandler: ((KeyboardEvent)->Void)?
+  private static var currentEventHandler: ((KeyboardEvent) -> Void)?
 
   // ── public ────────────────────────────────────────────────────────
   /// キーボード入力監視を開始
@@ -71,7 +72,7 @@ enum InputLoop {
   /// 非同期監視を開始する。
   ///
   /// - Parameter eventHandler: キーイベント発生時のコールバック
-  static func start(eventHandler: @escaping (KeyboardEvent)->Void) {
+  static func start(eventHandler: @escaping (KeyboardEvent) -> Void) {
     currentEventHandler = eventHandler
 
     // ① raw-mode へ切り替え
@@ -85,7 +86,7 @@ enum InputLoop {
     // - stty -g（シェルコマンド）: 外部プロセス起動のオーバーヘッド
     // 選択理由：tcgetattrが最も包括的で効率的
     tcgetattr(fd, &oldTerm)
-    
+
     // cfmakeraw: termios構造体をrawモード用に設定
     // rawモードの特徴：
     // - 1文字ずつ即座に読み取り（バッファリングなし）
@@ -107,8 +108,9 @@ enum InputLoop {
     // - 部分的なrawモード: 例えばICANONのみオフにするなど、
     //   必要に応じて調整可能だが、完全なrawモードが必要
     // 選択理由：cfmakerawは標準的で確実、可読性が高い
-    var raw = oldTerm; cfmakeraw(&raw)
-    
+    var raw = oldTerm
+    cfmakeraw(&raw)
+
     // tcsetattr: 新しい設定を適用
     // TCSANOW: 即座に設定を変更
     tcsetattr(fd, TCSANOW, &raw)
@@ -117,7 +119,7 @@ enum InputLoop {
     // プログラムが終了する際、必ずターミナル設定を
     // 元に戻す必要がある。そうしないとターミナルが
     // 使えない状態になってしまう。
-    
+
     // atexit: プログラム正常終了時に呼ばれる関数を登録
     // c_restoreTTY: C言語から呼び出せる関数（後述）
     //
@@ -128,7 +130,7 @@ enum InputLoop {
     //   CLIツールでは信頼性が低い
     // 選択理由：atexitはPOSIX標準で最も確実
     atexit(c_restoreTTY)
-    
+
     // signal: シグナルハンドラーを登録
     // SIGINT: Ctrl+Cが押されたときのシグナル（番号2）
     // c_sigint: シグナル受信時の処理関数
@@ -147,20 +149,20 @@ enum InputLoop {
     // ③ 非同期 read の設定
     // GCD（Grand Central Dispatch）を使って
     // キーボード入力を非同期で監視する。
-    
+
     // 専用のDispatchQueueを作成
     // label: デバッグ時に識別しやすい名前
     let q = DispatchQueue(label: "SwiftTUI.Input")
-    
+
     // DispatchSourceReadを作成
     // fileDescriptor: 監視対象（標準入力）
     // queue: イベント処理を実行するキュー
     src = DispatchSource.makeReadSource(fileDescriptor: fd, queue: q)
-    
+
     // データが読み取り可能になったときの処理
     src?.setEventHandler {
       var byte: UInt8 = 0
-      
+
       // read(): UNIXシステムコール
       // fd: 読み取り元（標準入力）
       // &byte: 読み取ったデータを格納する変数
@@ -181,12 +183,12 @@ enum InputLoop {
       while read(fd, &byte, 1) == 1 {
         // translate: バイトをKeyboardEventに変換
         // 通常の文字、特殊キー、ESCシーケンスを解析
-        if let ev = Self.translate(byte: byte) { 
-          eventHandler(ev) 
+        if let ev = Self.translate(byte: byte) {
+          eventHandler(ev)
         }
       }
     }
-    
+
     // 監視を開始
     // resume()を呼ぶまでイベントは発生しない
     src?.resume()
@@ -204,7 +206,7 @@ enum InputLoop {
     // DispatchSourceをキャンセル
     // これ以降、キーボードイベントは発生しない
     src?.cancel()
-    
+
     // ターミナル設定を元に戻す
     restoreTTY()
   }
@@ -218,7 +220,7 @@ enum InputLoop {
     // tcsetattr: 保存しておいた元の設定を復元
     // これによりエコーや行バッファリングが元に戻る
     tcsetattr(fd, TCSANOW, &oldTerm)
-    
+
     // ANSIリセットシーケンスを出力
     // \u{1B}[0m: すべてのテキスト装飾をリセット
     // （色、太字、下線などをデフォルトに戻す）
@@ -232,7 +234,7 @@ enum InputLoop {
     //   Data変換が必要
     // 選択理由：fputsは改行なしで直接出力、シンプル
     fputs("\u{1B}[0m", stdout)
-    
+
     // バッファをフラッシュして即座に反映
     // 代替案：
     // - setbuf(stdout, NULL): バッファリング無効化
@@ -250,7 +252,7 @@ enum InputLoop {
   /// - 例: 矢印キー↑ = ESC [ A (3バイト)
   /// - ESC単体の場合もあるため、判定が複雑
   private static var escBuffer: [UInt8] = []
-  
+
   /// ESCキー単体を判定するためのタイマー
   ///
   /// ESCキーの判定が難しい理由：
@@ -258,7 +260,7 @@ enum InputLoop {
   /// - ESC + 他: 矢印キーなどの特殊キー
   /// → 一定時間待って続きが来なければESC単体と判定
   private static var escTimer: DispatchWorkItem?
-  
+
   /// バイトをKeyboardEventに変換
   ///
   /// 単一のバイトを解析して、適切なKeyboardEventに変換します。
@@ -271,12 +273,12 @@ enum InputLoop {
   /// 1. ESCシーケンス処理中かチェック
   /// 2. ESCキー（27）の開始処理
   /// 3. 通常キーの変換
-  private static func translate(byte: UInt8)->KeyboardEvent? {
+  private static func translate(byte: UInt8) -> KeyboardEvent? {
     // ESCシーケンスの処理
     // ESCバッファに内容がある = ESCシーケンス処理中
     if !escBuffer.isEmpty {
       escBuffer.append(byte)
-      
+
       // 矢印キーのESCシーケンス判定
       // 矢印キーは "ESC [ X" の3バイトパターン：
       // - ESC (27) + [ (91) + A/B/C/D (65/66/67/68)
@@ -287,14 +289,14 @@ enum InputLoop {
           let seq = escBuffer
           escBuffer.removeAll()
           escTimer?.cancel()  // タイマーをキャンセル
-          
+
           // 3バイト目で矢印の方向を判定
           switch seq[2] {
-          case 65: return .init(key: .up)     // ESC [ A = ↑
-          case 66: return .init(key: .down)   // ESC [ B = ↓
+          case 65: return .init(key: .up)  // ESC [ A = ↑
+          case 66: return .init(key: .down)  // ESC [ B = ↓
           case 67: return .init(key: .right)  // ESC [ C = →
-          case 68: return .init(key: .left)   // ESC [ D = ←
-          default: 
+          case 68: return .init(key: .left)  // ESC [ D = ←
+          default:
             // 矢印キーではないESCシーケンス
             // 他の特殊キー（F1-F12など）の可能性もあるが
             // 現在は未対応なので単独のESCとして扱う
@@ -308,19 +310,19 @@ enum InputLoop {
         escTimer?.cancel()  // タイマーをキャンセル
         return .init(key: .escape)
       }
-      
+
       // まだシーケンスが完成していない（2バイト目まで）
       // 次のバイトを待つためnilを返す
       return nil
     }
-    
+
     // ESCキーの開始
     if byte == 27 {
       escBuffer.append(byte)
-      
+
       // 既存のタイマーをキャンセル
       escTimer?.cancel()
-      
+
       // 50ms後に単独のESCとして処理するタイマーを設定
       // なぜタイマーが必要か：
       // - ESC単体: すぐに判定したい
@@ -337,32 +339,32 @@ enum InputLoop {
         }
       }
       escTimer = timer
-      
+
       // 50ミリ秒後にタイマーを実行
       // 人間の入力速度を考慮した値
       DispatchQueue.global().asyncAfter(deadline: .now() + 0.05, execute: timer)
-      
+
       return nil
     }
-    
+
     // 通常のキー
     // ASCIIコードからKeyboardEventへの変換
     switch byte {
-    case 9:         // TABキー
+    case 9:  // TABキー
       return .init(key: .tab)
-    case 10, 13:    // 改行（LF）またはキャリッジリターン（CR）
+    case 10, 13:  // 改行（LF）またはキャリッジリターン（CR）
       return .init(key: .enter)
-    case 32:        // スペースキー
+    case 32:  // スペースキー
       return .init(key: .space)
-    case 127:       // DELキー（BackspaceとしてMacでは使われる）
+    case 127:  // DELキー（BackspaceとしてMacでは使われる）
       return .init(key: .backspace)
     case 97...122:  // 小文字 a-z
       return .init(key: .character(Character(UnicodeScalar(byte))))
-    case 65...90:   // 大文字 A-Z
+    case 65...90:  // 大文字 A-Z
       return .init(key: .character(Character(UnicodeScalar(byte))))
-    case 48...57:   // 数字 0-9
+    case 48...57:  // 数字 0-9
       return .init(key: .character(Character(UnicodeScalar(byte))))
-    default:        // その他のキー（現在は未対応）
+    default:  // その他のキー（現在は未対応）
       return nil
     }
   }
@@ -382,8 +384,8 @@ enum InputLoop {
 /// Darwin固有の注意点：
 /// - macOSではatexit()は最大32個まで登録可能（POSIX準拠）
 /// - 登録順と逆順で実行される（LIFO）
-@_cdecl("c_restoreTTY") private func c_restoreTTY() { 
-  InputLoop.stop() 
+@_cdecl("c_restoreTTY") private func c_restoreTTY() {
+  InputLoop.stop()
 }
 
 /// C言語から呼び出し可能な関数（SIGINT受信時）
@@ -402,7 +404,7 @@ enum InputLoop {
 /// - 代替案：_exit(): より低レベル、atexitハンドラーをスキップ
 /// - 代替案：abort(): 異常終了扱い、コアダンプ生成
 /// - 選択理由：exit()は正常終了扱い、クリーンアップも実行
-@_cdecl("c_sigint") private func c_sigint(_ s:Int32){
+@_cdecl("c_sigint") private func c_sigint(_ s: Int32) {
   InputLoop.stop()  // ターミナル設定を復元
-  exit(s)          // プログラムを終了（通常SIGINTは130で終了）
+  exit(s)  // プログラムを終了（通常SIGINTは130で終了）
 }

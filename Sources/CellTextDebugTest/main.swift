@@ -9,8 +9,8 @@
 //
 // How to run: swift run CellTextDebugTest
 
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 // 一時的にコメントアウト - CellTextは現在のAPIに存在しません
 // TODO: 新しいAPIで書き直す必要があります

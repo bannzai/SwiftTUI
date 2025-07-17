@@ -13,34 +13,34 @@
 //
 // 実行方法: swift run QuickForEachTest
 
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 struct QuickForEachTestView: View {
-    var body: some View {
-        VStack {
-            Text("ForEach Test - Auto Exit")
-            
-            // Test ForEach with array
-            HStack {
-                ForEach(["Red", "Green", "Blue"], id: \.self) { color in
-                    Text(color)
-                        .background(color == "Red" ? Color.red : color == "Green" ? Color.green : Color.blue)
-                        .padding()
-                }
-            }
-            
-            Text("If you see 3 colored backgrounds above, ForEach is working!")
+  var body: some View {
+    VStack {
+      Text("ForEach Test - Auto Exit")
+
+      // Test ForEach with array
+      HStack {
+        ForEach(["Red", "Green", "Blue"], id: \.self) { color in
+          Text(color)
+            .background(color == "Red" ? Color.red : color == "Green" ? Color.green : Color.blue)
+            .padding()
         }
-        .border()
+      }
+
+      Text("If you see 3 colored backgrounds above, ForEach is working!")
     }
+    .border()
+  }
 }
 
 // Auto-exit after 2 seconds
 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-    CellRenderLoop.shutdown()
+  CellRenderLoop.shutdown()
 }
 
 SwiftTUI.run {
-    QuickForEachTestView()
+  QuickForEachTestView()
 }
