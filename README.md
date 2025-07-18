@@ -155,36 +155,6 @@ swift run SwiftUILikeExample   # 総合的な動作確認
 swift run InteractiveFormTest  # インタラクティブコンポーネントの動作確認
 ```
 
-#### ライトニングトーク（LT）用デモとスライド
-
-SwiftTUIの紹介用にLTデモアプリケーションとプレゼンテーション資料を用意しています：
-
-```bash
-# LTデモアプリの実行
-cd Examples/DemoForLT
-swift run
-
-# 操作方法
-# - Hello/Form/List/Quitボタンでデモを切り替え
-# - Tabキーでボタン間を移動
-# - Enterキーで選択
-```
-
-##### LTスライドの表示
-
-`SLIDES.md`はMarp形式のプレゼンテーションファイルです：
-
-```bash
-# Marp CLIでプレゼンテーションモード起動
-npm install -g @marp-team/marp-cli
-marp -s SLIDES.md
-
-# またはVSCodeのMarp拡張機能でプレビュー
-# 拡張機能: Marp for VS Code
-```
-
-詳細は`SLIDES_README.md`を参照してください。
-
 ### 現在サポートされているコンポーネント
 
 #### 基本コンポーネント
