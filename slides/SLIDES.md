@@ -90,7 +90,7 @@ Marpの使い方:
 
 <!-- _class: profile -->
 
-![width:300px](bannzai.programmer.png)
+![width:300px](https://avatars.githubusercontent.com/u/10897361?v=4)
 
 **@bannzai**
 - iOSエンジニア
@@ -269,15 +269,6 @@ Button("Count: \(count)") {
 
 ---
 
-## 今後の展望
-
-- 🚀 パフォーマンス改善
-- 🧩 より多くのコンポーネント
-- 🎨 アニメーション対応？
-- 🌍 Webバックエンド対応？
-
----
-
 ## まとめ
 
 SwiftUIの書き味で
@@ -301,6 +292,7 @@ swift run
 
 GitHub: **github.com/bannzai/SwiftTUI**
 
-⭐ Starもらえると嬉しいです！
+# めっちゃデカくアニメーションする
+⭐ スターください
 
 ---
