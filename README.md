@@ -896,6 +896,26 @@ swift run SimpleBorderTest
 - CJK文字、絵文字、ASCII文字の表示幅が正確に計算される
 - TextField内でのカーソル位置が日本語入力時も正しく表示される
 - Sliderやボーダー内のテキストが正しく中央寄せされる
+- **追加修正（2025年1月18日）**: TextFieldで日本語文字が「名前」→「名 前」と余計なスペースで表示される問題を修正
+
+### DemoForLTの動作確認
+
+DemoForLTは日本語を含むインタラクティブフォームのデモです：
+
+```bash
+# Examples/DemoForLT ディレクトリで実行
+cd Examples/DemoForLT
+swift run DemoForLT
+
+# またはプロジェクトルートから実行
+swift run --package-path Examples/DemoForLT DemoForLT
+```
+
+確認ポイント：
+- 「ユーザー登録」が正しく表示される（「ユ ー ザ ー 登 録」のようにスペースが入らない）
+- 「名前:」「送信」などの日本語テキストが正しく表示される
+- Tabキーでフォーカスを移動、Enterキーでボタンを押す
+- qキーで終了
 
 #### 修正の技術的詳細
 

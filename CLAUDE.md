@@ -360,6 +360,24 @@ SwiftTUI.run(App())
   - 最重要修正：`bufferWriteCell`で日本語文字が2セルを占有するよう、次のセルに空白を配置
   - これにより日本語テキストの中央寄せ、カーソル位置、レイアウトが正しく表示されるようになった
 
+#### TextFieldの日本語文字表示追加修正（2025年1月18日）
+- **問題**: TextFieldで日本語文字が「名前」→「名 前」のように余計なスペースが入って表示される
+- **原因**: TextFieldの`paintCells`メソッドで、2幅文字（日本語）の次のセルに空白を配置していなかった
+- **解決**:
+  - `TextField.swift`の`paintCells`メソッドで、日本語文字を配置する際に次のセルに空白を配置
+  - フォーカス時（カーソル表示）と非フォーカス時の両方で修正を適用
+  - bufferWriteCellと同様の処理をTextFieldでも実装することで、一貫した日本語表示を実現
+
+#### 日本語文字間のスペース問題の根本的解決（2025年1月18日）
+- **問題**: DemoForLTなどで日本語テキストが「ユ ー ザ ー 登 録」のように文字間に余分なスペースが入って表示される
+- **原因**: `CellBuffer.toANSILines`が2セル幅文字の継続セル（2番目のセル）を独立した空白文字として出力していた
+- **解決**:
+  - `Cell`構造体に`isContinuation`フラグを追加（2セル幅文字の継続セルを識別）
+  - `bufferWriteCell`で日本語文字の2番目のセルに`isContinuation: true`を設定
+  - `CellBuffer.toANSILines`で`isContinuation`がtrueのセルをスキップ
+  - `mergeCell`メソッドで`isContinuation`フラグを適切にマージ
+  - これにより「ユーザー登録」「名前:」「送信」などが正しく表示されるようになった
+
 #### TextFieldのデフォルト枠線削除とHStack/VStackのalignment対応（2025年8月）
 - **問題1**: TextFieldが自前で枠線を描画し、`.border()`モディファイアを適用すると二重の枠線が表示される
 - **問題2**: HStack内でTextFieldに`.border()`を適用すると、デフォルトの中央揃えでずれて見える
