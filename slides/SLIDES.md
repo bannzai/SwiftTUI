@@ -295,4 +295,5 @@ GitHub: **github.com/bannzai/SwiftTUI**
   │おしまい \(^o^)/│
   └────────────────┘
   ```
+  (なぜかmarkdowndだとずれる)
 
