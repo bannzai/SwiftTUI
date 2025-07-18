@@ -15,11 +15,83 @@ style: |
   pre {
     font-size: 22px;
   }
+  
+  /* 最後のスライド専用の派手なアニメーション */
+  @keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  @keyframes superBounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+    10% { transform: translateY(-30px) scale(1.1) rotate(-5deg); }
+    30% { transform: translateY(-15px) scale(1.05) rotate(5deg); }
+    40% { transform: translateY(-30px) scale(1.1) rotate(-5deg); }
+    60% { transform: translateY(-15px) scale(1.05) rotate(5deg); }
+    70% { transform: translateY(-30px) scale(1.1) rotate(-5deg); }
+    90% { transform: translateY(-15px) scale(1.05) rotate(5deg); }
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+  
+  @keyframes starRotate {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1.5); }
+  }
+  
+  /* 最後のスライドを超派手に */
+  section.thanks {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: rainbow 3s ease infinite;
+    color: white;
+    overflow: hidden;
+  }
+  
+  section.thanks h1:first-of-type {
+    font-size: 60px;
+    animation: superBounce 2s infinite;
+  }
+  
+  section.thanks p {
+    font-size: 80px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8b00ff);
+    background-size: 600% 600%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 2s ease infinite, pulse 1s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.8));
+  }
+---
+
+```
+┌───────────────────────┐
+│Hakata.swift 2025-07-18│
+└───────────────────────┘
+```
+
 ---
 
 # SwiftTUI
 
 ターミナルでSwiftUIを書こう！
+
+---
+
+## 自己紹介
+
+![width:300px](https://avatars.githubusercontent.com/u/10897361?v=4)
+
+**@bannzai**
+- iOSエンジニア
+- SwiftUI大好き
+- ターミナルも大好き
 
 ---
 
@@ -191,15 +263,6 @@ Button("Count: \(count)") {
 
 ---
 
-## 今後の展望
-
-- 🚀 パフォーマンス改善
-- 🧩 より多くのコンポーネント
-- 🎨 アニメーション対応？
-- 🌍 Webバックエンド対応？
-
----
-
 ## まとめ
 
 SwiftUIの書き味で
@@ -219,8 +282,18 @@ swift run
 
 # ありがとうございました！
 
+<!-- _class: thanks -->
+
 GitHub: **github.com/bannzai/SwiftTUI**
 
-⭐ Starもらえると嬉しいです！
+⭐ スターください
 
 ---
+
+  ```
+  ┌────────────────┐
+  │おしまい \(^o^)/│
+  └────────────────┘
+  ```
+  (なぜかmarkdowndだとずれる)
+
