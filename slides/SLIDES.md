@@ -16,58 +16,63 @@ style: |
     font-size: 22px;
   }
   
-  /* アニメーション定義 */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* 最後のスライド専用の派手なアニメーション */
+  @keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
   
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+  @keyframes superBounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+    10% { transform: translateY(-30px) scale(1.1) rotate(-5deg); }
+    30% { transform: translateY(-15px) scale(1.05) rotate(5deg); }
+    40% { transform: translateY(-30px) scale(1.1) rotate(-5deg); }
+    60% { transform: translateY(-15px) scale(1.05) rotate(5deg); }
+    70% { transform: translateY(-30px) scale(1.1) rotate(-5deg); }
+    90% { transform: translateY(-15px) scale(1.05) rotate(5deg); }
   }
   
-  @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
   }
   
-  /* タイトルのフェードイン */
-  h1 {
-    animation: fadeIn 1s ease-out;
+  @keyframes starRotate {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1.5); }
   }
   
-  /* 自己紹介画像のバウンス */
-  img[alt*="bannzai"] {
-    animation: bounce 2s infinite ease-in-out;
-  }
-  
-  /* コードブロックのフェードイン */
-  pre {
-    animation: fadeIn 0.8s ease-out;
-  }
-  
-  /* 特定のスライドクラス用 */
-  section.profile li {
-    animation: fadeIn 1s ease-out;
-    animation-fill-mode: both;
-  }
-  section.profile li:nth-child(1) { animation-delay: 0.3s; }
-  section.profile li:nth-child(2) { animation-delay: 0.6s; }
-  section.profile li:nth-child(3) { animation-delay: 0.9s; }
-  
-  /* コードサンプルのスライドで背景を少し変える */
-  section.code-demo {
-    background-color: #f8f9fa;
-  }
-  
-  /* 最後のスライド用のクラス */
+  /* 最後のスライドを超派手に */
   section.thanks {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: rainbow 3s ease infinite;
     color: white;
+    overflow: hidden;
   }
-  section.thanks h1 {
-    animation: fadeIn 1s ease-out, bounce 2s 1s infinite ease-in-out;
+  
+  section.thanks h1:first-of-type {
+    font-size: 60px;
+    animation: superBounce 2s infinite;
+  }
+  
+  section.thanks h1:nth-of-type(2) {
+    font-size: 80px;
+    background: linear-gradient(45deg, #f3ec78, #af4261, #f3ec78);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 2s ease infinite, pulse 1s ease-in-out infinite;
+    text-shadow: 0 0 20px rgba(255,255,255,0.5);
+  }
+  
+  section.thanks p:has(⭐) {
+    font-size: 60px;
+    animation: starRotate 2s linear infinite;
+    display: inline-block;
+    filter: drop-shadow(0 0 10px gold);
   }
 ---
 
@@ -87,8 +92,6 @@ Marpの使い方:
 ---
 
 ## 自己紹介
-
-<!-- _class: profile -->
 
 ![width:300px](https://avatars.githubusercontent.com/u/10897361?v=4)
 
@@ -154,8 +157,6 @@ SwiftTUI.run(App())
 ---
 
 ## デモ: Hello World
-
-<!-- _class: code-demo -->
 
 ```swift
 Text("Hello, SwiftTUI! 🚀")
