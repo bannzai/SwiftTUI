@@ -58,21 +58,15 @@ style: |
     animation: superBounce 2s infinite;
   }
   
-  section.thanks h1:nth-of-type(2) {
+  section.thanks p {
     font-size: 80px;
-    background: linear-gradient(45deg, #f3ec78, #af4261, #f3ec78);
-    background-size: 200% 200%;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8b00ff);
+    background-size: 600% 600%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: rainbow 2s ease infinite, pulse 1s ease-in-out infinite;
-    text-shadow: 0 0 20px rgba(255,255,255,0.5);
-  }
-  
-  section.thanks p:has(⭐) {
-    font-size: 60px;
-    animation: starRotate 2s linear infinite;
-    display: inline-block;
-    filter: drop-shadow(0 0 10px gold);
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.8));
   }
 ---
 
