@@ -70,12 +70,9 @@ style: |
   }
 ---
 
-<!-- 
-Marpの使い方:
-1. VSCode拡張機能 "Marp for VS Code" をインストール
-2. このファイルを開いてプレビュー表示（右上のアイコン）
-3. またはCLI: npm install -g @marp-team/marp-cli && marp -s SLIDES.md
--->
+┌───────────────────────┐
+│Hakata.swift 2025-07-18│
+└───────────────────────┘
 
 ---
 
@@ -290,3 +287,8 @@ GitHub: **github.com/bannzai/SwiftTUI**
 ⭐ スターください
 
 ---
+
+  ┌────────────────┐
+  │おしまい \(^o^)/│
+  └────────────────┘
+
