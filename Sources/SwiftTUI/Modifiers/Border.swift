@@ -32,7 +32,8 @@ final class BorderView<Content: LayoutView>: LayoutView {
         if !trimmed.isEmpty {
           contentLines = y - origin.y
           // ANSIエスケープを除いた実際の幅を計算
-          let visibleWidth = stripANSI(lineContent).trimmingCharacters(in: .whitespaces).count
+          let strippedContent = stripANSI(lineContent).trimmingCharacters(in: .whitespaces)
+          let visibleWidth = stringWidth(strippedContent)
           maxWidth = max(maxWidth, visibleWidth)
         }
       }

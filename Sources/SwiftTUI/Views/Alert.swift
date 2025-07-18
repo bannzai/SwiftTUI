@@ -55,7 +55,9 @@ internal class AlertLayoutView: LayoutView, FocusableView {
     let node = YogaNode()
 
     // アラートボックスのサイズを計算
-    let maxWidth = max(title.count, message?.count ?? 0, 20) + 4  // パディング込み
+    let titleWidth = stringWidth(title)
+    let messageWidth = message.map { stringWidth($0) } ?? 0
+    let maxWidth = max(titleWidth, messageWidth, 20) + 4  // パディング込み
     var height = 7  // タイトル + 枠線 + ボタン + パディング
     if message != nil {
       height += 2  // メッセージ分
@@ -71,7 +73,9 @@ internal class AlertLayoutView: LayoutView, FocusableView {
     let boldStart = "\u{1B}[1m"
     let boldEnd = "\u{1B}[22m"
 
-    let maxWidth = max(title.count, message?.count ?? 0, 20)
+    let titleWidth = stringWidth(title)
+    let messageWidth = message.map { stringWidth($0) } ?? 0
+    let maxWidth = max(titleWidth, messageWidth, 20)
 
     var currentRow = origin.y
 
@@ -82,10 +86,10 @@ internal class AlertLayoutView: LayoutView, FocusableView {
     currentRow += 1
 
     // タイトル行（中央寄せ）
-    let titlePadding = (maxWidth - title.count) / 2
+    let titlePadding = (maxWidth - titleWidth) / 2
     let titleLine =
       borderColor + "║" + resetColor + String(repeating: " ", count: titlePadding + 1) + boldStart
-      + title + boldEnd + String(repeating: " ", count: maxWidth - title.count - titlePadding + 1)
+      + title + boldEnd + String(repeating: " ", count: maxWidth - titleWidth - titlePadding + 1)
       + borderColor + "║" + resetColor
     bufferWrite(row: currentRow, col: origin.x, text: titleLine, into: &buffer)
     currentRow += 1
@@ -98,10 +102,10 @@ internal class AlertLayoutView: LayoutView, FocusableView {
 
     // メッセージ行
     if let message = message {
-      let messagePadding = (maxWidth - message.count) / 2
+      let messagePadding = (maxWidth - messageWidth) / 2
       let messageLine =
         borderColor + "║" + resetColor + String(repeating: " ", count: messagePadding + 1) + message
-        + String(repeating: " ", count: maxWidth - message.count - messagePadding + 1) + borderColor
+        + String(repeating: " ", count: maxWidth - messageWidth - messagePadding + 1) + borderColor
         + "║" + resetColor
       bufferWrite(row: currentRow, col: origin.x, text: messageLine, into: &buffer)
       currentRow += 1
@@ -116,12 +120,13 @@ internal class AlertLayoutView: LayoutView, FocusableView {
 
     // OKボタン（中央寄せ、フォーカス表示）
     let buttonText = "[ OK ]"
-    let buttonPadding = (maxWidth - buttonText.count) / 2
+    let buttonTextWidth = stringWidth(buttonText)
+    let buttonPadding = (maxWidth - buttonTextWidth) / 2
     let buttonBg = "\u{1B}[44m"  // 青背景
     let buttonLine =
       borderColor + "║" + resetColor + String(repeating: " ", count: buttonPadding + 1) + buttonBg
       + buttonText + resetColor
-      + String(repeating: " ", count: maxWidth - buttonText.count - buttonPadding + 1) + borderColor
+      + String(repeating: " ", count: maxWidth - buttonTextWidth - buttonPadding + 1) + borderColor
       + "║" + resetColor
     bufferWrite(row: currentRow, col: origin.x, text: buttonLine, into: &buffer)
     currentRow += 1

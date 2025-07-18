@@ -66,6 +66,7 @@ let package = Package(
     .executable(name: "TextInterpolationDebugTest", targets: ["TextInterpolationDebugTest"]),
     .executable(name: "VStackTextTest", targets: ["VStackTextTest"]),
     .executable(name: "PresentationUI", targets: ["PresentationUI"]),
+    .executable(name: "CellBorderDebugTest", targets: ["CellBorderDebugTest"]),
   ],
   dependencies: [
     .package(url: "https://github.com/facebook/yoga.git", .upToNextMinor(from: "3.2.1"))
@@ -405,6 +406,10 @@ let package = Package(
     ),
     .executableTarget(
       name: "PresentationUI",
+      dependencies: ["SwiftTUI"]
+    ),
+    .executableTarget(
+      name: "CellBorderDebugTest",
       dependencies: ["SwiftTUI"]
     ),
     .testTarget(

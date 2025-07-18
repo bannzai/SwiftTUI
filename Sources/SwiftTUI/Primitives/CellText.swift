@@ -70,8 +70,7 @@ internal struct CellText: CellLayoutView {
 
   // MARK: Helpers
   private func displayWidth() -> Int {
-    content.unicodeScalars.reduce(0) { acc, scalar in
-      acc + (scalar.value > 0xFF ? 2 : 1)
-    }
+    // StringWidth.swiftの正確な文字幅計算関数を使用
+    return stringWidth(content)
   }
 }

@@ -82,11 +82,11 @@ internal class ProgressViewLayoutView: LayoutView {
       // ラベル付きの場合
       if value != nil {
         // 確定進捗: ラベル + バー + パーセント
-        let width = Float(label.count + 1 + barWidth + 2 + 5)  // ラベル + スペース + [バー] + スペース + "100%"
+        let width = Float(stringWidth(label) + 1 + barWidth + 2 + 5)  // ラベル + スペース + [バー] + スペース + "100%"
         node.setSize(width: width, height: 1)
       } else {
         // 不確定進捗: ラベル + スピナー
-        let width = Float(label.count + 2)  // ラベル + スペース + スピナー
+        let width = Float(stringWidth(label) + 2)  // ラベル + スペース + スピナー
         node.setSize(width: width, height: 1)
       }
     } else {
