@@ -376,7 +376,8 @@ SwiftTUI.run(App())
   - `bufferWriteCell`で日本語文字の2番目のセルに`isContinuation: true`を設定
   - `CellBuffer.toANSILines`で`isContinuation`がtrueのセルをスキップ
   - `mergeCell`メソッドで`isContinuation`フラグを適切にマージ
-  - これにより「ユーザー登録」「名前:」「送信」などが正しく表示されるようになった
+  - **TextField固有の追加修正**: TextField.swiftの`paintCells`メソッドでも2幅文字の継続セルに`isContinuation: true`を設定（通常テキスト、カーソル位置、プレースホルダー「お名前」など）
+  - これにより「ユーザー登録」「名前:」「送信」「お名前」などすべての日本語テキストが正しく表示されるようになった
 
 #### TextFieldのデフォルト枠線削除とHStack/VStackのalignment対応（2025年8月）
 - **問題1**: TextFieldが自前で枠線を描画し、`.border()`モディファイアを適用すると二重の枠線が表示される
