@@ -293,7 +293,6 @@ swift run
 
 GitHub: **github.com/bannzai/SwiftTUI**
 
-# めっちゃデカくアニメーションする
 ⭐ スターください
 
 ---
