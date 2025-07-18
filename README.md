@@ -134,6 +134,10 @@ swift run ProgressViewTest        # 進捗表示（5秒後に自動終了）
 swift run SliderTest              # 値選択スライダー
 swift run AlertTest               # 警告ダイアログ
 
+# TextFieldの枠線表示確認
+swift run InteractiveFormTest     # 枠線なしのTextFieldを使ったフォーム
+cd Examples/DemoForLT && swift run # .border()付きTextFieldのフォーム
+
 # Observable/状態管理のテスト
 swift run ObservableModelTest     # SwiftTUI Observableと@Environmentの動作確認
 swift run SimpleObservableTest    # シンプルなSwiftTUI Observableパターンのテスト
@@ -165,7 +169,7 @@ swift run InteractiveFormTest  # インタラクティブコンポーネント�
 - **EmptyView**: 何も表示しないビュー
 
 #### インタラクティブコンポーネント
-- **TextField**: テキスト入力フィールド
+- **TextField**: テキスト入力フィールド（枠線なし、`.border()`モディファイアで装飾可能）
 - **Button**: クリック可能なボタン
 
 #### 高度なコンポーネント
@@ -237,6 +241,28 @@ struct SpacedView: View {
             Text("Left aligned")
             Spacer()
             Text("Right aligned")
+        }
+    }
+}
+```
+
+#### TextFieldの使用例
+
+```swift
+struct FormView: View {
+    @State private var name = ""
+    @State private var email = ""
+    
+    var body: some View {
+        VStack {
+            // 枠線なしのTextField（デフォルト）
+            TextField("名前を入力", text: $name)
+                .frame(width: 20)
+            
+            // 枠線付きのTextField
+            TextField("メールアドレス", text: $email)
+                .frame(width: 30)
+                .border()
         }
     }
 }
