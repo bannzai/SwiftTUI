@@ -46,12 +46,7 @@ extension Picker where SelectionValue == String {
   }
 }
 
-// Int配列用の便利初期化
-extension Picker where SelectionValue == Int {
-  public init(_ label: String, selection: Binding<Int>, options: [(Int, String)]) {
-    self.init(label, selection: selection, options: options)
-  }
-}
+// Int用の初期化は基本のinitで十分なので削除
 
 /// PickerのLayoutView実装
 internal class PickerLayoutView<SelectionValue: Hashable>: LayoutView, FocusableView {
@@ -93,14 +88,14 @@ internal class PickerLayoutView<SelectionValue: Hashable>: LayoutView, Focusable
 
     if isExpanded {
       // 展開時：ラベル + ドロップダウン + オプションリスト
-      let maxOptionLength = options.map { $0.label.count }.max() ?? 0
-      let width = Float(max(label.count + 3 + maxOptionLength + 4, maxOptionLength + 4))
+      let maxOptionLength = options.map { stringWidth($0.label) }.max() ?? 0
+      let width = Float(max(stringWidth(label) + 3 + maxOptionLength + 4, maxOptionLength + 4))
       let height = Float(1 + options.count + 2)  // ラベル行 + オプション数 + 枠線
       node.setSize(width: width, height: height)
     } else {
       // 折り畳み時：ラベル + 現在の選択値
       let currentLabel = options.first(where: { $0.value == selection.wrappedValue })?.label ?? ""
-      let width = Float(label.count + 3 + currentLabel.count + 4)
+      let width = Float(stringWidth(label) + 3 + stringWidth(currentLabel) + 4)
       let height: Float = isFocused ? 3 : 1
       node.setSize(width: width, height: height)
     }
@@ -121,13 +116,13 @@ internal class PickerLayoutView<SelectionValue: Hashable>: LayoutView, Focusable
       bufferWrite(row: origin.y, col: origin.x, text: labelLine, into: &buffer)
 
       // オプションリスト
-      let maxWidth = options.map { $0.label.count }.max() ?? 0
+      let maxWidth = options.map { stringWidth($0.label) }.max() ?? 0
 
       // 上枠線
       let topBorder =
         borderColor + "┌" + String(repeating: "─", count: maxWidth + 2) + "┐" + resetColor
       bufferWrite(
-        row: origin.y + 1, col: origin.x + label.count + 3, text: topBorder, into: &buffer)
+        row: origin.y + 1, col: origin.x + stringWidth(label) + 3, text: topBorder, into: &buffer)
 
       // オプション
       for (index, option) in options.enumerated() {
@@ -138,18 +133,20 @@ internal class PickerLayoutView<SelectionValue: Hashable>: LayoutView, Focusable
           borderColor + "│" + resetColor + highlightColor + " " + optionText + " " + resetColor
           + borderColor + "│" + resetColor
         bufferWrite(
-          row: origin.y + 2 + index, col: origin.x + label.count + 3, text: line, into: &buffer)
+          row: origin.y + 2 + index, col: origin.x + stringWidth(label) + 3, text: line,
+          into: &buffer)
       }
 
       // 下枠線
       let bottomBorder =
         borderColor + "└" + String(repeating: "─", count: maxWidth + 2) + "┘" + resetColor
       bufferWrite(
-        row: origin.y + 2 + options.count, col: origin.x + label.count + 3, text: bottomBorder,
+        row: origin.y + 2 + options.count, col: origin.x + stringWidth(label) + 3,
+        text: bottomBorder,
         into: &buffer)
     } else if isFocused {
       // フォーカス時（折り畳み）
-      let contentWidth = label.count + 3 + currentLabel.count + 3
+      let contentWidth = stringWidth(label) + 3 + stringWidth(currentLabel) + 3
 
       // 上の枠線
       let topBorder =

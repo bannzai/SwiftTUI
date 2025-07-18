@@ -49,7 +49,7 @@ internal class ToggleLayoutView: LayoutView, FocusableView {
   func makeNode() -> YogaNode {
     let node = YogaNode()
     // チェックボックス + スペース + ラベル + フォーカス時の枠線分
-    let width = Float(3 + 1 + label.count + (isFocused ? 2 : 0))
+    let width = Float(3 + 1 + stringWidth(label) + (isFocused ? 2 : 0))
     let height: Float = isFocused ? 3 : 1
     node.setSize(width: width, height: height)
     return node
@@ -64,7 +64,7 @@ internal class ToggleLayoutView: LayoutView, FocusableView {
     if isFocused {
       // フォーカス時は枠線付き
       let borderColor = "\u{1B}[94m"  // 青
-      let contentWidth = 3 + 1 + label.count
+      let contentWidth = 3 + 1 + stringWidth(label)
 
       // 上の枠線
       let topBorder =

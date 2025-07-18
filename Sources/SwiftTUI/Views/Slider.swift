@@ -73,7 +73,7 @@ where V.Stride: BinaryFloatingPoint {
     let node = YogaNode()
 
     // ラベル + スライダー + 値表示
-    let labelWidth = label?.count ?? 0
+    let labelWidth = label.map { stringWidth($0) } ?? 0
     let valueWidth = 8  // 値表示の最大幅（例: "100.00"）
     let totalWidth = labelWidth + (labelWidth > 0 ? 2 : 0) + sliderWidth + 2 + 1 + valueWidth
     let height: Float = isFocused ? 3 : 1
@@ -109,9 +109,9 @@ where V.Stride: BinaryFloatingPoint {
 
     if isFocused {
       // フォーカス時は枠線付き
-      var contentWidth = sliderWidth + 2 + 1 + valueString.count
+      var contentWidth = sliderWidth + 2 + 1 + stringWidth(valueString)
       if let label = label {
-        contentWidth += label.count + 2
+        contentWidth += stringWidth(label) + 2
       }
 
       // 上の枠線
