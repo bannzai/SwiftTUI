@@ -360,6 +360,19 @@ SwiftTUI.run(App())
   - 最重要修正：`bufferWriteCell`で日本語文字が2セルを占有するよう、次のセルに空白を配置
   - これにより日本語テキストの中央寄せ、カーソル位置、レイアウトが正しく表示されるようになった
 
+#### TextFieldのデフォルト枠線削除とHStack/VStackのalignment対応（2025年8月）
+- **問題1**: TextFieldが自前で枠線を描画し、`.border()`モディファイアを適用すると二重の枠線が表示される
+- **問題2**: HStack内でTextFieldに`.border()`を適用すると、デフォルトの中央揃えでずれて見える
+- **解決1**: 
+  - TextFieldLayoutViewから枠線描画コードを削除
+  - サイズ計算を調整（高さ3行→1行、幅から枠線分のパディングを削除）
+  - SwiftUIと同様にデフォルトで枠線なし、`.border()`で装飾する設計に
+- **解決2**:
+  - CellFlexStackにAlignmentプロパティを追加
+  - HStackで`.top`, `.center`, `.bottom`アライメントをサポート
+  - VStackで`.leading`, `.center`, `.trailing`アライメントをサポート
+  - YogaNodeにalignItems()メソッドを追加してFlexboxのalignItemsを設定
+
 ### その他
 - /tmpにスクリプトファイルを作らないでください
 - ./tmp/に動作確認ようのスクリプトファイルを作りましょう

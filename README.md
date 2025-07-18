@@ -163,8 +163,8 @@ swift run InteractiveFormTest  # インタラクティブコンポーネント�
 
 #### 基本コンポーネント
 - **Text**: テキストの表示
-- **VStack**: 縦方向のスタックレイアウト（`spacing`パラメータ対応）
-- **HStack**: 横方向のスタックレイアウト（`spacing`パラメータ対応）
+- **VStack**: 縦方向のスタックレイアウト（`spacing`、`alignment`パラメータ対応）
+- **HStack**: 横方向のスタックレイアウト（`spacing`、`alignment`パラメータ対応）
 - **Spacer**: 残りのスペースを埋めるコンポーネント
 - **EmptyView**: 何も表示しないビュー
 
@@ -286,6 +286,27 @@ struct StyledView: View {
                 .foregroundColor(.green)
                 .background(.yellow)
                 .padding()
+        }
+    }
+}
+```
+
+#### HStackとVStackのアライメント
+
+```swift
+struct AlignmentExample: View {
+    var body: some View {
+        // HStackの垂直方向アライメント
+        HStack(alignment: .top) {  // .top, .center(デフォルト), .bottom
+            Text("ラベル:")
+            TextField("入力", text: .constant(""))
+                .border()
+        }
+        
+        // VStackの水平方向アライメント
+        VStack(alignment: .leading) {  // .leading, .center(デフォルト), .trailing
+            Text("タイトル")
+            Text("説明文")
         }
     }
 }
