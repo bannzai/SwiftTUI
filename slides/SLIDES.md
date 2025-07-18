@@ -15,6 +15,60 @@ style: |
   pre {
     font-size: 22px;
   }
+  
+  /* アニメーション定義 */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* タイトルのフェードイン */
+  h1 {
+    animation: fadeIn 1s ease-out;
+  }
+  
+  /* 自己紹介画像のバウンス */
+  img[alt*="bannzai"] {
+    animation: bounce 2s infinite ease-in-out;
+  }
+  
+  /* コードブロックのフェードイン */
+  pre {
+    animation: fadeIn 0.8s ease-out;
+  }
+  
+  /* 特定のスライドクラス用 */
+  section.profile li {
+    animation: fadeIn 1s ease-out;
+    animation-fill-mode: both;
+  }
+  section.profile li:nth-child(1) { animation-delay: 0.3s; }
+  section.profile li:nth-child(2) { animation-delay: 0.6s; }
+  section.profile li:nth-child(3) { animation-delay: 0.9s; }
+  
+  /* コードサンプルのスライドで背景を少し変える */
+  section.code-demo {
+    background-color: #f8f9fa;
+  }
+  
+  /* 最後のスライド用のクラス */
+  section.thanks {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+  section.thanks h1 {
+    animation: fadeIn 1s ease-out, bounce 2s 1s infinite ease-in-out;
+  }
 ---
 
 <!-- 
@@ -33,6 +87,8 @@ Marpの使い方:
 ---
 
 ## 自己紹介
+
+<!-- _class: profile -->
 
 ![width:300px](bannzai.programmer.png)
 
@@ -98,6 +154,8 @@ SwiftTUI.run(App())
 ---
 
 ## デモ: Hello World
+
+<!-- _class: code-demo -->
 
 ```swift
 Text("Hello, SwiftTUI! 🚀")
@@ -238,6 +296,8 @@ swift run
 ---
 
 # ありがとうございました！
+
+<!-- _class: thanks -->
 
 GitHub: **github.com/bannzai/SwiftTUI**
 
