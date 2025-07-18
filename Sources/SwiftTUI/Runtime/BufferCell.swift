@@ -52,10 +52,10 @@ public func bufferWriteCell(
       )
 
       buffer.mergeCell(row: row, col: currentCol, newCell: cell)
-      
+
       // 文字の実際の表示幅を考慮して進める
       let charWidth = scalarWidth(char.unicodeScalars.first!)
-      
+
       // 日本語文字など2幅の文字の場合、次のセルに空のセルを配置
       if charWidth == 2 && currentCol + 1 < buffer.width {
         let emptyCell = Cell(
@@ -66,7 +66,7 @@ public func bufferWriteCell(
         )
         buffer.mergeCell(row: row, col: currentCol + 1, newCell: emptyCell)
       }
-      
+
       currentCol += charWidth
       i += 1
     }

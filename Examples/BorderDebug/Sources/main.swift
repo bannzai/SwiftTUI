@@ -5,16 +5,16 @@ struct BorderDebugTest: View {
     VStack(spacing: 2) {
       Text("Hakata.swift 2025-07-18")
         .border()
-      
+
       Text("おしまい \(^o^)/")
         .border()
-      
+
       Text("Hello World")
         .border()
-      
+
       Text("こんにちは世界")
         .border()
-      
+
       Text("ABC 日本語 123")
         .border()
     }

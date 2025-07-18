@@ -88,9 +88,20 @@ extension VStack {
     // ViewRendererがViewの種類を判別して適切に処理
     let contentLayoutView = ViewRenderer.renderView(content)
 
+    // HorizontalAlignmentをCellFlexStack.Alignmentに変換
+    let flexAlignment: CellFlexStack.Alignment
+    switch alignment {
+    case .leading:
+      flexAlignment = .start
+    case .center:
+      flexAlignment = .center
+    case .trailing:
+      flexAlignment = .end
+    }
+
     // ステップ2: CellFlexStackを作成
     // CellFlexStackはセルベースレンダリングをサポートするFlexboxコンテナ
-    return CellFlexStack(.column, spacing: Float(spacing)) {
+    return CellFlexStack(.column, spacing: Float(spacing), alignment: flexAlignment) {
       // ステップ3: 子要素の展開
       // TupleLayoutViewは複数のViewを含むラッパー
       if let tupleLayoutView = contentLayoutView as? TupleLayoutView {
