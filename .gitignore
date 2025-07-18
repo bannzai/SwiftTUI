@@ -8,3 +8,5 @@ DerivedData/
 .netrc
 tmp/
 *.log
+
+.build
