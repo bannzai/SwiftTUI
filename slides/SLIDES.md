@@ -32,6 +32,17 @@ Marpの使い方:
 
 ---
 
+## 自己紹介
+
+![width:300px](bannzai.programmer.png)
+
+**@bannzai**
+- iOSエンジニア
+- SwiftUI大好き
+- ターミナルも大好き
+
+---
+
 ## SwiftTUIとは？
 
 SwiftでTUI（Terminal UI）を作るライブラリ
