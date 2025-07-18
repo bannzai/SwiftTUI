@@ -245,6 +245,17 @@ internal class TextFieldLayoutView: LayoutView, CellLayoutView, FocusableView {
               character: char,
               foregroundColor: Color.black,
               backgroundColor: Color.white))
+          
+          // 日本語文字など2幅の文字の場合、次のセルに継続セルを配置
+          if charWidth == 2 && currentCol + 1 < buffer.width {
+            buffer.setCell(
+              row: origin.y, col: currentCol + 1,
+              cell: Cell(
+                character: " ",
+                foregroundColor: Color.black,
+                backgroundColor: Color.white,
+                isContinuation: true))
+          }
         } else {
           // 通常の文字表示
           buffer.setCell(
@@ -252,6 +263,16 @@ internal class TextFieldLayoutView: LayoutView, CellLayoutView, FocusableView {
             cell: Cell(
               character: char,
               foregroundColor: textColor))
+          
+          // 日本語文字など2幅の文字の場合、次のセルに継続セルを配置
+          if charWidth == 2 && currentCol + 1 < buffer.width {
+            buffer.setCell(
+              row: origin.y, col: currentCol + 1,
+              cell: Cell(
+                character: " ",
+                foregroundColor: textColor,
+                isContinuation: true))
+          }
         }
         currentCol += charWidth
       }
@@ -277,6 +298,17 @@ internal class TextFieldLayoutView: LayoutView, CellLayoutView, FocusableView {
           cell: Cell(
             character: char,
             foregroundColor: textColor))
+        
+        // 日本語文字など2幅の文字の場合、次のセルに継続セルを配置
+        if charWidth == 2 && currentCol + 1 < buffer.width {
+          buffer.setCell(
+            row: origin.y, col: currentCol + 1,
+            cell: Cell(
+              character: " ",
+              foregroundColor: textColor,
+              isContinuation: true))
+        }
+        
         currentCol += charWidth
       }
     }
