@@ -134,6 +134,10 @@ swift run ProgressViewTest        # 進捗表示（5秒後に自動終了）
 swift run SliderTest              # 値選択スライダー
 swift run AlertTest               # 警告ダイアログ
 
+# TextFieldの枠線表示確認
+swift run InteractiveFormTest     # 枠線なしのTextFieldを使ったフォーム
+cd Examples/DemoForLT && swift run # .border()付きTextFieldのフォーム
+
 # Observable/状態管理のテスト
 swift run ObservableModelTest     # SwiftTUI Observableと@Environmentの動作確認
 swift run SimpleObservableTest    # シンプルなSwiftTUI Observableパターンのテスト
@@ -159,13 +163,13 @@ swift run InteractiveFormTest  # インタラクティブコンポーネント�
 
 #### 基本コンポーネント
 - **Text**: テキストの表示
-- **VStack**: 縦方向のスタックレイアウト（`spacing`パラメータ対応）
-- **HStack**: 横方向のスタックレイアウト（`spacing`パラメータ対応）
+- **VStack**: 縦方向のスタックレイアウト（`spacing`、`alignment`パラメータ対応）
+- **HStack**: 横方向のスタックレイアウト（`spacing`、`alignment`パラメータ対応）
 - **Spacer**: 残りのスペースを埋めるコンポーネント
 - **EmptyView**: 何も表示しないビュー
 
 #### インタラクティブコンポーネント
-- **TextField**: テキスト入力フィールド
+- **TextField**: テキスト入力フィールド（枠線なし、`.border()`モディファイアで装飾可能）
 - **Button**: クリック可能なボタン
 
 #### 高度なコンポーネント
@@ -242,6 +246,28 @@ struct SpacedView: View {
 }
 ```
 
+#### TextFieldの使用例
+
+```swift
+struct FormView: View {
+    @State private var name = ""
+    @State private var email = ""
+    
+    var body: some View {
+        VStack {
+            // 枠線なしのTextField（デフォルト）
+            TextField("名前を入力", text: $name)
+                .frame(width: 20)
+            
+            // 枠線付きのTextField
+            TextField("メールアドレス", text: $email)
+                .frame(width: 30)
+                .border()
+        }
+    }
+}
+```
+
 #### ViewModifierの使用例
 
 ```swift
@@ -260,6 +286,27 @@ struct StyledView: View {
                 .foregroundColor(.green)
                 .background(.yellow)
                 .padding()
+        }
+    }
+}
+```
+
+#### HStackとVStackのアライメント
+
+```swift
+struct AlignmentExample: View {
+    var body: some View {
+        // HStackの垂直方向アライメント
+        HStack(alignment: .top) {  // .top, .center(デフォルト), .bottom
+            Text("ラベル:")
+            TextField("入力", text: .constant(""))
+                .border()
+        }
+        
+        // VStackの水平方向アライメント
+        VStack(alignment: .leading) {  // .leading, .center(デフォルト), .trailing
+            Text("タイトル")
+            Text("説明文")
         }
     }
 }
@@ -849,6 +896,26 @@ swift run SimpleBorderTest
 - CJK文字、絵文字、ASCII文字の表示幅が正確に計算される
 - TextField内でのカーソル位置が日本語入力時も正しく表示される
 - Sliderやボーダー内のテキストが正しく中央寄せされる
+- **追加修正（2025年1月18日）**: TextFieldで日本語文字が「名前」→「名 前」と余計なスペースで表示される問題を修正（プレースホルダー「お名前」も含む）
+
+### DemoForLTの動作確認
+
+DemoForLTは日本語を含むインタラクティブフォームのデモです：
+
+```bash
+# Examples/DemoForLT ディレクトリで実行
+cd Examples/DemoForLT
+swift run DemoForLT
+
+# またはプロジェクトルートから実行
+swift run --package-path Examples/DemoForLT DemoForLT
+```
+
+確認ポイント：
+- 「ユーザー登録」が正しく表示される（「ユ ー ザ ー 登 録」のようにスペースが入らない）
+- 「名前:」「送信」などの日本語テキストが正しく表示される
+- Tabキーでフォーカスを移動、Enterキーでボタンを押す
+- qキーで終了
 
 #### 修正の技術的詳細
 
@@ -859,6 +926,37 @@ swift run SimpleBorderTest
 - `TextField.swift`: カーソル位置と文字幅の正確な処理
 - `Border.swift`: ボーダー内のコンテンツ幅計算
 - `BufferCell.swift`: 最も重要な修正 - 日本語文字が2セルを占有するように
+
+### TextFieldJapaneseTestの動作確認
+
+TextFieldの日本語表示機能を詳細に検証するテストアプリケーションです：
+
+```bash
+# プロジェクトルートから実行
+swift run --package-path Examples/TextFieldJapaneseTest TextFieldJapaneseTest
+```
+
+機能：
+- TextField内での日本語入力と表示（「名前」などが正しく表示される）
+- プレースホルダー「お名前を入力」の表示検証
+- HStackでのalignment: .topを使用したレイアウト確認
+- 日本語・英語・混在テキストの入力テスト
+- Tabキーでフィールド間を移動、qキーで終了
+
+### MinimalAlignmentTestの動作確認
+
+HStackのアライメント機能を検証するテストアプリケーションです：
+
+```bash
+# プロジェクトルートから実行
+swift run --package-path Examples/MinimalAlignmentTest MinimalAlignmentTest
+```
+
+機能：
+- `HStack(alignment: .top)`での上揃え表示の確認
+- 異なる高さのテキストが正しく配置されることを検証
+- `.border()`モディファイア使用時のアライメント動作確認
+- Quitボタンをクリックして終了
 
 ### 動作確認時の便利なTips
 

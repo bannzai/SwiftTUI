@@ -1,7 +1,7 @@
 import yoga
 
 /// サイズ制約を適用するLayoutView
-internal struct FrameLayoutView: LayoutView {
+internal struct FrameLayoutView: LayoutView, CellLayoutView {
   let width: Float?
   let height: Float?
   let alignment: Alignment
@@ -80,5 +80,36 @@ internal struct FrameLayoutView: LayoutView {
 
   func render(into buffer: inout [String]) {
     child.render(into: &buffer)
+  }
+  
+  // MARK: - CellLayoutView
+  
+  func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
+    // フレームサイズを計算
+    let frameWidth = width.map { Int($0) } ?? 0
+    let frameHeight = height.map { Int($0) } ?? 0
+    
+    // 子ビューをセルバッファに描画
+    if let cellChild = child as? CellLayoutView {
+      cellChild.paintCells(origin: origin, into: &buffer)
+    } else {
+      // CellLayoutViewを実装していない場合はアダプタを使用
+      let adapter = CellLayoutAdapter(child)
+      adapter.paintCells(origin: origin, into: &buffer)
+    }
+    
+    // フレーム幅が指定されている場合、余剰部分をクリア
+    if frameWidth > 0 {
+      for row in 0..<(frameHeight > 0 ? frameHeight : 1) {
+        for col in 0..<frameWidth {
+          let r = origin.y + row
+          let c = origin.x + col
+          // 既存のコンテンツがない場合のみ空白を設定
+          if buffer.getCell(row: r, col: c) == nil {
+            buffer.setCell(row: r, col: c, cell: Cell(character: " "))
+          }
+        }
+      }
+    }
   }
 }

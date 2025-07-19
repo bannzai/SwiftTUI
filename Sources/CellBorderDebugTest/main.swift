@@ -1,5 +1,5 @@
-import SwiftTUI
 import Foundation
+import SwiftTUI
 
 // シンプルなテストケース
 struct SimpleTest: View {
@@ -8,16 +8,16 @@ struct SimpleTest: View {
       // padding無しのケース
       Text("おしまい \(^o^)/")
         .border()
-      
+
       // paddingありのケース（オリジナルと同じ）
       Text("おしまい \(^o^)/")
         .padding(2)
         .border()
-      
+
       // 比較のために英語のみ
       Text("Hello World!")
         .border()
-      
+
       // 日本語のみ
       Text("こんにちは")
         .border()

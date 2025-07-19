@@ -146,36 +146,26 @@ internal class TextFieldLayoutView: LayoutView, CellLayoutView, FocusableView {
     let displayText = text.wrappedValue.isEmpty ? placeholder : text.wrappedValue
 
     // フィールドの幅を計算
-    // +4 = 左枠(1) + 左パディング(1) + 右パディング(1) + 右枠(1)
     // stringWidth()で実際の表示幅を計算（日本語文字は2幅）
-    let width = Float(stringWidth(displayText) + 4)
+    let width = Float(stringWidth(displayText))
 
     // サイズを設定
-    node.setSize(width: width, height: 3)  // 枠線含めて3行
-    node.setMinHeight(3)  // 最小高さを3行に固定
+    node.setSize(width: width, height: 1)  // テキストのみなので1行
+    node.setMinHeight(1)  // 最小高さを1行に固定
 
     return node
   }
 
   func paint(origin: (x: Int, y: Int), into buffer: inout [String]) {
     let displayText = text.wrappedValue.isEmpty ? placeholder : text.wrappedValue
-    let displayWidth = stringWidth(displayText)  // 実際の表示幅を計算
     let isPlaceholder = text.wrappedValue.isEmpty
-
-    // 枠線の色（フォーカス時は青、非フォーカス時はグレー）
-    let borderColor = isFocused ? "\u{1B}[94m" : "\u{1B}[90m"  // 青 or グレー
-    let resetColor = "\u{1B}[0m"
 
     // テキストの色（プレースホルダーはグレー）
     let textColor = isPlaceholder ? "\u{1B}[90m" : ""
+    let resetColor = "\u{1B}[0m"
 
-    // 上の枠線
-    let topBorder =
-      borderColor + "┌" + String(repeating: "─", count: displayWidth + 2) + "┐" + resetColor
-    bufferWrite(row: origin.y, col: origin.x, text: topBorder, into: &buffer)
-
-    // テキスト行
-    var textLine = borderColor + "│" + resetColor + " "
+    // テキスト表示
+    var textLine = ""
 
     if isFocused && !isPlaceholder {
       // カーソル位置でテキストを分割
@@ -192,26 +182,13 @@ internal class TextFieldLayoutView: LayoutView, CellLayoutView, FocusableView {
         : ""
 
       // カーソル位置を反転表示
-      textLine +=
+      textLine =
         textColor + beforeCursor + "\u{1B}[7m" + atCursor + "\u{1B}[0m" + textColor + afterCursor
     } else {
-      textLine += textColor + displayText + resetColor
+      textLine = textColor + displayText + resetColor
     }
 
-    // パディングを追加
-    let actualTextWidth = stringWidth(text.wrappedValue)
-    let remainingSpace = displayWidth - actualTextWidth
-    if remainingSpace > 0 {
-      textLine += String(repeating: " ", count: remainingSpace)
-    }
-
-    textLine += " " + borderColor + "│" + resetColor
-    bufferWrite(row: origin.y + 1, col: origin.x, text: textLine, into: &buffer)
-
-    // 下の枠線
-    let bottomBorder =
-      borderColor + "└" + String(repeating: "─", count: displayWidth + 2) + "┘" + resetColor
-    bufferWrite(row: origin.y + 2, col: origin.x, text: bottomBorder, into: &buffer)
+    bufferWrite(row: origin.y, col: origin.x, text: textLine, into: &buffer)
   }
 
   func render(into buffer: inout [String]) {
@@ -245,57 +222,57 @@ internal class TextFieldLayoutView: LayoutView, CellLayoutView, FocusableView {
   func paintCells(origin: (x: Int, y: Int), into buffer: inout CellBuffer) {
     // 表示テキストの決定
     let displayText = text.wrappedValue.isEmpty ? placeholder : text.wrappedValue
-    let displayWidth = stringWidth(displayText)  // 実際の表示幅を計算
     let isPlaceholder = text.wrappedValue.isEmpty
-
-    // 枠線の色（フォーカス時は青、非フォーカス時は白）
-    // フォーカスがあることを視覚的に示す
-    let borderColor = isFocused ? Color.blue : Color.white
 
     // テキストの色（プレースホルダーは白）
     // プレースホルダーを薄く表示して区別
     let textColor = isPlaceholder ? Color.white : nil
-
-    // 上の枠線
-    buffer.setCell(
-      row: origin.y, col: origin.x, cell: Cell(character: "┌", foregroundColor: borderColor))
-    for i in 1...(displayWidth + 2) {
-      buffer.setCell(
-        row: origin.y, col: origin.x + i, cell: Cell(character: "─", foregroundColor: borderColor))
-    }
-    buffer.setCell(
-      row: origin.y, col: origin.x + displayWidth + 3,
-      cell: Cell(character: "┐", foregroundColor: borderColor))
-
-    // テキスト行
-    buffer.setCell(
-      row: origin.y + 1, col: origin.x, cell: Cell(character: "│", foregroundColor: borderColor))
-    buffer.setCell(row: origin.y + 1, col: origin.x + 1, cell: Cell(character: " "))
 
     if isFocused && !isPlaceholder {
       // フォーカスあり、かつ入力ありの場合
       // カーソル位置を反転表示で示す
 
       // カーソル位置でテキストを分割して表示
-      var currentCol = origin.x + 2
+      var currentCol = origin.x
       for (index, char) in text.wrappedValue.enumerated() {
         let charWidth = scalarWidth(char.unicodeScalars.first!)
         if index == cursorPosition {
           // カーソル位置は反転表示
           // 背景色を白、文字色を黒にして目立たせる
           buffer.setCell(
-            row: origin.y + 1, col: currentCol,
+            row: origin.y, col: currentCol,
             cell: Cell(
               character: char,
               foregroundColor: Color.black,
               backgroundColor: Color.white))
+          
+          // 日本語文字など2幅の文字の場合、次のセルに継続セルを配置
+          if charWidth == 2 && currentCol + 1 < buffer.width {
+            buffer.setCell(
+              row: origin.y, col: currentCol + 1,
+              cell: Cell(
+                character: " ",
+                foregroundColor: Color.black,
+                backgroundColor: Color.white,
+                isContinuation: true))
+          }
         } else {
           // 通常の文字表示
           buffer.setCell(
-            row: origin.y + 1, col: currentCol,
+            row: origin.y, col: currentCol,
             cell: Cell(
               character: char,
               foregroundColor: textColor))
+          
+          // 日本語文字など2幅の文字の場合、次のセルに継続セルを配置
+          if charWidth == 2 && currentCol + 1 < buffer.width {
+            buffer.setCell(
+              row: origin.y, col: currentCol + 1,
+              cell: Cell(
+                character: " ",
+                foregroundColor: textColor,
+                isContinuation: true))
+          }
         }
         currentCol += charWidth
       }
@@ -305,7 +282,7 @@ internal class TextFieldLayoutView: LayoutView, CellLayoutView, FocusableView {
       if cursorPosition == text.wrappedValue.count {
         let cursorDisplayPos = getDisplayPosition(upTo: cursorPosition)
         buffer.setCell(
-          row: origin.y + 1, col: origin.x + 2 + cursorDisplayPos,
+          row: origin.y, col: origin.x + cursorDisplayPos,
           cell: Cell(
             character: " ",
             foregroundColor: Color.black,
@@ -313,35 +290,28 @@ internal class TextFieldLayoutView: LayoutView, CellLayoutView, FocusableView {
       }
     } else {
       // 通常のテキスト表示（プレースホルダーまたは非フォーカス時）
-      var currentCol = origin.x + 2
+      var currentCol = origin.x
       for char in displayText {
         let charWidth = scalarWidth(char.unicodeScalars.first!)
         buffer.setCell(
-          row: origin.y + 1, col: currentCol,
+          row: origin.y, col: currentCol,
           cell: Cell(
             character: char,
             foregroundColor: textColor))
+        
+        // 日本語文字など2幅の文字の場合、次のセルに継続セルを配置
+        if charWidth == 2 && currentCol + 1 < buffer.width {
+          buffer.setCell(
+            row: origin.y, col: currentCol + 1,
+            cell: Cell(
+              character: " ",
+              foregroundColor: textColor,
+              isContinuation: true))
+        }
+        
         currentCol += charWidth
       }
     }
-
-    buffer.setCell(
-      row: origin.y + 1, col: origin.x + displayWidth + 2, cell: Cell(character: " "))
-    buffer.setCell(
-      row: origin.y + 1, col: origin.x + displayWidth + 3,
-      cell: Cell(character: "│", foregroundColor: borderColor))
-
-    // 下の枠線
-    buffer.setCell(
-      row: origin.y + 2, col: origin.x, cell: Cell(character: "└", foregroundColor: borderColor))
-    for i in 1...(displayWidth + 2) {
-      buffer.setCell(
-        row: origin.y + 2, col: origin.x + i,
-        cell: Cell(character: "─", foregroundColor: borderColor))
-    }
-    buffer.setCell(
-      row: origin.y + 2, col: origin.x + displayWidth + 3,
-      cell: Cell(character: "┘", foregroundColor: borderColor))
   }
 
   // MARK: - FocusableView

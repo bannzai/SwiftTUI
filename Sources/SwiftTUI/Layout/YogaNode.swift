@@ -76,4 +76,9 @@ public final class YogaNode {
   public func setGap(_ gap: Float, _ gutter: YGGutter = .column) {
     YGNodeStyleSetGap(raw, gutter, gap)
   }
+  
+  // MARK: - Alignment
+  public func alignItems(_ alignment: YGAlign) {
+    YGNodeStyleSetAlignItems(raw, alignment)
+  }
 }

@@ -3,15 +3,28 @@ import yoga
 /// セルベースのFlexStack実装
 final class CellFlexStack: CellLayoutView {
   enum Axis { case column, row }
+
+  /// アライメントタイプ
+  enum Alignment {
+    case start  // 上揃え（HStack）または左揃え（VStack）
+    case center  // 中央揃え
+    case end  // 下揃え（HStack）または右揃え（VStack）
+  }
+
   private let axis: Axis
   private let children: [LegacyAnyView]
   private let spacing: Float
+  private let alignment: Alignment
   private var calculatedNode: YogaNode?
   private var childNodes: [YogaNode] = []
 
-  init(_ axis: Axis, spacing: Float = 0, @LegacyViewBuilder _ c: () -> [LegacyAnyView]) {
+  init(
+    _ axis: Axis, spacing: Float = 0, alignment: Alignment = .center,
+    @LegacyViewBuilder _ c: () -> [LegacyAnyView]
+  ) {
     self.axis = axis
     self.spacing = spacing
+    self.alignment = alignment
     self.children = c()
   }
 
@@ -23,6 +36,16 @@ final class CellFlexStack: CellLayoutView {
     // Set gap (spacing) if specified
     if spacing > 0 {
       n.setGap(spacing, axis == .column ? .column : .row)
+    }
+
+    // Set align items based on alignment
+    switch alignment {
+    case .start:
+      n.alignItems(.flexStart)
+    case .center:
+      n.alignItems(.center)
+    case .end:
+      n.alignItems(.flexEnd)
     }
 
     // DEBUG
@@ -37,6 +60,7 @@ final class CellFlexStack: CellLayoutView {
       }
       let node = child.makeNode()
       n.insert(child: node)
+      
       if CellRenderLoop.DEBUG {
         print("[CellFlexStack]   Child \(index) node created: \(node.rawPtr)")
       }

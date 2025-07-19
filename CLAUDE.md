@@ -360,6 +360,54 @@ SwiftTUI.run(App())
   - 最重要修正：`bufferWriteCell`で日本語文字が2セルを占有するよう、次のセルに空白を配置
   - これにより日本語テキストの中央寄せ、カーソル位置、レイアウトが正しく表示されるようになった
 
+#### TextFieldの日本語文字表示追加修正（2025年1月18日）
+- **問題**: TextFieldで日本語文字が「名前」→「名 前」のように余計なスペースが入って表示される
+- **原因**: TextFieldの`paintCells`メソッドで、2幅文字（日本語）の次のセルに空白を配置していなかった
+- **解決**:
+  - `TextField.swift`の`paintCells`メソッドで、日本語文字を配置する際に次のセルに空白を配置
+  - フォーカス時（カーソル表示）と非フォーカス時の両方で修正を適用
+  - bufferWriteCellと同様の処理をTextFieldでも実装することで、一貫した日本語表示を実現
+
+#### 日本語文字間のスペース問題の根本的解決（2025年1月18日）
+- **問題**: DemoForLTなどで日本語テキストが「ユ ー ザ ー 登 録」のように文字間に余分なスペースが入って表示される
+- **原因**: `CellBuffer.toANSILines`が2セル幅文字の継続セル（2番目のセル）を独立した空白文字として出力していた
+- **解決**:
+  - `Cell`構造体に`isContinuation`フラグを追加（2セル幅文字の継続セルを識別）
+  - `bufferWriteCell`で日本語文字の2番目のセルに`isContinuation: true`を設定
+  - `CellBuffer.toANSILines`で`isContinuation`がtrueのセルをスキップ
+  - `mergeCell`メソッドで`isContinuation`フラグを適切にマージ
+  - **TextField固有の追加修正**: TextField.swiftの`paintCells`メソッドでも2幅文字の継続セルに`isContinuation: true`を設定（通常テキスト、カーソル位置、プレースホルダー「お名前」など）
+  - これにより「ユーザー登録」「名前:」「送信」「お名前」などすべての日本語テキストが正しく表示されるようになった
+
+#### TextFieldのデフォルト枠線削除とHStack/VStackのalignment対応（2025年8月）
+- **問題1**: TextFieldが自前で枠線を描画し、`.border()`モディファイアを適用すると二重の枠線が表示される
+- **問題2**: HStack内でTextFieldに`.border()`を適用すると、デフォルトの中央揃えでずれて見える
+- **解決1**: 
+  - TextFieldLayoutViewから枠線描画コードを削除
+  - サイズ計算を調整（高さ3行→1行、幅から枠線分のパディングを削除）
+  - SwiftUIと同様にデフォルトで枠線なし、`.border()`で装飾する設計に
+- **解決2**:
+  - CellFlexStackにAlignmentプロパティを追加
+  - HStackで`.top`, `.center`, `.bottom`アライメントをサポート
+  - VStackで`.leading`, `.center`, `.trailing`アライメントをサポート
+  - YogaNodeにalignItems()メソッドを追加してFlexboxのalignItemsを設定
+
+#### FrameLayoutViewのCellLayoutView対応（2025年1月18日）
+- **問題**: `.frame()`モディファイアがセルベースレンダリングを正しくサポートしていなかった
+- **解決**: 
+  - FrameLayoutViewにCellLayoutViewプロトコルを実装
+  - paintCellsメソッドで子ビューのセル描画を適切に処理
+  - フレーム幅が指定されている場合の余剰部分クリア処理を追加
+
+#### テストアプリケーションの追加（2025年1月18日）
+- **TextFieldJapaneseTest**: TextField内の日本語表示を検証
+  - 日本語文字の入力・表示が正しく動作することを確認
+  - プレースホルダー「お名前を入力」の表示検証
+  - HStackでのalignment: .topを使用したレイアウト確認
+- **MinimalAlignmentTest**: HStackのアライメント機能を検証
+  - `HStack(alignment: .top)`での上揃え表示の確認
+  - 異なる高さのコンテンツでの配置検証
+
 ### その他
 - /tmpにスクリプトファイルを作らないでください
 - ./tmp/に動作確認ようのスクリプトファイルを作りましょう

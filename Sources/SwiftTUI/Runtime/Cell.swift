@@ -42,6 +42,12 @@ public struct Cell: Equatable {
   /// 例：[.bold, .underline]
   public var style: TextStyle
 
+  /// 2セル幅文字の継続セルかどうか
+  ///
+  /// 日本語文字、絵文字などの2セル幅文字の2番目のセルである場合はtrue。
+  /// このフラグがtrueのセルは、toANSILinesで文字として出力されない。
+  public var isContinuation: Bool = false
+
   /// 空のセル（スペース）を作成
   ///
   /// デフォルトの空白セル。
@@ -62,16 +68,19 @@ public struct Cell: Equatable {
   ///   - foregroundColor: 文字色（オプション）
   ///   - backgroundColor: 背景色（オプション）
   ///   - style: テキストスタイル（デフォルトは空）
+  ///   - isContinuation: 2セル幅文字の継続セルかどうか（デフォルトはfalse）
   public init(
     character: Character,
     foregroundColor: Color? = nil,
     backgroundColor: Color? = nil,
-    style: TextStyle = []
+    style: TextStyle = [],
+    isContinuation: Bool = false
   ) {
     self.character = character
     self.foregroundColor = foregroundColor
     self.backgroundColor = backgroundColor
     self.style = style
+    self.isContinuation = isContinuation
   }
 
   /// ANSIエスケープシーケンス付きの文字列に変換
@@ -333,6 +342,11 @@ public struct CellBuffer {
     // スタイルのマージ：OptionSetのunionで結合
     mergedCell.style = mergedCell.style.union(newCell.style)
 
+    // isContinuationフラグのマージ：新しい値を優先
+    if newCell.isContinuation {
+      mergedCell.isContinuation = true
+    }
+
     // マージしたセルを設定
     setCell(row: row, col: col, cell: mergedCell)
   }
@@ -369,6 +383,11 @@ public struct CellBuffer {
       // ステップ2: 内容がある行のみ処理
       if hasContent || rowIndex < height {
         for (colIndex, cell) in row.enumerated() {
+          // 2セル幅文字の継続セルはスキップ
+          if cell.isContinuation {
+            continue
+          }
+
           // 行末の空白セルはスキップ
           // ただし、背景色がある場合は出力が必要
           if colIndex > lastNonSpaceIndex && cell.character == " " && cell.backgroundColor == nil {

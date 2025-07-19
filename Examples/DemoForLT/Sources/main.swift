@@ -23,14 +23,14 @@ struct FormDemo: View {
         .bold()
         .padding(.bottom)
 
-      HStack {
+      HStack(alignment: .top) {
         Text("名前:")
         TextField("お名前", text: $name)
           .frame(width: 20)
           .border()
       }
 
-      HStack {
+      HStack(alignment: .top) {
         Text("Email:")
         TextField("email@example.com", text: $email)
           .frame(width: 25)
