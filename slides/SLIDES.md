@@ -99,6 +99,7 @@ bannzai
 
 **@bannzai**
 - SwiftUI大好き
+- 熊本在住
 
 ---
 
@@ -163,7 +164,7 @@ SwiftTUI.run(App())
 
 ---
 
-## デモ: Hello World
+## Example: Hello World
 
 ```swift
 Text("Hello, SwiftTUI! 🚀")
@@ -183,7 +184,7 @@ Text("Hello, SwiftTUI! 🚀")
 
 ---
 
-## デモ: フォーム
+## Example: フォーム
 
 ```swift
 @State private var name = ""
@@ -198,7 +199,7 @@ VStack {
 
 ---
 
-## デモ: リスト
+## Example: リスト
 
 ```swift
 List {
@@ -250,12 +251,6 @@ Button("Count: \(count)") {
     count += 1  // 自動で再描画！
 }
 ```
-
----
-
-## 実装のポイント
-
-1文字だけ更新 = 高速！
 
 ---
 
