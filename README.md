@@ -927,6 +927,37 @@ swift run --package-path Examples/DemoForLT DemoForLT
 - `Border.swift`: ボーダー内のコンテンツ幅計算
 - `BufferCell.swift`: 最も重要な修正 - 日本語文字が2セルを占有するように
 
+### TextFieldJapaneseTestの動作確認
+
+TextFieldの日本語表示機能を詳細に検証するテストアプリケーションです：
+
+```bash
+# プロジェクトルートから実行
+swift run --package-path Examples/TextFieldJapaneseTest TextFieldJapaneseTest
+```
+
+機能：
+- TextField内での日本語入力と表示（「名前」などが正しく表示される）
+- プレースホルダー「お名前を入力」の表示検証
+- HStackでのalignment: .topを使用したレイアウト確認
+- 日本語・英語・混在テキストの入力テスト
+- Tabキーでフィールド間を移動、qキーで終了
+
+### MinimalAlignmentTestの動作確認
+
+HStackのアライメント機能を検証するテストアプリケーションです：
+
+```bash
+# プロジェクトルートから実行
+swift run --package-path Examples/MinimalAlignmentTest MinimalAlignmentTest
+```
+
+機能：
+- `HStack(alignment: .top)`での上揃え表示の確認
+- 異なる高さのテキストが正しく配置されることを検証
+- `.border()`モディファイア使用時のアライメント動作確認
+- Quitボタンをクリックして終了
+
 ### 動作確認時の便利なTips
 
 #### echoコマンドを使った自動テスト

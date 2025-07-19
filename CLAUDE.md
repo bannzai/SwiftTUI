@@ -392,6 +392,22 @@ SwiftTUI.run(App())
   - VStackで`.leading`, `.center`, `.trailing`アライメントをサポート
   - YogaNodeにalignItems()メソッドを追加してFlexboxのalignItemsを設定
 
+#### FrameLayoutViewのCellLayoutView対応（2025年1月18日）
+- **問題**: `.frame()`モディファイアがセルベースレンダリングを正しくサポートしていなかった
+- **解決**: 
+  - FrameLayoutViewにCellLayoutViewプロトコルを実装
+  - paintCellsメソッドで子ビューのセル描画を適切に処理
+  - フレーム幅が指定されている場合の余剰部分クリア処理を追加
+
+#### テストアプリケーションの追加（2025年1月18日）
+- **TextFieldJapaneseTest**: TextField内の日本語表示を検証
+  - 日本語文字の入力・表示が正しく動作することを確認
+  - プレースホルダー「お名前を入力」の表示検証
+  - HStackでのalignment: .topを使用したレイアウト確認
+- **MinimalAlignmentTest**: HStackのアライメント機能を検証
+  - `HStack(alignment: .top)`での上揃え表示の確認
+  - 異なる高さのコンテンツでの配置検証
+
 ### その他
 - /tmpにスクリプトファイルを作らないでください
 - ./tmp/に動作確認ようのスクリプトファイルを作りましょう
