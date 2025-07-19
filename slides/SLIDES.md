@@ -98,15 +98,16 @@ bannzai
 ![width:300px](https://avatars.githubusercontent.com/u/10897361?v=4)
 
 **@bannzai**
-- SwiftUI大好き
 - 熊本在住
+- 口癖:スターください
+- 趣味: GitHubのスターを集めています
 
 ---
 
 ## 自己紹介(ちょっと自慢)
 
 近況
-自分のアプリの収入 > 家計 => 黒字
+自分のアプリの収入 > 家計 → 黒字
 
 ![width:100%](./tweet.png)
 
@@ -128,9 +129,14 @@ Terminal User Interface
 ## 最近のTUI
 
 #### Claude Code
-![width:300px](https://github.com/anthropics/claude-code/blob/main/demo.gif)
+![width:300px](https://github.com/anthropics/claude-code/blob/main/demo.gif?raw=true)
+
+---
+
+## 最近のTUI 2
+
 #### Gemini CLI
-![width:300px](https://github.com/google-gemini/gemini-cli/blob/main/docs/assets/gemini-screenshot.png)
+![width:300px](https://github.com/google-gemini/gemini-cli/blob/main/docs/assets/gemini-screenshot.png?raw=true)
 
 ---
 
@@ -251,6 +257,10 @@ VStack {
 .padding()
 
 ```
+
+---
+
+## Example: Button - 2
 
 ```
                                           === Button Test ===
