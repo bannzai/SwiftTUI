@@ -103,6 +103,15 @@ bannzai
 
 ---
 
+## 自己紹介(ちょっと自慢)
+
+近況
+自分のアプリの収入 > 家計 => 黒字
+
+![width:100%](./tweet.png)
+
+---
+
 ## SwiftTUIとは？
 
 SwiftでTUI（Terminal UI）を作るライブラリ
@@ -118,7 +127,9 @@ Terminal User Interface
 
 ## 最近のTUI
 
+#### Claude Code
 ![width:300px](https://github.com/anthropics/claude-code/blob/main/demo.gif)
+#### Gemini CLI
 ![width:300px](https://github.com/google-gemini/gemini-cli/blob/main/docs/assets/gemini-screenshot.png)
 
 ---
@@ -130,10 +141,15 @@ SwiftUIの書き味で
 
 ---
 
-## React Ink(Codex,Claude Code,Gemini CLIで使用されている)
+## 作る際の参考ライブラリ
+
+### React Ink
+ReactでTUIが作れる
+(Claude Code,Gemini CLIで使用されている)
+
+https://github.com/vadimdemedes/ink
 
 ```javascript
-// JavaScriptにはある
 import {render, Text} from 'ink';
 
 const App = () => (
@@ -147,7 +163,17 @@ render(<App />);
 
 ---
 
-## SwiftTUIなら
+## Yoga
+
+React Inkでも使われるフレックスレイアウトのエンジン。TUIにも使える。facebook(meta)社のライブラリ
+
+https://github.com/facebook/yoga
+
+> Yoga is an embeddable and performant flexbox layout engine with bindings for multiple languages.
+
+---
+
+## SwiftTUI
 
 ```swift
 import SwiftTUI
