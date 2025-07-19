@@ -60,6 +60,7 @@ final class CellFlexStack: CellLayoutView {
       }
       let node = child.makeNode()
       n.insert(child: node)
+      
       if CellRenderLoop.DEBUG {
         print("[CellFlexStack]   Child \(index) node created: \(node.rawPtr)")
       }
