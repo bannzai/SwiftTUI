@@ -82,6 +82,15 @@ style: |
 
 ターミナルでSwiftUIを書こう！
 
+bannzai
+
+---
+
+# 注意事項
+
+- このスライドは95% AIに作らせて勢いで公開しています。間違いがあるかも
+- このプロジェクトで発表するOSSはWIPです。まだ完成してないので0.0.1まで行き着くまで使うのは待ってね
+
 ---
 
 ## 自己紹介
@@ -89,9 +98,7 @@ style: |
 ![width:300px](https://avatars.githubusercontent.com/u/10897361?v=4)
 
 **@bannzai**
-- iOSエンジニア
 - SwiftUI大好き
-- ターミナルも大好き
 
 ---
 
@@ -108,6 +115,13 @@ Terminal User Interface
 
 ---
 
+## 最近のTUI
+
+![width:300px](https://github.com/anthropics/claude-code/blob/main/demo.gif)
+![width:300px](https://github.com/google-gemini/gemini-cli/blob/main/docs/assets/gemini-screenshot.png)
+
+---
+
 ## なぜ作った？
 
 SwiftUIの書き味で
@@ -115,7 +129,7 @@ SwiftUIの書き味で
 
 ---
 
-## React Ink
+## React Ink(Codex,Claude Code,Gemini CLIで使用されている)
 
 ```javascript
 // JavaScriptにはある
@@ -241,14 +255,6 @@ Button("Count: \(count)") {
 
 ## 実装のポイント
 
-### セルベースレンダリング
-
-```
-前: Hello
-後: Hallo
-     ^
-```
-
 1文字だけ更新 = 高速！
 
 ---
@@ -267,16 +273,6 @@ Button("Count: \(count)") {
 
 SwiftUIの書き味で
 ターミナルアプリが作れる！
-
----
-
-## 試してみよう
-
-```bash
-git clone https://github.com/bannzai/SwiftTUI
-cd SwiftTUI/Examples/HelloWorld
-swift run
-```
 
 ---
 
