@@ -72,7 +72,7 @@ style: |
 
 ```
 ┌───────────────────────┐
-│Hakata.swift 2025-07-18│
+│Hakata.swift 2025-07-19│
 └───────────────────────┘
 ```
 
@@ -319,10 +319,10 @@ Button("Count: \(count)") {
 swift run PresentationUI
 swift run ButtonExample
 swift run SimpleVStackTest
+swift run StateTest
 cd /Users/bannzai/ghq/github.com/bannzai/SwiftTUI/Examples/DemoForLT && swift run
 
 ---
-
 
 ## まとめ
 
