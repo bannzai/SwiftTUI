@@ -210,29 +210,56 @@ Text("Hello, SwiftTUI! 🚀")
 
 ---
 
-## Example: フォーム
+## Example: VStack
 
 ```swift
-@State private var name = ""
-
 VStack {
-    Text("ユーザー登録")
-    TextField("お名前", text: $name)
-        .border()
-    Button("送信") { }
+  Text("Line 1")
+  Text("Line 2")
 }
+
+```
+
+```
+Line 1
+Line 2
 ```
 
 ---
 
-## Example: リスト
+## Example: Button
 
 ```swift
-List {
-    ForEach(items, id: \.self) { item in
-        Text("• \(item)")
+VStack {
+  Text("=== Button Test ===")
+    .foregroundColor(.cyan)
+
+  HStack {
+    Text("[")
+      .foregroundColor(.yellow)
+    Button("Click Me") {
+      print("Button clicked!")
     }
+    Text("]")
+      .foregroundColor(.yellow)
+  }
+
+  Text("")
+  Text("Press Tab to focus button, Enter to click")
+    .foregroundColor(.white)
 }
+.padding()
+
+```
+
+```
+                                          === Button Test ===
+                                             ┌────────────┐
+                                            [│  Click Me  │]
+                                             └────────────┘
+
+                               Press Tab to focus button, Enter to click
+
 ```
 
 ---
@@ -249,26 +276,11 @@ Text("Hello")
     .padding()
 ```
 
-完全互換！
+SwiftUIと同じAPI！
 
 ---
 
-## 特徴2: 宣言的UI
-
-❌ 命令的
-```swift
-buffer[y][x] = "H"
-buffer[y][x+1] = "i"
-```
-
-✅ 宣言的
-```swift
-Text("Hi")
-```
-
----
-
-## 特徴3: @State対応
+## 特徴2: @State, @Binding などのプロパティラッパー。Observable 対応
 
 ```swift
 @State private var count = 0
@@ -277,6 +289,19 @@ Button("Count: \(count)") {
     count += 1  // 自動で再描画！
 }
 ```
+
+---
+
+## 特徴3: 差分更新
+
+
+```
+前: Hello
+後: Hallo
+     ^
+```
+
+1文字だけ更新 = 高速！
 
 ---
 
@@ -289,6 +314,15 @@ Button("Count: \(count)") {
 - Alert, ProgressView
 
 ---
+
+デモ
+swift run PresentationUI
+swift run ButtonExample
+swift run SimpleVStackTest
+cd /Users/bannzai/ghq/github.com/bannzai/SwiftTUI/Examples/DemoForLT && swift run
+
+---
+
 
 ## まとめ
 

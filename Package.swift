@@ -345,7 +345,7 @@ let package = Package(
       dependencies: ["SwiftTUI"]
     ),
     .executableTarget(
-      name: "DebugHStackButton",
+      name: "ButtonExample",
       dependencies: ["SwiftTUI"]
     ),
     .executableTarget(
