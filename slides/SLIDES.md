@@ -72,7 +72,7 @@ style: |
 
 ```
 ┌───────────────────────┐
-│Hakata.swift 2025-07-18│
+│Hakata.swift 2025-07-19│
 └───────────────────────┘
 ```
 
@@ -82,6 +82,15 @@ style: |
 
 ターミナルでSwiftUIを書こう！
 
+bannzai
+
+---
+
+# 注意事項
+
+- このスライドは95% AIに作らせて勢いで公開しています。間違いがあるかも
+- このプロジェクトで発表するOSSはWIPです。まだ完成してないので0.0.1まで行き着くまで使うのは待ってね
+
 ---
 
 ## 自己紹介
@@ -89,9 +98,18 @@ style: |
 ![width:300px](https://avatars.githubusercontent.com/u/10897361?v=4)
 
 **@bannzai**
-- iOSエンジニア
-- SwiftUI大好き
-- ターミナルも大好き
+- 熊本在住
+- 口癖:スターください
+- 趣味: GitHubのスターを集めています
+
+---
+
+## 自己紹介(ちょっと自慢)
+
+近況
+自分のアプリの収入 > 家計 → 黒字
+
+![width:100%](./tweet.png)
 
 ---
 
@@ -108,6 +126,20 @@ Terminal User Interface
 
 ---
 
+## 最近のTUI
+
+#### Claude Code
+![width:300px](https://github.com/anthropics/claude-code/blob/main/demo.gif?raw=true)
+
+---
+
+## 最近のTUI 2
+
+#### Gemini CLI
+![width:300px](https://github.com/google-gemini/gemini-cli/blob/main/docs/assets/gemini-screenshot.png?raw=true)
+
+---
+
 ## なぜ作った？
 
 SwiftUIの書き味で
@@ -115,10 +147,15 @@ SwiftUIの書き味で
 
 ---
 
-## React Ink
+## 作る際の参考ライブラリ
+
+### React Ink
+ReactでTUIが作れる
+(Claude Code,Gemini CLIで使用されている)
+
+https://github.com/vadimdemedes/ink
 
 ```javascript
-// JavaScriptにはある
 import {render, Text} from 'ink';
 
 const App = () => (
@@ -132,7 +169,17 @@ render(<App />);
 
 ---
 
-## SwiftTUIなら
+## Yoga
+
+React Inkでも使われるフレックスレイアウトのエンジン。TUIにも使える。facebook(meta)社のライブラリ
+
+https://github.com/facebook/yoga
+
+> Yoga is an embeddable and performant flexbox layout engine with bindings for multiple languages.
+
+---
+
+## SwiftTUI
 
 ```swift
 import SwiftTUI
@@ -149,7 +196,7 @@ SwiftTUI.run(App())
 
 ---
 
-## デモ: Hello World
+## Example: Hello World
 
 ```swift
 Text("Hello, SwiftTUI! 🚀")
@@ -169,29 +216,60 @@ Text("Hello, SwiftTUI! 🚀")
 
 ---
 
-## デモ: フォーム
+## Example: VStack
 
 ```swift
-@State private var name = ""
-
 VStack {
-    Text("ユーザー登録")
-    TextField("お名前", text: $name)
-        .border()
-    Button("送信") { }
+  Text("Line 1")
+  Text("Line 2")
 }
+
+```
+
+```
+Line 1
+Line 2
 ```
 
 ---
 
-## デモ: リスト
+## Example: Button
 
 ```swift
-List {
-    ForEach(items, id: \.self) { item in
-        Text("• \(item)")
+VStack {
+  Text("=== Button Test ===")
+    .foregroundColor(.cyan)
+
+  HStack {
+    Text("[")
+      .foregroundColor(.yellow)
+    Button("Click Me") {
+      print("Button clicked!")
     }
+    Text("]")
+      .foregroundColor(.yellow)
+  }
+
+  Text("")
+  Text("Press Tab to focus button, Enter to click")
+    .foregroundColor(.white)
 }
+.padding()
+
+```
+
+---
+
+## Example: Button - 2
+
+```
+                                          === Button Test ===
+                                             ┌────────────┐
+                                            [│  Click Me  │]
+                                             └────────────┘
+
+                               Press Tab to focus button, Enter to click
+
 ```
 
 ---
@@ -208,26 +286,11 @@ Text("Hello")
     .padding()
 ```
 
-完全互換！
+SwiftUIと同じAPI！
 
 ---
 
-## 特徴2: 宣言的UI
-
-❌ 命令的
-```swift
-buffer[y][x] = "H"
-buffer[y][x+1] = "i"
-```
-
-✅ 宣言的
-```swift
-Text("Hi")
-```
-
----
-
-## 特徴3: @State対応
+## 特徴2: @State, @Binding などのプロパティラッパー。Observable 対応
 
 ```swift
 @State private var count = 0
@@ -239,9 +302,8 @@ Button("Count: \(count)") {
 
 ---
 
-## 実装のポイント
+## 特徴3: 差分更新
 
-### セルベースレンダリング
 
 ```
 前: Hello
@@ -263,20 +325,19 @@ Button("Count: \(count)") {
 
 ---
 
+デモ
+swift run PresentationUI
+swift run ButtonExample
+swift run SimpleVStackTest
+swift run StateTest
+cd /Users/bannzai/ghq/github.com/bannzai/SwiftTUI/Examples/DemoForLT && swift run
+
+---
+
 ## まとめ
 
 SwiftUIの書き味で
 ターミナルアプリが作れる！
-
----
-
-## 試してみよう
-
-```bash
-git clone https://github.com/bannzai/SwiftTUI
-cd SwiftTUI/Examples/HelloWorld
-swift run
-```
 
 ---
 
