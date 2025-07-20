@@ -16,7 +16,7 @@ public struct BorderModifier: ViewModifier {
 }
 
 /// ボーダースタイル
-public enum BorderStyle {
+public enum BorderStyle: Equatable {
   case single
   case double
   case rounded
