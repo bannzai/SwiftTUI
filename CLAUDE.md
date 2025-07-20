@@ -625,3 +625,33 @@ SwiftTUIのコードベースにTUI初心者向けの詳細なコメントを追
 
 コーディングルールは @CODING_RULES.md に記載
 - swift-format format -i -p -r . を変更後に実行する
+
+## Re-architectureドキュメント
+
+2025年1月より、大規模なアーキテクチャ改善を計画しています。詳細は以下のドキュメントを参照：
+
+- **[docs/ProjectOverview.md](docs/ProjectOverview.md)**: プロジェクトの概要と特徴
+- **[docs/Requirements.md](docs/Requirements.md)**: 新アーキテクチャの要件定義
+- **[docs/Design.md](docs/Design.md)**: 詳細な設計書
+- **[docs/TODO.md](docs/TODO.md)**: 実装タスクと進捗
+- **[docs/MEMO.md](docs/MEMO.md)**: 開発中の技術メモと判断記録
+
+これらのドキュメントは、rensbreur/SwiftTUIの優れた設計を参考に、現在の2層アーキテクチャを単一層の型安全な設計に移行する計画を記述しています。
+
+### 主な改善点
+
+1. **型安全なレンダリングパイプライン**
+   - 文字列ベースの型判定を排除
+   - プロトコル指向の設計で型安全性を確保
+
+2. **単一層Viewシステム**
+   - View → LayoutViewの変換層を廃止
+   - RenderNodeベースの直接的なレンダリング
+
+3. **効率的なdiffingアルゴリズム**
+   - 最小限の再レンダリング
+   - メモリ使用量の削減
+
+4. **開発体験の向上**
+   - 新しいViewの追加が単一ファイルで完結
+   - デバッグとテストの容易化

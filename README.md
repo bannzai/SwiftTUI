@@ -48,6 +48,18 @@ SwiftTUIの仕組みを理解するための3段階のドキュメントが用�
 
 3. **詳細編** (`SwiftTUI-Advanced.md`)
    - Yogaレイアウトエンジンの統合
+
+#### Re-architectureドキュメント
+
+SwiftTUIの次世代アーキテクチャに関する計画書が `docs/` ディレクトリに用意されています：
+
+- **[docs/ProjectOverview.md](docs/ProjectOverview.md)** - プロジェクトの概要と特徴（外部向け）
+- **[docs/Requirements.md](docs/Requirements.md)** - 新アーキテクチャの要件定義
+- **[docs/Design.md](docs/Design.md)** - 詳細な設計書とアーキテクチャ図
+- **[docs/TODO.md](docs/TODO.md)** - 16週間の実装計画とタスクリスト
+- **[docs/MEMO.md](docs/MEMO.md)** - 開発中の技術メモと設計判断の記録
+
+これらのドキュメントでは、現在の2層アーキテクチャ（View → LayoutView）から、より型安全な単一層アーキテクチャへの移行計画を詳述しています。
    - セルベースレンダリングの実装詳細
    - ターミナルのraw mode制御とプロセス管理
 
