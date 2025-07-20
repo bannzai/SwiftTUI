@@ -1,13 +1,16 @@
 import SwiftTUI
 
 // デバッグフラグをオンにする
-//CellRenderLoop.DEBUG = true
+CellRenderLoop.DEBUG = true
 
-struct ButtonExample: View {
+struct DebugHStackButton: View {
   var body: some View {
     VStack {
-      Text("=== Button Test ===")
+      Text("=== Debug HStack Button ===")
         .foregroundColor(.cyan)
+
+      Text("Expected output: [ Click Me ]")
+        .foregroundColor(.white)
 
       HStack {
         Text("[")
@@ -27,4 +30,4 @@ struct ButtonExample: View {
   }
 }
 
-SwiftTUI.run(ButtonExample())
+SwiftTUI.run(DebugHStackButton())
