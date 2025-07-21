@@ -34,7 +34,7 @@ extension View {
     // 型ベースのディスパッチ
     switch self {
     case let text as Text:
-      return TextRenderNode(text: text, context: context)
+      return text.createRenderNode(context: context)
       
     case let spacer as Spacer:
       return SpacerRenderNode(spacer: spacer, context: context)
@@ -50,24 +50,6 @@ extension View {
 }
 
 // MARK: - Primitive RenderNodes
-
-/// Text用のRenderNode（仮実装）
-class TextRenderNode: RenderNode {
-  private let text: Text
-  
-  init(text: Text, context: RenderContext) {
-    self.text = text
-    super.init()
-    
-    // 属性の設定（将来的にはTextの内部実装から取得）
-    // 現在は仮実装
-  }
-  
-  override func renderContent(into buffer: inout CellBuffer) {
-    // TODO: 実際のテキストレンダリング実装
-    // 現在は互換性レイヤーを使用
-  }
-}
 
 /// Spacer用のRenderNode（仮実装）
 class SpacerRenderNode: RenderNode {
